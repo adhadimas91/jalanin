@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jalanin - Temukan trip. Simpan rute. Jalanin.</title>
+    <meta
+      name="description"
+      content="Prototype MVP Jalanin, platform sosial travel untuk menemukan, menyimpan, dan menggunakan itinerary."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <svg class="icon-sprite" aria-hidden="true">
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m16.5 16.5 4 4"></path>
+      </symbol>
+      <symbol id="icon-heart" viewBox="0 0 24 24">
+        <path d="M19.5 5.5a5.1 5.1 0 0 0-7.2 0L12 5.8l-.3-.3a5.1 5.1 0 1 0-7.2 7.2l7.5 7.5 7.5-7.5a5.1 5.1 0 0 0 0-7.2Z"></path>
+      </symbol>
+      <symbol id="icon-bookmark" viewBox="0 0 24 24">
+        <path d="M6 4.8c0-.9.7-1.6 1.6-1.6h8.8c.9 0 1.6.7 1.6 1.6v16l-6-3.7-6 3.7v-16Z"></path>
+      </symbol>
+      <symbol id="icon-copy" viewBox="0 0 24 24">
+        <path d="M8 8V5.5C8 4.7 8.7 4 9.5 4h8C18.3 4 19 4.7 19 5.5v10c0 .8-.7 1.5-1.5 1.5H15"></path>
+        <rect x="5" y="8" width="10" height="12" rx="1.5"></rect>
+      </symbol>
+      <symbol id="icon-share" viewBox="0 0 24 24">
+        <path d="M8.5 12.4 15.5 8"></path>
+        <path d="M8.5 11.6 15.5 16"></path>
+        <circle cx="6" cy="12" r="2.6"></circle>
+        <circle cx="18" cy="6.5" r="2.6"></circle>
+        <circle cx="18" cy="17.5" r="2.6"></circle>
+      </symbol>
+      <symbol id="icon-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14"></path>
+        <path d="M5 12h14"></path>
+      </symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24">
+        <rect x="4" y="5.5" width="16" height="14.5" rx="2"></rect>
+        <path d="M8 3.5v4"></path>
+        <path d="M16 3.5v4"></path>
+        <path d="M4 10h16"></path>
+      </symbol>
+      <symbol id="icon-wallet" viewBox="0 0 24 24">
+        <path d="M4 7.5c0-1 .8-1.8 1.8-1.8h12.4c1 0 1.8.8 1.8 1.8v9c0 1-.8 1.8-1.8 1.8H5.8c-1 0-1.8-.8-1.8-1.8v-9Z"></path>
+        <path d="M16 12h4"></path>
+        <path d="M6.5 5.8 16 3.8"></path>
+      </symbol>
+      <symbol id="icon-map-pin" viewBox="0 0 24 24">
+        <path d="M12 21s7-5.6 7-11.2A7 7 0 0 0 5 9.8C5 15.4 12 21 12 21Z"></path>
+        <circle cx="12" cy="10" r="2.2"></circle>
+      </symbol>
+      <symbol id="icon-route" viewBox="0 0 24 24">
+        <circle cx="6" cy="18" r="2.5"></circle>
+        <circle cx="18" cy="6" r="2.5"></circle>
+        <path d="M8 18h5a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h4.5"></path>
+      </symbol>
+      <symbol id="icon-compass" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="8.5"></circle>
+        <path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"></path>
+      </symbol>
+      <symbol id="icon-star" viewBox="0 0 24 24">
+        <path d="m12 3.7 2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8L12 3.7Z"></path>
+      </symbol>
+      <symbol id="icon-user" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M4.8 20c1.1-3.8 4-5.7 7.2-5.7s6.1 1.9 7.2 5.7"></path>
+      </symbol>
+      <symbol id="icon-grid" viewBox="0 0 24 24">
+        <rect x="4" y="4" width="6.5" height="6.5" rx="1"></rect>
+        <rect x="13.5" y="4" width="6.5" height="6.5" rx="1"></rect>
+        <rect x="4" y="13.5" width="6.5" height="6.5" rx="1"></rect>
+        <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"></rect>
+      </symbol>
+      <symbol id="icon-food" viewBox="0 0 24 24">
+        <path d="M7 3.5v7"></path>
+        <path d="M4.7 3.5v7"></path>
+        <path d="M9.3 3.5v7"></path>
+        <path d="M4.7 10.5h4.6"></path>
+        <path d="M7 10.5v10"></path>
+        <path d="M17 3.5c1.4 1.4 2.1 3.2 2.1 5.3 0 2.5-.9 4.5-2.1 5.5v6.2"></path>
+      </symbol>
+      <symbol id="icon-car" viewBox="0 0 24 24">
+        <path d="m5.5 11 1.4-4c.3-.8 1-1.3 1.9-1.3h6.4c.9 0 1.6.5 1.9 1.3l1.4 4"></path>
+        <rect x="4" y="10.5" width="16" height="6.8" rx="1.8"></rect>
+        <circle cx="7.5" cy="17.5" r="1.5"></circle>
+        <circle cx="16.5" cy="17.5" r="1.5"></circle>
+      </symbol>
+      <symbol id="icon-camera" viewBox="0 0 24 24">
+        <path d="M8.5 6 10 4h4l1.5 2H19c1 0 1.8.8 1.8 1.8v9.4c0 1-.8 1.8-1.8 1.8H5c-1 0-1.8-.8-1.8-1.8V7.8C3.2 6.8 4 6 5 6h3.5Z"></path>
+        <circle cx="12" cy="12.5" r="3.5"></circle>
+      </symbol>
+      <symbol id="icon-hotel" viewBox="0 0 24 24">
+        <path d="M4.5 20V5.5c0-.8.7-1.5 1.5-1.5h8c.8 0 1.5.7 1.5 1.5V20"></path>
+        <path d="M15.5 10h2.7c.8 0 1.3.6 1.3 1.3V20"></path>
+        <path d="M7.5 8h1.5"></path>
+        <path d="M11 8h1.5"></path>
+        <path d="M7.5 12h1.5"></path>
+        <path d="M11 12h1.5"></path>
+        <path d="M3 20h18"></path>
+      </symbol>
+      <symbol id="icon-plane" viewBox="0 0 24 24">
+        <path d="m21 16-8.5-3.4L9 20H6l1.8-8.7L3 9.5V7l5.8.7L12 3h3l-1.8 6.2L21 12.5V16Z"></path>
+      </symbol>
+      <symbol id="icon-x" viewBox="0 0 24 24">
+        <path d="M6 6l12 12"></path>
+        <path d="M18 6 6 18"></path>
+      </symbol>
+    </svg>
+
+    <div class="app-shell">
+      <header class="topbar">
+        <button class="brand" id="homeButton" aria-label="Jalanin home">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <span>Jalanin</span>
+        </button>
+
+        <label class="searchbox">
+          <svg aria-hidden="true"><use href="#icon-search"></use></svg>
+          <input id="searchInput" type="search" placeholder="Cari Bali 3 hari, Jogja kuliner..." />
+        </label>
+
+        <nav class="top-actions" aria-label="Navigasi utama">
+          <button class="tool-button" id="exploreButton" data-tooltip="Jelajah">
+            <svg aria-hidden="true"><use href="#icon-compass"></use></svg>
+          </button>
+          <button class="tool-button" id="savedButton" data-tooltip="Rute tersimpan">
+            <svg aria-hidden="true"><use href="#icon-bookmark"></use></svg>
+          </button>
+          <button class="primary-button" id="createButton">
+            <svg aria-hidden="true"><use href="#icon-plus"></use></svg>
+            <span>Buat Itinerary</span>
+          </button>
+          <button class="avatar-button" id="profileButton" aria-label="Profil">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="Risa Tanaka" />
+          </button>
+        </nav>
+      </header>
+
+      <main class="workspace">
+        <section class="main-column" aria-live="polite">
+          <section class="hero-card">
+            <img id="heroImage" alt="" />
+            <div class="hero-overlay">
+              <p id="heroKicker"></p>
+              <h1 id="heroTitle"></h1>
+              <div class="creator-line">
+                <img id="creatorAvatar" alt="" />
+                <span id="creatorName"></span>
+              </div>
+            </div>
+          </section>
+
+          <section class="quick-meta" id="quickMeta" aria-label="Ringkasan itinerary"></section>
+
+          <section class="action-row" aria-label="Aksi itinerary">
+            <button class="pill-button" id="likeButton">
+              <svg aria-hidden="true"><use href="#icon-heart"></use></svg>
+              <span>Suka</span>
+            </button>
+            <button class="pill-button" id="saveButton">
+              <svg aria-hidden="true"><use href="#icon-bookmark"></use></svg>
+              <span>Simpan Rute</span>
+            </button>
+            <button class="pill-button strong" id="cloneButton">
+              <svg aria-hidden="true"><use href="#icon-copy"></use></svg>
+              <span>Jalanin Rute Ini</span>
+            </button>
+            <button class="pill-button" id="shareButton">
+              <svg aria-hidden="true"><use href="#icon-share"></use></svg>
+              <span>Bagikan</span>
+            </button>
+          </section>
+
+          <section class="tabs" aria-label="Konten itinerary">
+            <button class="tab active" data-tab="summary">
+              <svg aria-hidden="true"><use href="#icon-grid"></use></svg>
+              Ringkasan
+            </button>
+            <button class="tab" data-tab="days">
+              <svg aria-hidden="true"><use href="#icon-calendar"></use></svg>
+              Hari demi Hari
+            </button>
+            <button class="tab" data-tab="map">
+              <svg aria-hidden="true"><use href="#icon-route"></use></svg>
+              Peta
+            </button>
+          </section>
+
+          <section class="tab-panel" id="tabPanel"></section>
+
+          <section class="feed-section" id="exploreSection">
+            <div class="section-heading">
+              <div>
+                <p>Jelajah itinerary</p>
+                <h2>Rute populer minggu ini</h2>
+              </div>
+              <div class="filter-chips" id="filterChips"></div>
+            </div>
+            <div class="feed-grid" id="feedGrid"></div>
+          </section>
+        </section>
+
+        <aside class="sidebar">
+          <section class="side-card budget-card">
+            <div class="side-heading">
+              <h2>Ringkasan Biaya</h2>
+              <span id="budgetStyle"></span>
+            </div>
+            <div class="budget-total">
+              <span>Total</span>
+              <strong id="budgetTotal"></strong>
+            </div>
+            <div class="budget-meter">
+              <span></span>
+            </div>
+            <div class="budget-lines" id="budgetLines"></div>
+          </section>
+
+          <section class="side-card">
+            <div class="side-heading">
+              <h2>Tag & Musim</h2>
+            </div>
+            <div class="tag-list" id="tagList"></div>
+          </section>
+
+          <section class="side-card author-card">
+            <div class="side-heading">
+              <h2>Author Box</h2>
+            </div>
+            <div class="author-row">
+              <img id="authorAvatar" alt="" />
+              <div>
+                <strong id="authorName"></strong>
+                <span id="authorBio"></span>
+              </div>
+              <button class="mini-button">Follow</button>
+            </div>
+          </section>
+
+          <section class="side-card map-card">
+            <div class="map-preview" id="mapPreview" aria-label="Preview peta rute"></div>
+            <div class="map-controls">
+              <button class="mini-button muted">Day Switcher</button>
+              <button class="mini-button">Day <span id="mapDay">1</span></button>
+            </div>
+          </section>
+
+          <section class="side-card saved-card" id="savedPanel">
+            <div class="side-heading">
+              <h2>Koleksi Kamu</h2>
+              <span id="savedCount">0</span>
+            </div>
+            <div class="compact-list" id="savedList"></div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <section class="drawer" id="drawer" aria-hidden="true" aria-label="Form itinerary">
+      <div class="drawer-backdrop" id="drawerBackdrop"></div>
+      <div class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+        <div class="drawer-header">
+          <div>
+            <p>Itinerary pribadi</p>
+            <h2 id="drawerTitle">Buat Itinerary</h2>
+          </div>
+          <button class="tool-button" id="closeDrawer" aria-label="Tutup">
+            <svg aria-hidden="true"><use href="#icon-x"></use></svg>
+          </button>
+        </div>
+        <form id="itineraryForm" class="itinerary-form">
+          <label>
+            <span>Judul itinerary</span>
+            <input name="title" required />
+          </label>
+          <div class="form-grid">
+            <label>
+              <span>Destinasi utama</span>
+              <input name="destination" required />
+            </label>
+            <label>
+              <span>Durasi</span>
+              <input name="duration" type="number" min="1" required />
+            </label>
+          </div>
+          <label>
+            <span>Cover image URL</span>
+            <input name="image" type="url" />
+          </label>
+          <div class="form-grid">
+            <label>
+              <span>Estimasi budget</span>
+              <input name="budget" type="number" min="0" step="50000" required />
+            </label>
+            <label>
+              <span>Travel style</span>
+              <select name="style">
+                <option>Budget trip</option>
+                <option>Kuliner</option>
+                <option>Couple</option>
+                <option>Nature</option>
+                <option>City tour</option>
+                <option>Family</option>
+              </select>
+            </label>
+          </div>
+          <label>
+            <span>Deskripsi singkat</span>
+            <textarea name="description" rows="4" required></textarea>
+          </label>
+          <label>
+            <span>Aktivitas hari pertama</span>
+            <textarea name="activities" rows="5" placeholder="09.00 - Tiba di kota tujuan&#10;12.00 - Makan siang lokal"></textarea>
+          </label>
+          <button class="primary-button wide" type="submit">
+            <svg aria-hidden="true"><use href="#icon-plus"></use></svg>
+            <span>Publish Itinerary</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <nav class="mobile-nav" aria-label="Navigasi mobile">
+      <button id="mobileHome">
+        <svg aria-hidden="true"><use href="#icon-compass"></use></svg>
+        <span>Jelajah</span>
+      </button>
+      <button id="mobileSaved">
+        <svg aria-hidden="true"><use href="#icon-bookmark"></use></svg>
+        <span>Simpan</span>
+      </button>
+      <button id="mobileCreate">
+        <svg aria-hidden="true"><use href="#icon-plus"></use></svg>
+        <span>Buat</span>
+      </button>
+      <button id="mobileProfile">
+        <svg aria-hidden="true"><use href="#icon-user"></use></svg>
+        <span>Profil</span>
+      </button>
+    </nav>
+
+    <script src="script.js"></script>
+  </body>
+</html>

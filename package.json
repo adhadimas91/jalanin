@@ -1,0 +1,41 @@
+{
+  "name": "jalanin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
+    "start": "next start",
+    "prisma:compile": "tsc --ignoreConfig --target ES2022 --module NodeNext --moduleResolution NodeNext --skipLibCheck --esModuleInterop --noEmit false --declaration false --sourceMap false --outDir generated/prisma-js generated/prisma/client.ts generated/prisma/browser.ts generated/prisma/commonInputTypes.ts generated/prisma/enums.ts generated/prisma/models.ts generated/prisma/internal/class.ts generated/prisma/internal/prismaNamespace.ts generated/prisma/internal/prismaNamespaceBrowser.ts generated/prisma/models/*.ts && cp -R generated/prisma-js/. generated/prisma/ && rm -rf generated/prisma-js",
+    "prisma:generate": "prisma generate && npm run prisma:compile",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "prisma db seed",
+    "prisma:verify": "tsx scripts/verify-prisma.ts",
+    "prisma:studio": "prisma studio"
+  },
+  "prisma": {
+    "seed": "./node_modules/.bin/tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "latest",
+    "@prisma/client": "latest",
+    "dotenv": "latest",
+    "next": "latest",
+    "pg": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "latest",
+    "@types/node": "latest",
+    "@types/pg": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "autoprefixer": "latest",
+    "prisma": "latest",
+    "tailwindcss": "latest",
+    "tsx": "latest",
+    "typescript": "6.0.3"
+  }
+}

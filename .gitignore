@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Generated artifacts
+/generated/prisma/
+
+# Local uploads and generated screenshots
+/public/uploads/*
+!/public/uploads/default-cover.svg
+/jalanin-desktop-check.png
+/jalanin-mobile-check.png
+
+# Logs and caches
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.turbo/
+.vercel/
+
+# OS/editor noise
+.DS_Store

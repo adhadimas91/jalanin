@@ -1,0 +1,128 @@
+.page-center {
+  width: min(1040px, calc(100% - 32px));
+  margin: 48px auto;
+}
+
+.auth-card {
+  width: min(460px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.auth-card h1 {
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+
+.auth-card p {
+  margin: 0 0 20px;
+  color: var(--muted);
+}
+
+.auth-card form,
+.stack-form {
+  display: grid;
+  gap: 14px;
+}
+
+.auth-card label,
+.stack-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.auth-card input,
+.stack-form input,
+.stack-form textarea,
+.stack-form select {
+  width: 100%;
+  padding: 12px 13px;
+  color: var(--text);
+  background: var(--surface-soft);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  outline: 0;
+}
+
+.auth-links {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.auth-links a,
+.plain-link {
+  color: var(--blue);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.detail-link {
+  display: inline-flex;
+  margin-top: 10px;
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.server-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.server-card {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 14px;
+  padding: 12px;
+  color: inherit;
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.server-card img {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 7px;
+}
+
+.error-text {
+  color: var(--coral);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+@media (max-width: 640px) {
+  .page-center {
+    width: calc(100% - 20px);
+    margin: 20px auto 88px;
+  }
+
+  .server-card {
+    grid-template-columns: 1fr;
+  }
+
+  .server-card img {
+    width: 100%;
+    height: 150px;
+  }
+}

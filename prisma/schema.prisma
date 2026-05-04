@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String           @id @default(cuid())
+  email        String           @unique
+  username     String?
+  passwordHash String           @default("")
+  name         String?
+  avatarUrl    String?
+  bio          String?
+  city         String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @default(now()) @updatedAt
+  trips        Itinerary[]
+  saves        SavedItinerary[]
+  likes        Like[]
+  sessions     Session[]
+
+  @@index([username])
+}
+
+model Itinerary {
+  id                  String           @id @default(cuid())
+  title               String
+  destination         String
+  description         String           @default("")
+  durationDays        Int              @default(1)
+  estimatedBudget     Int              @default(0)
+  travelStyle         String           @default("Budget trip")
+  coverImageUrl       String           @default("/uploads/default-cover.svg")
+  notes               String           @default("")
+  isPublished         Boolean          @default(true)
+  originalItineraryId String?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @default(now()) @updatedAt
+  authorId            String
+  author              User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  originalItinerary   Itinerary?       @relation("ItineraryCopies", fields: [originalItineraryId], references: [id], onDelete: SetNull)
+  copies              Itinerary[]      @relation("ItineraryCopies")
+  days                ItineraryDay[]
+  saves               SavedItinerary[]
+  likes               Like[]
+
+  @@index([destination])
+  @@index([travelStyle])
+  @@index([isPublished, createdAt])
+}
+
+model ItineraryDay {
+  id          String     @id @default(cuid())
+  itineraryId String
+  dayNumber   Int
+  title       String
+  itinerary   Itinerary  @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  activities  Activity[]
+
+  @@unique([itineraryId, dayNumber])
+  @@index([itineraryId])
+}
+
+model Activity {
+  id             String       @id @default(cuid())
+  itineraryDayId String
+  time           String
+  title          String
+  locationName   String       @default("")
+  description    String       @default("")
+  estimatedCost  Int          @default(0)
+  category       String       @default("Activity")
+  orderIndex     Int
+  day            ItineraryDay @relation(fields: [itineraryDayId], references: [id], onDelete: Cascade)
+
+  @@index([itineraryDayId, orderIndex])
+}
+
+model SavedItinerary {
+  id          String    @id @default(cuid())
+  userId      String
+  itineraryId String
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itinerary   Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itineraryId])
+  @@index([itineraryId])
+}
+
+model Like {
+  id          String    @id @default(cuid())
+  userId      String
+  itineraryId String
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itinerary   Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itineraryId])
+  @@index([itineraryId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}

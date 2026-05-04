@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Jalanin default travel cover">
+  <rect width="1200" height="700" fill="#eaf1f6"/>
+  <path d="M0 510c120-60 230-80 330-60 145 30 220 120 370 105 170-16 240-150 500-95v240H0Z" fill="#2093dc" opacity=".24"/>
+  <path d="M0 580c190-96 315-80 450-35 160 54 280 70 450-55 85-62 185-82 300-48v258H0Z" fill="#20b779" opacity=".22"/>
+  <circle cx="885" cy="190" r="74" fill="#e7a23a" opacity=".75"/>
+  <path d="M160 430 360 210l150 170 96-110 220 250H160Z" fill="#26323d" opacity=".18"/>
+  <text x="90" y="130" fill="#17212b" font-family="Arial, sans-serif" font-size="54" font-weight="700">Jalanin</text>
+  <text x="90" y="190" fill="#6f7e8c" font-family="Arial, sans-serif" font-size="28">Temukan trip. Simpan rute. Jalanin.</text>
+</svg>
