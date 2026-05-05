@@ -126,6 +126,24 @@ Start production build:
 npm run start
 ```
 
+## Vercel Deployment
+
+Set environment variables in Vercel Project Settings:
+
+```env
+DATABASE_URL="postgres://USER:PASSWORD@HOST:5432/postgres?sslmode=require"
+NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="sb_publishable_or_anon_key"
+```
+
+Use the default build command:
+
+```bash
+npm run build
+```
+
+The build script runs `npm run prisma:generate` before `next build`. This is required because the generated Prisma client is ignored by git and must be created during Vercel build.
+
 ## Demo Account
 
 Seed account:
@@ -205,4 +223,3 @@ Production should move uploads to Supabase Storage or Cloudinary.
 - Edit itinerary ownership flow is not complete yet.
 - Analytics events are not implemented yet.
 - Seed content is still below the target of 30 itineraries.
-

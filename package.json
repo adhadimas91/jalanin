@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "next build --webpack",
+    "build": "npm run prisma:generate && next build --webpack",
+    "vercel-build": "npm run build",
     "start": "next start",
     "prisma:compile": "tsc --ignoreConfig --target ES2022 --module NodeNext --moduleResolution NodeNext --skipLibCheck --esModuleInterop --noEmit false --declaration false --sourceMap false --outDir generated/prisma-js generated/prisma/client.ts generated/prisma/browser.ts generated/prisma/commonInputTypes.ts generated/prisma/enums.ts generated/prisma/models.ts generated/prisma/internal/class.ts generated/prisma/internal/prismaNamespace.ts generated/prisma/internal/prismaNamespaceBrowser.ts generated/prisma/models/*.ts && cp -R generated/prisma-js/. generated/prisma/ && rm -rf generated/prisma-js",
     "prisma:generate": "prisma generate && npm run prisma:compile",
