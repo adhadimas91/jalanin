@@ -1,18 +1,9 @@
-import { randomUUID } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { getItineraryById } from "@/lib/itineraries";
 import { prisma } from "@/lib/prisma";
 import { serializeItinerary } from "@/lib/serialize";
-
-const allowedTypes = new Map([
-  ["image/jpeg", "jpg"],
-  ["image/png", "png"],
-  ["image/webp", "webp"],
-  ["image/svg+xml", "svg"],
-]);
+import { uploadImageToSupabaseStorage } from "@/lib/supabase-storage";
 
 function parseActivities(value: FormDataEntryValue | null) {
   return String(value ?? "")
@@ -52,22 +43,16 @@ export async function POST(request: Request) {
   const imageFile = formData.get("imageFile");
 
   if (imageFile instanceof File && imageFile.size > 0) {
-    const extension = allowedTypes.get(imageFile.type);
-
-    if (!extension) {
-      return new NextResponse("Format file harus JPG, PNG, WEBP, atau SVG.", { status: 400 });
+    try {
+      coverImageUrl = await uploadImageToSupabaseStorage({
+        file: imageFile,
+        userId: user.id,
+      });
+    } catch (error) {
+      return new NextResponse(error instanceof Error ? error.message : "Upload gagal.", {
+        status: 400,
+      });
     }
-
-    if (imageFile.size > 4 * 1024 * 1024) {
-      return new NextResponse("Ukuran file maksimal 4MB.", { status: 400 });
-    }
-
-    const bytes = Buffer.from(await imageFile.arrayBuffer());
-    const filename = `${randomUUID()}.${extension}`;
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
-    await writeFile(path.join(uploadDir, filename), bytes);
-    coverImageUrl = `/uploads/${filename}`;
   }
 
   const created = await prisma.itinerary.create({

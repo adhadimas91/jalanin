@@ -15,6 +15,7 @@ Saat ini project sudah berisi:
 - Prisma ORM.
 - Prisma Postgres database.
 - Supabase Auth untuk register/login.
+- Supabase Storage untuk upload cover itinerary.
 - API MVP untuk itinerary, save, like, clone, upload.
 - UI prototype yang sudah dimigrasikan ke app.
 - Seed data awal.
@@ -31,6 +32,7 @@ http://localhost:3000
 - npm.
 - PostgreSQL connection string dari Prisma Postgres.
 - Supabase project URL dan publishable key.
+- Supabase service role key untuk upload server-side ke Storage.
 
 Catatan lokal: di mesin ini npm bisa perlu dipanggil dengan PATH berikut:
 
@@ -52,6 +54,8 @@ Isi nilai berikut:
 DATABASE_URL="postgres://USER:PASSWORD@HOST:5432/postgres?sslmode=require"
 NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="sb_publishable_or_anon_key"
+SUPABASE_SERVICE_ROLE_KEY="service_role_key_for_server_uploads"
+SUPABASE_STORAGE_BUCKET="jalanin-itinerary-covers"
 ```
 
 Jangan commit `.env`.
@@ -134,6 +138,8 @@ Set environment variables in Vercel Project Settings:
 DATABASE_URL="postgres://USER:PASSWORD@HOST:5432/postgres?sslmode=require"
 NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="sb_publishable_or_anon_key"
+SUPABASE_SERVICE_ROLE_KEY="service_role_key_for_server_uploads"
+SUPABASE_STORAGE_BUCKET="jalanin-itinerary-covers"
 ```
 
 Set them for every environment you deploy to:
@@ -151,6 +157,8 @@ npm run build
 The build script runs `npm run prisma:generate` before `next build`. This is required because the generated Prisma client is ignored by git and must be created during Vercel build.
 
 If Vercel shows `Cannot resolve environment variable: DATABASE_URL`, the Vercel project does not have `DATABASE_URL` configured for that deployment environment. Add it in Vercel, then redeploy.
+
+`SUPABASE_SERVICE_ROLE_KEY` is server-only. Never expose it in client code or prefix it with `NEXT_PUBLIC_`.
 
 ## Demo Account
 
@@ -203,19 +211,25 @@ Login:
 
 ## Uploads
 
-Current MVP upload stores files locally in:
+Cover itinerary uploads use Supabase Storage. The server accepts JPG, PNG, and WEBP up to 4MB, then stores the file in:
 
 ```text
-public/uploads
+SUPABASE_STORAGE_BUCKET/itinerary-covers/{userId}/{fileId}
 ```
 
-Local uploads are ignored by git except:
+Create or verify the bucket locally:
+
+```bash
+npm run storage:setup
+```
+
+This command needs `SUPABASE_SERVICE_ROLE_KEY`. The bucket is public so uploaded cover URLs can be rendered directly by the app.
+
+The local default cover image remains in:
 
 ```text
 public/uploads/default-cover.svg
 ```
-
-Production should move uploads to Supabase Storage or Cloudinary.
 
 ## Project Docs
 
@@ -225,8 +239,8 @@ Production should move uploads to Supabase Storage or Cloudinary.
 
 ## Current Gaps
 
-- Production deployment is not configured yet.
-- Supabase Storage/Cloudinary not connected yet.
+- Production deployment still needs final env and smoke-test verification.
+- Supabase Storage bucket/env still needs to be verified in production.
 - Edit profile page is not built yet.
 - Edit itinerary ownership flow is not complete yet.
 - Analytics events are not implemented yet.

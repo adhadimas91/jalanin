@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getSupabaseStorageStatus } from "@/lib/supabase-storage";
 
 function envStatus() {
   return {
@@ -9,6 +10,7 @@ function envStatus() {
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     ),
+    supabaseStorage: getSupabaseStorageStatus(),
   };
 }
 

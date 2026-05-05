@@ -13,7 +13,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "prisma db seed",
     "prisma:verify": "tsx scripts/verify-prisma.ts",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "storage:setup": "tsx scripts/setup-supabase-storage.ts"
   },
   "prisma": {
     "seed": "./node_modules/.bin/tsx prisma/seed.ts"

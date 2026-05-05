@@ -45,7 +45,7 @@ export default async function CreatePage() {
           </label>
           <label>
             Cover image
-            <input name="imageFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" />
+            <input name="imageFile" type="file" accept="image/png,image/jpeg,image/webp" />
           </label>
           <input type="hidden" name="coverImageUrl" value="/uploads/default-cover.svg" />
           <label>

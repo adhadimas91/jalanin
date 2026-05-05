@@ -24,10 +24,11 @@ Status app full-stack:
 - [x] Authentication MVP with Supabase Auth register/login.
 - [x] Backend/API MVP.
 - [x] Database PostgreSQL via Prisma Postgres.
-- [x] Real image upload lokal ke `public/uploads`.
+- [x] Real image upload via Supabase Storage integration.
 - [x] Persistent user data via Prisma.
 - [x] Supabase user auto-sync ke profile Prisma saat login.
 - [x] Local dev server running di `http://localhost:3000`.
+- [ ] Supabase Storage bucket dan service role key terverifikasi di production.
 - [ ] Production deployment.
 
 ## MVP Goal
@@ -51,7 +52,7 @@ Metric paling penting:
 - [x] PostgreSQL.
 - [x] Prisma.
 - [x] Supabase Auth.
-- [ ] Supabase Storage or Cloudinary.
+- [x] Supabase Storage.
 - [ ] Vercel.
 
 ## Phase 0 - Product & Technical Foundation
@@ -64,7 +65,7 @@ Tujuan: menyiapkan fondasi project agar development tidak bercampur dengan proto
 - [ ] Tentukan stack final.
 - [ ] Tentukan auth provider.
 - [ ] Tentukan database provider.
-- [ ] Tentukan image storage provider.
+- [x] Tentukan image storage provider.
 - [ ] Buat repository git.
 - [ ] Buat `.env.example`.
 - [ ] Dokumentasikan setup lokal.
@@ -297,7 +298,7 @@ Tujuan: user bisa membuat dan mengubah itinerary sendiri.
 - [ ] Add activity reorder.
 - [ ] Add budget input.
 - [ ] Add travel style selector.
-- [ ] Add cover image upload.
+- [x] Add cover image upload.
 - [ ] Add draft/publish state.
 - [ ] Add success/error feedback.
 
