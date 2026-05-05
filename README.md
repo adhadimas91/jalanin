@@ -136,6 +136,12 @@ NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="sb_publishable_or_anon_key"
 ```
 
+Set them for every environment you deploy to:
+
+- Production
+- Preview
+- Development, optional
+
 Use the default build command:
 
 ```bash
@@ -143,6 +149,8 @@ npm run build
 ```
 
 The build script runs `npm run prisma:generate` before `next build`. This is required because the generated Prisma client is ignored by git and must be created during Vercel build.
+
+If Vercel shows `Cannot resolve environment variable: DATABASE_URL`, the Vercel project does not have `DATABASE_URL` configured for that deployment environment. Add it in Vercel, then redeploy.
 
 ## Demo Account
 
