@@ -1,6 +1,7 @@
 import { getCurrentUser } from "@/lib/auth";
 import { getPublishedItineraries, getUserState } from "@/lib/itineraries";
 import { JalaninApp } from "@/components/jalanin-app";
+import { JalaninLanding } from "@/components/jalanin-landing";
 import { serializeItinerary, serializeUser } from "@/lib/serialize";
 
 export const dynamic = "force-dynamic";
@@ -45,15 +46,18 @@ function DeploymentFallback({ error }: { error: unknown }) {
 
 export default async function Home() {
   try {
-    const [currentUser, itineraries] = await Promise.all([
-      getCurrentUser(),
-      getPublishedItineraries(),
-    ]);
-    const userState = await getUserState(currentUser?.id);
+    const [currentUser, itineraries] = await Promise.all([getCurrentUser(), getPublishedItineraries()]);
+    const serializedItineraries = itineraries.map(serializeItinerary);
+
+    if (!currentUser) {
+      return <JalaninLanding itineraries={serializedItineraries} />;
+    }
+
+    const userState = await getUserState(currentUser.id);
 
     return (
       <JalaninApp
-        itineraries={itineraries.map(serializeItinerary)}
+        itineraries={serializedItineraries}
         currentUser={currentUser ? serializeUser(currentUser) : null}
         savedIds={userState.savedIds}
         likedIds={userState.likedIds}

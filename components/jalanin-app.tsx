@@ -172,18 +172,6 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
     event.preventDefault();
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const imageFile = formData.get("imageFile");
-
-    if (imageFile instanceof File && imageFile.size > 0) {
-      const uploadData = new FormData();
-      uploadData.set("file", imageFile);
-      const upload = await mutate("/api/upload", {
-        method: "POST",
-        body: uploadData,
-      });
-      if (!upload) return;
-      formData.set("coverImageUrl", upload.url);
-    }
 
     const result = await mutate("/api/itineraries", {
       method: "POST",
@@ -251,68 +239,130 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
         <main className="workspace">
           <section className="main-column">
-            <section className="hero-card">
-              <img src={current.coverImageUrl} alt={current.destination} />
-              <div className="hero-overlay">
-                <p>{current.destination}</p>
-                <h1>{current.title}</h1>
-                <div className="creator-line">
+            <section className="stories-strip" aria-label="Traveler spotlight">
+              {items.slice(0, 7).map((item) => {
+                const isActive = item.id === current.id;
+                return (
+                  <button
+                    key={item.id}
+                    className={`story-bubble ${isActive ? "active" : ""}`}
+                    onClick={() => {
+                      setCurrentId(item.id);
+                      setDayIndex(0);
+                      setTab("summary");
+                    }}
+                  >
+                    <span className="story-avatar-ring">
+                      <img src={item.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={item.author.name ?? item.author.email} />
+                    </span>
+                    <span>{item.destination.split(",")[0]}</span>
+                  </button>
+                );
+              })}
+            </section>
+
+            <section className="post-card">
+              <div className="post-header">
+                <div className="post-user">
                   <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
-                  <span>{current.author.name ?? current.author.username ?? current.author.email}</span>
+                  <div>
+                    <strong>{current.author.name ?? current.author.username ?? current.author.email}</strong>
+                    <span>
+                      {current.destination} · {current.travelStyle}
+                    </span>
+                  </div>
                 </div>
+                <button className="ghost-chip" onClick={() => setDrawerOpen(true)}>
+                  <Icon name="plus" />
+                  <span>Remix</span>
+                </button>
               </div>
-            </section>
 
-            <section className="quick-meta" aria-label="Ringkasan itinerary">
-              <span className="meta-item">
-                <Icon name="calendar" />
-                <span>
-                  Durasi: <strong>{current.durationDays} hari</strong>
-                </span>
-              </span>
-              <span className="meta-item">
-                <Icon name="wallet" />
-                <span>
-                  Total: <strong>{formatRupiah(current.estimatedBudget)}</strong>
-                </span>
-              </span>
-              <span className="meta-item">
-                <Icon name="route" />
-                <span>
-                  Biaya/hari: <strong>{formatRupiah(Math.round(current.estimatedBudget / current.durationDays))}</strong>
-                </span>
-              </span>
-              <span className="meta-item">
-                <Icon name="star" />
-                <span>
-                  Style: <strong>{current.travelStyle}</strong>
-                </span>
-              </span>
-            </section>
+              <section className="hero-card">
+                <img src={current.coverImageUrl} alt={current.destination} />
+                <div className="hero-overlay">
+                  <p>{current.destination}</p>
+                  <h1>{current.title}</h1>
+                  <div className="creator-line">
+                    <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
+                    <span>{current.author.name ?? current.author.username ?? current.author.email}</span>
+                  </div>
+                </div>
+              </section>
 
-            <section className="action-row" aria-label="Aksi itinerary">
-              <button className={`pill-button ${liked.includes(current.id) ? "active" : ""}`} onClick={toggleLike}>
-                <Icon name="heart" />
-                <span>Suka ({formatCompact(current.likesCount)})</span>
-              </button>
-              <button className={`pill-button ${saved.includes(current.id) ? "active" : ""}`} onClick={toggleSave}>
-                <Icon name="bookmark" />
-                <span>{saved.includes(current.id) ? "Tersimpan" : `Simpan Rute (${formatCompact(current.savesCount)})`}</span>
-              </button>
-              <button className="pill-button strong" onClick={cloneItinerary}>
-                <Icon name="copy" />
-                <span>Jalanin Rute Ini</span>
-              </button>
-              <button
-                className="pill-button"
-                onClick={() => {
-                  navigator.clipboard?.writeText(`${location.origin}/itinerary/${current.id}`);
-                  flash("Tautan itinerary berhasil disalin.");
-                }}
-              >
-                <Icon name="share" />
-                <span>Bagikan</span>
-              </button>
+              <section className="action-row" aria-label="Aksi itinerary">
+                <div className="action-cluster">
+                  <button className={`icon-action ${liked.includes(current.id) ? "active" : ""}`} onClick={toggleLike} aria-label="Suka itinerary">
+                    <Icon name="heart" />
+                  </button>
+                  <button className={`icon-action ${saved.includes(current.id) ? "active" : ""}`} onClick={toggleSave} aria-label="Simpan itinerary">
+                    <Icon name="bookmark" />
+                  </button>
+                  <button className="icon-action" onClick={cloneItinerary} aria-label="Clone itinerary">
+                    <Icon name="copy" />
+                  </button>
+                  <button
+                    className="icon-action"
+                    onClick={() => {
+                      navigator.clipboard?.writeText(`${location.origin}/itinerary/${current.id}`);
+                      flash("Tautan itinerary berhasil disalin.");
+                    }}
+                    aria-label="Bagikan itinerary"
+                  >
+                    <Icon name="share" />
+                  </button>
+                </div>
+                <button className="ghost-chip" onClick={cloneItinerary}>
+                  <span>Jalanin Rute Ini</span>
+                </button>
+              </section>
+
+              <section className="engagement-bar" aria-label="Stat interaksi">
+                <strong>
+                  {formatCompact(current.likesCount)} suka · {formatCompact(current.savesCount)} simpan · {formatCompact(current.copiesCount)} remix
+                </strong>
+                <span>
+                  {current.durationDays} hari · {formatRupiah(current.estimatedBudget)}
+                </span>
+              </section>
+
+              <section className="caption-block">
+                <p>
+                  <strong>{current.author.username ?? "jalanin"}</strong> {current.description}
+                </p>
+                <div className="caption-tags">
+                  {[current.travelStyle, current.destination.split(",")[0], `${current.durationDays} hari`].map((tag) => (
+                    <span key={tag}>#{tag.replaceAll(" ", "").toLowerCase()}</span>
+                  ))}
+                </div>
+              </section>
+
+              <section className="quick-meta" aria-label="Ringkasan itinerary">
+                <span className="meta-item">
+                  <Icon name="calendar" />
+                  <span>
+                    Durasi <strong>{current.durationDays} hari</strong>
+                  </span>
+                </span>
+                <span className="meta-item">
+                  <Icon name="wallet" />
+                  <span>
+                    Total <strong>{formatRupiah(current.estimatedBudget)}</strong>
+                  </span>
+                </span>
+                <span className="meta-item">
+                  <Icon name="route" />
+                  <span>
+                    Per hari <strong>{formatRupiah(Math.round(current.estimatedBudget / current.durationDays))}</strong>
+                  </span>
+                </span>
+                <span className="meta-item">
+                  <Icon name="star" />
+                  <span>
+                    Style <strong>{current.travelStyle}</strong>
+                  </span>
+                </span>
+              </section>
             </section>
 
             <section className="tabs" aria-label="Konten itinerary">
@@ -449,16 +499,20 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                     >
                       <img src={item.coverImageUrl} alt={item.destination} />
                       <div className="feed-card-body">
+                        <div className="feed-card-user">
+                          <img src={item.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={item.author.name ?? item.author.email} />
+                          <span>{item.author.username ?? item.author.name ?? "traveler"}</span>
+                        </div>
                         <h3>{item.title}</h3>
                         <p>{item.destination}</p>
                         <div className="feed-card-meta">
                           <span>
-                            <Icon name="calendar" />
-                            {item.durationDays} hari
+                            <Icon name="heart" />
+                            {formatCompact(item.likesCount)}
                           </span>
                           <span>
-                            <Icon name="wallet" />
-                            {formatRupiah(item.estimatedBudget)}
+                            <Icon name="bookmark" />
+                            {formatCompact(item.savesCount)}
                           </span>
                         </div>
                         <span className="detail-link">Buka detail</span>
@@ -471,9 +525,22 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
           </section>
 
           <aside className="sidebar">
+            <section className="side-card account-card">
+              <div className="account-row">
+                <img src={(currentUser?.avatarUrl ?? current.author.avatarUrl) || "/uploads/default-cover.svg"} alt={currentUser?.name ?? current.author.name ?? current.author.email} />
+                <div>
+                  <strong>{currentUser?.name ?? "Traveler Jalanin"}</strong>
+                  <span>@{currentUser?.username ?? "jelajahbareng"}</span>
+                </div>
+                <Link className="mini-button muted" href={currentUser ? `/profile/${currentUser.username ?? currentUser.id}` : "/login"}>
+                  Profil
+                </Link>
+              </div>
+            </section>
+
             <section className="side-card budget-card">
               <div className="side-heading">
-                <h2>Ringkasan Biaya</h2>
+                <h2>Trip Insights</h2>
                 <span>{current.travelStyle}</span>
               </div>
               <div className="budget-total">
@@ -496,7 +563,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
             <section className="side-card">
               <div className="side-heading">
-                <h2>Tag & Musim</h2>
+                <h2>Tag Trip</h2>
               </div>
               <div className="tag-list">
                 {[current.travelStyle, current.destination.split(",")[0], `${current.durationDays} hari`, "MVP"].map((tag) => (
@@ -507,7 +574,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
             <section className="side-card author-card">
               <div className="side-heading">
-                <h2>Author Box</h2>
+                <h2>Creator</h2>
               </div>
               <div className="author-row">
                 <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
@@ -529,7 +596,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                 <span className="mini-pin">4</span>
               </div>
               <div className="map-controls">
-                <button className="mini-button muted">Day Switcher</button>
+                <button className="mini-button muted">Route board</button>
                 <button className="mini-button">Day {dayIndex + 1}</button>
               </div>
             </section>
@@ -590,7 +657,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
             </div>
             <label>
               <span>Cover image upload</span>
-              <input name="imageFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" />
+              <input name="imageFile" type="file" accept="image/png,image/jpeg,image/webp" />
             </label>
             <input type="hidden" name="coverImageUrl" defaultValue={cloneSource?.coverImageUrl ?? "/uploads/default-cover.svg"} />
             <div className="form-grid">
