@@ -1,16 +1,31 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, isAdminUser } from "@/lib/auth";
+import { defaultActivity, fallbackDay, parseActivitiesJson, parseActivitiesText, parseDaysJson } from "@/lib/itinerary-form";
 import { getItineraryById } from "@/lib/itineraries";
 import { prisma } from "@/lib/prisma";
 import { serializeItinerary } from "@/lib/serialize";
 import { uploadImageToSupabaseStorage } from "@/lib/supabase-storage";
-import { defaultActivity, fallbackDay, parseActivitiesJson, parseActivitiesText, parseDaysJson } from "@/lib/itinerary-form";
 
-export async function POST(request: Request) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
   if (!user) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
+
+  const { id } = await params;
+  const existing = await prisma.itinerary.findUnique({
+    where: { id },
+    select: { authorId: true, coverImageUrl: true },
+  });
+
+  if (!existing) {
+    return new NextResponse("Itinerary tidak ditemukan.", { status: 404 });
+  }
+
+  if (existing.authorId !== user.id && !isAdminUser(user)) {
+    return new NextResponse("Kamu tidak punya akses untuk edit itinerary ini.", { status: 403 });
+  }
+
   const formData = await request.formData();
   const title = String(formData.get("title") ?? "").trim();
   const destination = String(formData.get("destination") ?? "").trim();
@@ -25,7 +40,7 @@ export async function POST(request: Request) {
   const fallbackActivities = structuredActivities.length ? structuredActivities : parseActivitiesText(formData.get("activities"));
   const days = structuredDays.length ? structuredDays : fallbackDay(fallbackActivities);
 
-  let coverImageUrl = String(formData.get("coverImageUrl") ?? "/uploads/default-cover.svg");
+  let coverImageUrl = String(formData.get("coverImageUrl") ?? existing.coverImageUrl);
   const imageFile = formData.get("imageFile");
 
   if (imageFile instanceof File && imageFile.size > 0) {
@@ -41,41 +56,40 @@ export async function POST(request: Request) {
     }
   }
 
-  const created = await prisma.itinerary.create({
-    data: {
-      title,
-      destination,
-      description,
-      durationDays: Number(formData.get("durationDays") ?? 1),
-      estimatedBudget: Number(formData.get("estimatedBudget") ?? 0),
-      travelStyle: String(formData.get("travelStyle") ?? "Budget trip"),
-      coverImageUrl,
-      notes: String(formData.get("notes") ?? ""),
-      authorId: user.id,
-      days: {
-        create: days.map((day) => ({
-          dayNumber: day.dayNumber,
-          title: day.title,
-          activities: {
-            create: day.activities.length
-              ? day.activities
-              : [
-                  defaultActivity(),
-                ],
-          },
-        })),
+  await prisma.$transaction([
+    prisma.itineraryDay.deleteMany({
+      where: {
+        itineraryId: id,
       },
-    },
-  });
+    }),
+    prisma.itinerary.update({
+      where: { id },
+      data: {
+        title,
+        destination,
+        description,
+        durationDays: Math.max(Number(formData.get("durationDays") ?? 1), days.length || 1),
+        estimatedBudget: Number(formData.get("estimatedBudget") ?? 0),
+        travelStyle: String(formData.get("travelStyle") ?? "Budget trip"),
+        coverImageUrl,
+        notes: String(formData.get("notes") ?? ""),
+        days: {
+          create: days.map((day) => ({
+            dayNumber: day.dayNumber,
+            title: day.title,
+            activities: {
+              create: day.activities.length ? day.activities : [defaultActivity()],
+            },
+          })),
+        },
+      },
+    }),
+  ]);
 
-  const itinerary = await getItineraryById(created.id);
+  const itinerary = await getItineraryById(id);
 
   if (!itinerary) {
     return new NextResponse("Itinerary gagal dimuat.", { status: 500 });
-  }
-
-  if (request.headers.get("accept")?.includes("text/html")) {
-    return NextResponse.redirect(new URL(`/itinerary/${created.id}`, request.url), { status: 303 });
   }
 
   return NextResponse.json(serializeItinerary(itinerary));

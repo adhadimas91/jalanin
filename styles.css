@@ -395,6 +395,14 @@ svg {
   font-size: 12px;
 }
 
+.post-tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .ghost-chip {
   color: var(--text);
   background: var(--surface-soft);
@@ -724,7 +732,55 @@ svg {
 }
 
 .large-map {
+  height: 360px;
   min-height: 360px;
+}
+
+.real-map {
+  height: 360px;
+  min-height: 360px;
+  background: #eef2ef;
+}
+
+.real-map::before,
+.route-map-wrap .map-preview::before {
+  display: none;
+}
+
+.route-map-wrap {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  contain: layout paint;
+}
+
+.route-marker {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  background: var(--pink);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: var(--shadow-soft);
+}
+
+.map-empty {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  padding: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
 }
 
 .large-map::before,
@@ -1026,6 +1082,11 @@ svg {
   padding: 10px;
 }
 
+.map-card .large-map {
+  height: 220px;
+  min-height: 220px;
+}
+
 .map-controls {
   display: flex;
   justify-content: space-between;
@@ -1204,6 +1265,186 @@ svg {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+}
+
+.form-grid.compact {
+  align-items: start;
+}
+
+.activity-builder {
+  display: grid;
+  gap: 12px;
+}
+
+.draft-day-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.draft-day-tabs button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 38px;
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-weight: 900;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.draft-day-tabs button.active {
+  color: #fff;
+  background: var(--text);
+  border-color: var(--text);
+}
+
+.draft-day-tabs button span {
+  position: absolute;
+  right: -4px;
+  top: -5px;
+  display: grid;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  place-items: center;
+  color: #fff;
+  font-size: 10px;
+  background: var(--pink);
+  border-radius: 999px;
+}
+
+.draft-day-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.draft-day-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+}
+
+.compact-head {
+  padding-top: 2px;
+}
+
+.compact-head > span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.activity-builder-head,
+.activity-input-top,
+.location-summary,
+.location-search-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.activity-builder-head {
+  justify-content: space-between;
+}
+
+.activity-builder-head div {
+  display: grid;
+  gap: 4px;
+}
+
+.activity-builder-head span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.activity-input-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.activity-input-top {
+  justify-content: space-between;
+}
+
+.activity-input-top > span {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  background: var(--blue);
+  border-radius: 50%;
+}
+
+.location-search-row input {
+  min-width: 0;
+}
+
+.location-results {
+  display: grid;
+  gap: 8px;
+}
+
+.location-results button {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  text-align: left;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.location-results span,
+.location-summary span {
+  min-width: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.location-summary {
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.location-summary svg {
+  flex: 0 0 auto;
+}
+
+.activity-map-picker {
+  height: 260px;
+  min-height: 260px;
+  overflow: hidden;
+  background: #eef2ef;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  contain: layout paint;
+  overscroll-behavior: contain;
+}
+
+.real-map .maplibregl-canvas,
+.activity-map-picker .maplibregl-canvas {
+  outline: 0;
 }
 
 .wide {
@@ -2028,6 +2269,7 @@ svg {
   .feed-grid,
   .sidebar,
   .form-grid,
+  .draft-day-header,
   .route-board {
     grid-template-columns: 1fr;
   }

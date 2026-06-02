@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
+import maplibregl from "maplibre-gl";
 import { Icon, IconSprite } from "./icon-sprite";
 import { formatCompact, formatRupiah } from "@/lib/format";
 
@@ -21,6 +22,12 @@ export type JalaninActivity = {
   time: string;
   title: string;
   locationName: string;
+  formattedAddress: string;
+  latitude: number | null;
+  longitude: number | null;
+  mapProvider: string;
+  mapPlaceId: string;
+  customLocation: boolean;
   estimatedCost: number;
   category: string;
   orderIndex: number;
@@ -68,6 +75,225 @@ function activityIcon(category: string) {
   return "camera";
 }
 
+type ActivityDraft = {
+  time: string;
+  title: string;
+  locationName: string;
+  formattedAddress: string;
+  latitude: number | null;
+  longitude: number | null;
+  mapProvider: string;
+  mapPlaceId: string;
+  customLocation: boolean;
+  category: string;
+  estimatedCost: number;
+};
+
+type DayDraft = {
+  title: string;
+  activities: ActivityDraft[];
+};
+
+type LocationResult = {
+  placeId: string;
+  name: string;
+  formattedAddress: string;
+  latitude: number;
+  longitude: number;
+  provider: string;
+};
+
+const mapStyleUrl = "https://tiles.openfreemap.org/styles/liberty";
+const defaultMapCenter: [number, number] = [106.8272, -6.1754];
+
+function createBlankActivity(index: number): ActivityDraft {
+  return {
+    time: `${9 + index}.00`,
+    title: "",
+    locationName: "",
+    formattedAddress: "",
+    latitude: null,
+    longitude: null,
+    mapProvider: "",
+    mapPlaceId: "",
+    customLocation: false,
+    category: "Activity",
+    estimatedCost: 0,
+  };
+}
+
+function createBlankDay(index: number): DayDraft {
+  return {
+    title: `Hari ${index + 1}`,
+    activities: [createBlankActivity(0)],
+  };
+}
+
+function fromActivity(activity: JalaninActivity): ActivityDraft {
+  return {
+    time: activity.time,
+    title: activity.title,
+    locationName: activity.locationName,
+    formattedAddress: activity.formattedAddress,
+    latitude: activity.latitude,
+    longitude: activity.longitude,
+    mapProvider: activity.mapProvider,
+    mapPlaceId: activity.mapPlaceId,
+    customLocation: activity.customLocation,
+    category: activity.category,
+    estimatedCost: activity.estimatedCost,
+  };
+}
+
+function fromDay(day: JalaninDay): DayDraft {
+  return {
+    title: day.title || `Hari ${day.dayNumber}`,
+    activities: day.activities.length ? day.activities.map(fromActivity) : [createBlankActivity(0)],
+  };
+}
+
+function draftKey(dayIndex: number, activityIndex: number) {
+  return `${dayIndex}-${activityIndex}`;
+}
+
+function createLocationQueryMap(days: DayDraft[]) {
+  return Object.fromEntries(
+    days.flatMap((day, dayIndex) =>
+      day.activities.map((activity, activityIndex) => [draftKey(dayIndex, activityIndex), activity.locationName || activity.title]),
+    ),
+  );
+}
+
+function activityPoints(activities: Array<JalaninActivity | ActivityDraft>) {
+  return activities.filter((activity) => typeof activity.latitude === "number" && typeof activity.longitude === "number") as Array<
+    (JalaninActivity | ActivityDraft) & { latitude: number; longitude: number }
+  >;
+}
+
+function PointPicker({
+  value,
+  onPick,
+}: {
+  value: { latitude: number | null; longitude: number | null };
+  onPick: (point: { latitude: number; longitude: number }) => void;
+}) {
+  const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<maplibregl.Map | null>(null);
+  const markerRef = useRef<maplibregl.Marker | null>(null);
+  const onPickRef = useRef(onPick);
+
+  useEffect(() => {
+    onPickRef.current = onPick;
+  }, [onPick]);
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    const center: [number, number] =
+      typeof value.longitude === "number" && typeof value.latitude === "number" ? [value.longitude, value.latitude] : defaultMapCenter;
+    const map = new maplibregl.Map({
+      container: mapRef.current,
+      style: mapStyleUrl,
+      center,
+      zoom: typeof value.longitude === "number" ? 14 : 11,
+      scrollZoom: false,
+    });
+    map.dragRotate.disable();
+    map.touchZoomRotate.disableRotation();
+    mapInstanceRef.current = map;
+
+    markerRef.current = new maplibregl.Marker({ color: "#e85d75" }).setLngLat(center).addTo(map);
+    map.on("click", (event) => {
+      const point = {
+        latitude: Number(event.lngLat.lat.toFixed(7)),
+        longitude: Number(event.lngLat.lng.toFixed(7)),
+      };
+      markerRef.current?.setLngLat([point.longitude, point.latitude]);
+      onPickRef.current(point);
+    });
+
+    return () => {
+      mapInstanceRef.current = null;
+      map.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof value.longitude !== "number" || typeof value.latitude !== "number") return;
+
+    const nextCenter: [number, number] = [value.longitude, value.latitude];
+    markerRef.current?.setLngLat(nextCenter);
+    mapInstanceRef.current?.jumpTo({ center: nextCenter, zoom: 14 });
+  }, [value.latitude, value.longitude]);
+
+  return <div className="activity-map-picker" ref={mapRef} />;
+}
+
+function RouteMap({ activities }: { activities: Array<JalaninActivity | ActivityDraft> }) {
+  const mapRef = useRef<HTMLDivElement | null>(null);
+  const points = useMemo(() => activityPoints(activities), [activities]);
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    const center: [number, number] = points[0] ? [points[0].longitude, points[0].latitude] : defaultMapCenter;
+    const map = new maplibregl.Map({
+      container: mapRef.current,
+      style: mapStyleUrl,
+      center,
+      zoom: points.length ? 12 : 10,
+      scrollZoom: false,
+    });
+    map.dragRotate.disable();
+    map.touchZoomRotate.disableRotation();
+
+    map.on("load", () => {
+      points.forEach((point, index) => {
+        const marker = document.createElement("div");
+        marker.className = "route-marker";
+        marker.textContent = String(index + 1);
+        new maplibregl.Marker({ element: marker }).setLngLat([point.longitude, point.latitude]).addTo(map);
+      });
+
+      if (points.length > 1) {
+        const coordinates: [number, number][] = points.map((point) => [point.longitude, point.latitude]);
+        map.addSource("activity-route", {
+          type: "geojson",
+          data: {
+            type: "Feature",
+            properties: {},
+            geometry: {
+              type: "LineString",
+              coordinates,
+            },
+          },
+        });
+        map.addLayer({
+          id: "activity-route-line",
+          type: "line",
+          source: "activity-route",
+          paint: {
+            "line-color": "#e85d75",
+            "line-width": 4,
+            "line-opacity": 0.85,
+          },
+        });
+        const bounds = coordinates.reduce((box, coordinate) => box.extend(coordinate as [number, number]), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
+        map.fitBounds(bounds, { padding: 48, maxZoom: 14 });
+      }
+    });
+
+    return () => map.remove();
+  }, [points]);
+
+  return (
+    <div className="route-map-wrap">
+      <div className="large-map real-map" ref={mapRef} />
+      {!points.length ? <div className="map-empty">Tambahkan koordinat aktivitas untuk melihat rute.</div> : null}
+    </div>
+  );
+}
+
 export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Props) {
   const [items, setItems] = useState(itineraries);
   const [currentId, setCurrentId] = useState(itineraries[0]?.id ?? "");
@@ -79,8 +305,17 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
   const [liked, setLiked] = useState(likedIds);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [cloneSource, setCloneSource] = useState<JalaninItinerary | null>(null);
+  const [editSource, setEditSource] = useState<JalaninItinerary | null>(null);
   const [toast, setToast] = useState("");
+  const [dayDrafts, setDayDrafts] = useState<DayDraft[]>([createBlankDay(0)]);
+  const [activeDraftDayIndex, setActiveDraftDayIndex] = useState(0);
+  const [locationQueries, setLocationQueries] = useState<Record<string, string>>(createLocationQueryMap([createBlankDay(0)]));
+  const [locationResults, setLocationResults] = useState<Record<string, LocationResult[]>>({});
+  const [searchingLocation, setSearchingLocation] = useState<string | null>(null);
+  const [pickerKey, setPickerKey] = useState<string | null>(null);
   const current = items.find((item) => item.id === currentId) ?? items[0];
+  const formSource = editSource ?? cloneSource;
+  const isEditing = Boolean(editSource);
 
   const filteredItems = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -95,6 +330,40 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
   function flash(message: string) {
     setToast(message);
     window.setTimeout(() => setToast(""), 2400);
+  }
+
+  useEffect(() => {
+    if (!current?.days.length) return;
+    setDayIndex((previous) => Math.min(previous, current.days.length - 1));
+  }, [current?.id, current?.days.length]);
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+
+    const nextDrafts = formSource?.days.length ? formSource.days.map(fromDay) : [createBlankDay(0)];
+    setDayDrafts(nextDrafts);
+    setActiveDraftDayIndex(0);
+    setLocationQueries(createLocationQueryMap(nextDrafts));
+    setLocationResults({});
+    setPickerKey(null);
+  }, [formSource, drawerOpen]);
+
+  function openCreateDrawer() {
+    setCloneSource(null);
+    setEditSource(null);
+    setDrawerOpen(true);
+  }
+
+  function openRemixDrawer(source: JalaninItinerary) {
+    setEditSource(null);
+    setCloneSource(source);
+    setDrawerOpen(true);
+  }
+
+  function openEditDrawer(source: JalaninItinerary) {
+    setCloneSource(null);
+    setEditSource(source);
+    setDrawerOpen(true);
   }
 
   async function mutate(url: string, init?: RequestInit) {
@@ -169,22 +438,162 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
     window.location.href = `/itinerary/${result.id}`;
   }
 
+  function updateDayTitle(dayIndex: number, title: string) {
+    setDayDrafts((previous) => previous.map((day, currentIndex) => (currentIndex === dayIndex ? { ...day, title } : day)));
+  }
+
+  function updateActivity(dayIndex: number, activityIndex: number, patch: Partial<ActivityDraft>) {
+    setDayDrafts((previous) =>
+      previous.map((day, currentDayIndex) =>
+        currentDayIndex === dayIndex
+          ? {
+              ...day,
+              activities: day.activities.map((activity, currentActivityIndex) =>
+                currentActivityIndex === activityIndex ? { ...activity, ...patch } : activity,
+              ),
+            }
+          : day,
+      ),
+    );
+  }
+
+  function addDay() {
+    setDayDrafts((previous) => {
+      const next = [...previous, createBlankDay(previous.length)];
+      setActiveDraftDayIndex(next.length - 1);
+      setLocationQueries(createLocationQueryMap(next));
+      setLocationResults({});
+      setPickerKey(null);
+      return next;
+    });
+  }
+
+  function removeDay(dayIndex: number) {
+    setDayDrafts((previous) => {
+      if (previous.length === 1) return previous;
+      const next = previous.filter((_, currentIndex) => currentIndex !== dayIndex).map((day, index) => ({ ...day, title: day.title || `Hari ${index + 1}` }));
+      setActiveDraftDayIndex((current) => Math.min(current, next.length - 1));
+      setLocationQueries(createLocationQueryMap(next));
+      setLocationResults({});
+      setPickerKey(null);
+      return next;
+    });
+  }
+
+  function addActivity(dayIndex: number) {
+    setDayDrafts((previous) => {
+      const next = previous.map((day, currentDayIndex) =>
+        currentDayIndex === dayIndex ? { ...day, activities: [...day.activities, createBlankActivity(day.activities.length)] } : day,
+      );
+      setLocationQueries(createLocationQueryMap(next));
+      return next;
+    });
+  }
+
+  function removeActivity(dayIndex: number, activityIndex: number) {
+    setDayDrafts((previous) => {
+      const next = previous.map((day, currentDayIndex) =>
+        currentDayIndex === dayIndex && day.activities.length > 1
+          ? { ...day, activities: day.activities.filter((_, currentActivityIndex) => currentActivityIndex !== activityIndex) }
+          : day,
+      );
+      setLocationQueries(createLocationQueryMap(next));
+      setLocationResults({});
+      setPickerKey(null);
+      return next;
+    });
+  }
+
+  async function searchLocation(dayIndex: number, activityIndex: number) {
+    const key = draftKey(dayIndex, activityIndex);
+    const query = locationQueries[key]?.trim();
+    if (!query || query.length < 2) {
+      flash("Ketik minimal 2 karakter untuk cari lokasi.");
+      return;
+    }
+
+    setSearchingLocation(key);
+    try {
+      const response = await fetch(`/api/maps/search?q=${encodeURIComponent(query)}`);
+      if (!response.ok) {
+        flash(await response.text());
+        return;
+      }
+
+      const payload = (await response.json()) as { results: LocationResult[] };
+      setLocationResults((previous) => ({ ...previous, [key]: payload.results }));
+      if (!payload.results.length) {
+        flash("Lokasi tidak ditemukan. Pilih titik manual di peta.");
+      }
+    } finally {
+      setSearchingLocation(null);
+    }
+  }
+
+  function selectLocation(dayIndex: number, activityIndex: number, result: LocationResult) {
+    const key = draftKey(dayIndex, activityIndex);
+    updateActivity(dayIndex, activityIndex, {
+      locationName: result.name,
+      formattedAddress: result.formattedAddress,
+      latitude: result.latitude,
+      longitude: result.longitude,
+      mapProvider: result.provider,
+      mapPlaceId: result.placeId,
+      customLocation: false,
+    });
+    setLocationQueries((previous) => ({ ...previous, [key]: result.name }));
+    setLocationResults((previous) => ({ ...previous, [key]: [] }));
+  }
+
+  function pickManualPoint(dayIndex: number, activityIndex: number, point: { latitude: number; longitude: number }) {
+    const key = draftKey(dayIndex, activityIndex);
+    const activity = dayDrafts[dayIndex]?.activities[activityIndex];
+    updateActivity(dayIndex, activityIndex, {
+      latitude: point.latitude,
+      longitude: point.longitude,
+      mapProvider: "custom",
+      mapPlaceId: "",
+      customLocation: true,
+      locationName: activity?.locationName || locationQueries[key] || activity?.title || "Lokasi custom",
+      formattedAddress: `${point.latitude}, ${point.longitude}`,
+    });
+  }
+
   async function submitCreate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const days = dayDrafts
+      .map((day, index) => ({
+        title: day.title.trim() || `Hari ${index + 1}`,
+        activities: day.activities
+          .map((activity) => ({
+            ...activity,
+            title: activity.title.trim(),
+            locationName: activity.locationName.trim(),
+          }))
+          .filter((activity) => activity.title),
+      }))
+      .filter((day) => day.activities.length);
 
-    const result = await mutate("/api/itineraries", {
-      method: "POST",
+    formData.set("daysJson", JSON.stringify(days));
+    formData.set("durationDays", String(Math.max(Number(formData.get("durationDays") ?? 1), days.length || 1)));
+
+    const result = await mutate(isEditing ? `/api/itineraries/${editSource?.id}` : "/api/itineraries", {
+      method: isEditing ? "PUT" : "POST",
       body: formData,
     });
 
     if (!result) return;
-    setItems((previous) => [result, ...previous]);
+    setItems((previous) => (isEditing ? previous.map((item) => (item.id === result.id ? result : item)) : [result, ...previous]));
     setCurrentId(result.id);
     setDrawerOpen(false);
     setCloneSource(null);
-    flash("Itinerary berhasil dipublish.");
+    setEditSource(null);
+    setDayDrafts([createBlankDay(0)]);
+    setActiveDraftDayIndex(0);
+    setLocationQueries(createLocationQueryMap([createBlankDay(0)]));
+    flash(isEditing ? "Itinerary berhasil diperbarui." : "Itinerary berhasil dipublish.");
     form.reset();
   }
 
@@ -198,6 +607,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
   const currentDay = current.days[dayIndex] ?? current.days[0];
   const savedItems = items.filter((item) => saved.includes(item.id));
+  const activeDraftDay = dayDrafts[activeDraftDayIndex] ?? dayDrafts[0];
 
   return (
     <>
@@ -227,7 +637,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
             <Link className="tool-button" href="/saved" data-tooltip="Rute tersimpan">
               <Icon name="bookmark" />
             </Link>
-            <button className="primary-button" onClick={() => setDrawerOpen(true)}>
+            <button className="primary-button" onClick={openCreateDrawer}>
               <Icon name="plus" />
               <span>Buat Itinerary</span>
             </button>
@@ -285,10 +695,18 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                     </span>
                   </div>
                 </div>
-                <button className="ghost-chip" onClick={() => setDrawerOpen(true)}>
-                  <Icon name="plus" />
-                  <span>Remix</span>
-                </button>
+                <div className="post-tools">
+                  {currentUser && (current.author.id === currentUser.id || currentUser.role === "ADMIN") ? (
+                    <button className="ghost-chip" onClick={() => openEditDrawer(current)}>
+                      <Icon name="grid" />
+                      <span>Edit</span>
+                    </button>
+                  ) : null}
+                  <button className="ghost-chip" onClick={() => openRemixDrawer(current)}>
+                    <Icon name="plus" />
+                    <span>Remix</span>
+                  </button>
+                </div>
               </div>
 
               <section className="hero-card">
@@ -457,31 +875,35 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                 </>
               )}
 
-              {tab === "map" && (
-                <div className="route-board">
-                  <div className="large-map">
-                    <span className="map-pin">1</span>
-                    <span className="map-pin">2</span>
-                    <span className="map-pin">3</span>
-                    <span className="map-pin">4</span>
+              {tab === "map" && currentDay && (
+                <>
+                  <div className="day-title">
+                    <h2>Peta {currentDay.title}</h2>
+                    <div className="day-switcher">
+                      {current.days.map((day, index) => (
+                        <button key={day.id} className={index === dayIndex ? "active" : ""} onClick={() => setDayIndex(index)}>
+                          {day.dayNumber}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="route-list">
-                    {current.days
-                      .flatMap((day) => day.activities)
-                      .slice(0, 4)
-                      .map((activity, index) => (
+                  <div className="route-board">
+                    <RouteMap activities={currentDay.activities} />
+                    <div className="route-list">
+                      {currentDay.activities.map((activity, index) => (
                         <article className="route-step" key={activity.id}>
                           <span>{index + 1}</span>
                           <div>
                             <strong>{activity.title}</strong>
                             <small>
-                              {activity.time} - {activity.category}
+                              {activity.time} - {activity.locationName || activity.category}
                             </small>
                           </div>
                         </article>
                       ))}
+                    </div>
                   </div>
-                </div>
+                </>
               )}
             </section>
 
@@ -602,14 +1024,11 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
             </section>
 
             <section className="side-card map-card">
-              <div className="map-preview" aria-label="Preview peta rute">
-                <span className="mini-pin">1</span>
-                <span className="mini-pin">2</span>
-                <span className="mini-pin">3</span>
-                <span className="mini-pin">4</span>
-              </div>
+              <RouteMap activities={(currentDay?.activities ?? []).slice(0, 4)} />
               <div className="map-controls">
-                <button className="mini-button muted">Route board</button>
+                <button className="mini-button muted" onClick={() => setTab("map")}>
+                  Route board
+                </button>
                 <button className="mini-button">Day {dayIndex + 1}</button>
               </div>
             </section>
@@ -647,40 +1066,40 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
           <div className="drawer-header">
             <div>
               <p>Itinerary pribadi</p>
-              <h2 id="drawerTitle">{cloneSource ? "Edit Rute Salinan" : "Buat Itinerary"}</h2>
+              <h2 id="drawerTitle">{isEditing ? "Edit Itinerary" : cloneSource ? "Remix Itinerary" : "Buat Itinerary"}</h2>
             </div>
             <button className="tool-button" onClick={() => setDrawerOpen(false)} aria-label="Tutup">
               <Icon name="x" />
             </button>
           </div>
-          <form className="itinerary-form" onSubmit={submitCreate}>
+          <form className="itinerary-form" onSubmit={submitCreate} key={`${isEditing ? "edit" : cloneSource ? "remix" : "create"}-${formSource?.id ?? "new"}`}>
             <label>
               <span>Judul itinerary</span>
-              <input name="title" required defaultValue={cloneSource ? `${cloneSource.title} (Versi Saya)` : ""} />
+              <input name="title" required defaultValue={isEditing ? editSource?.title : cloneSource ? `${cloneSource.title} (Versi Saya)` : ""} />
             </label>
             <div className="form-grid">
               <label>
                 <span>Destinasi utama</span>
-                <input name="destination" required defaultValue={cloneSource?.destination ?? ""} />
+                <input name="destination" required defaultValue={formSource?.destination ?? ""} />
               </label>
               <label>
                 <span>Durasi</span>
-                <input name="durationDays" type="number" min="1" required defaultValue={cloneSource?.durationDays ?? 3} />
+                <input name="durationDays" type="number" min="1" required defaultValue={formSource?.durationDays ?? 3} />
               </label>
             </div>
             <label>
               <span>Cover image upload</span>
               <input name="imageFile" type="file" accept="image/png,image/jpeg,image/webp" />
             </label>
-            <input type="hidden" name="coverImageUrl" defaultValue={cloneSource?.coverImageUrl ?? "/uploads/default-cover.svg"} />
+            <input type="hidden" name="coverImageUrl" defaultValue={formSource?.coverImageUrl ?? "/uploads/default-cover.svg"} />
             <div className="form-grid">
               <label>
                 <span>Estimasi budget</span>
-                <input name="estimatedBudget" type="number" min="0" step="50000" required defaultValue={cloneSource?.estimatedBudget ?? 1500000} />
+                <input name="estimatedBudget" type="number" min="0" step="50000" required defaultValue={formSource?.estimatedBudget ?? 1500000} />
               </label>
               <label>
                 <span>Travel style</span>
-                <select name="travelStyle" defaultValue={cloneSource?.travelStyle ?? "Budget trip"}>
+                <select name="travelStyle" defaultValue={formSource?.travelStyle ?? "Budget trip"}>
                   <option>Budget trip</option>
                   <option>Kuliner</option>
                   <option>Couple</option>
@@ -692,24 +1111,122 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
             </div>
             <label>
               <span>Deskripsi singkat</span>
-              <textarea name="description" rows={4} required defaultValue={cloneSource?.description ?? ""} />
+              <textarea name="description" rows={4} required defaultValue={formSource?.description ?? ""} />
             </label>
             <label>
               <span>Catatan tambahan</span>
-              <textarea name="notes" rows={3} defaultValue={cloneSource?.notes ?? ""} />
+              <textarea name="notes" rows={3} defaultValue={formSource?.notes ?? ""} />
             </label>
-            <label>
-              <span>Aktivitas hari pertama</span>
-              <textarea
-                name="activities"
-                rows={5}
-                placeholder={"09.00 - Tiba di kota tujuan\n12.00 - Makan siang lokal"}
-                defaultValue={cloneSource?.days[0]?.activities.map((activity) => `${activity.time} - ${activity.title}`).join("\n") ?? ""}
-              />
-            </label>
+            <input type="hidden" name="daysJson" value={JSON.stringify(dayDrafts)} readOnly />
+            <section className="activity-builder">
+              <div className="activity-builder-head">
+                <div>
+                  <span>Hari dan aktivitas</span>
+                  <strong>
+                    {dayDrafts.length} hari · {dayDrafts.reduce((total, day) => total + day.activities.length, 0)} stop
+                  </strong>
+                </div>
+                <button className="mini-button" type="button" onClick={addDay}>
+                  <Icon name="plus" />
+                  <span>Hari</span>
+                </button>
+              </div>
+              <div className="draft-day-tabs">
+                {dayDrafts.map((day, index) => (
+                  <button key={index} type="button" className={index === activeDraftDayIndex ? "active" : ""} onClick={() => setActiveDraftDayIndex(index)}>
+                    {index + 1}
+                    <span>{day.activities.length}</span>
+                  </button>
+                ))}
+              </div>
+              {activeDraftDay ? (
+                <section className="draft-day-panel">
+                  <div className="draft-day-header">
+                    <label>
+                      <span>Nama hari</span>
+                      <input value={activeDraftDay.title} onChange={(event) => updateDayTitle(activeDraftDayIndex, event.target.value)} placeholder={`Hari ${activeDraftDayIndex + 1}`} />
+                    </label>
+                    {dayDrafts.length > 1 ? (
+                      <button className="mini-button muted" type="button" onClick={() => removeDay(activeDraftDayIndex)}>
+                        Hapus hari
+                      </button>
+                    ) : null}
+                  </div>
+                  <div className="activity-builder-head compact-head">
+                    <span>Aktivitas {activeDraftDay.title || `Hari ${activeDraftDayIndex + 1}`}</span>
+                    <button className="mini-button" type="button" onClick={() => addActivity(activeDraftDayIndex)}>
+                      <Icon name="plus" />
+                      <span>Aktivitas</span>
+                    </button>
+                  </div>
+                  {activeDraftDay.activities.map((activity, index) => {
+                    const key = draftKey(activeDraftDayIndex, index);
+                    return (
+                <article className="activity-input-card" key={key}>
+                  <div className="activity-input-top">
+                    <span>{index + 1}</span>
+                    {activeDraftDay.activities.length > 1 ? (
+                      <button className="tool-button" type="button" onClick={() => removeActivity(activeDraftDayIndex, index)} aria-label="Hapus aktivitas">
+                        <Icon name="x" />
+                      </button>
+                    ) : null}
+                  </div>
+                  <div className="form-grid compact">
+                    <label>
+                      <span>Jam</span>
+                      <input value={activity.time} onChange={(event) => updateActivity(activeDraftDayIndex, index, { time: event.target.value })} placeholder="09.00" />
+                    </label>
+                    <label>
+                      <span>Nama aktivitas</span>
+                      <input value={activity.title} onChange={(event) => updateActivity(activeDraftDayIndex, index, { title: event.target.value })} placeholder="Makan siang lokal" />
+                    </label>
+                  </div>
+                  <label>
+                    <span>Lokasi</span>
+                    <div className="location-search-row">
+                      <input
+                        value={locationQueries[key] ?? ""}
+                        onChange={(event) => setLocationQueries((previous) => ({ ...previous, [key]: event.target.value }))}
+                        placeholder="Cari lokasi dari OpenStreetMap"
+                      />
+                      <button className="mini-button" type="button" onClick={() => searchLocation(activeDraftDayIndex, index)} disabled={searchingLocation === key}>
+                        <Icon name="search" />
+                        <span>{searchingLocation === key ? "Cari..." : "Cari"}</span>
+                      </button>
+                    </div>
+                  </label>
+                  {locationResults[key]?.length ? (
+                    <div className="location-results">
+                      {locationResults[key].map((result) => (
+                        <button key={`${result.placeId}-${result.latitude}-${result.longitude}`} type="button" onClick={() => selectLocation(activeDraftDayIndex, index, result)}>
+                          <strong>{result.name}</strong>
+                          <span>{result.formattedAddress}</span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+                  <div className="location-summary">
+                    <Icon name="map-pin" />
+                    <span>
+                      {activity.locationName || "Belum ada lokasi"}
+                      {typeof activity.latitude === "number" && typeof activity.longitude === "number" ? ` · ${activity.latitude.toFixed(5)}, ${activity.longitude.toFixed(5)}` : ""}
+                    </span>
+                    <button className="mini-button muted" type="button" onClick={() => setPickerKey(pickerKey === key ? null : key)}>
+                      Pilih titik
+                    </button>
+                  </div>
+                  {pickerKey === key ? (
+                    <PointPicker value={{ latitude: activity.latitude, longitude: activity.longitude }} onPick={(point) => pickManualPoint(activeDraftDayIndex, index, point)} />
+                  ) : null}
+                </article>
+                    );
+                  })}
+                </section>
+              ) : null}
+            </section>
             <button className="primary-button wide" type="submit">
               <Icon name="plus" />
-              <span>Publish Itinerary</span>
+              <span>{isEditing ? "Simpan Perubahan" : "Publish Itinerary"}</span>
             </button>
           </form>
         </div>
@@ -724,7 +1241,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
           <Icon name="bookmark" />
           <span>Simpan</span>
         </Link>
-        <button onClick={() => setDrawerOpen(true)}>
+        <button onClick={openCreateDrawer}>
           <Icon name="plus" />
           <span>Buat</span>
         </button>

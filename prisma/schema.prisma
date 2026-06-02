@@ -77,6 +77,12 @@ model Activity {
   time           String
   title          String
   locationName   String       @default("")
+  formattedAddress String    @default("")
+  latitude       Float?
+  longitude      Float?
+  mapProvider    String       @default("")
+  mapPlaceId     String       @default("")
+  customLocation Boolean      @default(false)
   description    String       @default("")
   estimatedCost  Int          @default(0)
   category       String       @default("Activity")

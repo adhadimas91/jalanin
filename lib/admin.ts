@@ -59,6 +59,15 @@ function readInt(value: unknown, fallback = 0) {
   return Number.isFinite(numeric) ? Math.trunc(numeric) : fallback;
 }
 
+function readOptionalNumber(value: unknown) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : null;
+}
+
 function readBoolean(value: unknown, fallback = false) {
   if (typeof value === "boolean") {
     return value;
@@ -365,6 +374,12 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           time: readString(data.time),
           title: readString(data.title),
           locationName: readString(data.locationName),
+          formattedAddress: readString(data.formattedAddress),
+          latitude: readOptionalNumber(data.latitude),
+          longitude: readOptionalNumber(data.longitude),
+          mapProvider: readString(data.mapProvider),
+          mapPlaceId: readString(data.mapPlaceId),
+          customLocation: readBoolean(data.customLocation, false),
           description: readString(data.description),
           estimatedCost: readInt(data.estimatedCost, 0),
           category: readString(data.category, "Activity"),
@@ -458,6 +473,12 @@ export async function updateAdminRecord(
           time: readString(data.time),
           title: readString(data.title),
           locationName: readString(data.locationName),
+          formattedAddress: readString(data.formattedAddress),
+          latitude: readOptionalNumber(data.latitude),
+          longitude: readOptionalNumber(data.longitude),
+          mapProvider: readString(data.mapProvider),
+          mapPlaceId: readString(data.mapPlaceId),
+          customLocation: readBoolean(data.customLocation, false),
           description: readString(data.description),
           estimatedCost: readInt(data.estimatedCost, 0),
           category: readString(data.category, "Activity"),
