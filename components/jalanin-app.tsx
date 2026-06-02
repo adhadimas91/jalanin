@@ -13,6 +13,7 @@ export type JalaninUser = {
   avatarUrl: string | null;
   bio: string | null;
   city: string | null;
+  role: string;
 };
 
 export type JalaninActivity = {
@@ -218,6 +219,11 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
           </label>
 
           <nav className="top-actions" aria-label="Navigasi utama">
+            {currentUser?.role === "ADMIN" ? (
+              <Link className="tool-button" href="/admin" data-tooltip="Admin panel">
+                <Icon name="shield" />
+              </Link>
+            ) : null}
             <Link className="tool-button" href="/saved" data-tooltip="Rute tersimpan">
               <Icon name="bookmark" />
             </Link>
@@ -226,9 +232,16 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               <span>Buat Itinerary</span>
             </button>
             {currentUser ? (
-              <Link className="avatar-button" href={`/profile/${currentUser.username ?? currentUser.id}`} aria-label="Profil">
-                <img src={currentUser.avatarUrl ?? "/uploads/default-cover.svg"} alt={currentUser.name ?? currentUser.email} />
-              </Link>
+              <>
+                <form action="/api/auth/logout" method="post">
+                  <button className="ghost-chip" type="submit">
+                    Logout
+                  </button>
+                </form>
+                <Link className="avatar-button" href={`/profile/${currentUser.username ?? currentUser.id}`} aria-label="Profil">
+                  <img src={currentUser.avatarUrl ?? "/uploads/default-cover.svg"} alt={currentUser.name ?? currentUser.email} />
+                </Link>
+              </>
             ) : (
               <Link className="mini-button" href="/login">
                 Login
@@ -719,6 +732,14 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
           <Icon name="user" />
           <span>Profil</span>
         </Link>
+        {currentUser ? (
+          <form action="/api/auth/logout" method="post" className="mobile-logout-form">
+            <button type="submit">
+              <Icon name="x" />
+              <span>Logout</span>
+            </button>
+          </form>
+        ) : null}
       </nav>
 
       <div className={`toast ${toast ? "show" : ""}`} role="status">

@@ -8,6 +8,7 @@ export function serializeUser(user: {
   avatarUrl: string | null;
   bio: string | null;
   city: string | null;
+  role?: string | null;
 }) {
   return {
     id: user.id,
@@ -17,6 +18,7 @@ export function serializeUser(user: {
     avatarUrl: user.avatarUrl,
     bio: user.bio,
     city: user.city,
+    role: user.role ?? "USER",
   };
 }
 

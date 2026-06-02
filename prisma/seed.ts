@@ -214,6 +214,7 @@ async function main() {
       avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80",
       bio: "Slow traveler, pemburu ramen, dan spreadsheet budget.",
       city: "Jakarta",
+      role: "ADMIN",
     },
     create: {
       email: "risa@jalanin.local",
@@ -223,6 +224,7 @@ async function main() {
       avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80",
       bio: "Slow traveler, pemburu ramen, dan spreadsheet budget.",
       city: "Jakarta",
+      role: "ADMIN",
     },
   });
 

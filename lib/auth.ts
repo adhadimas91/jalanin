@@ -5,6 +5,15 @@ import { prisma } from "./prisma";
 export const sessionCookieName = "jalanin_session";
 const sessionDays = 14;
 
+function adminEmails() {
+  return new Set(
+    String(process.env.ADMIN_EMAILS ?? "")
+      .split(",")
+      .map((value) => value.trim().toLowerCase())
+      .filter(Boolean),
+  );
+}
+
 function hashToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
 }
@@ -71,12 +80,32 @@ export async function getCurrentUser() {
   return session.user;
 }
 
+export function isAdminUser(user: { email: string; role?: string | null } | null) {
+  if (!user) {
+    return false;
+  }
+
+  return user.role === "ADMIN" || adminEmails().has(user.email.toLowerCase());
+}
+
 export async function requireCurrentUser() {
   const user = await getCurrentUser();
 
   if (!user) {
     throw new Response("Unauthorized", {
       status: 401,
+    });
+  }
+
+  return user;
+}
+
+export async function requireAdminUser() {
+  const user = await requireCurrentUser();
+
+  if (!isAdminUser(user)) {
+    throw new Response("Forbidden", {
+      status: 403,
     });
   }
 

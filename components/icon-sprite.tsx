@@ -89,6 +89,10 @@ export function IconSprite() {
         <path d="M6 6l12 12" />
         <path d="M18 6 6 18" />
       </symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24">
+        <path d="M12 3.5 18.5 6v5.6c0 4.1-2.6 7.8-6.5 9.4-3.9-1.6-6.5-5.3-6.5-9.4V6L12 3.5Z" />
+        <path d="m9.6 12 1.7 1.7 3.4-3.8" />
+      </symbol>
     </svg>
   );
 }
