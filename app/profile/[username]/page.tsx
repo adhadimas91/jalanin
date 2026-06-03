@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatRupiah } from "@/lib/format";
 
@@ -7,6 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function ProfilePage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
+  const currentUser = await getCurrentUser();
   const user = await prisma.user.findFirst({
     where: {
       OR: [{ username }, { id: username }],
@@ -45,6 +47,13 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
               <strong>{user.saves.length}</strong> disimpan
             </span>
           </div>
+          {currentUser?.id === user.id ? (
+            <div className="profile-actions">
+              <Link className="mini-button muted" href="/settings/profile">
+                Edit profil
+              </Link>
+            </div>
+          ) : null}
         </div>
       </article>
       <div className="server-list">

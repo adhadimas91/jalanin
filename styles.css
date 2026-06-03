@@ -1134,6 +1134,27 @@ svg {
   text-decoration: none;
 }
 
+.detail-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.detail-error {
+  margin: 8px 0 0;
+}
+
+.detail-topbar .plain-link {
+  margin-bottom: 0;
+}
+
 .auth-card {
   width: min(420px, 100%);
   margin: 10vh auto 0;
@@ -1261,6 +1282,10 @@ svg {
   margin: 0;
 }
 
+.detail-editor {
+  width: min(640px, 100%);
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1273,6 +1298,29 @@ svg {
 
 .activity-builder {
   display: grid;
+  gap: 12px;
+}
+
+.detail-days-editor {
+  display: grid;
+  gap: 14px;
+}
+
+.detail-day-editor,
+.detail-activity-editor {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  background: var(--surface-tint);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.detail-day-head,
+.detail-activity-tools {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
   gap: 12px;
 }
 
@@ -2269,6 +2317,8 @@ svg {
   .feed-grid,
   .sidebar,
   .form-grid,
+  .detail-day-head,
+  .detail-activity-tools,
   .draft-day-header,
   .route-board {
     grid-template-columns: 1fr;

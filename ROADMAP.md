@@ -214,8 +214,8 @@ Tujuan: user bisa punya akun dan data itinerary pribadi.
 - [ ] Protected route middleware.
 - [x] Create user profile after signup.
 - [x] Auto-create user profile on Supabase login if missing.
-- [ ] Edit profile sederhana.
-- [ ] Upload/update avatar.
+- [x] Edit profile sederhana.
+- [x] Upload/update avatar.
 - [ ] Ownership check untuk edit itinerary.
 
 ### Pages
@@ -223,7 +223,7 @@ Tujuan: user bisa punya akun dan data itinerary pribadi.
 - [x] `/login`
 - [x] `/register`
 - [x] `/profile/[username]`
-- [ ] `/settings/profile`
+- [x] `/settings/profile`
 
 ### Acceptance Criteria
 

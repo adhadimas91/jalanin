@@ -85,6 +85,7 @@ export async function ensureSupabaseStorageBucket() {
 export async function uploadImageToSupabaseStorage(input: {
   file: File;
   userId: string;
+  folder?: "itinerary-covers" | "avatars";
 }) {
   const { url, key, bucket } = getStorageConfig();
   const extension = allowedImageTypes.get(input.file.type);
@@ -97,7 +98,8 @@ export async function uploadImageToSupabaseStorage(input: {
     throw new Error("Ukuran file maksimal 4MB.");
   }
 
-  const filePath = `itinerary-covers/${input.userId}/${randomUUID()}.${extension}`;
+  const folder = input.folder ?? "itinerary-covers";
+  const filePath = `${folder}/${input.userId}/${randomUUID()}.${extension}`;
   const response = await fetch(
     `${url}/storage/v1/object/${bucket}/${filePath}`,
     {

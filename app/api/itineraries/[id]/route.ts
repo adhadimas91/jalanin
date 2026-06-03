@@ -94,3 +94,30 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
   return NextResponse.json(serializeItinerary(itinerary));
 }
+
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  const { id } = await params;
+  const existing = await prisma.itinerary.findUnique({
+    where: { id },
+    select: { authorId: true },
+  });
+
+  if (!existing) {
+    return new NextResponse("Itinerary tidak ditemukan.", { status: 404 });
+  }
+
+  if (existing.authorId !== user.id && !isAdminUser(user)) {
+    return new NextResponse("Kamu tidak punya akses untuk hapus itinerary ini.", { status: 403 });
+  }
+
+  await prisma.itinerary.delete({
+    where: { id },
+  });
+
+  return NextResponse.json({ ok: true });
+}

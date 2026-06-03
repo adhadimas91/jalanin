@@ -1,25 +1,34 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { IconSprite } from "@/components/icon-sprite";
+import { ItineraryDetailActions } from "@/components/itinerary-detail-actions";
+import { getCurrentUser, isAdminUser } from "@/lib/auth";
 import { getItineraryById } from "@/lib/itineraries";
 import { formatRupiah } from "@/lib/format";
+import { serializeItinerary } from "@/lib/serialize";
 
 export const dynamic = "force-dynamic";
 
 export default async function ItineraryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const itinerary = await getItineraryById(id);
+  const [itinerary, currentUser] = await Promise.all([getItineraryById(id), getCurrentUser()]);
 
   if (!itinerary) {
     notFound();
   }
 
+  const canManage = currentUser && (currentUser.id === itinerary.authorId || isAdminUser(currentUser));
+  const serializedItinerary = serializeItinerary(itinerary);
+
   return (
     <main className="page-center">
       <IconSprite />
-      <Link className="plain-link" href="/">
-        Kembali ke feed
-      </Link>
+      <div className="detail-topbar">
+        <Link className="plain-link" href="/">
+          Kembali ke feed
+        </Link>
+        {canManage ? <ItineraryDetailActions itinerary={serializedItinerary} /> : null}
+      </div>
       <section className="hero-card" style={{ marginTop: 16 }}>
         <img src={itinerary.coverImageUrl} alt={itinerary.destination} />
         <div className="hero-overlay">
