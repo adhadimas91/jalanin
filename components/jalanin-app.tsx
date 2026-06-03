@@ -597,15 +597,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
     form.reset();
   }
 
-  if (!current) {
-    return (
-      <div className="page-center">
-        <div className="empty-state">Belum ada itinerary. Login dan buat itinerary pertama.</div>
-      </div>
-    );
-  }
-
-  const currentDay = current.days[dayIndex] ?? current.days[0];
+  const currentDay = current?.days[dayIndex] ?? current?.days[0];
   const savedItems = items.filter((item) => saved.includes(item.id));
   const activeDraftDay = dayDrafts[activeDraftDayIndex] ?? dayDrafts[0];
 
@@ -614,7 +606,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
       <IconSprite />
       <div className="app-shell">
         <header className="topbar">
-          <button className="brand" onClick={() => setCurrentId(items[0]?.id ?? current.id)} aria-label="Jalanin home">
+          <button className="brand" onClick={() => setCurrentId(items[0]?.id ?? "")} aria-label="Jalanin home">
             <span className="brand-mark" aria-hidden="true">
               <span />
               <span />
@@ -660,7 +652,8 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
           </nav>
         </header>
 
-        <main className="workspace">
+        {current ? (
+          <main className="workspace">
           <section className="main-column">
             <section className="stories-strip" aria-label="Traveler spotlight">
               {items.slice(0, 7).map((item) => {
@@ -1057,7 +1050,33 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               </div>
             </section>
           </aside>
-        </main>
+          </main>
+        ) : (
+          <main className="workspace empty-workspace">
+            <section className="empty-itinerary-panel">
+              <span className="summary-icon">
+                <Icon name="route" />
+              </span>
+              <h1>Belum ada itinerary.</h1>
+              <p>{currentUser ? "Buat itinerary pertama supaya traveler lain bisa mulai menjelajah." : "Login untuk membuat itinerary pertama."}</p>
+              <div className="empty-itinerary-actions">
+                {currentUser ? (
+                  <button className="primary-button" onClick={openCreateDrawer}>
+                    <Icon name="plus" />
+                    <span>Buat Itinerary</span>
+                  </button>
+                ) : (
+                  <Link className="primary-button" href="/login">
+                    Login
+                  </Link>
+                )}
+                <Link className="mini-button muted" href="/">
+                  Kembali ke beranda
+                </Link>
+              </div>
+            </section>
+          </main>
+        )}
       </div>
 
       <section className={`drawer ${drawerOpen ? "open" : ""}`} aria-hidden={!drawerOpen} aria-label="Form itinerary">
@@ -1099,7 +1118,11 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               </label>
               <label>
                 <span>Travel style</span>
-                <select name="travelStyle" defaultValue={formSource?.travelStyle ?? "Budget trip"}>
+                <select name="travelStyle" defaultValue={formSource?.travelStyle ?? "Choose your style"} required>
+                  <option value="" disabled>
+                    Pilih gaya perjalanan
+                  </option>
+                  <option>Random</option>
                   <option>Budget trip</option>
                   <option>Kuliner</option>
                   <option>Couple</option>
@@ -1152,11 +1175,11 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                       </button>
                     ) : null}
                   </div>
-                  <div className="activity-builder-head compact-head">
+                  <div className="activity-builder-head-white-text compact-head ">
                     <span>Aktivitas {activeDraftDay.title || `Hari ${activeDraftDayIndex + 1}`}</span>
                     <button className="mini-button" type="button" onClick={() => addActivity(activeDraftDayIndex)}>
                       <Icon name="plus" />
-                      <span>Aktivitas</span>
+                      <span className="">Aktivitas</span>
                     </button>
                   </div>
                   {activeDraftDay.activities.map((activity, index) => {

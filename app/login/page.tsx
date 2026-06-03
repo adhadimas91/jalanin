@@ -9,11 +9,11 @@ export default function LoginPage() {
         <form action="/api/auth/login" method="post">
           <label>
             Email
-            <input name="email" type="email" required defaultValue="risa@jalanin.local" />
+            <input name="email" type="email" required defaultValue="" />
           </label>
           <label>
             Password
-            <input name="password" type="password" required defaultValue="jalanin123" />
+            <input name="password" type="password" required defaultValue="" />
           </label>
           <button className="primary-button wide" type="submit">
             Login

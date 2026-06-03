@@ -28,11 +28,7 @@ export default async function ProfileSettingsPage() {
           <label>
             Avatar upload
             <input name="avatarFile" type="file" accept="image/png,image/jpeg,image/webp" />
-          </label>
-          <label>
-            Avatar URL
-            <input name="avatarUrl" type="url" defaultValue={user.avatarUrl ?? ""} />
-          </label>
+          </label> 
           <label>
             Nama
             <input name="name" defaultValue={user.name ?? ""} />

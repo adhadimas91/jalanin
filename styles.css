@@ -289,6 +289,10 @@ svg {
   margin-top: 18px;
 }
 
+.empty-workspace {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .main-column,
 .sidebar {
   min-width: 0;
@@ -417,7 +421,7 @@ svg {
   border-bottom: 1px solid var(--line);
 }
 
-.hero-card > img {
+.hero-card>img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
@@ -1122,6 +1126,42 @@ svg {
   border-radius: var(--radius-sm);
 }
 
+.empty-itinerary-panel {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  min-height: 360px;
+  padding: 40px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+}
+
+.empty-itinerary-panel .summary-icon {
+  margin-bottom: 4px;
+}
+
+.empty-itinerary-panel h1 {
+  margin: 0;
+  font-size: clamp(28px, 5vw, 46px);
+  line-height: 1;
+}
+
+.empty-itinerary-panel p {
+  max-width: 520px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.empty-itinerary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
 .page-center {
   width: min(960px, calc(100% - 24px));
   margin: 28px auto 60px;
@@ -1384,7 +1424,7 @@ svg {
   padding-top: 2px;
 }
 
-.compact-head > span {
+.compact-head>span {
   color: var(--muted);
   font-size: 12px;
   font-weight: 900;
@@ -1414,6 +1454,36 @@ svg {
   font-weight: 800;
 }
 
+.activity-builder-head button>span {
+  color: var(--bg);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.activity-builder-head-white-text,
+.activity-input-top,
+.location-summary,
+.location-search-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.activity-builder-head-white-text {
+  justify-content: space-between;
+}
+
+.activity-builder-head-white-text div {
+  display: grid;
+  gap: 4px;
+}
+
+.activity-builder-head-white-text button {
+  color: var(--bg);
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .activity-input-card {
   display: grid;
   gap: 12px;
@@ -1427,7 +1497,7 @@ svg {
   justify-content: space-between;
 }
 
-.activity-input-top > span {
+.activity-input-top>span {
   display: grid;
   width: 30px;
   height: 30px;
@@ -1525,6 +1595,7 @@ svg {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -2115,7 +2186,7 @@ svg {
     width: 100%;
   }
 
-  .admin-topbar-actions > * {
+  .admin-topbar-actions>* {
     flex: 1 1 0;
   }
 
@@ -2324,7 +2395,7 @@ svg {
     grid-template-columns: 1fr;
   }
 
-  .hero-card > img {
+  .hero-card>img {
     aspect-ratio: 4 / 5;
   }
 
