@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import maplibregl from "maplibre-gl";
 import { Icon, IconSprite } from "./icon-sprite";
+import { PriceInput } from "./price-input";
+import { ACTIVITY_TYPE_COLORS, ACTIVITY_TYPES, activityIcon, computeTripInsights, DEFAULT_ACTIVITY_TYPE, isKnownActivityType } from "@/lib/activity-types";
 import { formatCompact, formatRupiah } from "@/lib/format";
 import { isGoogleMapsUrl, type ParsedLocation } from "@/lib/maps-parser";
 
@@ -67,15 +69,6 @@ type Props = {
 
 const filters = ["Semua","Random", "Budget trip", "Kuliner", "Nature", "Family", "City tour"];
 
-function activityIcon(category: string) {
-  const value = category.toLowerCase();
-  if (value.includes("makan") || value.includes("kuliner")) return "food";
-  if (value.includes("transport")) return "car";
-  if (value.includes("stay") || value.includes("hotel")) return "hotel";
-  if (value.includes("flight") || value.includes("tiba")) return "plane";
-  return "camera";
-}
-
 type ActivityDraft = {
   time: string;
   title: string;
@@ -118,7 +111,7 @@ function createBlankActivity(index: number): ActivityDraft {
     mapProvider: "",
     mapPlaceId: "",
     customLocation: false,
-    category: "Activity",
+    category: DEFAULT_ACTIVITY_TYPE,
     estimatedCost: 0,
   };
 }
@@ -309,6 +302,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
   const [editSource, setEditSource] = useState<JalaninItinerary | null>(null);
   const [toast, setToast] = useState("");
   const [dayDrafts, setDayDrafts] = useState<DayDraft[]>([createBlankDay(0)]);
+  const [estimatedBudgetDraft, setEstimatedBudgetDraft] = useState(1_500_000);
   const [activeDraftDayIndex, setActiveDraftDayIndex] = useState(0);
   const [locationQueries, setLocationQueries] = useState<Record<string, string>>(createLocationQueryMap([createBlankDay(0)]));
   const [locationResults, setLocationResults] = useState<Record<string, LocationResult[]>>({});
@@ -328,6 +322,8 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
     });
   }, [filter, items, query]);
 
+  const tripInsights = useMemo(() => (current ? computeTripInsights(current.days) : null), [current]);
+
   function flash(message: string) {
     setToast(message);
     window.setTimeout(() => setToast(""), 2400);
@@ -343,6 +339,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
     const nextDrafts = formSource?.days.length ? formSource.days.map(fromDay) : [createBlankDay(0)];
     setDayDrafts(nextDrafts);
+    setEstimatedBudgetDraft(formSource?.estimatedBudget ?? 1_500_000);
     setActiveDraftDayIndex(0);
     setLocationQueries(createLocationQueryMap(nextDrafts));
     setLocationResults({});
@@ -902,7 +899,10 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                         </div>
                         <div className="activity-main">
                           <strong>{activity.title}</strong>
-                          <span>{activity.locationName || activity.category}</span>
+                          <span>
+                            {activity.category}
+                            {activity.locationName ? ` · ${activity.locationName}` : ""}
+                          </span>
                         </div>
                         <div className="activity-cost">{activity.estimatedCost ? formatRupiah(activity.estimatedCost) : "Gratis"}</div>
                       </article>
@@ -1015,20 +1015,41 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                 <span>{current.travelStyle}</span>
               </div>
               <div className="budget-total">
-                <span>Total</span>
-                <strong>{formatRupiah(current.estimatedBudget)}</strong>
+                <span>{tripInsights?.activityTotal ? "Total aktivitas" : "Estimasi budget"}</span>
+                <strong>{formatRupiah(tripInsights?.activityTotal ? tripInsights.activityTotal : current.estimatedBudget)}</strong>
               </div>
+              {tripInsights?.activityTotal && tripInsights.activityTotal !== current.estimatedBudget ? (
+                <p className="budget-note">Estimasi creator {formatRupiah(current.estimatedBudget)}</p>
+              ) : null}
               <div className="budget-meter">
-                <span />
+                {tripInsights?.activityTotal ? (
+                  tripInsights.lines
+                    .filter((line) => line.total > 0)
+                    .map((line) => (
+                      <span
+                        key={line.type}
+                        style={{
+                          width: `${(line.total / tripInsights.activityTotal) * 100}%`,
+                          background: ACTIVITY_TYPE_COLORS[line.type],
+                        }}
+                      />
+                    ))
+                ) : (
+                  <span />
+                )}
               </div>
               <div className="budget-lines">
-                {["Transport", "Makan", "Tiket", "Stay"].map((label, index) => (
-                  <div className="budget-line" key={label}>
-                    <Icon name={index === 0 ? "car" : index === 1 ? "food" : index === 2 ? "camera" : "hotel"} />
-                    <span>{label}</span>
-                    <strong>{formatRupiah(Math.round(current.estimatedBudget * [0.25, 0.3, 0.2, 0.25][index]))}</strong>
-                  </div>
-                ))}
+                {ACTIVITY_TYPES.map((label) => {
+                  const line = tripInsights?.lines.find((entry) => entry.type === label);
+                  const total = line?.total ?? 0;
+                  return (
+                    <div className="budget-line" key={label}>
+                      <Icon name={activityIcon(label)} />
+                      <span>{label}</span>
+                      <strong>{total ? formatRupiah(total) : "—"}</strong>
+                    </div>
+                  );
+                })}
               </div>
             </section>
 
@@ -1157,7 +1178,13 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
             <div className="form-grid">
               <label>
                 <span>Estimasi budget</span>
-                <input name="estimatedBudget" type="number" min="0" step="50000" required defaultValue={formSource?.estimatedBudget ?? 1500000} />
+                <PriceInput
+                  name="estimatedBudget"
+                  required
+                  value={estimatedBudgetDraft}
+                  onChange={setEstimatedBudgetDraft}
+                  placeholder="1.500.000"
+                />
               </label>
               <label>
                 <span>Travel style</span>
@@ -1245,6 +1272,29 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                     <label>
                       <span>Nama aktivitas</span>
                       <input value={activity.title} onChange={(event) => updateActivity(activeDraftDayIndex, index, { title: event.target.value })} placeholder="Makan siang lokal" />
+                    </label>
+                  </div>
+                  <div className="form-grid compact">
+                    <label>
+                      <span>Tipe aktivitas</span>
+                      <select value={activity.category} onChange={(event) => updateActivity(activeDraftDayIndex, index, { category: event.target.value })}>
+                        {!isKnownActivityType(activity.category) && activity.category ? (
+                          <option value={activity.category}>{activity.category}</option>
+                        ) : null}
+                        {ACTIVITY_TYPES.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      <span>Harga</span>
+                      <PriceInput
+                        value={activity.estimatedCost}
+                        onChange={(estimatedCost) => updateActivity(activeDraftDayIndex, index, { estimatedCost })}
+                        placeholder="350.000"
+                      />
                     </label>
                   </div>
                   <label>

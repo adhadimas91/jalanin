@@ -1,3 +1,5 @@
+import { DEFAULT_ACTIVITY_TYPE } from "@/lib/activity-types";
+
 export type ActivityFormInput = {
   time?: unknown;
   title?: unknown;
@@ -74,7 +76,7 @@ export function parseActivityArray(value: unknown) {
         mapPlaceId: String(activity.mapPlaceId ?? "").trim(),
         customLocation: Boolean(activity.customLocation),
         estimatedCost: Number(activity.estimatedCost ?? 0) || 0,
-        category: String(activity.category ?? "Activity").trim() || "Activity",
+        category: String(activity.category ?? DEFAULT_ACTIVITY_TYPE).trim() || DEFAULT_ACTIVITY_TYPE,
         orderIndex: index,
       };
     })
@@ -134,7 +136,7 @@ export function parseActivitiesText(value: FormDataEntryValue | null) {
         mapPlaceId: "",
         customLocation: false,
         estimatedCost: 0,
-        category: index % 2 === 0 ? "City walk" : "Kuliner",
+        category: index % 2 === 0 ? "Transport" : "Makan",
         orderIndex: index,
       };
     });

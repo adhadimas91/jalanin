@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Icon, IconSprite } from "@/components/icon-sprite";
 import type { AdminSnapshot, AdminTable } from "@/lib/admin";
+import { DEFAULT_ACTIVITY_TYPE } from "@/lib/activity-types";
 
 type Props = {
   initialData: AdminSnapshot;
@@ -78,7 +79,7 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       customLocation: false,
       description: "",
       estimatedCost: 0,
-      category: "Activity",
+      category: DEFAULT_ACTIVITY_TYPE,
       orderIndex: 0,
     },
   },

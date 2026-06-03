@@ -56,7 +56,10 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
                   <div className="activity-time">{activity.time}</div>
                   <div className="activity-main">
                     <strong>{activity.title}</strong>
-                    <span>{activity.locationName || activity.category}</span>
+                    <span>
+                      {activity.category}
+                      {activity.locationName ? ` · ${activity.locationName}` : ""}
+                    </span>
                   </div>
                   <div className="activity-cost">{activity.estimatedCost ? formatRupiah(activity.estimatedCost) : "Gratis"}</div>
                 </article>

@@ -4,7 +4,9 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import maplibregl from "maplibre-gl";
 import { Icon } from "./icon-sprite";
+import { PriceInput } from "./price-input";
 import type { JalaninItinerary } from "./jalanin-app";
+import { ACTIVITY_TYPES, DEFAULT_ACTIVITY_TYPE, isKnownActivityType } from "@/lib/activity-types";
 import { isGoogleMapsUrl, type ParsedLocation } from "@/lib/maps-parser";
 
 type ActivityDraft = {
@@ -53,7 +55,7 @@ function createBlankActivity(index: number): ActivityDraft {
     mapProvider: "",
     mapPlaceId: "",
     customLocation: false,
-    category: "Activity",
+    category: DEFAULT_ACTIVITY_TYPE,
     estimatedCost: 0,
   };
 }
@@ -166,6 +168,7 @@ export function ItineraryDetailActions({ itinerary }: Props) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [message, setMessage] = useState("");
   const [dayDrafts, setDayDrafts] = useState(initialDrafts);
+  const [estimatedBudget, setEstimatedBudget] = useState(itinerary.estimatedBudget);
   const [locationQueries, setLocationQueries] = useState<Record<string, string>>(createLocationQueryMap(initialDrafts));
   const [locationResults, setLocationResults] = useState<Record<string, LocationResult[]>>({});
   const [searchingLocation, setSearchingLocation] = useState<string | null>(null);
@@ -173,6 +176,7 @@ export function ItineraryDetailActions({ itinerary }: Props) {
 
   function resetEditor() {
     setDayDrafts(initialDrafts);
+    setEstimatedBudget(itinerary.estimatedBudget);
     setLocationQueries(createLocationQueryMap(initialDrafts));
     setLocationResults({});
     setPickerKey(null);
@@ -460,7 +464,13 @@ export function ItineraryDetailActions({ itinerary }: Props) {
             <div className="form-grid">
               <label>
                 <span>Estimasi budget</span>
-                <input name="estimatedBudget" type="number" min="0" step="50000" required defaultValue={itinerary.estimatedBudget} />
+                <PriceInput
+                  name="estimatedBudget"
+                  required
+                  value={estimatedBudget}
+                  onChange={setEstimatedBudget}
+                  placeholder="1.500.000"
+                />
               </label>
               <label>
                 <span>Travel style</span>
@@ -570,21 +580,28 @@ export function ItineraryDetailActions({ itinerary }: Props) {
                       ) : null}
                       <div className="form-grid compact">
                         <label>
-                          <span>Biaya</span>
-                          <input
-                            type="number"
-                            min="0"
-                            step="10000"
+                          <span>Tipe aktivitas</span>
+                          <select value={activity.category} onChange={(event) => updateActivity(dayIndex, activityIndex, { category: event.target.value })}>
+                            {!isKnownActivityType(activity.category) && activity.category ? (
+                              <option value={activity.category}>{activity.category}</option>
+                            ) : null}
+                            {ACTIVITY_TYPES.map((type) => (
+                              <option key={type} value={type}>
+                                {type}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          <span>Harga</span>
+                          <PriceInput
                             value={activity.estimatedCost}
-                            onChange={(event) => updateActivity(dayIndex, activityIndex, { estimatedCost: Number(event.target.value) })}
+                            onChange={(estimatedCost) => updateActivity(dayIndex, activityIndex, { estimatedCost })}
+                            placeholder="350.000"
                           />
                         </label>
                       </div>
                       <div className="detail-activity-tools">
-                        <label>
-                          <span>Kategori</span>
-                          <input value={activity.category} onChange={(event) => updateActivity(dayIndex, activityIndex, { category: event.target.value })} />
-                        </label>
                         {day.activities.length > 1 ? (
                           <button className="tool-button" type="button" onClick={() => removeActivity(dayIndex, activityIndex)} aria-label="Hapus aktivitas">
                             <Icon name="x" />

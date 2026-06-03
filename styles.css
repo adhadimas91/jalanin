@@ -1025,6 +1025,7 @@ svg {
 }
 
 .budget-meter {
+  display: flex;
   height: 8px;
   margin-bottom: 14px;
   overflow: hidden;
@@ -1034,9 +1035,19 @@ svg {
 
 .budget-meter span {
   display: block;
-  width: 72%;
+  min-width: 0;
   height: 100%;
+}
+
+.budget-meter span:only-child {
+  width: 72%;
   background: linear-gradient(90deg, var(--pink), var(--orange), var(--blue));
+}
+
+.budget-note {
+  margin: -4px 0 12px;
+  font-size: 13px;
+  color: var(--muted);
 }
 
 .budget-lines {

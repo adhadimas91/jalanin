@@ -1,5 +1,6 @@
-import { redirect } from "next/navigation";
+import { BudgetField } from "@/components/budget-field";
 import { getCurrentUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function CreatePage() {
   const user = await getCurrentUser();
@@ -27,10 +28,7 @@ export default async function CreatePage() {
               Durasi
               <input name="durationDays" type="number" min="1" defaultValue={3} required />
             </label>
-            <label>
-              Budget
-              <input name="estimatedBudget" type="number" min="0" step="50000" defaultValue={1500000} required />
-            </label>
+            <BudgetField />
           </div>
           <label>
             Travel style
