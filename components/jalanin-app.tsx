@@ -5,6 +5,7 @@ import Link from "next/link";
 import maplibregl from "maplibre-gl";
 import { Icon, IconSprite } from "./icon-sprite";
 import { formatCompact, formatRupiah } from "@/lib/format";
+import { isGoogleMapsUrl, type ParsedLocation } from "@/lib/maps-parser";
 
 export type JalaninUser = {
   id: string;
@@ -64,7 +65,7 @@ type Props = {
   likedIds: string[];
 };
 
-const filters = ["Semua", "Budget trip", "Kuliner", "Nature", "Family", "City tour"];
+const filters = ["Semua","Random", "Budget trip", "Kuliner", "Nature", "Family", "City tour"];
 
 function activityIcon(category: string) {
   const value = category.toLowerCase();
@@ -504,10 +505,52 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
     });
   }
 
+  async function parseGoogleMapsLocation(dayIndex: number, activityIndex: number, url: string) {
+    const key = draftKey(dayIndex, activityIndex);
+    setSearchingLocation(key);
+    try {
+      const response = await fetch("/api/parse-location", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const payload = (await response.json()) as ParsedLocation & { error?: string };
+      if (!response.ok || !payload.success || payload.lat === null || payload.lng === null) {
+        flash(payload.error ?? "Tidak bisa membaca koordinat dari link Google Maps.");
+        return;
+      }
+
+      updateActivity(dayIndex, activityIndex, {
+        locationName: payload.name || "Lokasi Google Maps",
+        formattedAddress: payload.finalUrl,
+        latitude: payload.lat,
+        longitude: payload.lng,
+        mapProvider: "google_maps",
+        mapPlaceId: "",
+        customLocation: false,
+      });
+      setLocationQueries((previous) => ({ ...previous, [key]: payload.name || url }));
+      setLocationResults((previous) => ({ ...previous, [key]: [] }));
+      flash("Lokasi dari Google Maps berhasil diambil.");
+    } finally {
+      setSearchingLocation(null);
+    }
+  }
+
   async function searchLocation(dayIndex: number, activityIndex: number) {
     const key = draftKey(dayIndex, activityIndex);
     const query = locationQueries[key]?.trim();
-    if (!query || query.length < 2) {
+    if (!query) {
+      flash("Masukkan nama lokasi atau tempel link Google Maps.");
+      return;
+    }
+
+    if (isGoogleMapsUrl(query)) {
+      await parseGoogleMapsLocation(dayIndex, activityIndex, query);
+      return;
+    }
+
+    if (query.length < 2) {
       flash("Ketik minimal 2 karakter untuk cari lokasi.");
       return;
     }
@@ -655,7 +698,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
         {current ? (
           <main className="workspace">
           <section className="main-column">
-            <section className="stories-strip" aria-label="Traveler spotlight">
+            {/* <section className="stories-strip" aria-label="Traveler spotlight">
               {items.slice(0, 7).map((item) => {
                 const isActive = item.id === current.id;
                 return (
@@ -675,7 +718,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                   </button>
                 );
               })}
-            </section>
+            </section> */}
 
             <section className="post-card">
               <div className="post-header">
@@ -771,7 +814,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                 <span className="meta-item">
                   <Icon name="wallet" />
                   <span>
-                    Total <strong>{formatRupiah(current.estimatedBudget)}</strong>
+                    Estimasi <strong>{formatRupiah(current.estimatedBudget)}</strong>
                   </span>
                 </span>
                 <span className="meta-item">
@@ -810,7 +853,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                       <span className="summary-icon">
                         <Icon name="compass" />
                       </span>
-                      <h3>Konsep Trip</h3>
+                      <h3>Deskripsi</h3>
                       <p>{current.description}</p>
                     </article>
                     <article className="summary-card">
@@ -1119,8 +1162,8 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               <label>
                 <span>Travel style</span>
                 <select name="travelStyle" defaultValue={formSource?.travelStyle ?? "Choose your style"} required>
-                  <option value="" disabled>
-                    Pilih gaya perjalanan
+                  <option value="Choose your style" disabled>
+                    Choose your style
                   </option>
                   <option>Random</option>
                   <option>Budget trip</option>
@@ -1210,7 +1253,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                       <input
                         value={locationQueries[key] ?? ""}
                         onChange={(event) => setLocationQueries((previous) => ({ ...previous, [key]: event.target.value }))}
-                        placeholder="Cari lokasi dari OpenStreetMap"
+                        placeholder="Cari lokasi atau tempel link Google Maps"
                       />
                       <button className="mini-button" type="button" onClick={() => searchLocation(activeDraftDayIndex, index)} disabled={searchingLocation === key}>
                         <Icon name="search" />

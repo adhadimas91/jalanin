@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import maplibregl from "maplibre-gl";
 import { Icon } from "./icon-sprite";
 import type { JalaninItinerary } from "./jalanin-app";
+import { isGoogleMapsUrl, type ParsedLocation } from "@/lib/maps-parser";
 
 type ActivityDraft = {
   time: string;
@@ -240,10 +241,53 @@ export function ItineraryDetailActions({ itinerary }: Props) {
     });
   }
 
+  async function parseGoogleMapsLocation(dayIndex: number, activityIndex: number, url: string) {
+    const key = draftKey(dayIndex, activityIndex);
+    setSearchingLocation(key);
+    setMessage("");
+    try {
+      const response = await fetch("/api/parse-location", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const payload = (await response.json()) as ParsedLocation & { error?: string };
+      if (!response.ok || !payload.success || payload.lat === null || payload.lng === null) {
+        setMessage(payload.error ?? "Tidak bisa membaca koordinat dari link Google Maps.");
+        return;
+      }
+
+      updateActivity(dayIndex, activityIndex, {
+        locationName: payload.name || "Lokasi Google Maps",
+        formattedAddress: payload.finalUrl,
+        latitude: payload.lat,
+        longitude: payload.lng,
+        mapProvider: "google_maps",
+        mapPlaceId: "",
+        customLocation: false,
+      });
+      setLocationQueries((previous) => ({ ...previous, [key]: payload.name || url }));
+      setLocationResults((previous) => ({ ...previous, [key]: [] }));
+      setMessage("Lokasi dari Google Maps berhasil diambil.");
+    } finally {
+      setSearchingLocation(null);
+    }
+  }
+
   async function searchLocation(dayIndex: number, activityIndex: number) {
     const key = draftKey(dayIndex, activityIndex);
     const query = locationQueries[key]?.trim();
-    if (!query || query.length < 2) {
+    if (!query) {
+      setMessage("Masukkan nama lokasi atau tempel link Google Maps.");
+      return;
+    }
+
+    if (isGoogleMapsUrl(query)) {
+      await parseGoogleMapsLocation(dayIndex, activityIndex, query);
+      return;
+    }
+
+    if (query.length < 2) {
       setMessage("Ketik minimal 2 karakter untuk cari lokasi.");
       return;
     }
@@ -493,7 +537,7 @@ export function ItineraryDetailActions({ itinerary }: Props) {
                           <input
                             value={locationQueries[key] ?? ""}
                             onChange={(event) => setLocationQueries((previous) => ({ ...previous, [key]: event.target.value }))}
-                            placeholder="Cari lokasi dari OpenStreetMap"
+                            placeholder="Cari lokasi atau tempel link Google Maps"
                           />
                           <button className="mini-button" type="button" onClick={() => searchLocation(dayIndex, activityIndex)} disabled={searchingLocation === key}>
                             <Icon name="search" />
