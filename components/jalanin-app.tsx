@@ -5,6 +5,7 @@ import Link from "next/link";
 import maplibregl from "maplibre-gl";
 import { Icon, IconSprite } from "./icon-sprite";
 import { PriceInput } from "./price-input";
+import { TimeInput } from "./time-input";
 import { ACTIVITY_TYPE_COLORS, ACTIVITY_TYPES, activityIcon, computeTripInsights, DEFAULT_ACTIVITY_TYPE, isKnownActivityType } from "@/lib/activity-types";
 import { formatCompact, formatRupiah } from "@/lib/format";
 import { isGoogleMapsUrl, type ParsedLocation } from "@/lib/maps-parser";
@@ -339,7 +340,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
     const nextDrafts = formSource?.days.length ? formSource.days.map(fromDay) : [createBlankDay(0)];
     setDayDrafts(nextDrafts);
-    setEstimatedBudgetDraft(formSource?.estimatedBudget ?? 1_500_000);
+    setEstimatedBudgetDraft(formSource?.estimatedBudget ?? 0);
     setActiveDraftDayIndex(0);
     setLocationQueries(createLocationQueryMap(nextDrafts));
     setLocationResults({});
@@ -538,7 +539,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
     const key = draftKey(dayIndex, activityIndex);
     const query = locationQueries[key]?.trim();
     if (!query) {
-      flash("Masukkan nama lokasi atau tempel link Google Maps.");
+      flash("Tempel link Google Maps.");
       return;
     }
 
@@ -1167,7 +1168,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               </label>
               <label>
                 <span>Durasi</span>
-                <input name="durationDays" type="number" min="1" required defaultValue={formSource?.durationDays ?? 3} />
+                <input name="durationDays" type="number" min="1" required defaultValue={formSource?.durationDays ?? 1} />
               </label>
             </div>
             <label>
@@ -1266,8 +1267,8 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                   </div>
                   <div className="form-grid compact">
                     <label>
-                      <span>Jam</span>
-                      <input value={activity.time} onChange={(event) => updateActivity(activeDraftDayIndex, index, { time: event.target.value })} placeholder="09.00" />
+                      <span>Waktu</span>
+                      <TimeInput value={activity.time} onChange={(time) => updateActivity(activeDraftDayIndex, index, { time })} />
                     </label>
                     <label>
                       <span>Nama aktivitas</span>
@@ -1303,7 +1304,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                       <input
                         value={locationQueries[key] ?? ""}
                         onChange={(event) => setLocationQueries((previous) => ({ ...previous, [key]: event.target.value }))}
-                        placeholder="Cari lokasi atau tempel link Google Maps"
+                        placeholder="Tempel link Google Maps"
                       />
                       <button className="mini-button" type="button" onClick={() => searchLocation(activeDraftDayIndex, index)} disabled={searchingLocation === key}>
                         <Icon name="search" />

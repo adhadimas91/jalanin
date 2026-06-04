@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import maplibregl from "maplibre-gl";
 import { Icon } from "./icon-sprite";
 import { PriceInput } from "./price-input";
+import { TimeInput } from "./time-input";
 import type { JalaninItinerary } from "./jalanin-app";
 import { ACTIVITY_TYPES, DEFAULT_ACTIVITY_TYPE, isKnownActivityType } from "@/lib/activity-types";
 import { isGoogleMapsUrl, type ParsedLocation } from "@/lib/maps-parser";
@@ -529,8 +530,8 @@ export function ItineraryDetailActions({ itinerary }: Props) {
                           <>
                       <div className="form-grid compact">
                         <label>
-                          <span>Jam</span>
-                          <input value={activity.time} onChange={(event) => updateActivity(dayIndex, activityIndex, { time: event.target.value })} placeholder="09.00" />
+                          <span>Waktu</span>
+                          <TimeInput value={activity.time} onChange={(time) => updateActivity(dayIndex, activityIndex, { time })} />
                         </label>
                         <label>
                           <span>Aktivitas</span>

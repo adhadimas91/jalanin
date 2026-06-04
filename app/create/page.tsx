@@ -26,7 +26,7 @@ export default async function CreatePage() {
           <div className="form-grid">
             <label>
               Durasi
-              <input name="durationDays" type="number" min="1" defaultValue={3} required />
+              <input name="durationDays" type="number" min="1" defaultValue={1} required />
             </label>
             <BudgetField />
           </div>

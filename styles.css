@@ -1347,6 +1347,26 @@ svg {
   align-items: start;
 }
 
+.time-input-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.time-input-part {
+  display: grid;
+  gap: 6px;
+}
+
+.time-input-part span {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.time-input-part input {
+  width: 100%;
+}
+
 .activity-builder {
   display: grid;
   gap: 12px;
