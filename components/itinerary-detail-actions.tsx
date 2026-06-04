@@ -262,14 +262,18 @@ export function ItineraryDetailActions({ itinerary }: Props) {
         return;
       }
 
+      const locationName = payload.name || "Lokasi Google Maps";
+      const activityTitle = locationName.split(",")[0]?.trim() || locationName;
+      const currentActivity = dayDrafts[dayIndex]?.activities[activityIndex];
       updateActivity(dayIndex, activityIndex, {
-        locationName: payload.name || "Lokasi Google Maps",
+        locationName,
         formattedAddress: payload.finalUrl,
         latitude: payload.lat,
         longitude: payload.lng,
         mapProvider: "google_maps",
         mapPlaceId: "",
         customLocation: false,
+        ...(!currentActivity?.title.trim() ? { title: activityTitle } : {}),
       });
       setLocationQueries((previous) => ({ ...previous, [key]: payload.name || url }));
       setLocationResults((previous) => ({ ...previous, [key]: [] }));
