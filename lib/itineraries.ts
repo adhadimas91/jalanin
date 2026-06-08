@@ -19,6 +19,9 @@ export async function getPublishedItineraries() {
             orderBy: {
               orderIndex: "asc",
             },
+            include: {
+              affiliateLink: true,
+            },
           },
         },
       },
@@ -48,6 +51,9 @@ export async function getItineraryById(id: string) {
           activities: {
             orderBy: {
               orderIndex: "asc",
+            },
+            include: {
+              affiliateLink: true,
             },
           },
         },

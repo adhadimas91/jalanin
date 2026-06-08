@@ -114,6 +114,16 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       createdAt: new Date().toISOString(),
     },
   },
+  affiliateWhitelistDomains: {
+    label: "Whitelist Domains Affiliate",
+    description: "Kelola domain partner resmi yang diizinkan sistem (misal *.klook.com, wa.me).",
+    columns: ["domainPattern", "isActive", "description", "createdAt"],
+    template: {
+      domainPattern: "*.klook.com",
+      isActive: true,
+      description: "Klook Affiliate Partner",
+    },
+  },
 };
 
 function stripMeta(record: Record<string, unknown>) {

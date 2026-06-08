@@ -52,6 +52,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
               <Link className="mini-button muted" href="/settings/profile">
                 Edit profil
               </Link>
+              <Link className="mini-button muted" href="/settings/affiliate" style={{ marginLeft: "8px" }}>
+                Link Affiliate
+              </Link>
             </div>
           ) : null}
         </div>

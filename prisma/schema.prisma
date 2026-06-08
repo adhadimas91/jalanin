@@ -28,6 +28,7 @@ model User {
   saves        SavedItinerary[]
   likes        Like[]
   sessions     Session[]
+  affiliateLinks AffiliateLink[]
 
   @@index([username])
 }
@@ -88,6 +89,9 @@ model Activity {
   category       String       @default("Activity")
   orderIndex     Int
   day            ItineraryDay @relation(fields: [itineraryDayId], references: [id], onDelete: Cascade)
+  
+  affiliateLinkId String?
+  affiliateLink   AffiliateLink? @relation(fields: [affiliateLinkId], references: [id], onDelete: SetNull)
 
   @@index([itineraryDayId, orderIndex])
 }
@@ -126,3 +130,27 @@ model Session {
 
   @@index([userId])
 }
+
+model AffiliateLink {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String
+  provider  String     // e.g. "Klook", "Agoda", "Traveloka", "Custom"
+  actualUrl String
+  activities Activity[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+
+  @@index([userId])
+}
+
+model AffiliateWhitelistDomain {
+  id            String   @id @default(cuid())
+  domainPattern String   @unique // e.g. "*.klook.com", "www.agoda.com", "wa.me"
+  isActive      Boolean  @default(true)
+  description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+}
+

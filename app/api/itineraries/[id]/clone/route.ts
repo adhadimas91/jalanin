@@ -46,6 +46,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
               estimatedCost: activity.estimatedCost,
               category: activity.category,
               orderIndex: activity.orderIndex,
+              affiliateLinkId: activity.affiliateLinkId,
             })),
           },
         })),

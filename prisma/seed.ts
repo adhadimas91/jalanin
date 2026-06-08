@@ -255,6 +255,30 @@ async function main() {
   await ensureItinerary(made.id, itineraries[1]);
   await ensureItinerary(risa.id, itineraries[2]);
 
+  // Seed Affiliate Whitelist Domains
+  const whitelistDomains = [
+    { domainPattern: "*.klook.com", description: "Klook Affiliate" },
+    { domainPattern: "*.agoda.com", description: "Agoda Affiliate" },
+    { domainPattern: "*.traveloka.com", description: "Traveloka Partner/Affiliate" },
+    { domainPattern: "*.tiket.com", description: "Tiket.com Affiliate" },
+    { domainPattern: "*.booking.com", description: "Booking.com Affiliate" },
+    { domainPattern: "wa.me", description: "WhatsApp Short Link for local guides/rentals" },
+    { domainPattern: "*.whatsapp.com", description: "WhatsApp Web links" },
+  ];
+
+  for (const domain of whitelistDomains) {
+    await prisma.affiliateWhitelistDomain.upsert({
+      where: { domainPattern: domain.domainPattern },
+      update: { description: domain.description },
+      create: {
+        domainPattern: domain.domainPattern,
+        description: domain.description,
+        isActive: true,
+      },
+    });
+  }
+  console.log(`Seeded ${whitelistDomains.length} affiliate whitelist domains.`);
+
   console.log(`Seeded ${itineraries.length} Jalanin itineraries.`);
   console.log("Demo login: risa@jalanin.local / jalanin123");
 }

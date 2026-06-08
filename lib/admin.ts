@@ -8,6 +8,7 @@ export const adminTables = [
   "saves",
   "likes",
   "sessions",
+  "affiliateWhitelistDomains",
 ] as const;
 
 export type AdminTable = (typeof adminTables)[number];
@@ -244,8 +245,17 @@ async function fetchSessions() {
   });
 }
 
+async function fetchAffiliateWhitelistDomains() {
+  return prisma.affiliateWhitelistDomain.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 100,
+  });
+}
+
 export async function getAdminSnapshot(): Promise<AdminSnapshot> {
-  const [users, itineraries, days, activities, saves, likes, sessions] = await Promise.all([
+  const [users, itineraries, days, activities, saves, likes, sessions, affiliateWhitelistDomains] = await Promise.all([
     fetchUsers(),
     fetchItineraries(),
     fetchDays(),
@@ -253,6 +263,7 @@ export async function getAdminSnapshot(): Promise<AdminSnapshot> {
     fetchSaves(),
     fetchLikes(),
     fetchSessions(),
+    fetchAffiliateWhitelistDomains(),
   ]);
 
   return {
@@ -313,6 +324,9 @@ export async function getAdminSnapshot(): Promise<AdminSnapshot> {
           user: record.user,
         },
       }),
+    ),
+    affiliateWhitelistDomains: affiliateWhitelistDomains.map((record) =>
+      serializeRecord(record),
     ),
   };
 }
@@ -414,6 +428,15 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           createdAt: readDate(data.createdAt, new Date()),
         },
       });
+    case "affiliateWhitelistDomains":
+      return prisma.affiliateWhitelistDomain.create({
+        data: {
+          id: readOptionalString(data.id) ?? undefined,
+          domainPattern: readString(data.domainPattern),
+          isActive: readBoolean(data.isActive, true),
+          description: readOptionalString(data.description) ?? undefined,
+        },
+      });
   }
 }
 
@@ -513,6 +536,15 @@ export async function updateAdminRecord(
           createdAt: readDate(data.createdAt, new Date()),
         },
       });
+    case "affiliateWhitelistDomains":
+      return prisma.affiliateWhitelistDomain.update({
+        where: { id },
+        data: {
+          domainPattern: readString(data.domainPattern),
+          isActive: readBoolean(data.isActive, true),
+          description: readOptionalString(data.description) ?? undefined,
+        },
+      });
   }
 }
 
@@ -532,5 +564,7 @@ export async function deleteAdminRecord(table: AdminTable, id: string) {
       return prisma.like.delete({ where: { id } });
     case "sessions":
       return prisma.session.delete({ where: { id } });
+    case "affiliateWhitelistDomains":
+      return prisma.affiliateWhitelistDomain.delete({ where: { id } });
   }
 }
