@@ -292,12 +292,13 @@ function RouteMap({ activities }: { activities: Array<JalaninActivity | Activity
 export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Props) {
   const [items, setItems] = useState(itineraries);
   const [currentId, setCurrentId] = useState(itineraries[0]?.id ?? "");
-  const [tab, setTab] = useState<"summary" | "days" | "map">("summary");
+  const [tab, setTab] = useState<"days" | "calendar" | "Hari demi Hari">("days");
   const [dayIndex, setDayIndex] = useState(0);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("Semua");
   const [saved, setSaved] = useState(savedIds);
   const [liked, setLiked] = useState(likedIds);
+  const [showCoverModal, setShowCoverModal] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [cloneSource, setCloneSource] = useState<JalaninItinerary | null>(null);
   const [editSource, setEditSource] = useState<JalaninItinerary | null>(null);
@@ -700,27 +701,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
         {current ? (
           <main className="workspace">
           <section className="main-column">
-            {/* <section className="stories-strip" aria-label="Traveler spotlight">
-              {items.slice(0, 7).map((item) => {
-                const isActive = item.id === current.id;
-                return (
-                  <button
-                    key={item.id}
-                    className={`story-bubble ${isActive ? "active" : ""}`}
-                    onClick={() => {
-                      setCurrentId(item.id);
-                      setDayIndex(0);
-                      setTab("summary");
-                    }}
-                  >
-                    <span className="story-avatar-ring">
-                      <img src={item.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={item.author.name ?? item.author.email} />
-                    </span>
-                    <span>{item.destination.split(",")[0]}</span>
-                  </button>
-                );
-              })}
-            </section> */}
+  
 
             <section className="post-card">
               <div className="post-header">
@@ -835,8 +816,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
             </section>
 
             <section className="tabs" aria-label="Konten itinerary">
-              {[
-                ["summary", "grid", "Ringkasan"],
+              {[ 
                 ["days", "calendar", "Hari demi Hari"],
                 ["map", "route", "Peta"],
               ].map(([value, icon, label]) => (
@@ -848,41 +828,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
             </section>
 
             <section className="tab-panel">
-              {tab === "summary" && (
-                <>
-                  <div className="summary-grid">
-                    <article className="summary-card">
-                      <span className="summary-icon">
-                        <Icon name="compass" />
-                      </span>
-                      <h3>Deskripsi</h3>
-                      <p>{current.description}</p>
-                    </article>
-                    <article className="summary-card">
-                      <span className="summary-icon">
-                        <Icon name="wallet" />
-                      </span>
-                      <h3>Budget Realistis</h3>
-                      <p>
-                        {formatRupiah(current.estimatedBudget)} untuk {current.durationDays} hari, sekitar{" "}
-                        {formatRupiah(Math.round(current.estimatedBudget / current.durationDays))} per hari.
-                      </p>
-                    </article>
-                    <article className="summary-card">
-                      <span className="summary-icon">
-                        <Icon name="route" />
-                      </span>
-                      <h3>Siap Digunakan</h3>
-                      <p>{current.copiesCount} traveler sudah memakai rute ini sebagai template perjalanan pribadi.</p>
-                    </article>
-                  </div>
-                  <article className="notes-card">
-                    <h3>Catatan creator</h3>
-                    <p>{current.notes || "Belum ada catatan tambahan."}</p>
-                  </article>
-                </>
-              )}
-
+         
               {tab === "days" && currentDay && (
                 <>
                   <div className="day-title">
@@ -948,56 +894,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               )}
             </section>
 
-            <section className="feed-section">
-              <div className="section-heading">
-                <div>
-                  <p>Jelajah itinerary</p>
-                  <h2>Rute populer minggu ini</h2>
-                </div>
-                <div className="filter-chips">
-                  {filters.map((option) => (
-                    <button key={option} className={`chip ${filter === option ? "active" : ""}`} onClick={() => setFilter(option)}>
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="feed-grid">
-                {filteredItems.map((item) => (
-                  <article className="feed-card" key={item.id}>
-                    <button
-                      onClick={() => {
-                        setCurrentId(item.id);
-                        setDayIndex(0);
-                        setTab("summary");
-                        document.querySelector(".app-shell")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                      }}
-                    >
-                      <img src={item.coverImageUrl} alt={item.destination} />
-                      <div className="feed-card-body">
-                        <div className="feed-card-user">
-                          <img src={item.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={item.author.name ?? item.author.email} />
-                          <span>{item.author.username ?? item.author.name ?? "traveler"}</span>
-                        </div>
-                        <h3>{item.title}</h3>
-                        <p>{item.destination}</p>
-                        <div className="feed-card-meta">
-                          <span>
-                            <Icon name="heart" />
-                            {formatCompact(item.likesCount)}
-                          </span>
-                          <span>
-                            <Icon name="bookmark" />
-                            {formatCompact(item.savesCount)}
-                          </span>
-                        </div>
-                        <span className="detail-link">Buka detail</span>
-                      </div>
-                    </button>
-                  </article>
-                ))}
-              </div>
-            </section>
+           
           </section>
 
           <aside className="sidebar">
@@ -1084,16 +981,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                 </Link>
               </div>
             </section>
-
-            <section className="side-card map-card">
-              <RouteMap activities={(currentDay?.activities ?? []).slice(0, 4)} />
-              <div className="map-controls">
-                <button className="mini-button muted" onClick={() => setTab("map")}>
-                  Route board
-                </button>
-                <button className="mini-button">Day {dayIndex + 1}</button>
-              </div>
-            </section>
+ 
 
             <section className="side-card saved-card">
               <div className="side-heading">
@@ -1383,6 +1271,17 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
       <div className={`toast ${toast ? "show" : ""}`} role="status">
         {toast}
       </div>
+
+      {showCoverModal && (
+        <div className="modal-overlay" onClick={() => setShowCoverModal(false)}>
+          <div className="modal-content cover-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowCoverModal(false)} aria-label="Tutup">
+              <Icon name="x" />
+            </button>
+            <img src={current.coverImageUrl} alt={current.destination} className="modal-image" />
+          </div>
+        </div>
+      )}
     </>
   );
 }
