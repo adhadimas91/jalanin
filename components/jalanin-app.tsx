@@ -292,7 +292,7 @@ function RouteMap({ activities }: { activities: Array<JalaninActivity | Activity
 export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Props) {
   const [items, setItems] = useState(itineraries);
   const [currentId, setCurrentId] = useState(itineraries[0]?.id ?? "");
-  const [tab, setTab] = useState<"days" | "calendar" | "Hari demi Hari">("days");
+  const [tab, setTab] = useState<"days" | "calendar" | "Hari demi Hari" | "map">("days");
   const [dayIndex, setDayIndex] = useState(0);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("Semua");
@@ -816,7 +816,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
             </section>
 
             <section className="tabs" aria-label="Konten itinerary">
-              {[ 
+              {[
                 ["days", "calendar", "Hari demi Hari"],
                 ["map", "route", "Peta"],
               ].map(([value, icon, label]) => (
