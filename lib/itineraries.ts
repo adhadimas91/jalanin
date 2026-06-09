@@ -32,6 +32,11 @@ export async function getPublishedItineraries() {
           id: true,
         },
       },
+      originalItinerary: {
+        include: {
+          author: true,
+        },
+      },
     },
   });
 }
@@ -63,6 +68,11 @@ export async function getItineraryById(id: string) {
       copies: {
         select: {
           id: true,
+        },
+      },
+      originalItinerary: {
+        include: {
+          author: true,
         },
       },
     },

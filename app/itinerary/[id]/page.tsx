@@ -44,6 +44,14 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
             <img src={itinerary.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={itinerary.author.name ?? itinerary.author.email} />
             <span>{itinerary.author.name ?? itinerary.author.email}</span>
           </div>
+          {itinerary.originalItinerary && (
+            <div className="remix-badge" style={{ marginTop: "12px", display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(23, 33, 43, 0.82)", padding: "5px 12px", borderRadius: "12px", fontSize: "11px", color: "#f7fafc", fontWeight: 700, border: "1px solid rgba(255, 255, 255, 0.15)" }}>
+              <Icon name="copy" />
+              <span>
+                Remix dari <Link href={`/itinerary/${itinerary.originalItinerary.id}`} style={{ color: "#ffffff", textDecoration: "underline", fontWeight: 800 }}>{itinerary.originalItinerary.title}</Link> oleh <Link href={`/profile/${itinerary.originalItinerary.author.username ?? itinerary.originalItinerary.author.id}`} style={{ color: "#ffffff", textDecoration: "underline", fontWeight: 800 }}>@{itinerary.originalItinerary.author.username ?? "creator"}</Link>
+              </span>
+            </div>
+          )}
         </div>
       </section>
       <section className="quick-meta" style={{ marginTop: 16, paddingBottom: 0 }} aria-label="Ringkasan itinerary">

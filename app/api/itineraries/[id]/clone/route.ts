@@ -23,7 +23,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
       durationDays: source.durationDays,
       estimatedBudget: source.estimatedBudget,
       travelStyle: source.travelStyle,
-      coverImageUrl: source.coverImageUrl,
+      coverImageUrl: "/uploads/default-cover.svg",
       notes: source.notes,
       originalItineraryId: source.id,
       authorId: user.id,

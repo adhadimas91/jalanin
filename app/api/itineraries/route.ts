@@ -41,6 +41,8 @@ export async function POST(request: Request) {
     }
   }
 
+  const originalItineraryId = formData.get("originalItineraryId") ? String(formData.get("originalItineraryId")) : null;
+
   const created = await prisma.itinerary.create({
     data: {
       title,
@@ -51,6 +53,7 @@ export async function POST(request: Request) {
       travelStyle: String(formData.get("travelStyle") ?? "Budget trip"),
       coverImageUrl,
       notes: String(formData.get("notes") ?? ""),
+      originalItineraryId,
       authorId: user.id,
       days: {
         create: days.map((day) => ({

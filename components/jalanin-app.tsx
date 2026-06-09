@@ -61,6 +61,15 @@ export type JalaninItinerary = {
   savesCount: number;
   likesCount: number;
   copiesCount: number;
+  originalItinerary?: {
+    id: string;
+    title: string;
+    author: {
+      id: string;
+      name: string | null;
+      username: string | null;
+    };
+  } | null;
 };
 
 type Props = {
@@ -754,6 +763,14 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                       <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
                       <span>{current.author.name ?? current.author.username ?? current.author.email}</span>
                     </div>
+                    {current.originalItinerary && (
+                      <div className="remix-badge" style={{ marginTop: "12px", display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(23, 33, 43, 0.82)", padding: "5px 12px", borderRadius: "12px", fontSize: "11px", color: "#f7fafc", fontWeight: 700, border: "1px solid rgba(255, 255, 255, 0.15)" }}>
+                        <Icon name="copy" />
+                        <span>
+                          Remix dari <a href={`/itinerary/${current.originalItinerary.id}`} style={{ color: "#ffffff", textDecoration: "underline", fontWeight: 800 }}>{current.originalItinerary.title}</a> oleh <Link href={`/profile/${current.originalItinerary.author.username ?? current.originalItinerary.author.id}`} style={{ color: "#ffffff", textDecoration: "underline", fontWeight: 800 }}>@{current.originalItinerary.author.username ?? "creator"}</Link>
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </section>
 
@@ -1181,7 +1198,10 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               <span>Cover image upload</span>
               <input name="imageFile" type="file" accept="image/png,image/jpeg,image/webp" />
             </label>
-            <input type="hidden" name="coverImageUrl" defaultValue={formSource?.coverImageUrl ?? "/uploads/default-cover.svg"} />
+            <input type="hidden" name="coverImageUrl" defaultValue={isEditing ? editSource?.coverImageUrl : "/uploads/default-cover.svg"} />
+            {cloneSource && (
+              <input type="hidden" name="originalItineraryId" defaultValue={cloneSource.id} />
+            )}
             <div className="form-grid">
               <label>
                 <span>Estimasi budget</span>

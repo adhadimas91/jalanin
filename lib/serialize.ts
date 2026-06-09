@@ -64,5 +64,16 @@ export function serializeItinerary(itinerary: Awaited<ReturnType<typeof getPubli
     savesCount: itinerary.saves.length,
     likesCount: itinerary.likes.length,
     copiesCount: itinerary.copies.length,
+    originalItinerary: (itinerary as any).originalItinerary
+      ? {
+          id: (itinerary as any).originalItinerary.id,
+          title: (itinerary as any).originalItinerary.title,
+          author: {
+            id: (itinerary as any).originalItinerary.author.id,
+            name: (itinerary as any).originalItinerary.author.name,
+            username: (itinerary as any).originalItinerary.author.username,
+          },
+        }
+      : null,
   };
 }
