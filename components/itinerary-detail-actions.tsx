@@ -22,6 +22,7 @@ type ActivityDraft = {
   customLocation: boolean;
   category: string;
   estimatedCost: number;
+  affiliateLinkId: string | null;
 };
 
 type DayDraft = {
@@ -58,6 +59,7 @@ function createBlankActivity(index: number): ActivityDraft {
     customLocation: false,
     category: DEFAULT_ACTIVITY_TYPE,
     estimatedCost: 0,
+    affiliateLinkId: null,
   };
 }
 
@@ -85,6 +87,7 @@ function createDrafts(itinerary: JalaninItinerary): DayDraft[] {
               customLocation: activity.customLocation,
               category: activity.category,
               estimatedCost: activity.estimatedCost,
+              affiliateLinkId: activity.affiliateLinkId || null,
             }))
           : [createBlankActivity(0)],
       }))
@@ -174,6 +177,17 @@ export function ItineraryDetailActions({ itinerary }: Props) {
   const [locationResults, setLocationResults] = useState<Record<string, LocationResult[]>>({});
   const [searchingLocation, setSearchingLocation] = useState<string | null>(null);
   const [pickerKey, setPickerKey] = useState<string | null>(null);
+  const [userAffiliateLinks, setUserAffiliateLinks] = useState<{ id: string; label: string; provider: string; actualUrl: string }[]>([]);
+
+  useEffect(() => {
+    fetch("/api/affiliate/links")
+      .then((res) => {
+        if (!res.ok) return [];
+        return res.json();
+      })
+      .then((data) => setUserAffiliateLinks(data))
+      .catch((err) => console.error("Gagal mengambil affiliate links:", err));
+  }, []);
 
   function resetEditor() {
     setDayDrafts(initialDrafts);
@@ -606,6 +620,34 @@ export function ItineraryDetailActions({ itinerary }: Props) {
                           />
                         </label>
                       </div>
+                      <label style={{ display: "grid", gap: "6px", marginTop: "10px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span>Sematkan Link Affiliate</span>
+                          <a href="/settings/affiliate" target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", color: "var(--blue)", fontWeight: 700 }}>
+                            Kelola
+                          </a>
+                        </div>
+                        <select
+                          value={activity.affiliateLinkId || ""}
+                          onChange={(event) => updateActivity(dayIndex, activityIndex, { affiliateLinkId: event.target.value || null })}
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            color: "var(--text)",
+                            background: "var(--surface-soft)",
+                            border: "1px solid var(--line-strong)",
+                            borderRadius: "var(--radius)",
+                            outline: 0
+                          }}
+                        >
+                          <option value="">-- Tanpa Link Affiliate --</option>
+                          {userAffiliateLinks.map((link) => (
+                            <option key={link.id} value={link.id}>
+                              {link.label} ({link.provider})
+                            </option>
+                          ))}
+                        </select>
+                      </label>
                       <div className="detail-activity-tools">
                         {day.activities.length > 1 ? (
                           <button className="tool-button" type="button" onClick={() => removeActivity(dayIndex, activityIndex)} aria-label="Hapus aktivitas">

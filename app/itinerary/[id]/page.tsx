@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { IconSprite } from "@/components/icon-sprite";
+import { IconSprite, Icon } from "@/components/icon-sprite";
 import { ItineraryDetailActions } from "@/components/itinerary-detail-actions";
+import { ItineraryInteractiveView } from "@/components/itinerary-interactive-view";
+import { CloneItineraryButton } from "@/components/clone-itinerary-button";
 import { getCurrentUser, isAdminUser } from "@/lib/auth";
 import { getItineraryById } from "@/lib/itineraries";
 import { formatRupiah } from "@/lib/format";
@@ -27,7 +29,11 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
         <Link className="plain-link" href="/">
           Kembali ke feed
         </Link>
-        {canManage ? <ItineraryDetailActions itinerary={serializedItinerary} /> : null}
+        {canManage ? (
+          <ItineraryDetailActions itinerary={serializedItinerary} />
+        ) : (
+          <CloneItineraryButton itineraryId={itinerary.id} />
+        )}
       </div>
       <section className="hero-card" style={{ marginTop: 16 }}>
         <img src={itinerary.coverImageUrl} alt={itinerary.destination} />
@@ -40,34 +46,43 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
           </div>
         </div>
       </section>
-      <section className="notes-card">
-        <h3>Ringkasan</h3>
-        <p>
-          {itinerary.durationDays} hari, {formatRupiah(itinerary.estimatedBudget)} - {itinerary.description}
-        </p>
+      <section className="quick-meta" style={{ marginTop: 16, paddingBottom: 0 }} aria-label="Ringkasan itinerary">
+        <span className="meta-item">
+          <Icon name="calendar" />
+          <span>
+            Durasi <strong>{itinerary.durationDays} hari</strong>
+          </span>
+        </span>
+        <span className="meta-item">
+          <Icon name="wallet" />
+          <span>
+            Estimasi <strong>{formatRupiah(itinerary.estimatedBudget)}</strong>
+          </span>
+        </span>
+        <span className="meta-item">
+          <Icon name="route" />
+          <span>
+            Per hari <strong>{formatRupiah(Math.round(itinerary.estimatedBudget / (itinerary.durationDays || 1)))}</strong>
+          </span>
+        </span>
+        <span className="meta-item">
+          <Icon name="star" />
+          <span>
+            Style <strong>{itinerary.travelStyle}</strong>
+          </span>
+        </span>
       </section>
-      <div className="server-list">
-        {itinerary.days.map((day) => (
-          <article className="side-card" key={day.id}>
-            <h2>{day.title}</h2>
-            <div className="timeline">
-              {day.activities.map((activity) => (
-                <article className="activity-card" key={activity.id}>
-                  <div className="activity-time">{activity.time}</div>
-                  <div className="activity-main">
-                    <strong>{activity.title}</strong>
-                    <span>
-                      {activity.category}
-                      {activity.locationName ? ` · ${activity.locationName}` : ""}
-                    </span>
-                  </div>
-                  <div className="activity-cost">{activity.estimatedCost ? formatRupiah(activity.estimatedCost) : "Gratis"}</div>
-                </article>
-              ))}
-            </div>
-          </article>
-        ))}
-      </div>
+      <section className="caption-block" style={{ marginTop: 16 }}>
+        <p>
+          <strong>{itinerary.author.username ?? itinerary.author.name ?? "jalanin"}</strong> {itinerary.description}
+        </p>
+        {itinerary.notes && (
+          <div style={{ marginTop: 8, fontSize: "13px", color: "var(--muted)", lineHeight: "1.5" }}>
+            <strong>Catatan:</strong> {itinerary.notes}
+          </div>
+        )}
+      </section>
+      <ItineraryInteractiveView itinerary={serializedItinerary} />
     </main>
   );
 }
