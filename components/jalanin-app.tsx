@@ -70,7 +70,7 @@ type Props = {
   likedIds: string[];
 };
 
-const filters = ["Semua","Random", "Budget trip", "Kuliner", "Nature", "Family", "City tour"];
+const filters = ["Semua", "Random", "Budget trip", "Kuliner", "Nature", "Family", "City tour"];
 
 type ActivityDraft = {
   time: string;
@@ -412,9 +412,9 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
       previous.map((item) =>
         item.id === current.id
           ? {
-              ...item,
-              savesCount: Math.max(0, item.savesCount + (isSaved ? -1 : 1)),
-            }
+            ...item,
+            savesCount: Math.max(0, item.savesCount + (isSaved ? -1 : 1)),
+          }
           : item,
       ),
     );
@@ -435,9 +435,9 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
       previous.map((item) =>
         item.id === current.id
           ? {
-              ...item,
-              likesCount: Math.max(0, item.likesCount + (isLiked ? -1 : 1)),
-            }
+            ...item,
+            likesCount: Math.max(0, item.likesCount + (isLiked ? -1 : 1)),
+          }
           : item,
       ),
     );
@@ -463,11 +463,11 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
       previous.map((day, currentDayIndex) =>
         currentDayIndex === dayIndex
           ? {
-              ...day,
-              activities: day.activities.map((activity, currentActivityIndex) =>
-                currentActivityIndex === activityIndex ? { ...activity, ...patch } : activity,
-              ),
-            }
+            ...day,
+            activities: day.activities.map((activity, currentActivityIndex) =>
+              currentActivityIndex === activityIndex ? { ...activity, ...patch } : activity,
+            ),
+          }
           : day,
       ),
     );
@@ -717,402 +717,410 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
         {current ? (
           <main className="workspace">
-          <section className="main-column">
-  
+            <section className="main-column">
 
-            <section className="post-card">
-              <div className="post-header">
-                <div className="post-user">
-                  <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
-                  <div>
-                    <strong>{current.author.name ?? current.author.username ?? current.author.email}</strong>
-                    <span>
-                      {current.destination} · {current.travelStyle}
-                    </span>
-                  </div>
-                </div>
-                <div className="post-tools">
-                  {currentUser && (current.author.id === currentUser.id || currentUser.role === "ADMIN") ? (
-                    <button className="ghost-chip" onClick={() => openEditDrawer(current)}>
-                      <Icon name="grid" />
-                      <span>Edit</span>
-                    </button>
-                  ) : null}
-                  <button className="ghost-chip" onClick={() => openRemixDrawer(current)}>
-                    <Icon name="plus" />
-                    <span>Remix</span>
-                  </button>
-                </div>
-              </div>
 
-              <section className="hero-card">
-                <img src={current.coverImageUrl} alt={current.destination} />
-                <div className="hero-overlay">
-                  <p>{current.destination}</p>
-                  <h1>{current.title}</h1>
-                  <div className="creator-line">
+              <section className="post-card">
+                <div className="post-header">
+                  <div className="post-user">
                     <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
-                    <span>{current.author.name ?? current.author.username ?? current.author.email}</span>
+                    <div>
+                      <strong>{current.author.name ?? current.author.username ?? current.author.email}</strong>
+                      <span>
+                        {current.destination} · {current.travelStyle}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="post-tools">
+                    {currentUser && (current.author.id === currentUser.id || currentUser.role === "ADMIN") ? (
+                      <button className="ghost-chip" onClick={() => openEditDrawer(current)}>
+                        <Icon name="grid" />
+                        <span>Edit</span>
+                      </button>
+                    ) : null}
+                    <button className="ghost-chip" onClick={() => openRemixDrawer(current)}>
+                      <Icon name="plus" />
+                      <span>Remix</span>
+                    </button>
                   </div>
                 </div>
+
+                <section className="hero-card">
+                  <img src={current.coverImageUrl} alt={current.destination} />
+                  <div className="hero-overlay">
+                    <p>{current.destination}</p>
+                    <h1>{current.title}</h1>
+                    <div className="creator-line">
+                      <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
+                      <span>{current.author.name ?? current.author.username ?? current.author.email}</span>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="action-row" aria-label="Aksi itinerary">
+                  <div className="action-cluster">
+                     {currentUser && (current.author.id === currentUser.id || currentUser.role === "ADMIN") ? (
+                    null
+                  ) : <div><button className={`icon-action ${liked.includes(current.id) ? "active" : ""}`} onClick={toggleLike} aria-label="Suka itinerary">
+                      <Icon name="heart" />
+                    </button>
+                    <button className={`icon-action ${saved.includes(current.id) ? "active" : ""}`} onClick={toggleSave} aria-label="Simpan itinerary">
+                      <Icon name="bookmark" />
+                    </button>
+                    <button className="icon-action" onClick={cloneItinerary} aria-label="Clone itinerary">
+                      <Icon name="copy" />
+                    </button>
+                    </div>}
+                   
+                    <button
+                      className="icon-action"
+                      onClick={() => {
+                        navigator.clipboard?.writeText(`${location.origin}/itinerary/${current.id}`);
+                        flash("Tautan itinerary berhasil disalin.");
+                      }}
+                      aria-label="Bagikan itinerary"
+                    >
+                      <Icon name="share" />
+                    </button>
+                  </div>
+
+                  {currentUser && (current.author.id === currentUser.id || currentUser.role === "ADMIN") ? (
+                    null
+                  ) : <button className="ghost-chip" onClick={cloneItinerary}>
+                    <span>Jalanin Rute Ini</span>
+                  </button>}
+
+                </section>
+
+                <section className="engagement-bar" aria-label="Stat interaksi">
+                  <strong>
+                    {formatCompact(current.likesCount)} suka · {formatCompact(current.savesCount)} simpan · {formatCompact(current.copiesCount)} remix
+                  </strong>
+                  <span>
+                    {current.durationDays} hari · {formatRupiah(current.estimatedBudget)}
+                  </span>
+                </section>
+
+                <section className="caption-block">
+                  <p>
+                    <strong>{current.author.username ?? "jalanin"}</strong> {current.description}
+                  </p>
+                  <div className="caption-tags">
+                    {[current.travelStyle, current.destination.split(",")[0], `${current.durationDays} hari`].map((tag) => (
+                      <span key={tag}>#{tag.replaceAll(" ", "").toLowerCase()}</span>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="quick-meta" aria-label="Ringkasan itinerary">
+                  <span className="meta-item">
+                    <Icon name="calendar" />
+                    <span>
+                      Durasi <strong>{current.durationDays} hari</strong>
+                    </span>
+                  </span>
+                  <span className="meta-item">
+                    <Icon name="wallet" />
+                    <span>
+                      Estimasi <strong>{formatRupiah(current.estimatedBudget)}</strong>
+                    </span>
+                  </span>
+                  <span className="meta-item">
+                    <Icon name="route" />
+                    <span>
+                      Per hari <strong>{formatRupiah(Math.round(current.estimatedBudget / current.durationDays))}</strong>
+                    </span>
+                  </span>
+                  <span className="meta-item">
+                    <Icon name="star" />
+                    <span>
+                      Style <strong>{current.travelStyle}</strong>
+                    </span>
+                  </span>
+                </section>
               </section>
 
-              <section className="action-row" aria-label="Aksi itinerary">
-                <div className="action-cluster">
-                  <button className={`icon-action ${liked.includes(current.id) ? "active" : ""}`} onClick={toggleLike} aria-label="Suka itinerary">
-                    <Icon name="heart" />
+              <section className="tabs" aria-label="Konten itinerary">
+                {[
+                  ["days", "calendar", "Hari demi Hari"],
+                  ["map", "route", "Peta"],
+                ].map(([value, icon, label]) => (
+                  <button key={value} className={`tab ${tab === value ? "active" : ""}`} onClick={() => setTab(value as typeof tab)}>
+                    <Icon name={icon} />
+                    {label}
                   </button>
-                  <button className={`icon-action ${saved.includes(current.id) ? "active" : ""}`} onClick={toggleSave} aria-label="Simpan itinerary">
-                    <Icon name="bookmark" />
-                  </button>
-                  <button className="icon-action" onClick={cloneItinerary} aria-label="Clone itinerary">
-                    <Icon name="copy" />
-                  </button>
-                  <button
-                    className="icon-action"
-                    onClick={() => {
-                      navigator.clipboard?.writeText(`${location.origin}/itinerary/${current.id}`);
-                      flash("Tautan itinerary berhasil disalin.");
-                    }}
-                    aria-label="Bagikan itinerary"
-                  >
-                    <Icon name="share" />
-                  </button>
+                ))}
+              </section>
+
+              <section className="tab-panel">
+
+                {tab === "days" && currentDay && (
+                  <>
+                    <div className="day-title">
+                      <h2>{currentDay.title}</h2>
+                      <div className="day-switcher">
+                        {current.days.map((day, index) => (
+                          <button key={day.id} className={index === dayIndex ? "active" : ""} onClick={() => setDayIndex(index)}>
+                            {day.dayNumber}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="timeline">
+                      {currentDay.activities.map((activity) => (
+                        <article className="activity-card" key={activity.id}>
+                          <div className="activity-time">{activity.time}</div>
+                          <div className="activity-icon">
+                            <Icon name={activityIcon(activity.category)} />
+                          </div>
+                          <div className="activity-main">
+                            <strong>{activity.title}</strong>
+                            <span>
+                              {activity.category}
+                              {activity.locationName ? ` · ${activity.locationName}` : ""}
+                            </span>
+                            {activity.affiliateLink && (
+                              <div style={{ marginTop: "8px" }}>
+                                <a
+                                  href={activity.affiliateLink.actualUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer nofollow"
+                                  style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "6px",
+                                    padding: "6px 12px",
+                                    fontSize: "11px",
+                                    fontWeight: 800,
+                                    color: "#fff",
+                                    background: activity.affiliateLink.provider === "Klook"
+                                      ? "#ff5e00"
+                                      : activity.affiliateLink.provider === "Agoda"
+                                        ? "#0096ff"
+                                        : activity.affiliateLink.provider === "Traveloka"
+                                          ? "#0194f3"
+                                          : activity.affiliateLink.provider === "Tiket.com"
+                                            ? "#0053b3"
+                                            : "var(--text, #111)",
+                                    borderRadius: "16px",
+                                    textDecoration: "none",
+                                    boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
+                                  }}
+                                  className="affiliate-cta"
+                                >
+                                  <Icon name="link" />
+                                  <span>Pesan via {activity.affiliateLink.provider}</span>
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                          <div className="activity-cost">{activity.estimatedCost ? formatRupiah(activity.estimatedCost) : "Gratis"}</div>
+                        </article>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {tab === "map" && currentDay && (
+                  <>
+                    <div className="day-title">
+                      <h2>Peta {currentDay.title}</h2>
+                      <div className="day-switcher">
+                        {current.days.map((day, index) => (
+                          <button key={day.id} className={index === dayIndex ? "active" : ""} onClick={() => setDayIndex(index)}>
+                            {day.dayNumber}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="route-board">
+                      <RouteMap activities={currentDay.activities} />
+                      <div className="route-list">
+                        {currentDay.activities.map((activity, index) => (
+                          <article className="route-step" key={activity.id}>
+                            <span>{index + 1}</span>
+                            <div>
+                              <strong>{activity.title}</strong>
+                              <small>
+                                {activity.time} - {activity.locationName || activity.category}
+                              </small>
+                            </div>
+                          </article>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </section>
+            </section>
+
+            <aside className="sidebar">
+
+
+              <section className="side-card budget-card">
+                <div className="side-heading">
+                  <h2>Trip Insights</h2>
+                  <span>{current.travelStyle}</span>
                 </div>
-                <button className="ghost-chip" onClick={cloneItinerary}>
-                  <span>Jalanin Rute Ini</span>
-                </button>
+                <div className="budget-total">
+                  <span>{tripInsights?.activityTotal ? "Total aktivitas" : "Estimasi budget"}</span>
+                  <strong>{formatRupiah(tripInsights?.activityTotal ? tripInsights.activityTotal : current.estimatedBudget)}</strong>
+                </div>
+                {tripInsights?.activityTotal && tripInsights.activityTotal !== current.estimatedBudget ? (
+                  <p className="budget-note">Estimasi creator {formatRupiah(current.estimatedBudget)}</p>
+                ) : null}
+                <div className="budget-meter">
+                  {tripInsights?.activityTotal ? (
+                    tripInsights.lines
+                      .filter((line) => line.total > 0)
+                      .map((line) => (
+                        <span
+                          key={line.type}
+                          style={{
+                            width: `${(line.total / tripInsights.activityTotal) * 100}%`,
+                            background: ACTIVITY_TYPE_COLORS[line.type],
+                          }}
+                        />
+                      ))
+                  ) : (
+                    <span />
+                  )}
+                </div>
+                <div className="budget-lines">
+                  {ACTIVITY_TYPES.map((label) => {
+                    const line = tripInsights?.lines.find((entry) => entry.type === label);
+                    const total = line?.total ?? 0;
+                    return (
+                      <div className="budget-line" key={label}>
+                        <Icon name={activityIcon(label)} />
+                        <span>{label}</span>
+                        <strong>{total ? formatRupiah(total) : "—"}</strong>
+                      </div>
+                    );
+                  })}
+                </div>
               </section>
 
-              <section className="engagement-bar" aria-label="Stat interaksi">
-                <strong>
-                  {formatCompact(current.likesCount)} suka · {formatCompact(current.savesCount)} simpan · {formatCompact(current.copiesCount)} remix
-                </strong>
-                <span>
-                  {current.durationDays} hari · {formatRupiah(current.estimatedBudget)}
-                </span>
-              </section>
-
-              <section className="caption-block">
-                <p>
-                  <strong>{current.author.username ?? "jalanin"}</strong> {current.description}
-                </p>
-                <div className="caption-tags">
+              <section className="side-card">
+                <div className="side-heading">
+                  <h2>Tag Trip</h2>
+                </div>
+                <div className="tag-list">
                   {[current.travelStyle, current.destination.split(",")[0], `${current.durationDays} hari`].map((tag) => (
-                    <span key={tag}>#{tag.replaceAll(" ", "").toLowerCase()}</span>
+                    <span key={tag}>{tag}</span>
                   ))}
                 </div>
               </section>
 
-              <section className="quick-meta" aria-label="Ringkasan itinerary">
-                <span className="meta-item">
-                  <Icon name="calendar" />
-                  <span>
-                    Durasi <strong>{current.durationDays} hari</strong>
-                  </span>
-                </span>
-                <span className="meta-item">
-                  <Icon name="wallet" />
-                  <span>
-                    Estimasi <strong>{formatRupiah(current.estimatedBudget)}</strong>
-                  </span>
-                </span>
-                <span className="meta-item">
-                  <Icon name="route" />
-                  <span>
-                    Per hari <strong>{formatRupiah(Math.round(current.estimatedBudget / current.durationDays))}</strong>
-                  </span>
-                </span>
-                <span className="meta-item">
-                  <Icon name="star" />
-                  <span>
-                    Style <strong>{current.travelStyle}</strong>
-                  </span>
-                </span>
+              <section className="side-card author-card">
+                <div className="side-heading">
+                  <h2>Creator</h2>
+                </div>
+                <div className="author-row">
+                  <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
+                  <div>
+                    <strong>{current.author.name ?? current.author.username ?? current.author.email}</strong>
+                    <span>{current.author.bio ?? "Traveler Jalanin"}</span>
+                  </div>
+                  <Link className="mini-button" href={`/profile/${current.author.username ?? current.author.id}`}>
+                    Profil
+                  </Link>
+                </div>
               </section>
-            </section>
 
-            <section className="tabs" aria-label="Konten itinerary">
-              {[
-                ["days", "calendar", "Hari demi Hari"],
-                ["map", "route", "Peta"],
-              ].map(([value, icon, label]) => (
-                <button key={value} className={`tab ${tab === value ? "active" : ""}`} onClick={() => setTab(value as typeof tab)}>
-                  <Icon name={icon} />
-                  {label}
-                </button>
-              ))}
-            </section>
 
-            <section className="tab-panel">
-         
-              {tab === "days" && currentDay && (
-                <>
-                  <div className="day-title">
-                    <h2>{currentDay.title}</h2>
-                    <div className="day-switcher">
-                      {current.days.map((day, index) => (
-                        <button key={day.id} className={index === dayIndex ? "active" : ""} onClick={() => setDayIndex(index)}>
-                          {day.dayNumber}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="timeline">
-                    {currentDay.activities.map((activity) => (
-                      <article className="activity-card" key={activity.id}>
-                        <div className="activity-time">{activity.time}</div>
-                        <div className="activity-icon">
-                          <Icon name={activityIcon(activity.category)} />
-                        </div>
-                        <div className="activity-main">
-                          <strong>{activity.title}</strong>
-                          <span>
-                            {activity.category}
-                            {activity.locationName ? ` · ${activity.locationName}` : ""}
-                          </span>
-                          {activity.affiliateLink && (
-                            <div style={{ marginTop: "8px" }}>
-                              <a
-                                href={activity.affiliateLink.actualUrl}
-                                target="_blank"
-                                rel="noopener noreferrer nofollow"
-                                style={{
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: "6px",
-                                  padding: "6px 12px",
-                                  fontSize: "11px",
-                                  fontWeight: 800,
-                                  color: "#fff",
-                                  background: activity.affiliateLink.provider === "Klook" 
-                                    ? "#ff5e00" 
-                                    : activity.affiliateLink.provider === "Agoda"
-                                    ? "#0096ff"
-                                    : activity.affiliateLink.provider === "Traveloka"
-                                    ? "#0194f3"
-                                    : activity.affiliateLink.provider === "Tiket.com"
-                                    ? "#0053b3"
-                                    : "var(--text, #111)",
-                                  borderRadius: "16px",
-                                  textDecoration: "none",
-                                  boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
-                                }}
-                                className="affiliate-cta"
-                              >
-                                <Icon name="link" />
-                                <span>Pesan via {activity.affiliateLink.provider}</span>
-                              </a>
-                            </div>
-                          )}
-                        </div>
-                        <div className="activity-cost">{activity.estimatedCost ? formatRupiah(activity.estimatedCost) : "Gratis"}</div>
-                      </article>
-                    ))}
-                  </div>
-                </>
-              )}
-
-              {tab === "map" && currentDay && (
-                <>
-                  <div className="day-title">
-                    <h2>Peta {currentDay.title}</h2>
-                    <div className="day-switcher">
-                      {current.days.map((day, index) => (
-                        <button key={day.id} className={index === dayIndex ? "active" : ""} onClick={() => setDayIndex(index)}>
-                          {day.dayNumber}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="route-board">
-                    <RouteMap activities={currentDay.activities} />
-                    <div className="route-list">
-                      {currentDay.activities.map((activity, index) => (
-                        <article className="route-step" key={activity.id}>
-                          <span>{index + 1}</span>
-                          <div>
-                            <strong>{activity.title}</strong>
-                            <small>
-                              {activity.time} - {activity.locationName || activity.category}
-                            </small>
-                          </div>
-                        </article>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-            </section>
-          </section>
-
-          <aside className="sidebar">
-  
-
-            <section className="side-card budget-card">
-              <div className="side-heading">
-                <h2>Trip Insights</h2>
-                <span>{current.travelStyle}</span>
-              </div>
-              <div className="budget-total">
-                <span>{tripInsights?.activityTotal ? "Total aktivitas" : "Estimasi budget"}</span>
-                <strong>{formatRupiah(tripInsights?.activityTotal ? tripInsights.activityTotal : current.estimatedBudget)}</strong>
-              </div>
-              {tripInsights?.activityTotal && tripInsights.activityTotal !== current.estimatedBudget ? (
-                <p className="budget-note">Estimasi creator {formatRupiah(current.estimatedBudget)}</p>
-              ) : null}
-              <div className="budget-meter">
-                {tripInsights?.activityTotal ? (
-                  tripInsights.lines
-                    .filter((line) => line.total > 0)
-                    .map((line) => (
-                      <span
-                        key={line.type}
-                        style={{
-                          width: `${(line.total / tripInsights.activityTotal) * 100}%`,
-                          background: ACTIVITY_TYPE_COLORS[line.type],
-                        }}
-                      />
-                    ))
-                ) : (
-                  <span />
-                )}
-              </div>
-              <div className="budget-lines">
-                {ACTIVITY_TYPES.map((label) => {
-                  const line = tripInsights?.lines.find((entry) => entry.type === label);
-                  const total = line?.total ?? 0;
-                  return (
-                    <div className="budget-line" key={label}>
-                      <Icon name={activityIcon(label)} />
-                      <span>{label}</span>
-                      <strong>{total ? formatRupiah(total) : "—"}</strong>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-
-            <section className="side-card">
-              <div className="side-heading">
-                <h2>Tag Trip</h2>
-              </div>
-              <div className="tag-list">
-                {[current.travelStyle, current.destination.split(",")[0], `${current.durationDays} hari`].map((tag) => (
-                  <span key={tag}>{tag}</span>
-                ))}
-              </div>
-            </section>
-
-            <section className="side-card author-card">
-              <div className="side-heading">
-                <h2>Creator</h2>
-              </div>
-              <div className="author-row">
-                <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
-                <div>
-                  <strong>{current.author.name ?? current.author.username ?? current.author.email}</strong>
-                  <span>{current.author.bio ?? "Traveler Jalanin"}</span>
+              <section className="side-card saved-card">
+                <div className="side-heading">
+                  <h2>Itinerary Kamu</h2>
+                  <span>{createdItems.length}</span>
                 </div>
-                <Link className="mini-button" href={`/profile/${current.author.username ?? current.author.id}`}>
-                  Profil
-                </Link>
-              </div>
-            </section>
- 
-
-            <section className="side-card saved-card">
-              <div className="side-heading">
-                <h2>Itinerary Kamu</h2>
-                <span>{createdItems.length}</span>
-              </div>
-              <div className="compact-list">
-                {createdItems.length ? (
-                  createdItems.map((item) => (
-                    <button key={item.id} className="compact-item" onClick={() => setCurrentId(item.id)}>
-                      <img src={item.coverImageUrl} alt={item.destination} />
-                      <span>
-                        <strong>{item.title}</strong>
-                        <span>
-                          {item.durationDays} hari - {formatRupiah(item.estimatedBudget)}
-                        </span>
-                      </span>
-                    </button>
-                  ))
-                ) : (
-                  <div className="empty-state">Belum ada itinerary yang dibuat. Buat itinerary pertamamu sekarang.</div>
-                )}
-              </div>
-            </section>
-          </aside>
-
-          <section className="feed-section" id="exploreSection">
-            <div className="section-heading">
-              <div>
-                <p>Jelajah itinerary</p>
-                <h2>Rute populer minggu ini</h2>
-              </div>
-              <div className="filter-chips">
-                {filters.map((category) => (
-                  <button
-                    key={category}
-                    className={`chip ${filter === category ? "active" : ""}`}
-                    onClick={() => setFilter(category)}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="feed-grid">
-              {filteredItems.length ? (
-                filteredItems.map((item, index) => {
-                  const isLarge = index % 10 === 2 || index % 10 === 7;
-                  return (
-                    <article key={item.id} className={`feed-card ${isLarge ? "large" : ""}`}>
-                      <button onClick={() => {
-                        setCurrentId(item.id);
-                        setDayIndex(0);
-                        setTab("days");
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                      }}>
+                <div className="compact-list">
+                  {createdItems.length ? (
+                    createdItems.map((item) => (
+                      <button key={item.id} className="compact-item" onClick={() => setCurrentId(item.id)}>
                         <img src={item.coverImageUrl} alt={item.destination} />
-                        <div className="feed-card-overlay">
-                          <div className="feed-card-overlay-top">
-                            <p className="feed-card-destination">{item.destination}</p>
-                            <h3 className="feed-card-title">{item.title}</h3>
-                          </div>
-                          <div className="feed-card-overlay-bottom">
-                            <div className="feed-card-metrics-main">
-                              <span>
-                                <Icon name="calendar" /> {item.durationDays} hari
-                              </span>
-                              <span>
-                                <Icon name="wallet" /> {formatRupiah(item.estimatedBudget)}
-                              </span>
-                            </div>
-                            <div className="feed-card-engagement-stats">
-                              <span>
-                                <Icon name="heart" /> {formatCompact(item.likesCount)}
-                              </span>
-                              <span>
-                                <Icon name="bookmark" /> {formatCompact(item.savesCount)}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+                        <span>
+                          <strong>{item.title}</strong>
+                          <span>
+                            {item.durationDays} hari - {formatRupiah(item.estimatedBudget)}
+                          </span>
+                        </span>
                       </button>
-                    </article>
-                  );
-                })
-              ) : (
-                <div className="empty-state">
-                  Tidak ada itinerary yang cocok dengan pencarian ini.
+                    ))
+                  ) : (
+                    <div className="empty-state">Belum ada itinerary yang dibuat. Buat itinerary pertamamu sekarang.</div>
+                  )}
                 </div>
-              )}
-            </div>
-          </section>
+              </section>
+            </aside>
+
+            <section className="feed-section" id="exploreSection">
+              <div className="section-heading">
+                <div>
+                  <p>Jelajah itinerary</p>
+                  <h2>Rute populer minggu ini</h2>
+                </div>
+                <div className="filter-chips">
+                  {filters.map((category) => (
+                    <button
+                      key={category}
+                      className={`chip ${filter === category ? "active" : ""}`}
+                      onClick={() => setFilter(category)}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="feed-grid">
+                {filteredItems.length ? (
+                  filteredItems.map((item, index) => {
+                    const isLarge = index % 10 === 2 || index % 10 === 7;
+                    return (
+                      <article key={item.id} className={`feed-card ${isLarge ? "large" : ""}`}>
+                        <button onClick={() => {
+                          setCurrentId(item.id);
+                          setDayIndex(0);
+                          setTab("days");
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}>
+                          <img src={item.coverImageUrl} alt={item.destination} />
+                          <div className="feed-card-overlay">
+                            <div className="feed-card-overlay-top">
+                              <p className="feed-card-destination">{item.destination}</p>
+                              <h3 className="feed-card-title">{item.title}</h3>
+                            </div>
+                            <div className="feed-card-overlay-bottom">
+                              <div className="feed-card-metrics-main">
+                                <span>
+                                  <Icon name="calendar" /> {item.durationDays} hari
+                                </span>
+                                <span>
+                                  <Icon name="wallet" /> {formatRupiah(item.estimatedBudget)}
+                                </span>
+                              </div>
+                              <div className="feed-card-engagement-stats">
+                                <span>
+                                  <Icon name="heart" /> {formatCompact(item.likesCount)}
+                                </span>
+                                <span>
+                                  <Icon name="bookmark" /> {formatCompact(item.savesCount)}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </button>
+                      </article>
+                    );
+                  })
+                ) : (
+                  <div className="empty-state">
+                    Tidak ada itinerary yang cocok dengan pencarian ini.
+                  </div>
+                )}
+              </div>
+            </section>
           </main>
         ) : (
           <main className="workspace empty-workspace">
@@ -1254,111 +1262,111 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                   {activeDraftDay.activities.map((activity, index) => {
                     const key = draftKey(activeDraftDayIndex, index);
                     return (
-                <article className="activity-input-card" key={key}>
-                  <div className="activity-input-top">
-                    <span>{index + 1}</span>
-                    {activeDraftDay.activities.length > 1 ? (
-                      <button className="tool-button" type="button" onClick={() => removeActivity(activeDraftDayIndex, index)} aria-label="Hapus aktivitas">
-                        <Icon name="x" />
-                      </button>
-                    ) : null}
-                  </div>
-                  <div className="form-grid compact">
-                    <label>
-                      <span>Waktu</span>
-                      <TimeInput value={activity.time} onChange={(time) => updateActivity(activeDraftDayIndex, index, { time })} />
-                    </label>
-                    <label>
-                      <span>Nama aktivitas</span>
-                      <input value={activity.title} onChange={(event) => updateActivity(activeDraftDayIndex, index, { title: event.target.value })} placeholder="Makan siang lokal" />
-                    </label>
-                  </div>
-                  <div className="form-grid compact">
-                    <label>
-                      <span>Tipe aktivitas</span>
-                      <select value={activity.category} onChange={(event) => updateActivity(activeDraftDayIndex, index, { category: event.target.value })}>
-                        {!isKnownActivityType(activity.category) && activity.category ? (
-                          <option value={activity.category}>{activity.category}</option>
+                      <article className="activity-input-card" key={key}>
+                        <div className="activity-input-top">
+                          <span>{index + 1}</span>
+                          {activeDraftDay.activities.length > 1 ? (
+                            <button className="tool-button" type="button" onClick={() => removeActivity(activeDraftDayIndex, index)} aria-label="Hapus aktivitas">
+                              <Icon name="x" />
+                            </button>
+                          ) : null}
+                        </div>
+                        <div className="form-grid compact">
+                          <label>
+                            <span>Waktu</span>
+                            <TimeInput value={activity.time} onChange={(time) => updateActivity(activeDraftDayIndex, index, { time })} />
+                          </label>
+                          <label>
+                            <span>Nama aktivitas</span>
+                            <input value={activity.title} onChange={(event) => updateActivity(activeDraftDayIndex, index, { title: event.target.value })} placeholder="Makan siang lokal" />
+                          </label>
+                        </div>
+                        <div className="form-grid compact">
+                          <label>
+                            <span>Tipe aktivitas</span>
+                            <select value={activity.category} onChange={(event) => updateActivity(activeDraftDayIndex, index, { category: event.target.value })}>
+                              {!isKnownActivityType(activity.category) && activity.category ? (
+                                <option value={activity.category}>{activity.category}</option>
+                              ) : null}
+                              {ACTIVITY_TYPES.map((type) => (
+                                <option key={type} value={type}>
+                                  {type}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          <label>
+                            <span>Harga</span>
+                            <PriceInput
+                              value={activity.estimatedCost}
+                              onChange={(estimatedCost) => updateActivity(activeDraftDayIndex, index, { estimatedCost })}
+                              placeholder="350.000"
+                            />
+                          </label>
+                        </div>
+                        <label>
+                          <span>Lokasi</span>
+                          <div className="location-search-row">
+                            <input
+                              value={locationQueries[key] ?? ""}
+                              onChange={(event) => setLocationQueries((previous) => ({ ...previous, [key]: event.target.value }))}
+                              placeholder="Tempel link Google Maps"
+                            />
+                            <button className="mini-button" type="button" onClick={() => searchLocation(activeDraftDayIndex, index)} disabled={searchingLocation === key}>
+                              <Icon name="search" />
+                              <span>{searchingLocation === key ? "Cari..." : "Cari"}</span>
+                            </button>
+                          </div>
+                        </label>
+                        {locationResults[key]?.length ? (
+                          <div className="location-results">
+                            {locationResults[key].map((result) => (
+                              <button key={`${result.placeId}-${result.latitude}-${result.longitude}`} type="button" onClick={() => selectLocation(activeDraftDayIndex, index, result)}>
+                                <strong>{result.name}</strong>
+                                <span>{result.formattedAddress}</span>
+                              </button>
+                            ))}
+                          </div>
                         ) : null}
-                        {ACTIVITY_TYPES.map((type) => (
-                          <option key={type} value={type}>
-                            {type}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      <span>Harga</span>
-                      <PriceInput
-                        value={activity.estimatedCost}
-                        onChange={(estimatedCost) => updateActivity(activeDraftDayIndex, index, { estimatedCost })}
-                        placeholder="350.000"
-                      />
-                    </label>
-                  </div>
-                  <label>
-                    <span>Lokasi</span>
-                    <div className="location-search-row">
-                      <input
-                        value={locationQueries[key] ?? ""}
-                        onChange={(event) => setLocationQueries((previous) => ({ ...previous, [key]: event.target.value }))}
-                        placeholder="Tempel link Google Maps"
-                      />
-                      <button className="mini-button" type="button" onClick={() => searchLocation(activeDraftDayIndex, index)} disabled={searchingLocation === key}>
-                        <Icon name="search" />
-                        <span>{searchingLocation === key ? "Cari..." : "Cari"}</span>
-                      </button>
-                    </div>
-                  </label>
-                  {locationResults[key]?.length ? (
-                    <div className="location-results">
-                      {locationResults[key].map((result) => (
-                        <button key={`${result.placeId}-${result.latitude}-${result.longitude}`} type="button" onClick={() => selectLocation(activeDraftDayIndex, index, result)}>
-                          <strong>{result.name}</strong>
-                          <span>{result.formattedAddress}</span>
-                        </button>
-                      ))}
-                    </div>
-                  ) : null}
-                  <div className="location-summary">
-                    <Icon name="map-pin" />
-                    <span>
-                      {activity.locationName || "Belum ada lokasi"}
-                      {typeof activity.latitude === "number" && typeof activity.longitude === "number" ? ` · ${activity.latitude.toFixed(5)}, ${activity.longitude.toFixed(5)}` : ""}
-                    </span>
-                    <button className="mini-button muted" type="button" onClick={() => setPickerKey(pickerKey === key ? null : key)}>
-                      Pilih titik
-                    </button>
-                  </div>
-                  {pickerKey === key ? (
-                    <PointPicker value={{ latitude: activity.latitude, longitude: activity.longitude }} onPick={(point) => pickManualPoint(activeDraftDayIndex, index, point)} />
-                  ) : null}
-                  <label style={{ marginTop: "12px", display: "block" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                      <span>Sematkan Link Affiliate</span>
-                      <a href="/settings/affiliate" target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", color: "var(--blue)", fontWeight: 700 }}>
-                        Kelola Link &rarr;
-                      </a>
-                    </div>
-                    <select
-                      value={activity.affiliateLinkId || ""}
-                      onChange={(event) => updateActivity(activeDraftDayIndex, index, { affiliateLinkId: event.target.value || null })}
-                      style={{ width: "100%", padding: "8px 10px", borderRadius: "8px", border: "1px solid var(--line)", background: "var(--surface)" }}
-                    >
-                      <option value="">-- Tidak Ada --</option>
-                      {userAffiliateLinks.map((link) => (
-                        <option key={link.id} value={link.id}>
-                          [{link.provider}] {link.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  {activity.affiliateLinkId && (
-                    <div style={{ fontSize: "11px", color: "var(--muted)", marginTop: "4px", wordBreak: "break-all" }}>
-                      Tautan terpilih: <strong>{userAffiliateLinks.find(l => l.id === activity.affiliateLinkId)?.label || "Memuat..."}</strong>
-                    </div>
-                  )}
-                </article>
+                        <div className="location-summary">
+                          <Icon name="map-pin" />
+                          <span>
+                            {activity.locationName || "Belum ada lokasi"}
+                            {typeof activity.latitude === "number" && typeof activity.longitude === "number" ? ` · ${activity.latitude.toFixed(5)}, ${activity.longitude.toFixed(5)}` : ""}
+                          </span>
+                          <button className="mini-button muted" type="button" onClick={() => setPickerKey(pickerKey === key ? null : key)}>
+                            Pilih titik
+                          </button>
+                        </div>
+                        {pickerKey === key ? (
+                          <PointPicker value={{ latitude: activity.latitude, longitude: activity.longitude }} onPick={(point) => pickManualPoint(activeDraftDayIndex, index, point)} />
+                        ) : null}
+                        <label style={{ marginTop: "12px", display: "block" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                            <span>Sematkan Link Affiliate</span>
+                            <a href="/settings/affiliate" target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", color: "var(--blue)", fontWeight: 700 }}>
+                              Kelola Link &rarr;
+                            </a>
+                          </div>
+                          <select
+                            value={activity.affiliateLinkId || ""}
+                            onChange={(event) => updateActivity(activeDraftDayIndex, index, { affiliateLinkId: event.target.value || null })}
+                            style={{ width: "100%", padding: "8px 10px", borderRadius: "8px", border: "1px solid var(--line)", background: "var(--surface)" }}
+                          >
+                            <option value="">-- Tidak Ada --</option>
+                            {userAffiliateLinks.map((link) => (
+                              <option key={link.id} value={link.id}>
+                                [{link.provider}] {link.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        {activity.affiliateLinkId && (
+                          <div style={{ fontSize: "11px", color: "var(--muted)", marginTop: "4px", wordBreak: "break-all" }}>
+                            Tautan terpilih: <strong>{userAffiliateLinks.find(l => l.id === activity.affiliateLinkId)?.label || "Memuat..."}</strong>
+                          </div>
+                        )}
+                      </article>
                     );
                   })}
                 </section>
