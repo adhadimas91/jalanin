@@ -29,6 +29,20 @@ type WhitelistDomain = {
   description: string | null;
 };
 
+// Helper untuk mengekstrak nama provider secara dinamis dari domain pattern di whitelist
+function getProviderNameFromPattern(pattern: string): string {
+  const clean = pattern.replace("*.", "").toLowerCase();
+  if (clean.includes("klook")) return "Klook";
+  if (clean.includes("agoda")) return "Agoda";
+  if (clean.includes("traveloka")) return "Traveloka";
+  if (clean.includes("tiket.com")) return "Tiket.com";
+  if (clean.includes("booking")) return "Booking.com";
+  if (clean.includes("wa.me") || clean.includes("whatsapp")) return "WhatsApp";
+  
+  const part = clean.split(".")[0];
+  return part.charAt(0).toUpperCase() + part.slice(1);
+}
+
 export default function AffiliateSettingsPage() {
   const [links, setLinks] = useState<AffiliateLink[]>([]);
   const [whitelist, setWhitelist] = useState<WhitelistDomain[]>([]);
@@ -40,6 +54,14 @@ export default function AffiliateSettingsPage() {
   const [label, setLabel] = useState("");
   const [actualUrl, setActualUrl] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  // Search, Filter, Sort & Paging State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [providerFilter, setProviderFilter] = useState("Semua");
+  const [usageFilter, setUsageFilter] = useState("Semua");
+  const [sortBy, setSortBy] = useState("terbaru");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   // Load data
   useEffect(() => {
@@ -171,6 +193,61 @@ export default function AffiliateSettingsPage() {
     }
   }
 
+  // Ambil list provider unik dari data whitelist mitra resmi
+  const dynamicProviders = Array.from(
+    new Set(
+      whitelist
+        .map((item) => getProviderNameFromPattern(item.domainPattern))
+        .filter(Boolean)
+    )
+  );
+
+  // Logika filter & pencarian lokal
+  const filteredLinks = links.filter((link) => {
+    const matchesQuery =
+      link.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      link.actualUrl.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesProvider =
+      providerFilter === "Semua" ||
+      link.provider.toLowerCase() === providerFilter.toLowerCase();
+
+    const hasUsage = link.activities && link.activities.length > 0;
+    const matchesUsage =
+      usageFilter === "Semua" ||
+      (usageFilter === "Terpakai" && hasUsage) ||
+      (usageFilter === "TidakTerpakai" && !hasUsage);
+
+    return matchesQuery && matchesProvider && matchesUsage;
+  });
+
+  // Logika pengurutan (Sorting) lokal
+  const sortedLinks = [...filteredLinks].sort((a, b) => {
+    if (sortBy === "terbaru") {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+    if (sortBy === "terlama") {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    }
+    if (sortBy === "namaAsc") {
+      return a.label.localeCompare(b.label);
+    }
+    if (sortBy === "namaDesc") {
+      return b.label.localeCompare(a.label);
+    }
+    if (sortBy === "terpopuler") {
+      const aUsage = a.activities?.length || 0;
+      const bUsage = b.activities?.length || 0;
+      return bUsage - aUsage;
+    }
+    return 0;
+  });
+
+  const totalPages = Math.ceil(filteredLinks.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedLinks = sortedLinks.slice(startIndex, endIndex);
+
   if (loading) {
     return (
       <main className="page-center">
@@ -185,7 +262,7 @@ export default function AffiliateSettingsPage() {
         &larr; Kembali ke profil
       </Link>
       
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: "24px", alignItems: "start" }}>
+      <div className="affiliate-grid">
         
         {/* Kolom Kiri: Form Add/Edit */}
         <section className="auth-card">
@@ -252,120 +329,302 @@ export default function AffiliateSettingsPage() {
             Tautan di bawah ini dapat disematkan langsung saat Anda menyusun aktivitas rute perjalanan.
           </p>
 
+          {/* Controls: Search & Filters (Hanya muncul jika ada link terdaftar atau filter aktif) */}
+          {(links.length > 0 || searchQuery || providerFilter !== "Semua" || usageFilter !== "Semua") && (
+            <div style={{ marginBottom: "16px", display: "grid", gap: "10px" }}>
+              {/* Searchbox Input */}
+              <div className="searchbox">
+                <svg viewBox="0 0 24 24" style={{ width: "16px", height: "16px", flexShrink: 0 }}>
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Cari label atau URL..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                />
+              </div>
+
+              {/* Filters & Sorting Dropdown */}
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                <select
+                  value={providerFilter}
+                  onChange={(e) => {
+                    setProviderFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  style={{
+                    flex: 1,
+                    minWidth: "120px",
+                    padding: "8px 12px",
+                    fontSize: "13px",
+                    background: "var(--surface-soft)",
+                    border: "1px solid var(--line)",
+                    borderRadius: "999px",
+                    outline: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <option value="Semua">Semua Partner</option>
+                  {dynamicProviders.map((prov) => (
+                    <option key={prov} value={prov}>
+                      {prov}
+                    </option>
+                  ))}
+                  {links.some((l) => l.provider === "Custom" || l.provider === "Lainnya") && (
+                    <option value="Custom">Custom / Lainnya</option>
+                  )}
+                </select>
+
+                <select
+                  value={usageFilter}
+                  onChange={(e) => {
+                    setUsageFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  style={{
+                    flex: 1,
+                    minWidth: "120px",
+                    padding: "8px 12px",
+                    fontSize: "13px",
+                    background: "var(--surface-soft)",
+                    border: "1px solid var(--line)",
+                    borderRadius: "999px",
+                    outline: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <option value="Semua">Semua Status</option>
+                  <option value="Terpakai">Terpakai di Rute</option>
+                  <option value="TidakTerpakai">Belum Digunakan</option>
+                </select>
+
+                <select
+                  value={sortBy}
+                  onChange={(e) => {
+                    setSortBy(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  style={{
+                    flex: 1,
+                    minWidth: "120px",
+                    padding: "8px 12px",
+                    fontSize: "13px",
+                    background: "var(--surface-soft)",
+                    border: "1px solid var(--line)",
+                    borderRadius: "999px",
+                    outline: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <option value="terbaru">Terbaru</option>
+                  <option value="terlama">Terlama</option>
+                  <option value="namaAsc">Nama (A-Z)</option>
+                  <option value="namaDesc">Nama (Z-A)</option>
+                  <option value="terpopuler">Terbanyak Digunakan</option>
+                </select>
+              </div>
+            </div>
+          )}
+
           {links.length === 0 ? (
             <div style={{ textAlign: "center", color: "var(--muted)", padding: "40px 0" }}>
               Belum ada link affiliate terdaftar. Mulai dengan menambahkannya di form sebelah kiri.
             </div>
+          ) : filteredLinks.length === 0 ? (
+            <div style={{ textAlign: "center", color: "var(--muted)", padding: "40px 0" }}>
+              Tidak ada tautan affiliate yang cocok dengan kriteria pencarian/penyaringan.
+            </div>
           ) : (
-            <div style={{ display: "grid", gap: "12px" }}>
-              {links.map((link) => (
+            <>
+              <div style={{ display: "grid", gap: "12px" }}>
+                {paginatedLinks.map((link) => (
+                  <div
+                    key={link.id}
+                    style={{
+                      padding: "12px 14px",
+                      border: "1px solid var(--line)",
+                      borderRadius: "8px",
+                      background: "var(--surface-soft)",
+                      display: "grid",
+                      gap: "6px",
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <strong style={{ fontSize: "14px" }}>{link.label}</strong>
+                      <span
+                        style={{
+                          fontSize: "10px",
+                          fontWeight: 800,
+                          padding: "2px 6px",
+                          borderRadius: "12px",
+                          background: link.provider === "Klook" ? "rgba(255, 94, 0, 0.15)" : link.provider === "Agoda" ? "rgba(0, 150, 255, 0.15)" : "rgba(128,128,128,0.15)",
+                          color: link.provider === "Klook" ? "var(--orange)" : link.provider === "Agoda" ? "var(--blue)" : "var(--muted)",
+                        }}
+                      >
+                        {link.provider}
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "11px",
+                        color: "var(--muted)",
+                        wordBreak: "break-all",
+                        fontFamily: "monospace",
+                      }}
+                    >
+                      {link.actualUrl}
+                    </div>
+
+                    {/* Tempat Link Digunakan */}
+                    <div
+                      style={{
+                        marginTop: "8px",
+                        paddingTop: "8px",
+                        borderTop: "1px dashed var(--line)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      <span style={{ fontWeight: 600, color: "var(--foreground)", display: "block", marginBottom: "4px" }}>
+                        Digunakan di rute Anda:
+                      </span>
+                      {!link.activities || link.activities.length === 0 ? (
+                        <span style={{ color: "var(--muted)", fontStyle: "italic", fontSize: "11px" }}>
+                          Belum digunakan di rute Anda
+                        </span>
+                      ) : (
+                        <ul style={{ margin: 0, paddingLeft: "16px", display: "grid", gap: "4px" }}>
+                          {link.activities.map((act) => (
+                            <li key={act.id} style={{ color: "var(--muted)", fontSize: "11px" }}>
+                              <Link
+                                href={`/itinerary/${act.day.itinerary.id}`}
+                                className="plain-link"
+                                style={{
+                                  color: "var(--blue)",
+                                  fontWeight: 500,
+                                  textDecoration: "underline",
+                                }}
+                              >
+                                {act.day.itinerary.title}
+                              </Link>{" "}
+                              — Hari {act.day.dayNumber}: {act.title}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                    <div style={{ display: "flex", gap: "12px", marginTop: "4px", justifyContent: "flex-end" }}>
+                      <button
+                        onClick={() => startEdit(link)}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "var(--blue)",
+                          fontSize: "12px",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                      >
+                        Edit URL
+                      </button>
+                      <button
+                        onClick={() => handleDelete(link.id)}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "red",
+                          fontSize: "12px",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
                 <div
-                  key={link.id}
                   style={{
-                    padding: "12px 14px",
-                    border: "1px solid var(--line)",
-                    borderRadius: "8px",
-                    background: "var(--surface-soft)",
-                    display: "grid",
-                    gap: "6px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginTop: "20px",
+                    paddingTop: "12px",
+                    borderTop: "1px solid var(--line)",
+                    gap: "12px",
+                    flexWrap: "wrap",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <strong style={{ fontSize: "14px" }}>{link.label}</strong>
-                    <span
-                      style={{
-                        fontSize: "10px",
-                        fontWeight: 800,
-                        padding: "2px 6px",
-                        borderRadius: "12px",
-                        background: link.provider === "Klook" ? "rgba(255, 94, 0, 0.15)" : link.provider === "Agoda" ? "rgba(0, 150, 255, 0.15)" : "rgba(128,128,128,0.15)",
-                        color: link.provider === "Klook" ? "var(--orange)" : link.provider === "Agoda" ? "var(--blue)" : "var(--muted)",
-                      }}
-                    >
-                      {link.provider}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      color: "var(--muted)",
-                      wordBreak: "break-all",
-                      fontFamily: "monospace",
-                    }}
-                  >
-                    {link.actualUrl}
-                  </div>
-
-                  {/* Tempat Link Digunakan */}
-                  <div
-                    style={{
-                      marginTop: "8px",
-                      paddingTop: "8px",
-                      borderTop: "1px dashed var(--line)",
-                      fontSize: "12px",
-                    }}
-                  >
-                    <span style={{ fontWeight: 600, color: "var(--foreground)", display: "block", marginBottom: "4px" }}>
-                      Digunakan di rute Anda:
-                    </span>
-                    {!link.activities || link.activities.length === 0 ? (
-                      <span style={{ color: "var(--muted)", fontStyle: "italic", fontSize: "11px" }}>
-                        Belum digunakan di rute Anda
-                      </span>
-                    ) : (
-                      <ul style={{ margin: 0, paddingLeft: "16px", display: "grid", gap: "4px" }}>
-                        {link.activities.map((act) => (
-                          <li key={act.id} style={{ color: "var(--muted)", fontSize: "11px" }}>
-                            <Link
-                              href={`/itinerary/${act.day.itinerary.id}`}
-                              className="plain-link"
-                              style={{
-                                color: "var(--blue)",
-                                fontWeight: 500,
-                                textDecoration: "underline",
-                              }}
-                            >
-                              {act.day.itinerary.title}
-                            </Link>{" "}
-                            — Hari {act.day.dayNumber}: {act.title}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                  <div style={{ display: "flex", gap: "12px", marginTop: "4px", justifyContent: "flex-end" }}>
+                  <span style={{ fontSize: "12px", color: "var(--muted)" }}>
+                    Menampilkan {startIndex + 1}–{Math.min(endIndex, filteredLinks.length)} dari {filteredLinks.length} tautan
+                  </span>
+                  <div style={{ display: "flex", gap: "6px" }}>
                     <button
-                      onClick={() => startEdit(link)}
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      className="ghost-chip"
                       style={{
-                        background: "none",
-                        border: "none",
-                        color: "var(--blue)",
+                        height: "32px",
+                        minHeight: "32px",
                         fontSize: "12px",
-                        fontWeight: 700,
-                        cursor: "pointer",
-                        padding: 0,
+                        padding: "0 10px",
+                        opacity: currentPage === 1 ? 0.5 : 1,
+                        cursor: currentPage === 1 ? "default" : "pointer",
                       }}
                     >
-                      Edit URL
+                      &larr; Seb.
                     </button>
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`chip ${currentPage === pageNum ? "active" : ""}`}
+                        style={{
+                          height: "32px",
+                          minHeight: "32px",
+                          width: "32px",
+                          padding: 0,
+                          display: "grid",
+                          placeItems: "center",
+                          fontSize: "12px",
+                          fontWeight: 800,
+                          cursor: "pointer",
+                        }}
+                      >
+                        {pageNum}
+                      </button>
+                    ))}
+
                     <button
-                      onClick={() => handleDelete(link.id)}
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                      className="ghost-chip"
                       style={{
-                        background: "none",
-                        border: "none",
-                        color: "red",
+                        height: "32px",
+                        minHeight: "32px",
                         fontSize: "12px",
-                        fontWeight: 700,
-                        cursor: "pointer",
-                        padding: 0,
+                        padding: "0 10px",
+                        opacity: currentPage === totalPages ? 0.5 : 1,
+                        cursor: currentPage === totalPages ? "default" : "pointer",
                       }}
                     >
-                      Hapus
+                      Sel. &rarr;
                     </button>
                   </div>
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </section>
 

@@ -147,3 +147,18 @@
     height: 150px;
   }
 }
+
+.affiliate-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .affiliate-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
