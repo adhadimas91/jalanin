@@ -333,11 +333,12 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
     const normalized = query.trim().toLowerCase();
 
     return items.filter((item) => {
+      const isNotOwn = !currentUser || item.author.id !== currentUser.id;
       const matchesFilter = filter === "Semua" || item.travelStyle === filter;
       const haystack = `${item.title} ${item.destination} ${item.travelStyle}`.toLowerCase();
-      return matchesFilter && (!normalized || haystack.includes(normalized));
+      return isNotOwn && matchesFilter && (!normalized || haystack.includes(normalized));
     });
-  }, [filter, items, query]);
+  }, [currentUser, filter, items, query]);
 
   const tripInsights = useMemo(() => (current ? computeTripInsights(current.days) : null), [current]);
 
@@ -943,23 +944,10 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                 </>
               )}
             </section>
-
-           
           </section>
 
           <aside className="sidebar">
-            <section className="side-card account-card">
-              <div className="account-row">
-                <img src={(currentUser?.avatarUrl ?? current.author.avatarUrl) || "/uploads/default-cover.svg"} alt={currentUser?.name ?? current.author.name ?? current.author.email} />
-                <div>
-                  <strong>{currentUser?.name ?? "Traveler Jalanin"}</strong>
-                  <span>@{currentUser?.username ?? "jelajahbareng"}</span>
-                </div>
-                <Link className="mini-button muted" href={currentUser ? `/profile/${currentUser.username ?? currentUser.id}` : "/login"}>
-                  Profil
-                </Link>
-              </div>
-            </section>
+  
 
             <section className="side-card budget-card">
               <div className="side-heading">
@@ -1010,7 +998,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                 <h2>Tag Trip</h2>
               </div>
               <div className="tag-list">
-                {[current.travelStyle, current.destination.split(",")[0], `${current.durationDays} hari`, "MVP"].map((tag) => (
+                {[current.travelStyle, current.destination.split(",")[0], `${current.durationDays} hari`].map((tag) => (
                   <span key={tag}>{tag}</span>
                 ))}
               </div>
@@ -1057,6 +1045,74 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               </div>
             </section>
           </aside>
+
+          <section className="feed-section" id="exploreSection">
+            <div className="section-heading">
+              <div>
+                <p>Jelajah itinerary</p>
+                <h2>Rute populer minggu ini</h2>
+              </div>
+              <div className="filter-chips">
+                {filters.map((category) => (
+                  <button
+                    key={category}
+                    className={`chip ${filter === category ? "active" : ""}`}
+                    onClick={() => setFilter(category)}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="feed-grid">
+              {filteredItems.length ? (
+                filteredItems.map((item, index) => {
+                  const isLarge = index % 10 === 2 || index % 10 === 7;
+                  return (
+                    <article key={item.id} className={`feed-card ${isLarge ? "large" : ""}`}>
+                      <button onClick={() => {
+                        setCurrentId(item.id);
+                        setDayIndex(0);
+                        setTab("days");
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}>
+                        <img src={item.coverImageUrl} alt={item.destination} />
+                        <div className="feed-card-overlay">
+                          <div className="feed-card-overlay-top">
+                            <p className="feed-card-destination">{item.destination}</p>
+                            <h3 className="feed-card-title">{item.title}</h3>
+                          </div>
+                          <div className="feed-card-overlay-bottom">
+                            <div className="feed-card-metrics-main">
+                              <span>
+                                <Icon name="calendar" /> {item.durationDays} hari
+                              </span>
+                              <span>
+                                <Icon name="wallet" /> {formatRupiah(item.estimatedBudget)}
+                              </span>
+                            </div>
+                            <div className="feed-card-engagement-stats">
+                              <span>
+                                <Icon name="heart" /> {formatCompact(item.likesCount)}
+                              </span>
+                              <span>
+                                <Icon name="bookmark" /> {formatCompact(item.savesCount)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    </article>
+                  );
+                })
+              ) : (
+                <div className="empty-state">
+                  Tidak ada itinerary yang cocok dengan pencarian ini.
+                </div>
+              )}
+            </div>
+          </section>
           </main>
         ) : (
           <main className="workspace empty-workspace">
