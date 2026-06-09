@@ -42,13 +42,13 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
           <div className="profile-stats">
             <span>
               <strong>{user.trips.length}</strong> dibuat
-            </span>
-            <span>
-              <strong>{user.saves.length}</strong> disimpan
-            </span>
+            </span> 
           </div>
           {currentUser?.id === user.id ? (
             <div className="profile-actions">
+              <Link className="mini-button muted" href="/saved">
+                Rute tersimpan
+              </Link>
               <Link className="mini-button muted" href="/settings/profile">
                 Edit profil
               </Link>

@@ -660,6 +660,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
   const currentDay = current?.days[dayIndex] ?? current?.days[0];
   const savedItems = items.filter((item) => saved.includes(item.id));
+  const createdItems = items.filter((item) => item.author.id === currentUser?.id);
   const activeDraftDay = dayDrafts[activeDraftDayIndex] ?? dayDrafts[0];
 
   return (
@@ -1034,12 +1035,12 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
             <section className="side-card saved-card">
               <div className="side-heading">
-                <h2>Koleksi Kamu</h2>
-                <span>{savedItems.length}</span>
+                <h2>Itinerary Kamu</h2>
+                <span>{createdItems.length}</span>
               </div>
               <div className="compact-list">
-                {savedItems.length ? (
-                  savedItems.map((item) => (
+                {createdItems.length ? (
+                  createdItems.map((item) => (
                     <button key={item.id} className="compact-item" onClick={() => setCurrentId(item.id)}>
                       <img src={item.coverImageUrl} alt={item.destination} />
                       <span>
@@ -1051,7 +1052,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                     </button>
                   ))
                 ) : (
-                  <div className="empty-state">Belum ada rute tersimpan. Simpan itinerary yang ingin kamu pakai nanti.</div>
+                  <div className="empty-state">Belum ada itinerary yang dibuat. Buat itinerary pertamamu sekarang.</div>
                 )}
               </div>
             </section>
