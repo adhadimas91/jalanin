@@ -22,7 +22,7 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
   users: {
     label: "Users",
     description: "Kelola akun, profil, password hash, dan role admin.",
-    columns: ["email", "username", "name", "role", "isPro", "maxPrivate", "maxPublic", "maxSaved", "maxAffiliate", "city", "createdAt"],
+    columns: ["email", "username", "name", "role", "isPro", "proExpiresAt", "maxPrivate", "maxPublic", "maxSaved", "maxAffiliate", "city", "createdAt"],
     template: {
       email: "new-user@example.com",
       username: "newuser",
@@ -33,6 +33,7 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       city: "Jakarta",
       role: "USER",
       isPro: false,
+      proExpiresAt: null,
       maxPrivate: 2,
       maxPublic: 5,
       maxSaved: 5,
@@ -159,6 +160,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
   const [draft, setDraft] = useState(JSON.stringify(tableConfigs.users.template, null, 2));
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [editorTab, setEditorTab] = useState<"form" | "json">("form");
 
   const config = tableConfigs[currentTable];
   const records = tables[currentTable];
@@ -172,6 +174,23 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     setEditorMode("create");
     setEditingId(null);
     setDraft(JSON.stringify(tableConfigs[table].template, null, 2));
+    setEditorTab("form");
+  }
+
+  function updateDraftField(key: string, value: unknown) {
+    try {
+      const parsed = JSON.parse(draft) as Record<string, unknown>;
+      parsed[key] = value;
+      setDraft(JSON.stringify(parsed, null, 2));
+    } catch (err) {
+      // ignore
+    }
+  }
+
+  function formatLabel(key: string) {
+    return key
+      .replace(/([A-Z])/g, " $1")
+      .replace(/^./, (str) => str.toUpperCase());
   }
 
   async function refreshTable(table: AdminTable) {
@@ -243,6 +262,83 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
       setToast("Record berhasil dihapus.");
     } catch (error) {
       setToast(error instanceof Error ? error.message : "Gagal menghapus record.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function getSubscriptionOption(expiryDateStr: string | null | undefined, isPro: boolean) {
+    if (!isPro) return "free";
+    if (!expiryDateStr) return "pro_indefinite";
+    
+    const expiry = new Date(expiryDateStr);
+    const diffTime = expiry.getTime() - Date.now();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays <= 0) return "free";
+    if (diffDays <= 32) return "pro_1m";
+    if (diffDays <= 185) return "pro_6m";
+    if (diffDays <= 367) return "pro_1y";
+    return "pro_indefinite";
+  }
+
+  async function handleSubscriptionChange(id: string, record: Record<string, unknown>, value: string) {
+    setBusy(true);
+    try {
+      let isPro = false;
+      let proExpiresAt: string | null = null;
+      let limits = {
+        maxPrivate: 2,
+        maxPublic: 5,
+        maxSaved: 5,
+        maxAffiliate: 50,
+      };
+
+      if (value !== "free") {
+        isPro = true;
+        limits = {
+          maxPrivate: 9999,
+          maxPublic: 9999,
+          maxSaved: 9999,
+          maxAffiliate: 9999,
+        };
+
+        const now = new Date();
+        if (value === "pro_1m") {
+          now.setMonth(now.getMonth() + 1);
+          proExpiresAt = now.toISOString();
+        } else if (value === "pro_6m") {
+          now.setMonth(now.getMonth() + 6);
+          proExpiresAt = now.toISOString();
+        } else if (value === "pro_1y") {
+          now.setFullYear(now.getFullYear() + 1);
+          proExpiresAt = now.toISOString();
+        }
+      }
+
+      const updatedData = {
+        ...stripMeta(record),
+        isPro,
+        proExpiresAt,
+        ...limits,
+      };
+
+      const response = await fetch(`/api/admin/users/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data: updatedData }),
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      await refreshTable("users");
+      setToast("Langganan berhasil diperbarui.");
+    } catch (error) {
+      setToast(error instanceof Error ? error.message : "Gagal memperbarui langganan.");
     } finally {
       setBusy(false);
     }
@@ -335,6 +431,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                                 setEditorMode("edit");
                                 setEditingId(id);
                                 setDraft(JSON.stringify(stripMeta(record), null, 2));
+                                setEditorTab("form");
                               }}
                             >
                               Edit
@@ -342,6 +439,20 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                             <button className="ghost-chip danger" onClick={() => handleDelete(id)}>
                               Delete
                             </button>
+                            {currentTable === "users" && (
+                              <select
+                                className="admin-select-sub"
+                                value={getSubscriptionOption(record.proExpiresAt as string | null | undefined, record.isPro as boolean)}
+                                onChange={(e) => handleSubscriptionChange(id, record, e.target.value)}
+                                disabled={busy}
+                              >
+                                <option value="free">Plan: FREE</option>
+                                <option value="pro_1m">PRO (1 Bulan)</option>
+                                <option value="pro_6m">PRO (6 Bulan)</option>
+                                <option value="pro_1y">PRO (1 Tahun)</option>
+                                <option value="pro_indefinite">PRO (Seterusnya)</option>
+                              </select>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -360,12 +471,118 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
               </div>
             </div>
 
-            <textarea
-              className="admin-editor"
-              value={draft}
-              onChange={(event) => setDraft(event.target.value)}
-              spellCheck={false}
-            />
+            <div className="admin-tab-bar">
+              <button
+                type="button"
+                className={`admin-tab-btn ${editorTab === "form" ? "active" : ""}`}
+                onClick={() => setEditorTab("form")}
+              >
+                Form Editor
+              </button>
+              <button
+                type="button"
+                className={`admin-tab-btn ${editorTab === "json" ? "active" : ""}`}
+                onClick={() => setEditorTab("json")}
+              >
+                JSON Editor
+              </button>
+            </div>
+
+            {(() => {
+              let parsedDraft: Record<string, unknown> = {};
+              let parseError = "";
+              try {
+                parsedDraft = JSON.parse(draft);
+              } catch (err) {
+                parseError = err instanceof Error ? err.message : "Invalid JSON";
+              }
+              const formFields = Object.keys(parsedDraft).filter(key => !key.startsWith("_"));
+
+              if (editorTab === "form" && !parseError) {
+                return (
+                  <div className="admin-form-container">
+                    {formFields.map((key) => {
+                      const value = parsedDraft[key];
+                      const labelText = formatLabel(key);
+
+                      if (typeof value === "boolean") {
+                        return (
+                          <div key={key} className="admin-form-checkbox">
+                            <input
+                              id={`form-field-${key}`}
+                              type="checkbox"
+                              checked={value}
+                              onChange={(e) => updateDraftField(key, e.target.checked)}
+                            />
+                            <label htmlFor={`form-field-${key}`}>{labelText}</label>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div key={key} className="admin-form-group">
+                          <label htmlFor={`form-field-${key}`}>{labelText}</label>
+                          {key === "role" ? (
+                            <select
+                              id={`form-field-${key}`}
+                              value={String(value ?? "USER")}
+                              onChange={(e) => updateDraftField(key, e.target.value)}
+                            >
+                              <option value="USER">USER</option>
+                              <option value="ADMIN">ADMIN</option>
+                            </select>
+                          ) : key === "bio" || key === "description" || key === "notes" ? (
+                            <textarea
+                              id={`form-field-${key}`}
+                              value={String(value ?? "")}
+                              onChange={(e) => updateDraftField(key, e.target.value)}
+                              rows={3}
+                            />
+                          ) : key.endsWith("At") ? (
+                            <input
+                              id={`form-field-${key}`}
+                              type="datetime-local"
+                              value={value ? new Date(String(value)).toISOString().slice(0, 16) : ""}
+                              onChange={(e) => updateDraftField(key, e.target.value ? new Date(e.target.value).toISOString() : null)}
+                            />
+                          ) : typeof value === "number" ? (
+                            <input
+                              id={`form-field-${key}`}
+                              type="number"
+                              value={value !== null && value !== undefined ? String(value) : ""}
+                              onChange={(e) => updateDraftField(key, e.target.value === "" ? null : Number(e.target.value))}
+                            />
+                          ) : (
+                            <input
+                              id={`form-field-${key}`}
+                              type="text"
+                              value={value !== null && value !== undefined ? String(value) : ""}
+                              onChange={(e) => updateDraftField(key, e.target.value)}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              }
+
+              return (
+                <>
+                  {parseError && (
+                    <div className="admin-form-error">
+                      Format JSON tidak valid: {parseError}. Menampilkan JSON Editor.
+                    </div>
+                  )}
+                  <textarea
+                    className="admin-editor"
+                    value={draft}
+                    onChange={(event) => setDraft(event.target.value)}
+                    spellCheck={false}
+                  />
+                </>
+              );
+            })()}
 
             <div className="admin-editor-actions">
               <button className="primary-button wide" onClick={handleSave} disabled={busy}>

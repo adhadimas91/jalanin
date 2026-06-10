@@ -23,6 +23,7 @@ model User {
   city         String?
   role         UserRole         @default(USER)
   isPro        Boolean          @default(false)
+  proExpiresAt DateTime?
   maxPrivate   Int              @default(2)
   maxPublic    Int              @default(5)
   maxSaved     Int              @default(5)

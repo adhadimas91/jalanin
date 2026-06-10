@@ -94,6 +94,15 @@ function readDate(value: unknown, fallback?: Date) {
   return Number.isNaN(date.getTime()) ? (fallback ?? new Date()) : date;
 }
 
+function readOptionalDate(value: unknown) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const date = new Date(String(value));
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
 function readUserRole(value: unknown) {
   return String(value).toUpperCase() === "ADMIN" ? "ADMIN" : "USER";
 }
@@ -361,6 +370,7 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           city: readOptionalString(data.city) ?? null,
           role: readUserRole(data.role),
           isPro: readBoolean(data.isPro, false),
+          proExpiresAt: readOptionalDate(data.proExpiresAt),
           maxPrivate: readInt(data.maxPrivate, 2),
           maxPublic: readInt(data.maxPublic, 5),
           maxSaved: readInt(data.maxSaved, 5),
@@ -478,6 +488,7 @@ export async function updateAdminRecord(
           city: readOptionalString(data.city) ?? null,
           role: readUserRole(data.role),
           isPro: readBoolean(data.isPro, false),
+          proExpiresAt: readOptionalDate(data.proExpiresAt),
           maxPrivate: readInt(data.maxPrivate, 2),
           maxPublic: readInt(data.maxPublic, 5),
           maxSaved: readInt(data.maxSaved, 5),

@@ -6,6 +6,7 @@ import { Icon, IconSprite } from "./icon-sprite";
 
 type UserProps = {
   isPro: boolean;
+  proExpiresAt?: string | null | Date;
   maxPrivate: number;
   maxPublic: number;
   maxSaved: number;
@@ -84,7 +85,15 @@ export function SubscriptionStatus({
           <div>
             <h3>Status Langganan</h3>
             <p className="subscription-subtitle">
-              Kelola batas kuota dan fitur premium akun traveler Anda.
+              {user.isPro ? (
+                user.proExpiresAt ? (
+                  <>Langganan aktif sampai <strong>{new Date(user.proExpiresAt).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</strong></>
+                ) : (
+                  "Langganan PRO aktif selamanya."
+                )
+              ) : (
+                "Kelola batas kuota dan fitur premium akun traveler Anda."
+              )}
             </p>
           </div>
           <span className={`plan-badge ${user.isPro ? "pro" : "free"}`}>

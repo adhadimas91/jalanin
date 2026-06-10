@@ -71,6 +71,12 @@ export async function POST(request: Request) {
       avatarUrl: null,
       bio: "Traveler Jalanin",
       city: "Indonesia",
+      isPro: false,
+      proExpiresAt: null,
+      maxPrivate: 2,
+      maxPublic: 5,
+      maxSaved: 5,
+      maxAffiliate: 50,
     },
   });
 

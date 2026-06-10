@@ -77,7 +77,27 @@ export async function getCurrentUser() {
     return null;
   }
 
-  return session.user;
+  let user = session.user;
+
+  if (user.isPro && user.proExpiresAt && user.proExpiresAt < new Date()) {
+    try {
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          isPro: false,
+          proExpiresAt: null,
+          maxPrivate: 2,
+          maxPublic: 5,
+          maxSaved: 5,
+          maxAffiliate: 50,
+        },
+      });
+    } catch (error) {
+      console.error("Gagal otomatis men-downgrade user:", error);
+    }
+  }
+
+  return user;
 }
 
 export function isAdminUser(user: { email: string; role?: string | null } | null) {
