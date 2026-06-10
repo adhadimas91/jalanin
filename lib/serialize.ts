@@ -33,6 +33,7 @@ export function serializeItinerary(itinerary: Awaited<ReturnType<typeof getPubli
     travelStyle: itinerary.travelStyle,
     coverImageUrl: itinerary.coverImageUrl,
     notes: itinerary.notes,
+    isPublished: itinerary.isPublished,
     author: serializeUser(itinerary.author),
     days: itinerary.days.map((day) => ({
       id: day.id,

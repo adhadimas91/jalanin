@@ -1,9 +1,12 @@
 import { prisma } from "./prisma";
 
-export async function getPublishedItineraries() {
+export async function getPublishedItineraries(userId?: string) {
   return prisma.itinerary.findMany({
     where: {
-      isPublished: true,
+      OR: [
+        { isPublished: true },
+        ...(userId ? [{ authorId: userId }] : []),
+      ],
     },
     orderBy: {
       createdAt: "desc",

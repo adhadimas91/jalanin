@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { formatRupiah } from "@/lib/format";
+import { SavedList } from "@/components/saved-list";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +25,15 @@ export default async function SavedPage() {
     },
   });
 
+  const formattedSaves = saves.map((save) => ({
+    id: save.itinerary.id,
+    coverImageUrl: save.itinerary.coverImageUrl,
+    destination: save.itinerary.destination,
+    title: save.itinerary.title,
+    durationDays: save.itinerary.durationDays,
+    estimatedBudget: save.itinerary.estimatedBudget,
+  }));
+
   return (
     <main className="page-center">
       <Link className="plain-link" href="/">
@@ -33,23 +42,7 @@ export default async function SavedPage() {
       <section className="side-card" style={{ marginTop: 16 }}>
         <h1>Koleksi Kamu</h1>
         <p>Itinerary yang kamu simpan untuk dipakai nanti.</p>
-        <div className="server-list">
-          {saves.length ? (
-            saves.map(({ itinerary }) => (
-              <Link className="server-card" href={`/itinerary/${itinerary.id}`} key={itinerary.id}>
-                <img src={itinerary.coverImageUrl} alt={itinerary.destination} />
-                <div>
-                  <h3>{itinerary.title}</h3>
-                  <p>
-                    {itinerary.destination} - {itinerary.durationDays} hari - {formatRupiah(itinerary.estimatedBudget)}
-                  </p>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <div className="empty-state">Belum ada rute tersimpan.</div>
-          )}
-        </div>
+        <SavedList initialSaves={formattedSaves} />
       </section>
     </main>
   );

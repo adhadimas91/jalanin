@@ -20,10 +20,43 @@ export async function POST(request: Request) {
     return new NextResponse("Judul, destinasi, dan deskripsi wajib diisi.", { status: 400 });
   }
 
+  const isPublished = formData.get("isPublished") === null ? true : formData.get("isPublished") === "true";
+
+  if (!isPublished) {
+    const privateCount = await prisma.itinerary.count({
+      where: {
+        authorId: user.id,
+        isPublished: false,
+      },
+    });
+    if (privateCount >= 2) {
+      return new NextResponse("Batas maksimal itinerary privat adalah 2. Silakan hapus atau ubah status itinerary privat Anda yang lain menjadi publik.", { status: 400 });
+    }
+  } else {
+    const publicCount = await prisma.itinerary.count({
+      where: {
+        authorId: user.id,
+        isPublished: true,
+      },
+    });
+    if (publicCount >= 5) {
+      return new NextResponse("Batas maksimal itinerary publik adalah 5. Silakan hapus atau ubah status itinerary publik Anda yang lain menjadi privat.", { status: 400 });
+    }
+  }
+
   const structuredDays = parseDaysJson(formData.get("daysJson"));
   const structuredActivities = parseActivitiesJson(formData.get("activitiesJson"));
   const fallbackActivities = structuredActivities.length ? structuredActivities : parseActivitiesText(formData.get("activities"));
   const days = structuredDays.length ? structuredDays : fallbackDay(fallbackActivities);
+
+  const durationDays = Number(formData.get("durationDays") ?? 1);
+  if (durationDays > 5 || days.length > 5) {
+    return new NextResponse("Batas maksimal durasi itinerary adalah 5 hari.", { status: 400 });
+  }
+
+  if (days.some((day) => day.activities.length > 10)) {
+    return new NextResponse("Batas maksimal aktivitas per hari adalah 10 aktivitas.", { status: 400 });
+  }
 
   let coverImageUrl = String(formData.get("coverImageUrl") ?? "/uploads/default-cover.svg");
   const imageFile = formData.get("imageFile");
@@ -53,6 +86,7 @@ export async function POST(request: Request) {
       travelStyle: String(formData.get("travelStyle") ?? "Budget trip"),
       coverImageUrl,
       notes: String(formData.get("notes") ?? ""),
+      isPublished,
       originalItineraryId,
       authorId: user.id,
       days: {

@@ -26,7 +26,7 @@ export default async function CreatePage() {
           <div className="form-grid">
             <label>
               Durasi
-              <input name="durationDays" type="number" min="1" defaultValue={1} required />
+              <input name="durationDays" type="number" min="1" max="5" defaultValue={1} required />
             </label>
             <BudgetField />
           </div>
@@ -39,6 +39,13 @@ export default async function CreatePage() {
               <option>Nature</option>
               <option>City tour</option>
               <option>Family</option>
+            </select>
+          </label>
+          <label>
+            Visibilitas
+            <select name="isPublished" defaultValue="true">
+              <option value="true">Publik (Bisa dilihat semua orang, batas maks 5)</option>
+              <option value="false">Privat (Hanya bisa dilihat oleh Anda, batas maks 2)</option>
             </select>
           </label>
           <label>

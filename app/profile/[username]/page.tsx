@@ -14,11 +14,6 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
       OR: [{ username }, { id: username }],
     },
     include: {
-      trips: {
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
       saves: true,
     },
   });
@@ -26,6 +21,18 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
   if (!user) {
     notFound();
   }
+
+  const isOwnProfile = currentUser?.id === user.id;
+
+  const trips = await prisma.itinerary.findMany({
+    where: {
+      authorId: user.id,
+      ...(isOwnProfile ? {} : { isPublished: true }),
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
   return (
     <main className="page-center">
@@ -41,7 +48,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
           </p>
           <div className="profile-stats">
             <span>
-              <strong>{user.trips.length}</strong> dibuat
+              <strong>{trips.length}</strong> dibuat
             </span> 
           </div>
           {currentUser?.id === user.id ? (
@@ -60,11 +67,16 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
         </div>
       </article>
       <div className="server-list">
-        {user.trips.map((trip) => (
+        {trips.map((trip) => (
           <Link className="server-card" href={`/itinerary/${trip.id}`} key={trip.id}>
             <img src={trip.coverImageUrl} alt={trip.destination} />
             <div>
-              <h3>{trip.title}</h3>
+              <h3>
+                {trip.title}
+                {!trip.isPublished && (
+                  <span style={{ marginLeft: "8px", fontSize: "11px", padding: "2px 6px", background: "rgba(229, 62, 62, 0.2)", color: "#e53e3e", borderRadius: "4px", fontWeight: 700 }}>Privat</span>
+                )}
+              </h3>
               <p>
                 {trip.destination} - {trip.durationDays} hari - {formatRupiah(trip.estimatedBudget)}
               </p>

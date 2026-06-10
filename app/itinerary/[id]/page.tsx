@@ -20,6 +20,11 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
   }
 
   const canManage = currentUser && (currentUser.id === itinerary.authorId || isAdminUser(currentUser));
+
+  if (!itinerary.isPublished && !canManage) {
+    notFound();
+  }
+
   const serializedItinerary = serializeItinerary(itinerary);
 
   return (
@@ -44,6 +49,12 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
             <img src={itinerary.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={itinerary.author.name ?? itinerary.author.email} />
             <span>{itinerary.author.name ?? itinerary.author.email}</span>
           </div>
+          {!itinerary.isPublished && (
+            <div className="remix-badge" style={{ marginTop: "12px", display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(229, 62, 62, 0.85)", padding: "5px 12px", borderRadius: "12px", fontSize: "11px", color: "#ffffff", fontWeight: 700, border: "1px solid rgba(255, 255, 255, 0.15)", marginRight: "8px" }}>
+              <Icon name="shield" />
+              <span>Itinerary Privat</span>
+            </div>
+          )}
           {itinerary.originalItinerary && (
             <div className="remix-badge" style={{ marginTop: "12px", display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(23, 33, 43, 0.82)", padding: "5px 12px", borderRadius: "12px", fontSize: "11px", color: "#f7fafc", fontWeight: 700, border: "1px solid rgba(255, 255, 255, 0.15)" }}>
               <Icon name="copy" />

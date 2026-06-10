@@ -56,6 +56,7 @@ export type JalaninItinerary = {
   travelStyle: string;
   coverImageUrl: string;
   notes: string;
+  isPublished: boolean;
   author: JalaninUser;
   days: JalaninDay[];
   savesCount: number;
@@ -484,6 +485,10 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
   function addDay() {
     setDayDrafts((previous) => {
+      if (previous.length >= 5) {
+        flash("Batas maksimal durasi itinerary adalah 5 hari.");
+        return previous;
+      }
       const next = [...previous, createBlankDay(previous.length)];
       setActiveDraftDayIndex(next.length - 1);
       setLocationQueries(createLocationQueryMap(next));
@@ -507,6 +512,11 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
   function addActivity(dayIndex: number) {
     setDayDrafts((previous) => {
+      const day = previous[dayIndex];
+      if (day && day.activities.length >= 10) {
+        flash("Batas maksimal aktivitas per hari adalah 10 aktivitas.");
+        return previous;
+      }
       const next = previous.map((day, currentDayIndex) =>
         currentDayIndex === dayIndex ? { ...day, activities: [...day.activities, createBlankActivity(day.activities.length)] } : day,
       );
@@ -763,6 +773,12 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                       <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
                       <span>{current.author.name ?? current.author.username ?? current.author.email}</span>
                     </div>
+                    {!current.isPublished && (
+                      <div className="remix-badge" style={{ marginTop: "12px", display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(229, 62, 62, 0.85)", padding: "5px 12px", borderRadius: "12px", fontSize: "11px", color: "#ffffff", fontWeight: 700, border: "1px solid rgba(255, 255, 255, 0.15)", marginRight: "8px" }}>
+                        <Icon name="shield" />
+                        <span>Itinerary Privat</span>
+                      </div>
+                    )}
                     {current.originalItinerary && (
                       <div className="remix-badge" style={{ marginTop: "12px", display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(23, 33, 43, 0.82)", padding: "5px 12px", borderRadius: "12px", fontSize: "11px", color: "#f7fafc", fontWeight: 700, border: "1px solid rgba(255, 255, 255, 0.15)" }}>
                         <Icon name="copy" />
@@ -1057,7 +1073,12 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                       <button key={item.id} className="compact-item" onClick={() => setCurrentId(item.id)}>
                         <img src={item.coverImageUrl} alt={item.destination} />
                         <span>
-                          <strong>{item.title}</strong>
+                          <strong style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "6px" }}>
+                            {item.title}
+                            {!item.isPublished && (
+                              <span style={{ fontSize: "9px", padding: "1px 5px", background: "rgba(229, 62, 62, 0.15)", color: "#e53e3e", borderRadius: "4px", fontWeight: 800 }}>Privat</span>
+                            )}
+                          </strong>
                           <span>
                             {item.durationDays} hari - {formatRupiah(item.estimatedBudget)}
                           </span>
@@ -1191,7 +1212,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               </label>
               <label>
                 <span>Durasi</span>
-                <input name="durationDays" type="number" min="1" required defaultValue={formSource?.durationDays ?? 1} />
+                <input name="durationDays" type="number" min="1" max="5" required defaultValue={formSource?.durationDays ?? 1} />
               </label>
             </div>
             <label>
@@ -1229,6 +1250,13 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                 </select>
               </label>
             </div>
+            <label>
+              <span>Status Visibilitas</span>
+              <select name="isPublished" defaultValue={formSource ? String(formSource.isPublished) : "true"}>
+                <option value="true">Publik (Bisa dilihat semua orang, batas maks 5)</option>
+                <option value="false">Privat (Hanya bisa dilihat oleh Anda, batas maks 2)</option>
+              </select>
+            </label>
             <label>
               <span>Deskripsi singkat</span>
               <textarea name="description" rows={4} required defaultValue={formSource?.description ?? ""} />

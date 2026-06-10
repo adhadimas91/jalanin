@@ -15,7 +15,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   const { id } = await params;
   const existing = await prisma.itinerary.findUnique({
     where: { id },
-    select: { authorId: true, coverImageUrl: true },
+    select: { authorId: true, coverImageUrl: true, isPublished: true },
   });
 
   if (!existing) {
@@ -35,10 +35,44 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     return new NextResponse("Judul, destinasi, dan deskripsi wajib diisi.", { status: 400 });
   }
 
+  const isPublished = formData.get("isPublished") === null ? existing.isPublished : formData.get("isPublished") === "true";
+
+  if (existing.isPublished && !isPublished) {
+    const privateCount = await prisma.itinerary.count({
+      where: {
+        authorId: user.id,
+        isPublished: false,
+      },
+    });
+    if (privateCount >= 2) {
+      return new NextResponse("Batas maksimal itinerary privat adalah 2. Silakan hapus atau ubah status itinerary privat Anda yang lain menjadi publik.", { status: 400 });
+    }
+  } else if (!existing.isPublished && isPublished) {
+    const publicCount = await prisma.itinerary.count({
+      where: {
+        authorId: user.id,
+        isPublished: true,
+      },
+    });
+    if (publicCount >= 5) {
+      return new NextResponse("Batas maksimal itinerary publik adalah 5. Silakan hapus atau ubah status itinerary publik Anda yang lain menjadi privat.", { status: 400 });
+    }
+  }
+
   const structuredDays = parseDaysJson(formData.get("daysJson"));
   const structuredActivities = parseActivitiesJson(formData.get("activitiesJson"));
   const fallbackActivities = structuredActivities.length ? structuredActivities : parseActivitiesText(formData.get("activities"));
   const days = structuredDays.length ? structuredDays : fallbackDay(fallbackActivities);
+
+  const durationDays = Number(formData.get("durationDays") ?? 1);
+  const finalDurationDays = Math.max(durationDays, days.length || 1);
+  if (finalDurationDays > 5 || days.length > 5) {
+    return new NextResponse("Batas maksimal durasi itinerary adalah 5 hari.", { status: 400 });
+  }
+
+  if (days.some((day) => day.activities.length > 10)) {
+    return new NextResponse("Batas maksimal aktivitas per hari adalah 10 aktivitas.", { status: 400 });
+  }
 
   let coverImageUrl = String(formData.get("coverImageUrl") ?? existing.coverImageUrl);
   const imageFile = formData.get("imageFile");
@@ -73,6 +107,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         travelStyle: String(formData.get("travelStyle") ?? "Budget trip"),
         coverImageUrl,
         notes: String(formData.get("notes") ?? ""),
+        isPublished,
         days: {
           create: days.map((day) => ({
             dayNumber: day.dayNumber,

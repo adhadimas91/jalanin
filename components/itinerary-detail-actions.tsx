@@ -217,6 +217,10 @@ export function ItineraryDetailActions({ itinerary }: Props) {
 
   function addDay() {
     setDayDrafts((previous) => {
+      if (previous.length >= 5) {
+        setMessage("Batas maksimal durasi itinerary adalah 5 hari.");
+        return previous;
+      }
       const next = [...previous, createBlankDay(previous.length)];
       setLocationQueries(createLocationQueryMap(next));
       setLocationResults({});
@@ -238,6 +242,11 @@ export function ItineraryDetailActions({ itinerary }: Props) {
 
   function addActivity(dayIndex: number) {
     setDayDrafts((previous) => {
+      const day = previous[dayIndex];
+      if (day && day.activities.length >= 10) {
+        setMessage("Batas maksimal aktivitas per hari adalah 10 aktivitas.");
+        return previous;
+      }
       const next = previous.map((day, index) =>
         index === dayIndex ? { ...day, activities: [...day.activities, createBlankActivity(day.activities.length)] } : day,
       );
@@ -472,7 +481,7 @@ export function ItineraryDetailActions({ itinerary }: Props) {
               </label>
               <label>
                 <span>Durasi</span>
-                <input name="durationDays" type="number" min="1" required defaultValue={itinerary.durationDays} />
+                <input name="durationDays" type="number" min="1" max="5" required defaultValue={itinerary.durationDays} />
               </label>
             </div>
             <label>
@@ -503,6 +512,13 @@ export function ItineraryDetailActions({ itinerary }: Props) {
                 </select>
               </label>
             </div>
+            <label>
+              <span>Status Visibilitas</span>
+              <select name="isPublished" defaultValue={String(itinerary.isPublished)}>
+                <option value="true">Publik (Bisa dilihat semua orang, batas maks 5)</option>
+                <option value="false">Privat (Hanya bisa dilihat oleh Anda, batas maks 2)</option>
+              </select>
+            </label>
             <label>
               <span>Deskripsi singkat</span>
               <textarea name="description" rows={4} required defaultValue={itinerary.description} />

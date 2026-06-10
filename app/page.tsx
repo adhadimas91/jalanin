@@ -46,7 +46,8 @@ function DeploymentFallback({ error }: { error: unknown }) {
 
 export default async function Home() {
   try {
-    const [currentUser, itineraries] = await Promise.all([getCurrentUser(), getPublishedItineraries()]);
+    const currentUser = await getCurrentUser();
+    const itineraries = await getPublishedItineraries(currentUser?.id);
     const serializedItineraries = itineraries.map(serializeItinerary);
 
     if (!currentUser) {
