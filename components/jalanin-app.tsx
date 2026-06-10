@@ -19,6 +19,7 @@ export type JalaninUser = {
   bio: string | null;
   city: string | null;
   role: string;
+  isPro?: boolean;
 };
 
 export type JalaninActivity = {
@@ -722,8 +723,27 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                     Logout
                   </button>
                 </form>
-                <Link className="avatar-button" href={`/profile/${currentUser.username ?? currentUser.id}`} aria-label="Profil">
-                  <img src={currentUser.avatarUrl ?? "/uploads/default-avatar.svg"} alt={currentUser.name ?? currentUser.email} />
+                <Link className="avatar-button" href={`/profile/${currentUser.username ?? currentUser.id}`} aria-label="Profil" style={{ display: "inline-flex", position: "relative", overflow: "visible", border: currentUser.isPro ? "2px solid #ffb700" : "2px solid #fff" }}>
+                  <img src={currentUser.avatarUrl ?? "/uploads/default-avatar.svg"} alt={currentUser.name ?? currentUser.email} style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
+                  {currentUser.isPro && (
+                    <span className="pro-badge" style={{
+                      fontSize: "7px",
+                      fontWeight: 950,
+                      color: "#111",
+                      background: "linear-gradient(135deg, #ffd700, #ffa500)",
+                      padding: "1px 4px",
+                      borderRadius: "3px",
+                      border: "1px solid #ffb700",
+                      textTransform: "uppercase",
+                      position: "absolute",
+                      bottom: "-4px",
+                      right: "-6px",
+                      lineHeight: "1",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.15)"
+                    }}>
+                      PRO
+                    </span>
+                  )}
                 </Link>
               </>
             ) : (
@@ -744,7 +764,26 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                   <div className="post-user">
                     <img src={current.author.avatarUrl ?? "/uploads/default-avatar.svg"} alt={current.author.name ?? current.author.email} />
                     <div>
-                      <strong>{current.author.name ?? current.author.username ?? current.author.email}</strong>
+                      <strong style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                        {current.author.name ?? current.author.username ?? current.author.email}
+                        {current.author.isPro && (
+                          <span className="pro-badge" style={{
+                            fontSize: "9px",
+                            fontWeight: 850,
+                            color: "#111",
+                            background: "linear-gradient(135deg, #ffd700, #ffa500)",
+                            padding: "1px 6px",
+                            borderRadius: "999px",
+                            border: "1px solid #ffb700",
+                            textTransform: "uppercase",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            lineHeight: "1.2"
+                          }}>
+                            PRO
+                          </span>
+                        )}
+                      </strong>
                       <span>
                         {current.destination} · {current.travelStyle}
                       </span>
@@ -769,9 +808,28 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                   <div className="hero-overlay">
                     <p>{current.destination}</p>
                     <h1>{current.title}</h1>
-                    <div className="creator-line">
+                    <div className="creator-line" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                       <img src={current.author.avatarUrl ?? "/uploads/default-avatar.svg"} alt={current.author.name ?? current.author.email} />
-                      <span>{current.author.name ?? current.author.username ?? current.author.email}</span>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                        {current.author.name ?? current.author.username ?? current.author.email}
+                        {current.author.isPro && (
+                          <span className="pro-badge" style={{
+                            fontSize: "9px",
+                            fontWeight: 850,
+                            color: "#111",
+                            background: "linear-gradient(135deg, #ffd700, #ffa500)",
+                            padding: "1px 6px",
+                            borderRadius: "999px",
+                            border: "1px solid #ffb700",
+                            textTransform: "uppercase",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            lineHeight: "1.2"
+                          }}>
+                            PRO
+                          </span>
+                        )}
+                      </span>
                     </div>
                     {!current.isPublished && (
                       <div className="remix-badge" style={{ marginTop: "12px", display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(229, 62, 62, 0.85)", padding: "5px 12px", borderRadius: "12px", fontSize: "11px", color: "#ffffff", fontWeight: 700, border: "1px solid rgba(255, 255, 255, 0.15)", marginRight: "8px" }}>
@@ -1052,7 +1110,26 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                 <div className="author-row">
                   <img src={current.author.avatarUrl ?? "/uploads/default-avatar.svg"} alt={current.author.name ?? current.author.email} />
                   <div>
-                    <strong>{current.author.name ?? current.author.username ?? current.author.email}</strong>
+                    <strong style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                      {current.author.name ?? current.author.username ?? current.author.email}
+                      {current.author.isPro && (
+                        <span className="pro-badge" style={{
+                          fontSize: "9px",
+                          fontWeight: 850,
+                          color: "#111",
+                          background: "linear-gradient(135deg, #ffd700, #ffa500)",
+                          padding: "1px 6px",
+                          borderRadius: "999px",
+                          border: "1px solid #ffb700",
+                          textTransform: "uppercase",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          lineHeight: "1.2"
+                        }}>
+                          PRO
+                        </span>
+                      )}
+                    </strong>
                     <span>{current.author.bio ?? "Traveler Jalanin"}</span>
                   </div>
                   <Link className="mini-button" href={`/profile/${current.author.username ?? current.author.id}`}>

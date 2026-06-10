@@ -12,7 +12,27 @@ export default async function CreatePage() {
   return (
     <main className="page-center">
       <section className="auth-card">
-        <h1>Buat Itinerary</h1>
+        <h1 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          Buat Itinerary
+          {user.isPro && (
+            <span className="pro-badge" style={{
+              fontSize: "11px",
+              fontWeight: 850,
+              color: "#111",
+              background: "linear-gradient(135deg, #ffd700, #ffa500)",
+              padding: "2px 8px",
+              borderRadius: "999px",
+              border: "1px solid #ffb700",
+              textTransform: "uppercase",
+              display: "inline-flex",
+              alignItems: "center",
+              lineHeight: "1",
+              height: "fit-content"
+            }}>
+              PRO
+            </span>
+          )}
+        </h1>
         <p>Form ini menyimpan itinerary langsung ke database Jalanin.</p>
         <form className="stack-form" action="/api/itineraries" method="post" encType="multipart/form-data">
           <label>

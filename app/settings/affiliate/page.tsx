@@ -49,7 +49,7 @@ export default function AffiliateSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [currentUser, setCurrentUser] = useState<{ id: string; username: string | null } | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ id: string; username: string | null; isPro: boolean } | null>(null);
 
   // Form State
   const [label, setLabel] = useState("");
@@ -328,7 +328,27 @@ export default function AffiliateSettingsPage() {
 
         {/* Kolom Kanan: Daftar Link */}
         <section className="auth-card">
-          <h1>Pustaka Link Affiliate Anda</h1>
+          <h1 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            Pustaka Link Affiliate Anda
+            {currentUser?.isPro && (
+              <span className="pro-badge" style={{
+                fontSize: "11px",
+                fontWeight: 850,
+                color: "#111",
+                background: "linear-gradient(135deg, #ffd700, #ffa500)",
+                padding: "2px 8px",
+                borderRadius: "999px",
+                border: "1px solid #ffb700",
+                textTransform: "uppercase",
+                display: "inline-flex",
+                alignItems: "center",
+                lineHeight: "1",
+                height: "fit-content"
+              }}>
+                PRO
+              </span>
+            )}
+          </h1>
           <p style={{ fontSize: "13px", color: "var(--muted)", marginBottom: "16px" }}>
             Tautan di bawah ini dapat disematkan langsung saat Anda menyusun aktivitas rute perjalanan.
           </p>

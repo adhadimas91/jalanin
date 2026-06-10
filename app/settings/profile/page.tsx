@@ -47,7 +47,27 @@ export default async function ProfileSettingsPage() {
         <div className="settings-heading">
           <img className="settings-avatar" src={user.avatarUrl ?? "/uploads/default-avatar.svg"} alt={user.name ?? user.email} />
           <div>
-            <h1>Edit Profil</h1>
+            <h1 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              Edit Profil
+              {user.isPro && (
+                <span className="pro-badge" style={{
+                  fontSize: "11px",
+                  fontWeight: 850,
+                  color: "#111",
+                  background: "linear-gradient(135deg, #ffd700, #ffa500)",
+                  padding: "2px 8px",
+                  borderRadius: "999px",
+                  border: "1px solid #ffb700",
+                  textTransform: "uppercase",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  lineHeight: "1",
+                  height: "fit-content"
+                }}>
+                  PRO
+                </span>
+              )}
+            </h1>
             <p>Perbarui identitas traveler dan foto avatar kamu.</p>
           </div>
         </div>

@@ -9,6 +9,7 @@ export function serializeUser(user: {
   bio: string | null;
   city: string | null;
   role?: string | null;
+  isPro?: boolean | null;
 }) {
   return {
     id: user.id,
@@ -19,6 +20,7 @@ export function serializeUser(user: {
     bio: user.bio,
     city: user.city,
     role: user.role ?? "USER",
+    isPro: !!user.isPro,
   };
 }
 

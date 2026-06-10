@@ -45,9 +45,28 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
         <div className="hero-overlay">
           <p>{itinerary.destination}</p>
           <h1>{itinerary.title}</h1>
-          <div className="creator-line">
+          <div className="creator-line" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <img src={itinerary.author.avatarUrl ?? "/uploads/default-avatar.svg"} alt={itinerary.author.name ?? itinerary.author.email} />
-            <span>{itinerary.author.name ?? itinerary.author.email}</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+              {itinerary.author.name ?? itinerary.author.email}
+              {itinerary.author.isPro && (
+                <span className="pro-badge" style={{
+                  fontSize: "9px",
+                  fontWeight: 850,
+                  color: "#111",
+                  background: "linear-gradient(135deg, #ffd700, #ffa500)",
+                  padding: "1px 6px",
+                  borderRadius: "999px",
+                  border: "1px solid #ffb700",
+                  textTransform: "uppercase",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  lineHeight: "1.2"
+                }}>
+                  PRO
+                </span>
+              )}
+            </span>
           </div>
           {!itinerary.isPublished && (
             <div className="remix-badge" style={{ marginTop: "12px", display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(229, 62, 62, 0.85)", padding: "5px 12px", borderRadius: "12px", fontSize: "11px", color: "#ffffff", fontWeight: 700, border: "1px solid rgba(255, 255, 255, 0.15)", marginRight: "8px" }}>

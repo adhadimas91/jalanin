@@ -42,7 +42,27 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
       <article className="profile-panel" style={{ marginTop: 16 }}>
         <img src={user.avatarUrl ?? "/uploads/default-avatar.svg"} alt={user.name ?? user.email} />
         <div>
-          <h2>{user.name ?? user.email}</h2>
+          <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            {user.name ?? user.email}
+            {user.isPro && (
+              <span className="pro-badge" style={{
+                fontSize: "11px",
+                fontWeight: 850,
+                color: "#111",
+                background: "linear-gradient(135deg, #ffd700, #ffa500)",
+                padding: "2px 8px",
+                borderRadius: "999px",
+                border: "1px solid #ffb700",
+                textTransform: "uppercase",
+                display: "inline-flex",
+                alignItems: "center",
+                lineHeight: "1",
+                height: "fit-content"
+              }}>
+                PRO
+              </span>
+            )}
+          </h2>
           <p>
             @{user.username ?? user.id} - {user.city ?? "Indonesia"}. {user.bio ?? "Traveler Jalanin"}
           </p>
