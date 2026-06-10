@@ -16,6 +16,22 @@ function readUsername(value: FormDataEntryValue | null) {
     .slice(0, 24);
 }
 
+export async function GET() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  return NextResponse.json({
+    id: user.id,
+    username: user.username,
+    name: user.name,
+    email: user.email,
+    avatarUrl: user.avatarUrl,
+  });
+}
+
 export async function POST(request: Request) {
   const user = await getCurrentUser();
 

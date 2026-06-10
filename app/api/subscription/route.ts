@@ -18,10 +18,10 @@ export async function POST(request: Request) {
     const isPro = action === "upgrade";
     const limits = isPro
       ? {
-          maxPrivate: 9999,
-          maxPublic: 9999,
-          maxSaved: 9999,
-          maxAffiliate: 9999,
+          maxPrivate: 100,
+          maxPublic: 100,
+          maxSaved: 100,
+          maxAffiliate: 100,
         }
       : {
           maxPrivate: 2,

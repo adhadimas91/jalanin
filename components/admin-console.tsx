@@ -277,6 +277,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     
     if (diffDays <= 0) return "free";
     if (diffDays <= 32) return "pro_1m";
+    if (diffDays <= 93) return "pro_3m";
     if (diffDays <= 185) return "pro_6m";
     if (diffDays <= 367) return "pro_1y";
     return "pro_indefinite";
@@ -297,15 +298,18 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
       if (value !== "free") {
         isPro = true;
         limits = {
-          maxPrivate: 9999,
-          maxPublic: 9999,
-          maxSaved: 9999,
-          maxAffiliate: 9999,
+          maxPrivate: 100,
+          maxPublic: 100,
+          maxSaved: 100,
+          maxAffiliate: 100,
         };
 
         const now = new Date();
         if (value === "pro_1m") {
           now.setMonth(now.getMonth() + 1);
+          proExpiresAt = now.toISOString();
+        } else if (value === "pro_3m") {
+          now.setMonth(now.getMonth() + 3);
           proExpiresAt = now.toISOString();
         } else if (value === "pro_6m") {
           now.setMonth(now.getMonth() + 6);
@@ -448,6 +452,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                               >
                                 <option value="free">Plan: FREE</option>
                                 <option value="pro_1m">PRO (1 Bulan)</option>
+                                <option value="pro_3m">PRO (3 Bulan)</option>
                                 <option value="pro_6m">PRO (6 Bulan)</option>
                                 <option value="pro_1y">PRO (1 Tahun)</option>
                                 <option value="pro_indefinite">PRO (Seterusnya)</option>
@@ -504,6 +509,80 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                     {formFields.map((key) => {
                       const value = parsedDraft[key];
                       const labelText = formatLabel(key);
+
+                      if (currentTable === "users" && (key === "isPro" || key === "proExpiresAt")) {
+                        if (key === "proExpiresAt") return null;
+
+                        const isProVal = !!parsedDraft.isPro;
+                        const expiresAtVal = parsedDraft.proExpiresAt as string | null | undefined;
+                        const currentPlan = getSubscriptionOption(expiresAtVal, isProVal);
+
+                        return (
+                          <div key="plan-selector" className="admin-form-group">
+                            <label htmlFor="form-field-plan">Subscription Plan</label>
+                            <select
+                              id="form-field-plan"
+                              value={currentPlan}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                let isPro = false;
+                                let proExpiresAt: string | null = null;
+                                let limits = {
+                                  maxPrivate: 2,
+                                  maxPublic: 5,
+                                  maxSaved: 5,
+                                  maxAffiliate: 50,
+                                };
+
+                                if (val !== "free") {
+                                  isPro = true;
+                                  limits = {
+                                    maxPrivate: 100,
+                                    maxPublic: 100,
+                                    maxSaved: 100,
+                                    maxAffiliate: 100,
+                                  };
+
+                                  const now = new Date();
+                                  if (val === "pro_1m") {
+                                    now.setMonth(now.getMonth() + 1);
+                                    proExpiresAt = now.toISOString();
+                                  } else if (val === "pro_3m") {
+                                    now.setMonth(now.getMonth() + 3);
+                                    proExpiresAt = now.toISOString();
+                                  } else if (val === "pro_6m") {
+                                    now.setMonth(now.getMonth() + 6);
+                                    proExpiresAt = now.toISOString();
+                                  } else if (val === "pro_1y") {
+                                    now.setFullYear(now.getFullYear() + 1);
+                                    proExpiresAt = now.toISOString();
+                                  }
+                                }
+
+                                try {
+                                  const parsed = JSON.parse(draft) as Record<string, unknown>;
+                                  parsed.isPro = isPro;
+                                  parsed.proExpiresAt = proExpiresAt;
+                                  parsed.maxPrivate = limits.maxPrivate;
+                                  parsed.maxPublic = limits.maxPublic;
+                                  parsed.maxSaved = limits.maxSaved;
+                                  parsed.maxAffiliate = limits.maxAffiliate;
+                                  setDraft(JSON.stringify(parsed, null, 2));
+                                } catch (err) {
+                                  // ignore
+                                }
+                              }}
+                            >
+                              <option value="free">FREE PLAN</option>
+                              <option value="pro_1m">PRO (1 Bulan)</option>
+                              <option value="pro_3m">PRO (3 Bulan)</option>
+                              <option value="pro_6m">PRO (6 Bulan)</option>
+                              <option value="pro_1y">PRO (1 Tahun)</option>
+                              <option value="pro_indefinite">PRO (Seterusnya)</option>
+                            </select>
+                          </div>
+                        );
+                      }
 
                       if (typeof value === "boolean") {
                         return (

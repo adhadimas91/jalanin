@@ -49,6 +49,7 @@ export default function AffiliateSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ id: string; username: string | null } | null>(null);
 
   // Form State
   const [label, setLabel] = useState("");
@@ -67,25 +68,28 @@ export default function AffiliateSettingsPage() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [linksRes, whitelistRes] = await Promise.all([
+        const [linksRes, whitelistRes, profileRes] = await Promise.all([
           fetch("/api/affiliate/links"),
           fetch("/api/affiliate/whitelist"),
+          fetch("/api/profile"),
         ]);
 
-        if (linksRes.status === 401) {
+        if (linksRes.status === 401 || profileRes.status === 401) {
           window.location.href = "/login";
           return;
         }
 
-        if (!linksRes.ok || !whitelistRes.ok) {
+        if (!linksRes.ok || !whitelistRes.ok || !profileRes.ok) {
           throw new Error("Gagal mengambil data dari server.");
         }
 
         const linksData = await linksRes.json();
         const whitelistData = await whitelistRes.json();
+        const profileData = await profileRes.json();
 
         setLinks(linksData);
         setWhitelist(whitelistData);
+        setCurrentUser(profileData);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
       } finally {
@@ -258,7 +262,7 @@ export default function AffiliateSettingsPage() {
 
   return (
     <main className="page-center">
-      <Link className="plain-link" href="/profile">
+      <Link className="plain-link" href={`/profile/${currentUser?.username ?? currentUser?.id ?? ""}`}>
         &larr; Kembali ke profil
       </Link>
       

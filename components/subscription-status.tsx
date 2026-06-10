@@ -113,14 +113,14 @@ export function SubscriptionStatus({
             <div className="limit-label-container">
               <span className="limit-name">Itinerary Privat</span>
               <span className="limit-progress">
-                {privateCount} / {renderLimitValue(user.maxPrivate)}
+                {user.isPro ? privateCount : `${privateCount} / ${renderLimitValue(user.maxPrivate)}`}
               </span>
             </div>
             <div className="limit-bar-bg">
               <div
                 className={`limit-bar ${user.isPro ? "pro-bar" : ""}`}
                 style={{
-                  width: `${user.maxPrivate >= 9999 ? 100 : Math.min((privateCount / user.maxPrivate) * 100, 100)}%`,
+                  width: `${user.isPro ? 100 : Math.min((privateCount / user.maxPrivate) * 100, 100)}%`,
                 }}
               />
             </div>
@@ -130,14 +130,14 @@ export function SubscriptionStatus({
             <div className="limit-label-container">
               <span className="limit-name">Itinerary Publik</span>
               <span className="limit-progress">
-                {publicCount} / {renderLimitValue(user.maxPublic)}
+                {user.isPro ? publicCount : `${publicCount} / ${renderLimitValue(user.maxPublic)}`}
               </span>
             </div>
             <div className="limit-bar-bg">
               <div
                 className={`limit-bar ${user.isPro ? "pro-bar" : ""}`}
                 style={{
-                  width: `${user.maxPublic >= 9999 ? 100 : Math.min((publicCount / user.maxPublic) * 100, 100)}%`,
+                  width: `${user.isPro ? 100 : Math.min((publicCount / user.maxPublic) * 100, 100)}%`,
                 }}
               />
             </div>
@@ -147,14 +147,14 @@ export function SubscriptionStatus({
             <div className="limit-label-container">
               <span className="limit-name">Rute Tersimpan</span>
               <span className="limit-progress">
-                {savedCount} / {renderLimitValue(user.maxSaved)}
+                {user.isPro ? savedCount : `${savedCount} / ${renderLimitValue(user.maxSaved)}`}
               </span>
             </div>
             <div className="limit-bar-bg">
               <div
                 className={`limit-bar ${user.isPro ? "pro-bar" : ""}`}
                 style={{
-                  width: `${user.maxSaved >= 9999 ? 100 : Math.min((savedCount / user.maxSaved) * 100, 100)}%`,
+                  width: `${user.isPro ? 100 : Math.min((savedCount / user.maxSaved) * 100, 100)}%`,
                 }}
               />
             </div>
@@ -164,14 +164,14 @@ export function SubscriptionStatus({
             <div className="limit-label-container">
               <span className="limit-name">Tautan Affiliate</span>
               <span className="limit-progress">
-                {affiliateCount} / {renderLimitValue(user.maxAffiliate)}
+                {user.isPro ? affiliateCount : `${affiliateCount} / ${renderLimitValue(user.maxAffiliate)}`}
               </span>
             </div>
             <div className="limit-bar-bg">
               <div
                 className={`limit-bar ${user.isPro ? "pro-bar" : ""}`}
                 style={{
-                  width: `${user.maxAffiliate >= 9999 ? 100 : Math.min((affiliateCount / user.maxAffiliate) * 100, 100)}%`,
+                  width: `${user.isPro ? 100 : Math.min((affiliateCount / user.maxAffiliate) * 100, 100)}%`,
                 }}
               />
             </div>
