@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { hashPassword } from "@/lib/password";
 
 export const adminTables = [
   "users",
@@ -56,6 +57,9 @@ function readOptionalString(value: unknown) {
 }
 
 function readInt(value: unknown, fallback = 0) {
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
   const numeric = Number(value);
   return Number.isFinite(numeric) ? Math.trunc(numeric) : fallback;
 }
@@ -341,17 +345,26 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
 
   switch (table) {
     case "users":
+      let passwordHash = readString(data.passwordHash);
+      if (passwordHash && !passwordHash.includes(":")) {
+        passwordHash = await hashPassword(passwordHash);
+      }
       return prisma.user.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
           email: readString(data.email),
-          username: readOptionalString(data.username) ?? undefined,
-          passwordHash: readString(data.passwordHash),
-          name: readOptionalString(data.name) ?? undefined,
-          avatarUrl: readOptionalString(data.avatarUrl) ?? undefined,
-          bio: readOptionalString(data.bio) ?? undefined,
-          city: readOptionalString(data.city) ?? undefined,
+          username: readOptionalString(data.username) ?? null,
+          passwordHash,
+          name: readOptionalString(data.name) ?? null,
+          avatarUrl: readOptionalString(data.avatarUrl) ?? null,
+          bio: readOptionalString(data.bio) ?? null,
+          city: readOptionalString(data.city) ?? null,
           role: readUserRole(data.role),
+          isPro: readBoolean(data.isPro, false),
+          maxPrivate: readInt(data.maxPrivate, 2),
+          maxPublic: readInt(data.maxPublic, 5),
+          maxSaved: readInt(data.maxSaved, 5),
+          maxAffiliate: readInt(data.maxAffiliate, 50),
         },
       });
     case "itineraries":
@@ -449,17 +462,26 @@ export async function updateAdminRecord(
 
   switch (table) {
     case "users":
+      let passwordHash = readString(data.passwordHash);
+      if (passwordHash && !passwordHash.includes(":")) {
+        passwordHash = await hashPassword(passwordHash);
+      }
       return prisma.user.update({
         where: { id },
         data: {
           email: readString(data.email),
-          username: readOptionalString(data.username) ?? undefined,
-          passwordHash: readString(data.passwordHash),
-          name: readOptionalString(data.name) ?? undefined,
-          avatarUrl: readOptionalString(data.avatarUrl) ?? undefined,
-          bio: readOptionalString(data.bio) ?? undefined,
-          city: readOptionalString(data.city) ?? undefined,
+          username: readOptionalString(data.username) ?? null,
+          passwordHash,
+          name: readOptionalString(data.name) ?? null,
+          avatarUrl: readOptionalString(data.avatarUrl) ?? null,
+          bio: readOptionalString(data.bio) ?? null,
+          city: readOptionalString(data.city) ?? null,
           role: readUserRole(data.role),
+          isPro: readBoolean(data.isPro, false),
+          maxPrivate: readInt(data.maxPrivate, 2),
+          maxPublic: readInt(data.maxPublic, 5),
+          maxSaved: readInt(data.maxSaved, 5),
+          maxAffiliate: readInt(data.maxAffiliate, 50),
         },
       });
     case "itineraries":

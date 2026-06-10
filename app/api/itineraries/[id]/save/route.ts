@@ -24,8 +24,8 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
         userId: user.id,
       },
     });
-    if (savedCount >= 5) {
-      return new NextResponse("Batas maksimal rute tersimpan adalah 5. Silakan hapus rute tersimpan Anda yang lain terlebih dahulu.", { status: 400 });
+    if (savedCount >= user.maxSaved) {
+      return new NextResponse(`Batas maksimal rute tersimpan adalah ${user.maxSaved}. Silakan hapus rute tersimpan Anda yang lain terlebih dahulu.`, { status: 400 });
     }
   }
 

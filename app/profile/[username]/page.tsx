@@ -40,7 +40,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
         Kembali ke feed
       </Link>
       <article className="profile-panel" style={{ marginTop: 16 }}>
-        <img src={user.avatarUrl ?? "/uploads/default-cover.svg"} alt={user.name ?? user.email} />
+        <img src={user.avatarUrl ?? "/uploads/default-avatar.svg"} alt={user.name ?? user.email} />
         <div>
           <h2>{user.name ?? user.email}</h2>
           <p>

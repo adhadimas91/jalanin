@@ -723,7 +723,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                   </button>
                 </form>
                 <Link className="avatar-button" href={`/profile/${currentUser.username ?? currentUser.id}`} aria-label="Profil">
-                  <img src={currentUser.avatarUrl ?? "/uploads/default-cover.svg"} alt={currentUser.name ?? currentUser.email} />
+                  <img src={currentUser.avatarUrl ?? "/uploads/default-avatar.svg"} alt={currentUser.name ?? currentUser.email} />
                 </Link>
               </>
             ) : (
@@ -742,7 +742,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               <section className="post-card">
                 <div className="post-header">
                   <div className="post-user">
-                    <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
+                    <img src={current.author.avatarUrl ?? "/uploads/default-avatar.svg"} alt={current.author.name ?? current.author.email} />
                     <div>
                       <strong>{current.author.name ?? current.author.username ?? current.author.email}</strong>
                       <span>
@@ -770,7 +770,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                     <p>{current.destination}</p>
                     <h1>{current.title}</h1>
                     <div className="creator-line">
-                      <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
+                      <img src={current.author.avatarUrl ?? "/uploads/default-avatar.svg"} alt={current.author.name ?? current.author.email} />
                       <span>{current.author.name ?? current.author.username ?? current.author.email}</span>
                     </div>
                     {!current.isPublished && (
@@ -1050,7 +1050,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                   <h2>Creator</h2>
                 </div>
                 <div className="author-row">
-                  <img src={current.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={current.author.name ?? current.author.email} />
+                  <img src={current.author.avatarUrl ?? "/uploads/default-avatar.svg"} alt={current.author.name ?? current.author.email} />
                   <div>
                     <strong>{current.author.name ?? current.author.username ?? current.author.email}</strong>
                     <span>{current.author.bio ?? "Traveler Jalanin"}</span>

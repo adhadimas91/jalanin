@@ -46,7 +46,7 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
           <p>{itinerary.destination}</p>
           <h1>{itinerary.title}</h1>
           <div className="creator-line">
-            <img src={itinerary.author.avatarUrl ?? "/uploads/default-cover.svg"} alt={itinerary.author.name ?? itinerary.author.email} />
+            <img src={itinerary.author.avatarUrl ?? "/uploads/default-avatar.svg"} alt={itinerary.author.name ?? itinerary.author.email} />
             <span>{itinerary.author.name ?? itinerary.author.email}</span>
           </div>
           {!itinerary.isPublished && (

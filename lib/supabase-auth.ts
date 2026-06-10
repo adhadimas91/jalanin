@@ -65,8 +65,8 @@ export async function signUpWithSupabaseAuth(input: {
   password: string;
   name: string;
   username: string;
-}) {
-  return requestSupabaseAuth<SupabaseAuthResponse>("signup", {
+}): Promise<SupabaseAuthResponse> {
+  const result = await requestSupabaseAuth<any>("signup", {
     email: input.email,
     password: input.password,
     data: {
@@ -74,6 +74,17 @@ export async function signUpWithSupabaseAuth(input: {
       username: input.username,
     },
   });
+
+  // Jika email confirmation aktif, Supabase/GoTrue mengembalikan object user langsung di root (punya field id)
+  // Jika email confirmation nonaktif, Supabase/GoTrue mengembalikan object session yang membungkus user dan session token
+  if (result && !result.user && result.id) {
+    return {
+      user: result as SupabaseAuthUser,
+      session: null,
+    };
+  }
+
+  return result as SupabaseAuthResponse;
 }
 
 export async function signInWithSupabaseAuth(input: { email: string; password: string }) {

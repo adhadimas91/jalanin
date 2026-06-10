@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { SubscriptionStatus } from "@/components/subscription-status";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +13,31 @@ export default async function ProfileSettingsPage() {
     redirect("/login");
   }
 
+  const [privateCount, publicCount, savedCount, affiliateCount] = await Promise.all([
+    prisma.itinerary.count({
+      where: {
+        authorId: user.id,
+        isPublished: false,
+      },
+    }),
+    prisma.itinerary.count({
+      where: {
+        authorId: user.id,
+        isPublished: true,
+      },
+    }),
+    prisma.savedItinerary.count({
+      where: {
+        userId: user.id,
+      },
+    }),
+    prisma.affiliateLink.count({
+      where: {
+        userId: user.id,
+      },
+    }),
+  ]);
+
   return (
     <main className="page-center">
       <Link className="plain-link" href={`/profile/${user.username ?? user.id}`}>
@@ -18,7 +45,7 @@ export default async function ProfileSettingsPage() {
       </Link>
       <section className="auth-card settings-card">
         <div className="settings-heading">
-          <img className="settings-avatar" src={user.avatarUrl ?? "/uploads/default-cover.svg"} alt={user.name ?? user.email} />
+          <img className="settings-avatar" src={user.avatarUrl ?? "/uploads/default-avatar.svg"} alt={user.name ?? user.email} />
           <div>
             <h1>Edit Profil</h1>
             <p>Perbarui identitas traveler dan foto avatar kamu.</p>
@@ -50,6 +77,14 @@ export default async function ProfileSettingsPage() {
           </button>
         </form>
       </section>
+
+      <SubscriptionStatus
+        user={user}
+        privateCount={privateCount}
+        publicCount={publicCount}
+        savedCount={savedCount}
+        affiliateCount={affiliateCount}
+      />
     </main>
   );
 }

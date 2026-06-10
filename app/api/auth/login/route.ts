@@ -50,7 +50,7 @@ export async function POST(request: Request) {
           username: supabaseUser.user_metadata?.username ?? usernameFromEmail(email),
           name: supabaseUser.user_metadata?.name ?? usernameFromEmail(email),
           passwordHash: await hashPassword(password),
-          avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80",
+          avatarUrl: null,
           bio: "Traveler Jalanin",
           city: "Indonesia",
         },

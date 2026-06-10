@@ -75,6 +75,16 @@ export async function POST(request: Request) {
 
     const provider = detectProvider(actualUrl);
 
+    const affiliateCount = await prisma.affiliateLink.count({
+      where: {
+        userId: user.id,
+      },
+    });
+
+    if (affiliateCount >= user.maxAffiliate) {
+      return new NextResponse(`Batas maksimal tautan affiliate adalah ${user.maxAffiliate}.`, { status: 400 });
+    }
+
     const created = await prisma.affiliateLink.create({
       data: {
         userId: user.id,

@@ -44,8 +44,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         isPublished: false,
       },
     });
-    if (privateCount >= 2) {
-      return new NextResponse("Batas maksimal itinerary privat adalah 2. Silakan hapus atau ubah status itinerary privat Anda yang lain menjadi publik.", { status: 400 });
+    if (privateCount >= user.maxPrivate) {
+      return new NextResponse(`Batas maksimal itinerary privat adalah ${user.maxPrivate}. Silakan hapus atau ubah status itinerary privat Anda yang lain menjadi publik.`, { status: 400 });
     }
   } else if (!existing.isPublished && isPublished) {
     const publicCount = await prisma.itinerary.count({
@@ -54,8 +54,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         isPublished: true,
       },
     });
-    if (publicCount >= 5) {
-      return new NextResponse("Batas maksimal itinerary publik adalah 5. Silakan hapus atau ubah status itinerary publik Anda yang lain menjadi privat.", { status: 400 });
+    if (publicCount >= user.maxPublic) {
+      return new NextResponse(`Batas maksimal itinerary publik adalah ${user.maxPublic}. Silakan hapus atau ubah status itinerary publik Anda yang lain menjadi privat.`, { status: 400 });
     }
   }
 
