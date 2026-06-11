@@ -17,6 +17,7 @@ next-env.d.ts
 # Local uploads and generated screenshots
 /public/uploads/*
 !/public/uploads/default-cover.svg
+!/public/uploads/default-avatar.svg
 /jalanin-desktop-check.png
 /jalanin-mobile-check.png
 

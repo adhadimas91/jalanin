@@ -12,8 +12,20 @@ const googleMapsUrlPattern =
 
 const coordPairPattern = /^-?\d+(?:\.\d+)?,-?\d+(?:\.\d+)?$/;
 
+export function extractGoogleMapsUrl(input: string): string | null {
+  const urlRegex = /(https?:\/\/[^\s"'<>\(\)]+)/gi;
+  const matches = input.match(urlRegex);
+  if (!matches) return null;
+  for (const url of matches) {
+    if (googleMapsUrlPattern.test(url)) {
+      return url.replace(/[.,!?;:]+$/, "");
+    }
+  }
+  return null;
+}
+
 export function isGoogleMapsUrl(input: string) {
-  return googleMapsUrlPattern.test(input.trim());
+  return extractGoogleMapsUrl(input) !== null;
 }
 
 function isCoordPair(value: string) {
@@ -44,20 +56,60 @@ export function extractPlaceQueryFromGoogleMapsUrl(url: string): string | null {
 
 function buildGeocodeCandidates(query: string): string[] {
   const trimmed = query.trim();
-  const candidates = [trimmed];
+  const candidates: string[] = [trimmed];
   const parts = trimmed.split(",").map((part) => part.trim()).filter(Boolean);
 
   if (parts.length > 1) {
-    const name = parts[0];
-    const cityMatch = trimmed.match(/,\s*([^,]+?)\s+City\b/i);
-    const city = cityMatch?.[1]?.trim();
-    if (city) {
-      candidates.push(`${name}, ${city}, Indonesia`);
-      candidates.push(`${name} ${city} Indonesia`);
+    const firstPart = parts[0];
+    candidates.push(firstPart);
+
+    // If firstPart has multiple words, let's create variations
+    const words = firstPart.split(/\s+/);
+    if (words.length > 1) {
+      // First part without the last word (often a city/region name like "Depok")
+      candidates.push(words.slice(0, -1).join(" "));
+
+      // First part without the first word (often a category like "Taman", "Hotel", "Pantai")
+      candidates.push(words.slice(1).join(" "));
+
+      // First part without first and last words
+      if (words.length > 2) {
+        candidates.push(words.slice(1, -1).join(" "));
+      }
+    }
+
+    // Try to get some regional context from the end of the address
+    const lastPart = parts[parts.length - 1];
+    const secondLastPart = parts.length > 2 ? parts[parts.length - 2] : null;
+
+    // Clean up context by removing postal codes
+    const cleanContext = (text: string) => {
+      return text.replace(/\b\d{5}\b/g, "").replace(/\s+/g, " ").trim();
+    };
+
+    const contexts = [
+      "Indonesia",
+      secondLastPart ? cleanContext(secondLastPart) : null,
+      lastPart ? cleanContext(lastPart) : null,
+    ].filter((c): c is string => Boolean(c && c.length > 2));
+
+    // Create base names to combine with contexts
+    const baseNames = [
+      firstPart,
+      words.length > 1 ? words.slice(0, -1).join(" ") : null,
+      words.length > 1 ? words.slice(1).join(" ") : null,
+      words.length > 2 ? words.slice(1, -1).join(" ") : null,
+    ].filter((b): b is string => Boolean(b && b.length > 2));
+
+    for (const base of baseNames) {
+      for (const ctx of contexts) {
+        candidates.push(`${base}, ${ctx}`);
+      }
     }
   }
 
-  return [...new Set(candidates)];
+  // Deduplicate and filter out candidates that are too short to be useful
+  return [...new Set(candidates)].filter((c) => c.length > 3);
 }
 
 async function geocodeWithGeoapify(
@@ -167,18 +219,20 @@ export function extractCoordsFromGoogleMapsUrl(url: string): { lat: number; lng:
 }
 
 export async function parseGoogleMapsUrl(url: string): Promise<ParsedLocation> {
-  const trimmed = url.trim();
+  const extracted = extractGoogleMapsUrl(url);
 
-  if (!isGoogleMapsUrl(trimmed)) {
+  if (!extracted) {
     return {
       success: false,
       name: null,
       lat: null,
       lng: null,
-      finalUrl: trimmed,
+      finalUrl: url.trim(),
       error: "URL bukan link Google Maps yang valid.",
     };
   }
+
+  const trimmed = extracted;
 
   try {
     const response = await fetch(trimmed, {
