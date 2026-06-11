@@ -10,6 +10,7 @@ export const adminTables = [
   "likes",
   "sessions",
   "affiliateWhitelistDomains",
+  "appSettings",
 ] as const;
 
 export type AdminTable = (typeof adminTables)[number];
@@ -268,7 +269,7 @@ async function fetchAffiliateWhitelistDomains() {
 }
 
 export async function getAdminSnapshot(): Promise<AdminSnapshot> {
-  const [users, itineraries, days, activities, saves, likes, sessions, affiliateWhitelistDomains] = await Promise.all([
+  const [users, itineraries, days, activities, saves, likes, sessions, affiliateWhitelistDomains, appSettings] = await Promise.all([
     fetchUsers(),
     fetchItineraries(),
     fetchDays(),
@@ -277,6 +278,7 @@ export async function getAdminSnapshot(): Promise<AdminSnapshot> {
     fetchLikes(),
     fetchSessions(),
     fetchAffiliateWhitelistDomains(),
+    prisma.appSetting.findMany({ orderBy: { key: "asc" } }),
   ]);
 
   return {
@@ -339,6 +341,9 @@ export async function getAdminSnapshot(): Promise<AdminSnapshot> {
       }),
     ),
     affiliateWhitelistDomains: affiliateWhitelistDomains.map((record) =>
+      serializeRecord(record),
+    ),
+    appSettings: appSettings.map((record) =>
       serializeRecord(record),
     ),
   };
@@ -460,6 +465,13 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           description: readOptionalString(data.description) ?? undefined,
         },
       });
+    case "appSettings":
+      return prisma.appSetting.create({
+        data: {
+          key: readString(data.key),
+          value: readString(data.value),
+        },
+      });
   }
 }
 
@@ -578,6 +590,13 @@ export async function updateAdminRecord(
           description: readOptionalString(data.description) ?? undefined,
         },
       });
+    case "appSettings":
+      return prisma.appSetting.update({
+        where: { key: id },
+        data: {
+          value: readString(data.value),
+        },
+      });
   }
 }
 
@@ -599,5 +618,7 @@ export async function deleteAdminRecord(table: AdminTable, id: string) {
       return prisma.session.delete({ where: { id } });
     case "affiliateWhitelistDomains":
       return prisma.affiliateWhitelistDomain.delete({ where: { id } });
+    case "appSettings":
+      return prisma.appSetting.delete({ where: { key: id } });
   }
 }

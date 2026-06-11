@@ -130,6 +130,15 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       description: "Klook Affiliate Partner",
     },
   },
+  appSettings: {
+    label: "App Settings",
+    description: "Kelola konfigurasi aplikasi (seperti nomor whatsapp).",
+    columns: ["key", "value"],
+    template: {
+      key: "whatsapp_number",
+      value: "088293681133",
+    },
+  },
 };
 
 function stripMeta(record: Record<string, unknown>) {
@@ -420,7 +429,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                 </thead>
                 <tbody>
                   {records.map((record) => {
-                    const id = String(record.id ?? "");
+                    const id = String(record.id ?? record.key ?? "");
                     return (
                       <tr key={id}>
                         <td className="mono-cell">{id}</td>
@@ -601,7 +610,15 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                       return (
                         <div key={key} className="admin-form-group">
                           <label htmlFor={`form-field-${key}`}>{labelText}</label>
-                          {key === "role" ? (
+                          {currentTable === "appSettings" && key === "key" && editorMode === "edit" ? (
+                            <input
+                              id={`form-field-${key}`}
+                              type="text"
+                              value={value !== null && value !== undefined ? String(value) : ""}
+                              disabled
+                              style={{ background: "var(--surface-soft)", color: "var(--muted)", cursor: "not-allowed" }}
+                            />
+                          ) : key === "role" ? (
                             <select
                               id={`form-field-${key}`}
                               value={String(value ?? "USER")}
@@ -673,8 +690,22 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
             </div>
 
             <div className="empty-state">
-              Gunakan JSON untuk mengelola semua field pada tabel ini. Field tambahan dengan prefix
-              `_` hanya untuk display dan akan diabaikan saat simpan.
+              {currentTable === "appSettings" ? (
+                <div style={{ textAlign: "left", fontSize: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <strong style={{ color: "var(--ink)" }}>Panduan Kunci App Settings:</strong>
+                  <ul style={{ paddingLeft: "16px", margin: 0, display: "flex", flexDirection: "column", gap: "4px" }}>
+                    <li><code>whatsapp_number</code>: Nomor WhatsApp Admin (contoh: <code>088293681133</code>)</li>
+                    <li><code>price_1m / 3m / 6m / 1y</code>: Harga Plan (contoh: <code>Rp 29.900</code>)</li>
+                    <li><code>rate_1m / 3m / 6m / 1y</code>: Biaya/Keterangan (contoh: <code>/bulan</code>, <code>Rp 26.633/bln</code>)</li>
+                    <li><code>promo_1m / 3m / 6m / 1y</code>: Badge Promo/Hemat (contoh: <code>hemat</code>, <code>11% Hemat</code>)</li>
+                  </ul>
+                </div>
+              ) : (
+                <>
+                  Gunakan JSON untuk mengelola semua field pada tabel ini. Field tambahan dengan prefix
+                  `_` hanya untuk display dan akan diabaikan saat simpan.
+                </>
+              )}
             </div>
           </aside>
         </section>

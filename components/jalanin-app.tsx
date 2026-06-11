@@ -319,6 +319,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
   const [cloneSource, setCloneSource] = useState<JalaninItinerary | null>(null);
   const [editSource, setEditSource] = useState<JalaninItinerary | null>(null);
   const [toast, setToast] = useState("");
+  const [limitError, setLimitError] = useState<string | null>(null);
   const [dayDrafts, setDayDrafts] = useState<DayDraft[]>([createBlankDay(0)]);
   const [estimatedBudgetDraft, setEstimatedBudgetDraft] = useState(1_500_000);
   const [activeDraftDayIndex, setActiveDraftDayIndex] = useState(0);
@@ -402,7 +403,12 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
     }
 
     if (!response.ok) {
-      flash(await response.text());
+      const errText = await response.text();
+      if (errText.startsWith("Batas maksimal")) {
+        setLimitError(errText);
+      } else {
+        flash(errText);
+      }
       return null;
     }
 
@@ -1543,6 +1549,59 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               <Icon name="x" />
             </button>
             <img src={current.coverImageUrl} alt={current.destination} className="modal-image" />
+          </div>
+        </div>
+      )}
+
+      {limitError && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 99999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "rgba(0, 0, 0, 0.4)",
+          backdropFilter: "blur(8px)",
+          padding: "20px"
+        }} onClick={() => setLimitError(null)}>
+          <div style={{
+            background: "rgba(255, 255, 255, 0.96)",
+            border: "1px solid var(--line-strong)",
+            borderRadius: "28px",
+            boxShadow: "var(--shadow-pop)",
+            width: "100%",
+            maxWidth: "400px",
+            padding: "32px 24px",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "16px"
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ fontSize: "40px" }}>🚀</div>
+            <h3 style={{ fontSize: "18px", fontWeight: 850, color: "var(--ink)", margin: 0 }}>Limit Kuota Tercapai</h3>
+            <p style={{ fontSize: "13px", color: "var(--muted)", margin: 0, lineHeight: 1.5 }}>
+              {limitError}
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%", marginTop: "8px" }}>
+              <Link
+                href="/settings/profile#upgrade"
+                className="primary-button"
+                style={{ justifyContent: "center", textDecoration: "none", display: "flex", width: "100%", padding: "14px", boxSizing: "border-box" }}
+                onClick={() => setLimitError(null)}
+              >
+                Upgrade ke PRO
+              </Link>
+              <button 
+                type="button"
+                className="ghost-chip"
+                style={{ justifyContent: "center", display: "flex", width: "100%", padding: "12px", boxSizing: "border-box", cursor: "pointer" }}
+                onClick={() => setLimitError(null)}
+              >
+                Nanti Saja
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -279,6 +279,35 @@ async function main() {
   }
   console.log(`Seeded ${whitelistDomains.length} affiliate whitelist domains.`);
 
+  // Seed App Settings
+  const defaultSettings = [
+    { key: "whatsapp_number", value: "088293681133" },
+    { key: "price_1m", value: "Rp 29.900" },
+    { key: "rate_1m", value: "/bulan" },
+    { key: "promo_1m", value: "hemat" },
+    { key: "price_3m", value: "Rp 79.900" },
+    { key: "rate_3m", value: "Rp 26.633/bln" },
+    { key: "promo_3m", value: "11% Hemat" },
+    { key: "price_6m", value: "Rp 149.000" },
+    { key: "rate_6m", value: "Rp 24.833/bln" },
+    { key: "promo_6m", value: "17% Hemat" },
+    { key: "price_1y", value: "Rp 249.000" },
+    { key: "rate_1y", value: "Rp 20.750/bln" },
+    { key: "promo_1y", value: "31% Hemat" }
+  ];
+
+  for (const setting of defaultSettings) {
+    await prisma.appSetting.upsert({
+      where: { key: setting.key },
+      update: {},
+      create: {
+        key: setting.key,
+        value: setting.value,
+      },
+    });
+  }
+  console.log("Seeded app settings.");
+
   console.log(`Seeded ${itineraries.length} Jalanin itineraries.`);
   console.log("Demo login: risa@jalanin.local / jalanin123");
 }

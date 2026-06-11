@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Icon, IconSprite } from "./icon-sprite";
 
 type UserProps = {
+  email: string;
+  username?: string | null;
   isPro: boolean;
   proExpiresAt?: string | null | Date;
   maxPrivate: number;
@@ -19,6 +21,19 @@ type Props = {
   publicCount: number;
   savedCount: number;
   affiliateCount: number;
+  whatsappNumber?: string;
+  price1m?: string;
+  rate1m?: string;
+  promo1m?: string;
+  price3m?: string;
+  rate3m?: string;
+  promo3m?: string;
+  price6m?: string;
+  rate6m?: string;
+  promo6m?: string;
+  price1y?: string;
+  rate1y?: string;
+  promo1y?: string;
 };
 
 export function SubscriptionStatus({
@@ -27,11 +42,36 @@ export function SubscriptionStatus({
   publicCount,
   savedCount,
   affiliateCount,
+  whatsappNumber = "088293681133",
+  price1m = "Rp 29.900",
+  rate1m = "/bulan",
+  promo1m = "hemat",
+  price3m = "Rp 79.900",
+  rate3m = "Rp 26.633/bln",
+  promo3m = "11% Hemat",
+  price6m = "Rp 149.000",
+  rate6m = "Rp 24.833/bln",
+  promo6m = "17% Hemat",
+  price1y = "Rp 249.000",
+  rate1y = "Rp 20.750/bln",
+  promo1y = "31% Hemat",
 }: Props) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [showPlanModal, setShowPlanModal] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && (window.location.hash === "#upgrade" || window.location.search.includes("scroll=upgrade"))) {
+      const el = document.querySelector(".upgrade-btn") || document.querySelector(".subscription-actions");
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 300);
+      }
+    }
+  }, []);
 
   async function handleSubscription(action: "upgrade" | "downgrade") {
     if (
@@ -195,17 +235,125 @@ export function SubscriptionStatus({
             <button
               type="button"
               className="primary-button wide upgrade-btn"
-              onClick={() => handleSubscription("upgrade")}
+              onClick={() => setShowPlanModal(true)}
               disabled={busy}
             >
               <Icon name="star" />
-              <span>{busy ? "Memproses..." : "Upgrade ke PRO 🚀"}</span>
+              <span>Upgrade ke PRO 🚀</span>
             </button>
           )}
         </div>
       </div>
 
+      {showPlanModal && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "rgba(0, 0, 0, 0.4)",
+          backdropFilter: "blur(8px)",
+          padding: "20px"
+        }} onClick={() => setShowPlanModal(false)}>
+          <div style={{
+            background: "rgba(255, 255, 255, 0.96)",
+            border: "1px solid var(--line-strong)",
+            borderRadius: "28px",
+            boxShadow: "var(--shadow-pop)",
+            width: "100%",
+            maxWidth: "420px",
+            padding: "32px 24px",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px"
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ fontSize: "36px" }}>💎</div>
+            <h3 style={{ fontSize: "18px", fontWeight: 850, color: "var(--ink)", margin: 0 }}>Pilih Durasi Plan PRO</h3>
+            <p style={{ fontSize: "13px", color: "var(--muted)", margin: 0, lineHeight: 1.5 }}>
+              Upgrade akun Anda ke PRO untuk mendapatkan kuota privat, publik, saves, dan affiliate tanpa batasan (100 limit).
+            </p>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "8px 0" }}>
+              {[
+                { label: "1 Bulan", value: "1 Bulan", price: price1m, rate: rate1m, promo: promo1m },
+                { label: "3 Bulan", value: "3 Bulan", price: price3m, rate: rate3m, promo: promo3m },
+                { label: "6 Bulan", value: "6 Bulan", price: price6m, rate: rate6m, promo: promo6m },
+                { label: "1 Tahun", value: "1 Tahun", price: price1y, rate: rate1y, promo: promo1y }
+              ].map((plan) => (
+                <button
+                  key={plan.value}
+                  type="button"
+                  className="plan-option-card"
+                  onClick={() => {
+                    setShowPlanModal(false);
+                    let phone = whatsappNumber.replace(/[^0-9]/g, "");
+                    if (phone.startsWith("0")) {
+                      phone = "62" + phone.slice(1);
+                    }
+                    const text = `Halo Admin Jalanin, saya ingin memesan plan PRO (${plan.label}) untuk email: ${user.email}${user.username ? ` / username: ${user.username}` : ""}.`;
+                    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+                    window.open(waUrl, "_blank");
+                  }}
+                >
+                  <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                    <strong style={{ fontSize: "14px", color: "var(--ink)", fontWeight: 800 }}>PRO {plan.label}</strong>
+                    <span style={{ fontSize: "12px", color: "var(--muted)", fontWeight: 600 }}>
+                      {plan.price} <span style={{ fontSize: "11px", color: "var(--muted)", fontWeight: 400 }}>({plan.rate})</span>
+                    </span>
+                  </div>
+                  {plan.promo && (
+                    <span style={{
+                      fontSize: "10px",
+                      fontWeight: 850,
+                      color: plan.promo.includes("Hemat") ? "#b42318" : "#027a48",
+                      background: plan.promo.includes("Hemat") ? "#fff2f0" : "#ecfdf3",
+                      border: plan.promo.includes("Hemat") ? "1px solid #f6c5bf" : "1px solid #abefc6",
+                      padding: "4px 8px",
+                      borderRadius: "8px",
+                      textTransform: "uppercase"
+                    }}>
+                      {plan.promo}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <button 
+              type="button" 
+              className="ghost-chip danger wide" 
+              style={{ justifyContent: "center", border: "none", background: "transparent", cursor: "pointer" }}
+              onClick={() => setShowPlanModal(false)}
+            >
+              Batal
+            </button>
+          </div>
+        </div>
+      )}
+
       <style jsx>{`
+        .plan-option-card {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 14px 18px;
+          border-radius: 16px;
+          border: 1px solid var(--line-strong);
+          background: var(--surface);
+          cursor: pointer;
+          text-align: left;
+          width: 100%;
+          transition: all 0.2s ease;
+          outline: none;
+        }
+        .plan-option-card:hover {
+          border-color: var(--blue);
+          background: var(--surface-soft);
+          transform: translateY(-1px);
+        }
         .subscription-header {
           display: flex;
           justify-content: space-between;
