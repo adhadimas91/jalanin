@@ -698,6 +698,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                     <li><code>price_1m / 3m / 6m / 1y</code>: Harga Plan (contoh: <code>Rp 29.900</code>)</li>
                     <li><code>rate_1m / 3m / 6m / 1y</code>: Biaya/Keterangan (contoh: <code>/bulan</code>, <code>Rp 26.633/bln</code>)</li>
                     <li><code>promo_1m / 3m / 6m / 1y</code>: Badge Promo/Hemat (contoh: <code>hemat</code>, <code>11% Hemat</code>)</li>
+                    <li><code>email_whitelist</code>: Whitelist domain email yang diperbolehkan daftar (contoh: <code>gmail.com,outlook.com,yahoo.com,icloud.com</code>)</li>
                   </ul>
                 </div>
               ) : (

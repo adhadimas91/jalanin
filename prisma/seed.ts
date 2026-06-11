@@ -293,7 +293,8 @@ async function main() {
     { key: "promo_6m", value: "17% Hemat" },
     { key: "price_1y", value: "Rp 249.000" },
     { key: "rate_1y", value: "Rp 20.750/bln" },
-    { key: "promo_1y", value: "31% Hemat" }
+    { key: "promo_1y", value: "31% Hemat" },
+    { key: "email_whitelist", value: "gmail.com,outlook.com,yahoo.com,icloud.com" }
   ];
 
   for (const setting of defaultSettings) {
