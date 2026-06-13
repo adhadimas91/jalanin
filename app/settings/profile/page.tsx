@@ -13,7 +13,7 @@ export default async function ProfileSettingsPage() {
     redirect("/login");
   }
 
-  const [privateCount, publicCount, savedCount, affiliateCount, appSettingsList] = await Promise.all([
+  const [privateCount, publicCount, savedCount, myLinkCount, appSettingsList] = await Promise.all([
     prisma.itinerary.count({
       where: {
         authorId: user.id,
@@ -31,7 +31,7 @@ export default async function ProfileSettingsPage() {
         userId: user.id,
       },
     }),
-    prisma.affiliateLink.count({
+    prisma.myLink.count({
       where: {
         userId: user.id,
       },
@@ -106,7 +106,7 @@ export default async function ProfileSettingsPage() {
         privateCount={privateCount}
         publicCount={publicCount}
         savedCount={savedCount}
-        affiliateCount={affiliateCount}
+        myLinkCount={myLinkCount}
         whatsappNumber={settingsMap.whatsapp_number}
         price1m={settingsMap.price_1m}
         rate1m={settingsMap.rate_1m}

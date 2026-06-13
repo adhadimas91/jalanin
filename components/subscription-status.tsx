@@ -12,7 +12,7 @@ type UserProps = {
   maxPrivate: number;
   maxPublic: number;
   maxSaved: number;
-  maxAffiliate: number;
+  maxMyLink: number;
 };
 
 type Props = {
@@ -20,7 +20,7 @@ type Props = {
   privateCount: number;
   publicCount: number;
   savedCount: number;
-  affiliateCount: number;
+  myLinkCount: number;
   whatsappNumber?: string;
   price1m?: string;
   rate1m?: string;
@@ -41,7 +41,7 @@ export function SubscriptionStatus({
   privateCount,
   publicCount,
   savedCount,
-  affiliateCount,
+  myLinkCount,
   whatsappNumber = "088293681133",
   price1m = "Rp 29.900",
   rate1m = "/bulan",
@@ -202,16 +202,16 @@ export function SubscriptionStatus({
 
           <div className="limit-item">
             <div className="limit-label-container">
-              <span className="limit-name">Tautan Affiliate</span>
+              <span className="limit-name">Tautan MyLink</span>
               <span className="limit-progress">
-                {user.isPro ? affiliateCount : `${affiliateCount} / ${renderLimitValue(user.maxAffiliate)}`}
+                {user.isPro ? myLinkCount : `${myLinkCount} / ${renderLimitValue(user.maxMyLink)}`}
               </span>
             </div>
             <div className="limit-bar-bg">
               <div
                 className={`limit-bar ${user.isPro ? "pro-bar" : ""}`}
                 style={{
-                  width: `${user.isPro ? 100 : Math.min((affiliateCount / user.maxAffiliate) * 100, 100)}%`,
+                  width: `${user.isPro ? 100 : Math.min((myLinkCount / user.maxMyLink) * 100, 100)}%`,
                 }}
               />
             </div>
@@ -273,7 +273,7 @@ export function SubscriptionStatus({
             <div style={{ fontSize: "36px" }}>💎</div>
             <h3 style={{ fontSize: "18px", fontWeight: 850, color: "var(--ink)", margin: 0 }}>Pilih Durasi Plan PRO</h3>
             <p style={{ fontSize: "13px", color: "var(--muted)", margin: 0, lineHeight: 1.5 }}>
-              Upgrade akun Anda ke PRO untuk mendapatkan kuota privat, publik, saves, dan affiliate tanpa batasan (100 limit).
+              Upgrade akun Anda ke PRO untuk mendapatkan kuota privat, publik, saves, dan mylink tanpa batasan (100 limit).
             </p>
             
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "8px 0" }}>

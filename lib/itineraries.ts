@@ -23,7 +23,7 @@ export async function getPublishedItineraries(userId?: string) {
               orderIndex: "asc",
             },
             include: {
-              affiliateLink: true,
+              myLink: true,
             },
           },
         },
@@ -61,7 +61,7 @@ export async function getItineraryById(id: string) {
               orderIndex: "asc",
             },
             include: {
-              affiliateLink: true,
+              myLink: true,
             },
           },
         },

@@ -287,7 +287,7 @@ Fitur berikut tidak perlu dibuat di versi awal:
 - Monetisasi creator
 - Review tempat secara mendalam
 - Tiket wisata
-- Sistem affiliate
+- Sistem MyLink
 
 Fitur-fitur ini bisa masuk setelah validasi MVP berhasil.
 
@@ -754,7 +754,7 @@ Setelah MVP tervalidasi, fitur berikut bisa dikembangkan:
 3. Google Maps integration
 4. Booking integration
 5. Creator monetization
-6. Affiliate hotel/ticket
+6. Partner Link (MyLink) hotel/ticket
 7. Community review
 8. Group itinerary sharing
 9. Travel expense splitter

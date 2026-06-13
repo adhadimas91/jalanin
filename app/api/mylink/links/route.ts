@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { validateAffiliateUrl, detectProvider } from "@/lib/affiliate-validator";
+import { validateMyLinkUrl, detectProvider } from "@/lib/mylink-validator";
 
-// GET: Ambil daftar link affiliate milik user yang sedang login
+// GET: Ambil daftar link mylink milik user yang sedang login
 export async function GET() {
   const user = await getCurrentUser();
   if (!user) {
@@ -11,7 +11,7 @@ export async function GET() {
   }
 
   try {
-    const links = await prisma.affiliateLink.findMany({
+    const links = await prisma.myLink.findMany({
       where: {
         userId: user.id,
       },
@@ -46,12 +46,12 @@ export async function GET() {
 
     return NextResponse.json(links);
   } catch (error) {
-    console.error("Gagal mengambil daftar affiliate links:", error);
+    console.error("Gagal mengambil daftar mylinks:", error);
     return new NextResponse("Server Error", { status: 500 });
   }
 }
 
-// POST: Buat link affiliate baru
+// POST: Buat link mylink baru
 export async function POST(request: Request) {
   const user = await getCurrentUser();
   if (!user) {
@@ -64,28 +64,28 @@ export async function POST(request: Request) {
     const actualUrl = String(body.actualUrl ?? "").trim();
 
     if (!label || !actualUrl) {
-      return new NextResponse("Label dan URL affiliate wajib diisi.", { status: 400 });
+      return new NextResponse("Label dan URL mylink wajib diisi.", { status: 400 });
     }
 
-    // Validasi URL affiliate secara dinamis berdasarkan whitelist di DB
-    const validation = await validateAffiliateUrl(actualUrl);
+    // Validasi URL mylink secara dinamis berdasarkan whitelist di DB
+    const validation = await validateMyLinkUrl(actualUrl);
     if (!validation.isValid) {
       return new NextResponse(validation.error || "Tautan tidak valid.", { status: 400 });
     }
 
     const provider = detectProvider(actualUrl);
 
-    const affiliateCount = await prisma.affiliateLink.count({
+    const myLinkCount = await prisma.myLink.count({
       where: {
         userId: user.id,
       },
     });
 
-    if (affiliateCount >= user.maxAffiliate) {
-      return new NextResponse(`Batas maksimal tautan affiliate adalah ${user.maxAffiliate}.`, { status: 400 });
+    if (myLinkCount >= user.maxMyLink) {
+      return new NextResponse(`Batas maksimal tautan mylink adalah ${user.maxMyLink}.`, { status: 400 });
     }
 
-    const created = await prisma.affiliateLink.create({
+    const created = await prisma.myLink.create({
       data: {
         userId: user.id,
         label,
@@ -96,12 +96,12 @@ export async function POST(request: Request) {
 
     return NextResponse.json(created);
   } catch (error) {
-    console.error("Gagal membuat affiliate link:", error);
+    console.error("Gagal membuat mylink:", error);
     return new NextResponse("Server Error", { status: 500 });
   }
 }
 
-// PUT: Perbarui link affiliate terpusat yang sudah ada
+// PUT: Perbarui link mylink terpusat yang sudah ada
 export async function PUT(request: Request) {
   const user = await getCurrentUser();
   if (!user) {
@@ -115,11 +115,11 @@ export async function PUT(request: Request) {
     const actualUrl = String(body.actualUrl ?? "").trim();
 
     if (!id || !label || !actualUrl) {
-      return new NextResponse("ID, Label, dan URL affiliate wajib diisi.", { status: 400 });
+      return new NextResponse("ID, Label, dan URL mylink wajib diisi.", { status: 400 });
     }
 
     // Pastikan link milik user yang login
-    const existing = await prisma.affiliateLink.findFirst({
+    const existing = await prisma.myLink.findFirst({
       where: {
         id,
         userId: user.id,
@@ -127,18 +127,18 @@ export async function PUT(request: Request) {
     });
 
     if (!existing) {
-      return new NextResponse("Tautan affiliate tidak ditemukan.", { status: 404 });
+      return new NextResponse("Tautan mylink tidak ditemukan.", { status: 404 });
     }
 
-    // Validasi URL affiliate secara dinamis
-    const validation = await validateAffiliateUrl(actualUrl);
+    // Validasi URL mylink secara dinamis
+    const validation = await validateMyLinkUrl(actualUrl);
     if (!validation.isValid) {
       return new NextResponse(validation.error || "Tautan tidak valid.", { status: 400 });
     }
 
     const provider = detectProvider(actualUrl);
 
-    const updated = await prisma.affiliateLink.update({
+    const updated = await prisma.myLink.update({
       where: { id },
       data: {
         label,
@@ -149,12 +149,12 @@ export async function PUT(request: Request) {
 
     return NextResponse.json(updated);
   } catch (error) {
-    console.error("Gagal mengupdate affiliate link:", error);
+    console.error("Gagal mengupdate mylink:", error);
     return new NextResponse("Server Error", { status: 500 });
   }
 }
 
-// DELETE: Hapus link affiliate terpusat
+// DELETE: Hapus link mylink terpusat
 export async function DELETE(request: Request) {
   const user = await getCurrentUser();
   if (!user) {
@@ -170,7 +170,7 @@ export async function DELETE(request: Request) {
     }
 
     // Pastikan link milik user yang login
-    const existing = await prisma.affiliateLink.findFirst({
+    const existing = await prisma.myLink.findFirst({
       where: {
         id,
         userId: user.id,
@@ -178,16 +178,16 @@ export async function DELETE(request: Request) {
     });
 
     if (!existing) {
-      return new NextResponse("Tautan affiliate tidak ditemukan.", { status: 404 });
+      return new NextResponse("Tautan mylink tidak ditemukan.", { status: 404 });
     }
 
-    await prisma.affiliateLink.delete({
+    await prisma.myLink.delete({
       where: { id },
     });
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("Gagal menghapus affiliate link:", error);
+    console.error("Gagal menghapus mylink:", error);
     return new NextResponse("Server Error", { status: 500 });
   }
 }

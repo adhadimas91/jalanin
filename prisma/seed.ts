@@ -255,19 +255,19 @@ async function main() {
   await ensureItinerary(made.id, itineraries[1]);
   await ensureItinerary(risa.id, itineraries[2]);
 
-  // Seed Affiliate Whitelist Domains
+  // Seed MyLink Whitelist Domains
   const whitelistDomains = [
-    { domainPattern: "*.klook.com", description: "Klook Affiliate" },
-    { domainPattern: "*.agoda.com", description: "Agoda Affiliate" },
-    { domainPattern: "*.traveloka.com", description: "Traveloka Partner/Affiliate" },
-    { domainPattern: "*.tiket.com", description: "Tiket.com Affiliate" },
-    { domainPattern: "*.booking.com", description: "Booking.com Affiliate" },
+    { domainPattern: "*.klook.com", description: "Klook Partner Link" },
+    { domainPattern: "*.agoda.com", description: "Agoda Partner Link" },
+    { domainPattern: "*.traveloka.com", description: "Traveloka Partner Link" },
+    { domainPattern: "*.tiket.com", description: "Tiket.com Partner Link" },
+    { domainPattern: "*.booking.com", description: "Booking.com Partner Link" },
     { domainPattern: "wa.me", description: "WhatsApp Short Link for local guides/rentals" },
     { domainPattern: "*.whatsapp.com", description: "WhatsApp Web links" },
   ];
 
   for (const domain of whitelistDomains) {
-    await prisma.affiliateWhitelistDomain.upsert({
+    await prisma.myLinkWhitelistDomain.upsert({
       where: { domainPattern: domain.domainPattern },
       update: { description: domain.description },
       create: {
@@ -277,7 +277,7 @@ async function main() {
       },
     });
   }
-  console.log(`Seeded ${whitelistDomains.length} affiliate whitelist domains.`);
+  console.log(`Seeded ${whitelistDomains.length} MyLink whitelist domains.`);
 
   // Seed App Settings
   const defaultSettings = [

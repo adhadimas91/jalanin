@@ -22,7 +22,7 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
   users: {
     label: "Users",
     description: "Kelola akun, profil, password hash, dan role admin.",
-    columns: ["email", "username", "name", "role", "isPro", "proExpiresAt", "maxPrivate", "maxPublic", "maxSaved", "maxAffiliate", "city", "createdAt"],
+    columns: ["email", "username", "name", "role", "isPro", "proExpiresAt", "maxPrivate", "maxPublic", "maxSaved", "maxMyLink", "city", "createdAt"],
     template: {
       email: "new-user@example.com",
       username: "newuser",
@@ -37,7 +37,7 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       maxPrivate: 2,
       maxPublic: 5,
       maxSaved: 5,
-      maxAffiliate: 50,
+      maxMyLink: 50,
     },
   },
   itineraries: {
@@ -120,14 +120,14 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       createdAt: new Date().toISOString(),
     },
   },
-  affiliateWhitelistDomains: {
-    label: "Whitelist Domains Affiliate",
+  myLinkWhitelistDomains: {
+    label: "Whitelist Domains MyLink",
     description: "Kelola domain partner resmi yang diizinkan sistem (misal *.klook.com, wa.me).",
     columns: ["domainPattern", "isActive", "description", "createdAt"],
     template: {
       domainPattern: "*.klook.com",
       isActive: true,
-      description: "Klook Affiliate Partner",
+      description: "Klook Partner Link",
     },
   },
   appSettings: {
@@ -301,7 +301,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
         maxPrivate: 2,
         maxPublic: 5,
         maxSaved: 5,
-        maxAffiliate: 50,
+        maxMyLink: 50,
       };
 
       if (value !== "free") {
@@ -310,7 +310,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
           maxPrivate: 100,
           maxPublic: 100,
           maxSaved: 100,
-          maxAffiliate: 100,
+          maxMyLink: 100,
         };
 
         const now = new Date();
@@ -540,7 +540,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                                   maxPrivate: 2,
                                   maxPublic: 5,
                                   maxSaved: 5,
-                                  maxAffiliate: 50,
+                                  maxMyLink: 50,
                                 };
 
                                 if (val !== "free") {
@@ -549,7 +549,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                                     maxPrivate: 100,
                                     maxPublic: 100,
                                     maxSaved: 100,
-                                    maxAffiliate: 100,
+                                    maxMyLink: 100,
                                   };
 
                                   const now = new Date();
@@ -575,7 +575,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                                   parsed.maxPrivate = limits.maxPrivate;
                                   parsed.maxPublic = limits.maxPublic;
                                   parsed.maxSaved = limits.maxSaved;
-                                  parsed.maxAffiliate = limits.maxAffiliate;
+                                  parsed.maxMyLink = limits.maxMyLink;
                                   setDraft(JSON.stringify(parsed, null, 2));
                                 } catch (err) {
                                   // ignore

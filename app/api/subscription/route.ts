@@ -21,13 +21,13 @@ export async function POST(request: Request) {
           maxPrivate: 100,
           maxPublic: 100,
           maxSaved: 100,
-          maxAffiliate: 100,
+          maxMyLink: 100,
         }
       : {
           maxPrivate: 2,
           maxPublic: 5,
           maxSaved: 5,
-          maxAffiliate: 50,
+          maxMyLink: 50,
         };
 
     const updated = await prisma.user.update({

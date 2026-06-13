@@ -22,8 +22,8 @@ type SerializedActivity = {
   estimatedCost: number;
   category: string;
   orderIndex: number;
-  affiliateLinkId: string | null;
-  affiliateLink: {
+  myLinkId: string | null;
+  myLink: {
     actualUrl: string;
     provider: string;
   } | null;
@@ -189,37 +189,37 @@ export function ItineraryInteractiveView({ itinerary }: { itinerary: SerializedI
                       {activity.category}
                       {activity.locationName ? ` · ${activity.locationName}` : ""}
                     </span>
-                    {activity.affiliateLink && (
-                      <div style={{ marginTop: "8px" }}>
+                    {activity.myLink && (
+                      <div className="activity-mylink-section" style={{ marginTop: "12px" }}>
                         <a
-                          href={activity.affiliateLink.actualUrl}
+                          href={activity.myLink.actualUrl}
                           target="_blank"
                           rel="noopener noreferrer nofollow"
                           style={{
                             display: "inline-flex",
                             alignItems: "center",
-                            gap: "6px",
-                            padding: "6px 12px",
-                            fontSize: "11px",
+                            gap: "8px",
+                            padding: "8px 16px",
+                            borderRadius: "999px",
+                            fontSize: "12px",
                             fontWeight: 800,
-                            color: "#fff",
-                            background: activity.affiliateLink.provider === "Klook" 
-                              ? "#ff5e00" 
-                              : activity.affiliateLink.provider === "Agoda"
-                              ? "#0096ff"
-                              : activity.affiliateLink.provider === "Traveloka"
-                              ? "#0194f3"
-                              : activity.affiliateLink.provider === "Tiket.com"
-                              ? "#0053b3"
-                              : "var(--text, #111)",
-                            borderRadius: "16px",
+                            color: "white",
+                            background: activity.myLink.provider === "Klook" 
+                              ? "var(--orange)" 
+                              : activity.myLink.provider === "Agoda"
+                              ? "var(--blue)"
+                              : activity.myLink.provider === "Traveloka"
+                              ? "var(--sky)"
+                              : activity.myLink.provider === "Tiket.com"
+                              ? "var(--yellow)"
+                              : "var(--indigo)",
                             textDecoration: "none",
-                            boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
+                            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
                           }}
-                          className="affiliate-cta"
+                          className="mylink-cta"
                         >
-                          <Icon name="link" />
-                          <span>Pesan via {activity.affiliateLink.provider}</span>
+                          <Icon name="route" />
+                          <span>Pesan via {activity.myLink.provider}</span>
                         </a>
                       </div>
                     )}

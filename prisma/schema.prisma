@@ -27,14 +27,14 @@ model User {
   maxPrivate   Int              @default(2)
   maxPublic    Int              @default(5)
   maxSaved     Int              @default(5)
-  maxAffiliate Int              @default(50)
+  maxMyLink    Int              @default(50)
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @default(now()) @updatedAt
   trips        Itinerary[]
   saves        SavedItinerary[]
   likes        Like[]
   sessions     Session[]
-  affiliateLinks AffiliateLink[]
+  myLinks      MyLink[]
 
   @@index([username])
 }
@@ -96,8 +96,8 @@ model Activity {
   orderIndex     Int
   day            ItineraryDay @relation(fields: [itineraryDayId], references: [id], onDelete: Cascade)
   
-  affiliateLinkId String?
-  affiliateLink   AffiliateLink? @relation(fields: [affiliateLinkId], references: [id], onDelete: SetNull)
+  myLinkId String?
+  myLink   MyLink? @relation(fields: [myLinkId], references: [id], onDelete: SetNull)
 
   @@index([itineraryDayId, orderIndex])
 }
@@ -137,7 +137,7 @@ model Session {
   @@index([userId])
 }
 
-model AffiliateLink {
+model MyLink {
   id        String     @id @default(cuid())
   userId    String
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -151,7 +151,7 @@ model AffiliateLink {
   @@index([userId])
 }
 
-model AffiliateWhitelistDomain {
+model MyLinkWhitelistDomain {
   id            String   @id @default(cuid())
   domainPattern String   @unique // e.g. "*.klook.com", "www.agoda.com", "wa.me"
   isActive      Boolean  @default(true)

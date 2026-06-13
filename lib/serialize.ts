@@ -55,11 +55,11 @@ export function serializeItinerary(itinerary: Awaited<ReturnType<typeof getPubli
         estimatedCost: activity.estimatedCost,
         category: activity.category,
         orderIndex: activity.orderIndex,
-        affiliateLinkId: activity.affiliateLinkId,
-        affiliateLink: (activity as any).affiliateLink
+        myLinkId: activity.myLinkId,
+        myLink: (activity as any).myLink
           ? {
-              actualUrl: (activity as any).affiliateLink.actualUrl,
-              provider: (activity as any).affiliateLink.provider,
+              actualUrl: (activity as any).myLink.actualUrl,
+              provider: (activity as any).myLink.provider,
             }
           : null,
       })),

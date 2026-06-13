@@ -36,8 +36,8 @@ export type JalaninActivity = {
   estimatedCost: number;
   category: string;
   orderIndex: number;
-  affiliateLinkId: string | null;
-  affiliateLink?: { actualUrl: string; provider: string } | null;
+  myLinkId: string | null;
+  myLink?: { actualUrl: string; provider: string } | null;
 };
 
 export type JalaninDay = {
@@ -95,7 +95,7 @@ type ActivityDraft = {
   customLocation: boolean;
   category: string;
   estimatedCost: number;
-  affiliateLinkId: string | null;
+  myLinkId: string | null;
 };
 
 type DayDraft = {
@@ -128,7 +128,7 @@ function createBlankActivity(index: number): ActivityDraft {
     customLocation: false,
     category: DEFAULT_ACTIVITY_TYPE,
     estimatedCost: 0,
-    affiliateLinkId: null,
+    myLinkId: null,
   };
 }
 
@@ -152,7 +152,7 @@ function fromActivity(activity: JalaninActivity): ActivityDraft {
     customLocation: activity.customLocation,
     category: activity.category,
     estimatedCost: activity.estimatedCost,
-    affiliateLinkId: activity.affiliateLinkId || null,
+    myLinkId: activity.myLinkId || null,
   };
 }
 
@@ -327,14 +327,14 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
   const [locationResults, setLocationResults] = useState<Record<string, LocationResult[]>>({});
   const [searchingLocation, setSearchingLocation] = useState<string | null>(null);
   const [pickerKey, setPickerKey] = useState<string | null>(null);
-  const [userAffiliateLinks, setUserAffiliateLinks] = useState<{ id: string; label: string; provider: string; actualUrl: string }[]>([]);
+  const [userMyLinks, setUserMyLinks] = useState<{ id: string; label: string; provider: string; actualUrl: string }[]>([]);
 
   useEffect(() => {
     if (!currentUser || !drawerOpen) return;
-    fetch("/api/affiliate/links")
+    fetch("/api/mylink/links")
       .then((res) => (res.ok ? res.json() : []))
-      .then((data) => setUserAffiliateLinks(data))
-      .catch((err) => console.error("Gagal mengambil affiliate links:", err));
+      .then((data) => setUserMyLinks(data))
+      .catch((err) => console.error("Gagal mengambil MyLinks:", err));
   }, [currentUser, drawerOpen]);
 
   const current = items.find((item) => item.id === currentId) ?? items[0];
@@ -976,37 +976,37 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                               {activity.category}
                               {activity.locationName ? ` · ${activity.locationName}` : ""}
                             </span>
-                            {activity.affiliateLink && (
-                              <div style={{ marginTop: "8px" }}>
+                            {activity.myLink && (
+                              <div className="activity-mylink-section" style={{ marginTop: "12px" }}>
                                 <a
-                                  href={activity.affiliateLink.actualUrl}
+                                  href={activity.myLink.actualUrl}
                                   target="_blank"
                                   rel="noopener noreferrer nofollow"
                                   style={{
                                     display: "inline-flex",
                                     alignItems: "center",
-                                    gap: "6px",
-                                    padding: "6px 12px",
-                                    fontSize: "11px",
+                                    gap: "8px",
+                                    padding: "8px 16px",
+                                    borderRadius: "999px",
+                                    fontSize: "12px",
                                     fontWeight: 800,
-                                    color: "#fff",
-                                    background: activity.affiliateLink.provider === "Klook"
-                                      ? "#ff5e00"
-                                      : activity.affiliateLink.provider === "Agoda"
-                                        ? "#0096ff"
-                                        : activity.affiliateLink.provider === "Traveloka"
-                                          ? "#0194f3"
-                                          : activity.affiliateLink.provider === "Tiket.com"
-                                            ? "#0053b3"
-                                            : "var(--text, #111)",
-                                    borderRadius: "16px",
+                                    color: "white",
+                                    background: activity.myLink.provider === "Klook"
+                                      ? "var(--orange)"
+                                      : activity.myLink.provider === "Agoda"
+                                        ? "var(--blue)"
+                                        : activity.myLink.provider === "Traveloka"
+                                          ? "var(--sky)"
+                                          : activity.myLink.provider === "Tiket.com"
+                                            ? "var(--yellow)"
+                                            : "var(--indigo)",
                                     textDecoration: "none",
-                                    boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
+                                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                                   }}
-                                  className="affiliate-cta"
+                                  className="mylink-cta"
                                 >
-                                  <Icon name="link" />
-                                  <span>Pesan via {activity.affiliateLink.provider}</span>
+                                  <Icon name="route" />
+                                  <span>Pesan via {activity.myLink.provider}</span>
                                 </a>
                               </div>
                             )}
@@ -1474,27 +1474,27 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                         ) : null}
                         <label style={{ marginTop: "12px", display: "block" }}>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                            <span>Sematkan Link Affiliate</span>
-                            <a href="/settings/affiliate" target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", color: "var(--blue)", fontWeight: 700 }}>
+                            <span>Sematkan Link MyLink</span>
+                            <a href="/settings/mylink" target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", color: "var(--blue)", fontWeight: 700 }}>
                               Kelola Link &rarr;
                             </a>
                           </div>
                           <select
-                            value={activity.affiliateLinkId || ""}
-                            onChange={(event) => updateActivity(activeDraftDayIndex, index, { affiliateLinkId: event.target.value || null })}
+                            value={activity.myLinkId || ""}
+                            onChange={(event) => updateActivity(activeDraftDayIndex, index, { myLinkId: event.target.value || null })}
                             style={{ width: "100%", padding: "8px 10px", borderRadius: "8px", border: "1px solid var(--line)", background: "var(--surface)" }}
                           >
                             <option value="">-- Tidak Ada --</option>
-                            {userAffiliateLinks.map((link) => (
+                            {userMyLinks.map((link) => (
                               <option key={link.id} value={link.id}>
                                 [{link.provider}] {link.label}
                               </option>
                             ))}
                           </select>
                         </label>
-                        {activity.affiliateLinkId && (
+                        {activity.myLinkId && (
                           <div style={{ fontSize: "11px", color: "var(--muted)", marginTop: "4px", wordBreak: "break-all" }}>
-                            Tautan terpilih: <strong>{userAffiliateLinks.find(l => l.id === activity.affiliateLinkId)?.label || "Memuat..."}</strong>
+                            Tautan terpilih: <strong>{userMyLinks.find(l => l.id === activity.myLinkId)?.label || "Memuat..."}</strong>
                           </div>
                         )}
                       </article>

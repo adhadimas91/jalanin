@@ -58,7 +58,7 @@ export async function POST(request: Request) {
           maxPrivate: 2,
           maxPublic: 5,
           maxSaved: 5,
-          maxAffiliate: 50,
+          maxMyLink: 50,
         },
       }));
 

@@ -38,9 +38,9 @@ export function matchDomain(hostname: string, pattern: string): boolean {
 }
 
 /**
- * Validates whether a URL's domain is in the whitelist of active affiliate domains in the database.
+ * Validates whether a URL's domain is in the whitelist of active mylink domains in the database.
  */
-export async function validateAffiliateUrl(urlStr: string): Promise<{
+export async function validateMyLinkUrl(urlStr: string): Promise<{
   isValid: boolean;
   matchedPattern?: string;
   error?: string;
@@ -61,7 +61,7 @@ export async function validateAffiliateUrl(urlStr: string): Promise<{
 
   try {
     // Ambil semua domain whitelist yang aktif dari database
-    const activeWhitelist = await prisma.affiliateWhitelistDomain.findMany({
+    const activeWhitelist = await prisma.myLinkWhitelistDomain.findMany({
       where: {
         isActive: true,
       },
@@ -84,14 +84,14 @@ export async function validateAffiliateUrl(urlStr: string): Promise<{
       error: `Domain "${hostname}" tidak diizinkan. Hubungi admin untuk mendaftarkan domain baru.`,
     };
   } catch (error) {
-    console.error("Gagal melakukan validasi domain affiliate:", error);
+    console.error("Gagal melakukan validasi domain mylink:", error);
     // Fallback: Jika DB error, batasi demi keamanan
     return { isValid: false, error: "Gagal memproses validasi tautan." };
   }
 }
 
 /**
- * Helper to identify the affiliate provider name based on URL hostname.
+ * Helper to identify the provider name based on URL hostname.
  */
 export function detectProvider(urlStr: string): string {
   const hostname = getHostname(urlStr);

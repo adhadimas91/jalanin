@@ -5,14 +5,14 @@ import { prisma } from "@/lib/prisma";
 // GET: Ambil semua domain whitelist yang aktif
 export async function GET() {
   try {
-    const list = await prisma.affiliateWhitelistDomain.findMany({
+    const list = await prisma.myLinkWhitelistDomain.findMany({
       orderBy: {
         createdAt: "desc",
       },
     });
     return NextResponse.json(list);
   } catch (error) {
-    console.error("Gagal mengambil domain whitelist:", error);
+    console.error("Gagal mengambil domain whitelist mylink:", error);
     return new NextResponse("Server Error", { status: 500 });
   }
 }
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       return new NextResponse("Domain pattern tidak valid. Gunakan format seperti '*.agoda.com' atau 'wa.me'.", { status: 400 });
     }
 
-    const created = await prisma.affiliateWhitelistDomain.upsert({
+    const created = await prisma.myLinkWhitelistDomain.upsert({
       where: { domainPattern },
       update: {
         description,
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(created);
   } catch (error) {
-    console.error("Gagal membuat/mengupdate whitelist domain:", error);
+    console.error("Gagal membuat/mengupdate whitelist domain mylink:", error);
     return new NextResponse("Server Error", { status: 500 });
   }
 }

@@ -9,7 +9,7 @@ export const adminTables = [
   "saves",
   "likes",
   "sessions",
-  "affiliateWhitelistDomains",
+  "myLinkWhitelistDomains",
   "appSettings",
 ] as const;
 
@@ -259,8 +259,8 @@ async function fetchSessions() {
   });
 }
 
-async function fetchAffiliateWhitelistDomains() {
-  return prisma.affiliateWhitelistDomain.findMany({
+async function fetchMyLinkWhitelistDomains() {
+  return prisma.myLinkWhitelistDomain.findMany({
     orderBy: {
       createdAt: "desc",
     },
@@ -269,7 +269,7 @@ async function fetchAffiliateWhitelistDomains() {
 }
 
 export async function getAdminSnapshot(): Promise<AdminSnapshot> {
-  const [users, itineraries, days, activities, saves, likes, sessions, affiliateWhitelistDomains, appSettings] = await Promise.all([
+  const [users, itineraries, days, activities, saves, likes, sessions, myLinkWhitelistDomains, appSettings] = await Promise.all([
     fetchUsers(),
     fetchItineraries(),
     fetchDays(),
@@ -277,7 +277,7 @@ export async function getAdminSnapshot(): Promise<AdminSnapshot> {
     fetchSaves(),
     fetchLikes(),
     fetchSessions(),
-    fetchAffiliateWhitelistDomains(),
+    fetchMyLinkWhitelistDomains(),
     prisma.appSetting.findMany({ orderBy: { key: "asc" } }),
   ]);
 
@@ -340,7 +340,7 @@ export async function getAdminSnapshot(): Promise<AdminSnapshot> {
         },
       }),
     ),
-    affiliateWhitelistDomains: affiliateWhitelistDomains.map((record) =>
+    myLinkWhitelistDomains: myLinkWhitelistDomains.map((record) =>
       serializeRecord(record),
     ),
     appSettings: appSettings.map((record) =>
@@ -379,7 +379,7 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           maxPrivate: readInt(data.maxPrivate, 2),
           maxPublic: readInt(data.maxPublic, 5),
           maxSaved: readInt(data.maxSaved, 5),
-          maxAffiliate: readInt(data.maxAffiliate, 50),
+          maxMyLink: readInt(data.maxMyLink, 50),
         },
       });
     case "itineraries":
@@ -456,8 +456,8 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           createdAt: readDate(data.createdAt, new Date()),
         },
       });
-    case "affiliateWhitelistDomains":
-      return prisma.affiliateWhitelistDomain.create({
+    case "myLinkWhitelistDomains":
+      return prisma.myLinkWhitelistDomain.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
           domainPattern: readString(data.domainPattern),
@@ -504,7 +504,7 @@ export async function updateAdminRecord(
           maxPrivate: readInt(data.maxPrivate, 2),
           maxPublic: readInt(data.maxPublic, 5),
           maxSaved: readInt(data.maxSaved, 5),
-          maxAffiliate: readInt(data.maxAffiliate, 50),
+          maxMyLink: readInt(data.maxMyLink, 50),
         },
       });
     case "itineraries":
@@ -581,8 +581,8 @@ export async function updateAdminRecord(
           createdAt: readDate(data.createdAt, new Date()),
         },
       });
-    case "affiliateWhitelistDomains":
-      return prisma.affiliateWhitelistDomain.update({
+    case "myLinkWhitelistDomains":
+      return prisma.myLinkWhitelistDomain.update({
         where: { id },
         data: {
           domainPattern: readString(data.domainPattern),
@@ -616,8 +616,8 @@ export async function deleteAdminRecord(table: AdminTable, id: string) {
       return prisma.like.delete({ where: { id } });
     case "sessions":
       return prisma.session.delete({ where: { id } });
-    case "affiliateWhitelistDomains":
-      return prisma.affiliateWhitelistDomain.delete({ where: { id } });
+    case "myLinkWhitelistDomains":
+      return prisma.myLinkWhitelistDomain.delete({ where: { id } });
     case "appSettings":
       return prisma.appSetting.delete({ where: { key: id } });
   }

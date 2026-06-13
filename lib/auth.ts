@@ -89,7 +89,7 @@ export async function getCurrentUser() {
           maxPrivate: 2,
           maxPublic: 5,
           maxSaved: 5,
-          maxAffiliate: 50,
+          maxMyLink: 50,
         },
       });
     } catch (error) {

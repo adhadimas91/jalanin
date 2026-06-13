@@ -23,7 +23,7 @@ type ActivityDraft = {
   customLocation: boolean;
   category: string;
   estimatedCost: number;
-  affiliateLinkId: string | null;
+  myLinkId: string | null;
 };
 
 type DayDraft = {
@@ -60,7 +60,7 @@ function createBlankActivity(index: number): ActivityDraft {
     customLocation: false,
     category: DEFAULT_ACTIVITY_TYPE,
     estimatedCost: 0,
-    affiliateLinkId: null,
+    myLinkId: null,
   };
 }
 
@@ -88,7 +88,7 @@ function createDrafts(itinerary: JalaninItinerary): DayDraft[] {
               customLocation: activity.customLocation,
               category: activity.category,
               estimatedCost: activity.estimatedCost,
-              affiliateLinkId: activity.affiliateLinkId || null,
+              myLinkId: activity.myLinkId || null,
             }))
           : [createBlankActivity(0)],
       }))
@@ -179,16 +179,16 @@ export function ItineraryDetailActions({ itinerary }: Props) {
   const [locationResults, setLocationResults] = useState<Record<string, LocationResult[]>>({});
   const [searchingLocation, setSearchingLocation] = useState<string | null>(null);
   const [pickerKey, setPickerKey] = useState<string | null>(null);
-  const [userAffiliateLinks, setUserAffiliateLinks] = useState<{ id: string; label: string; provider: string; actualUrl: string }[]>([]);
+  const [userMyLinks, setUserMyLinks] = useState<{ id: string; label: string; provider: string; actualUrl: string }[]>([]);
 
   useEffect(() => {
-    fetch("/api/affiliate/links")
+    fetch("/api/mylink/links")
       .then((res) => {
         if (!res.ok) return [];
         return res.json();
       })
-      .then((data) => setUserAffiliateLinks(data))
-      .catch((err) => console.error("Gagal mengambil affiliate links:", err));
+      .then((data) => setUserMyLinks(data))
+      .catch((err) => console.error("Gagal mengambil MyLinks:", err));
   }, []);
 
   function resetEditor() {
@@ -645,14 +645,14 @@ export function ItineraryDetailActions({ itinerary }: Props) {
                       </div>
                       <label style={{ display: "grid", gap: "6px", marginTop: "10px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <span>Sematkan Link Affiliate</span>
-                          <a href="/settings/affiliate" target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", color: "var(--blue)", fontWeight: 700 }}>
+                          <span>Sematkan Link MyLink</span>
+                          <a href="/settings/mylink" target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", color: "var(--blue)", fontWeight: 700 }}>
                             Kelola
                           </a>
                         </div>
                         <select
-                          value={activity.affiliateLinkId || ""}
-                          onChange={(event) => updateActivity(dayIndex, activityIndex, { affiliateLinkId: event.target.value || null })}
+                          value={activity.myLinkId || ""}
+                          onChange={(event) => updateActivity(dayIndex, activityIndex, { myLinkId: event.target.value || null })}
                           style={{
                             width: "100%",
                             padding: "10px",
@@ -663,8 +663,8 @@ export function ItineraryDetailActions({ itinerary }: Props) {
                             outline: 0
                           }}
                         >
-                          <option value="">-- Tanpa Link Affiliate --</option>
-                          {userAffiliateLinks.map((link) => (
+                          <option value="">-- Tanpa Link MyLink --</option>
+                          {userMyLinks.map((link) => (
                             <option key={link.id} value={link.id}>
                               {link.label} ({link.provider})
                             </option>

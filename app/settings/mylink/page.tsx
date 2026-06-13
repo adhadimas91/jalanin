@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-type AffiliateLink = {
+type MyLink = {
   id: string;
   label: string;
   provider: string;
@@ -43,8 +43,8 @@ function getProviderNameFromPattern(pattern: string): string {
   return part.charAt(0).toUpperCase() + part.slice(1);
 }
 
-export default function AffiliateSettingsPage() {
-  const [links, setLinks] = useState<AffiliateLink[]>([]);
+export default function MyLinkSettingsPage() {
+  const [links, setLinks] = useState<MyLink[]>([]);
   const [whitelist, setWhitelist] = useState<WhitelistDomain[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,8 +69,8 @@ export default function AffiliateSettingsPage() {
     async function loadData() {
       try {
         const [linksRes, whitelistRes, profileRes] = await Promise.all([
-          fetch("/api/affiliate/links"),
-          fetch("/api/affiliate/whitelist"),
+          fetch("/api/mylink/links"),
+          fetch("/api/mylink/whitelist"),
           fetch("/api/profile"),
         ]);
 
@@ -126,7 +126,7 @@ export default function AffiliateSettingsPage() {
     };
 
     try {
-      const response = await fetch("/api/affiliate/links", {
+      const response = await fetch("/api/mylink/links", {
         method: editingId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -141,10 +141,10 @@ export default function AffiliateSettingsPage() {
 
       if (editingId) {
         setLinks((prev) => prev.map((l) => (l.id === editingId ? { ...savedLink, activities: l.activities } : l)));
-        showSuccess("Tautan affiliate berhasil diperbarui.");
+        showSuccess("Tautan MyLink berhasil diperbarui.");
       } else {
         setLinks((prev) => [savedLink, ...prev]);
-        showSuccess("Tautan affiliate baru berhasil ditambahkan.");
+        showSuccess("Tautan MyLink baru berhasil ditambahkan.");
       }
 
       // Reset form
@@ -157,7 +157,7 @@ export default function AffiliateSettingsPage() {
   }
 
   // Handle Edit Click
-  function startEdit(link: AffiliateLink) {
+  function startEdit(link: MyLink) {
     setEditingId(link.id);
     setLabel(link.label);
     setActualUrl(link.actualUrl);
@@ -173,7 +173,7 @@ export default function AffiliateSettingsPage() {
 
   // Handle Delete
   async function handleDelete(id: string) {
-    if (!confirm("Apakah Anda yakin ingin menghapus link affiliate ini? Semua aktivitas itinerary yang menunjuk ke link ini tidak akan terhubung lagi.")) {
+    if (!confirm("Apakah Anda yakin ingin menghapus link MyLink ini? Semua aktivitas itinerary yang menunjuk ke link ini tidak akan terhubung lagi.")) {
       return;
     }
 
@@ -181,7 +181,7 @@ export default function AffiliateSettingsPage() {
     setSuccess(null);
 
     try {
-      const response = await fetch(`/api/affiliate/links?id=${id}`, {
+      const response = await fetch(`/api/mylink/links?id=${id}`, {
         method: "DELETE",
       });
 
@@ -191,7 +191,7 @@ export default function AffiliateSettingsPage() {
       }
 
       setLinks((prev) => prev.filter((l) => l.id !== id));
-      showSuccess("Tautan affiliate berhasil dihapus.");
+      showSuccess("Tautan MyLink berhasil dihapus.");
     } catch (err) {
       showError(err instanceof Error ? err.message : "Gagal menghapus.");
     }
@@ -255,7 +255,7 @@ export default function AffiliateSettingsPage() {
   if (loading) {
     return (
       <main className="page-center">
-        <div style={{ textAlign: "center", padding: "40px" }}>Memuat pengaturan affiliate...</div>
+        <div style={{ textAlign: "center", padding: "40px" }}>Memuat pengaturan MyLink...</div>
       </main>
     );
   }
@@ -266,13 +266,13 @@ export default function AffiliateSettingsPage() {
         &larr; Kembali ke profil
       </Link>
       
-      <div className="affiliate-grid">
+      <div className="mylink-grid">
         
         {/* Kolom Kiri: Form Add/Edit */}
         <section className="auth-card">
-          <h1>{editingId ? "Edit Tautan Affiliate" : "Tambah Tautan Affiliate"}</h1>
+          <h1>{editingId ? "Edit Tautan MyLink" : "Tambah Tautan MyLink"}</h1>
           <p style={{ fontSize: "13px", color: "var(--muted)", marginBottom: "16px" }}>
-            Daftarkan link affiliate Anda di sini agar bisa digunakan berulang kali di berbagai aktivitas.
+            Daftarkan link MyLink Anda di sini agar bisa digunakan berulang kali di berbagai aktivitas.
           </p>
 
           {error && <div className="error-message" style={{ color: "red", fontSize: "13px", marginBottom: "12px" }}>{error}</div>}
@@ -291,7 +291,7 @@ export default function AffiliateSettingsPage() {
             </label>
 
             <label>
-              Tautan Affiliate (URL)
+              Tautan MyLink (URL)
               <input
                 type="url"
                 required
@@ -329,7 +329,7 @@ export default function AffiliateSettingsPage() {
         {/* Kolom Kanan: Daftar Link */}
         <section className="auth-card">
           <h1 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            Pustaka Link Affiliate Anda
+            Pustaka Link MyLink Anda
             {currentUser?.isPro && (
               <span className="pro-badge" style={{
                 fontSize: "11px",
@@ -457,11 +457,11 @@ export default function AffiliateSettingsPage() {
 
           {links.length === 0 ? (
             <div style={{ textAlign: "center", color: "var(--muted)", padding: "40px 0" }}>
-              Belum ada link affiliate terdaftar. Mulai dengan menambahkannya di form sebelah kiri.
+              Belum ada link MyLink terdaftar. Mulai dengan menambahkannya di form sebelah kiri.
             </div>
           ) : filteredLinks.length === 0 ? (
             <div style={{ textAlign: "center", color: "var(--muted)", padding: "40px 0" }}>
-              Tidak ada tautan affiliate yang cocok dengan kriteria pencarian/penyaringan.
+              Tidak ada tautan MyLink yang cocok dengan kriteria pencarian/penyaringan.
             </div>
           ) : (
             <>

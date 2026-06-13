@@ -12,7 +12,7 @@ export type ActivityFormInput = {
   customLocation?: unknown;
   estimatedCost?: unknown;
   category?: unknown;
-  affiliateLinkId?: unknown;
+  myLinkId?: unknown;
 };
 
 type DayFormInput = {
@@ -32,7 +32,7 @@ export type ParsedActivityForm = {
   customLocation: boolean;
   estimatedCost: number;
   category: string;
-  affiliateLinkId?: string | null;
+  myLinkId?: string | null;
   orderIndex: number;
 };
 
@@ -79,7 +79,7 @@ export function parseActivityArray(value: unknown): ParsedActivityForm[] {
         customLocation: Boolean(activity.customLocation),
         estimatedCost: Number(activity.estimatedCost ?? 0) || 0,
         category: String(activity.category ?? DEFAULT_ACTIVITY_TYPE).trim() || DEFAULT_ACTIVITY_TYPE,
-        affiliateLinkId: activity.affiliateLinkId ? String(activity.affiliateLinkId).trim() : null,
+        myLinkId: activity.myLinkId ? String(activity.myLinkId).trim() : null,
         orderIndex: index,
       };
     })
@@ -141,7 +141,7 @@ export function parseActivitiesText(value: FormDataEntryValue | null): ParsedAct
         estimatedCost: 0,
         category: index % 2 === 0 ? "Transport" : "Makan",
         orderIndex: index,
-        affiliateLinkId: null,
+        myLinkId: null,
       };
     }) as ParsedActivityForm[]);
 }
@@ -163,6 +163,6 @@ export function defaultActivity() {
     locationName: "",
     category: "Transport",
     orderIndex: 0,
-    affiliateLinkId: null,
+    myLinkId: null,
   };
 }
