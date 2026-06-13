@@ -847,7 +847,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                       <div className="remix-badge" style={{ marginTop: "12px", display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(23, 33, 43, 0.82)", padding: "5px 12px", borderRadius: "12px", fontSize: "11px", color: "#f7fafc", fontWeight: 700, border: "1px solid rgba(255, 255, 255, 0.15)" }}>
                         <Icon name="copy" />
                         <span>
-                          Remix dari <a href={`/itinerary/${current.originalItinerary.id}`} style={{ color: "#ffffff", textDecoration: "underline", fontWeight: 800 }}>{current.originalItinerary.title}</a> oleh <Link href={`/profile/${current.originalItinerary.author.username ?? current.originalItinerary.author.id}`} style={{ color: "#ffffff", textDecoration: "underline", fontWeight: 800 }}>@{current.originalItinerary.author.username ?? "creator"}</Link>
+                          Remix dari <Link href={`/itinerary/${current.originalItinerary.id}`} style={{ color: "#ffffff", textDecoration: "underline", fontWeight: 800 }}>{current.originalItinerary.title}</Link> oleh <Link href={`/profile/${current.originalItinerary.author.username ?? current.originalItinerary.author.id}`} style={{ color: "#ffffff", textDecoration: "underline", fontWeight: 800 }}>@{current.originalItinerary.author.username ?? "creator"}</Link>
                         </span>
                       </div>
                     )}
