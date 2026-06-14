@@ -1,11 +1,11 @@
 # Graph Report - jalanin  (2026-06-14)
 
 ## Corpus Check
-- 87 files · ~42,346 words
+- 87 files · ~42,432 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 700 nodes · 1149 edges · 81 communities (57 shown, 24 thin omitted)
+- 700 nodes · 1151 edges · 81 communities (57 shown, 24 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 

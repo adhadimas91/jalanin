@@ -13,6 +13,7 @@ type Props = {
     estimatedBudget: number;
     travelStyle: string;
     description?: string;
+    coverImageUrl: string;
   };
   variant?: "ghost-chip" | "icon-action" | "feed-card";
 };
@@ -106,7 +107,7 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
     try {
       await navigator.clipboard.writeText(activeText);
       setInstaFeedback(type);
-      setTimeout(() => setInstaFeedback(null), 6000);
+      setTimeout(() => setInstaFeedback(null), 8000);
       window.open("https://instagram.com", "_blank", "noopener,noreferrer");
     } catch (err) {
       console.error("Gagal menyalin teks untuk Instagram:", err);
@@ -115,11 +116,28 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
 
   const handleSystemShare = async () => {
     try {
-      await navigator.share({
+      const shareData: ShareData = {
         title: itinerary.title,
         text: activeText,
         url: shareUrl,
-      });
+      };
+
+      // Try to fetch cover image and convert to File to share via Web Share API if supported
+      if (navigator.canShare) {
+        try {
+          const response = await fetch(itinerary.coverImageUrl);
+          const blob = await response.blob();
+          const cleanDest = itinerary.destination.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+          const file = new File([blob], `${cleanDest}-cover.jpg`, { type: "image/jpeg" });
+          if (navigator.canShare({ files: [file] })) {
+            shareData.files = [file];
+          }
+        } catch (e) {
+          console.log("Gagal menyertakan file cover image pada sharing:", e);
+        }
+      }
+
+      await navigator.share(shareData);
     } catch (err) {
       console.log("System share batal/gagal:", err);
     }
@@ -300,13 +318,19 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
                 fontSize: "12px",
                 color: "#e1306c",
                 display: "flex",
-                alignItems: "center",
+                flexDirection: "column",
                 gap: "8px",
                 margin: "-6px 0",
-                animation: "shareFadeIn 0.2s ease-out"
+                animation: "shareFadeIn 0.2s ease-out",
+                lineHeight: "1.5"
               }}>
-                <span style={{ fontSize: "16px" }}>📸</span>
-                <span>Teks disalin! Silakan buat <strong>Instagram {instaFeedback}</strong> baru dan paste caption ini.</span>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span style={{ fontSize: "16px" }}>📸</span>
+                  <span>Teks disalin! Silakan buat <strong>Instagram {instaFeedback}</strong> baru dan paste caption ini.</span>
+                </div>
+                <div style={{ marginTop: "6px", fontSize: "11px", opacity: 0.95 }}>
+                  💡 Tip: Anda bisa <a href={itinerary.coverImageUrl} download={`cover-${itinerary.id}.jpg`} target="_blank" rel="noreferrer" style={{ color: "#e1306c", textDecoration: "underline", fontWeight: 800 }}>unduh cover rute ini</a> untuk dijadikan foto postingan Anda.
+                </div>
               </div>
             )}
 

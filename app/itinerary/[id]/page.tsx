@@ -9,8 +9,53 @@ import { getCurrentUser, isAdminUser } from "@/lib/auth";
 import { getItineraryById } from "@/lib/itineraries";
 import { formatRupiah } from "@/lib/format";
 import { serializeItinerary } from "@/lib/serialize";
+import type { Metadata } from "next";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const itinerary = await getItineraryById(id);
+
+  if (!itinerary) {
+    return {};
+  }
+
+  const hostHeader = (await headers()).get("host") || "jalanin.com";
+  const protocol = hostHeader.startsWith("localhost") ? "http" : "https";
+  const absoluteUrl = `${protocol}://${hostHeader}/itinerary/${itinerary.id}`;
+  
+  const absoluteImageUrl = itinerary.coverImageUrl.startsWith("http")
+    ? itinerary.coverImageUrl
+    : `${protocol}://${hostHeader}${itinerary.coverImageUrl}`;
+
+  return {
+    title: `${itinerary.title} - Jalanin`,
+    description: itinerary.description,
+    openGraph: {
+      title: itinerary.title,
+      description: itinerary.description,
+      url: absoluteUrl,
+      siteName: "Jalanin",
+      images: [
+        {
+          url: absoluteImageUrl,
+          width: 1200,
+          height: 630,
+          alt: itinerary.title,
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: itinerary.title,
+      description: itinerary.description,
+      images: [absoluteImageUrl],
+    },
+  };
+}
 
 export default async function ItineraryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

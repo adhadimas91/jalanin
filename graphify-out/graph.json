@@ -323,7 +323,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "logout_route",
-      "community": 1,
+      "community": 12,
       "norm_label": "route.ts"
     },
     {
@@ -333,7 +333,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "logout_route_post",
-      "community": 1,
+      "community": 12,
       "norm_label": "post()"
     },
     {
@@ -403,7 +403,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "clone_route",
-      "community": 1,
+      "community": 12,
       "norm_label": "route.ts"
     },
     {
@@ -413,7 +413,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "clone_route_post",
-      "community": 1,
+      "community": 12,
       "norm_label": "post()"
     },
     {
@@ -423,7 +423,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "like_route",
-      "community": 1,
+      "community": 12,
       "norm_label": "route.ts"
     },
     {
@@ -433,7 +433,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "like_route_post",
-      "community": 1,
+      "community": 12,
       "norm_label": "post()"
     },
     {
@@ -443,7 +443,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "like_route_delete",
-      "community": 1,
+      "community": 12,
       "norm_label": "delete()"
     },
     {
@@ -473,7 +473,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "app_api_itineraries_id_route_ts_id_route_delete",
-      "community": 1,
+      "community": 2,
       "norm_label": "delete()"
     },
     {
@@ -483,7 +483,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "save_route",
-      "community": 1,
+      "community": 12,
       "norm_label": "route.ts"
     },
     {
@@ -493,7 +493,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "save_route_post",
-      "community": 1,
+      "community": 12,
       "norm_label": "post()"
     },
     {
@@ -503,7 +503,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "save_route_delete",
-      "community": 1,
+      "community": 12,
       "norm_label": "delete()"
     },
     {
@@ -563,7 +563,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "links_route",
-      "community": 1,
+      "community": 12,
       "norm_label": "route.ts"
     },
     {
@@ -573,7 +573,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "links_route_get",
-      "community": 1,
+      "community": 12,
       "norm_label": "get()"
     },
     {
@@ -583,7 +583,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "links_route_post",
-      "community": 1,
+      "community": 12,
       "norm_label": "post()"
     },
     {
@@ -593,7 +593,7 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "links_route_put",
-      "community": 1,
+      "community": 12,
       "norm_label": "put()"
     },
     {
@@ -603,7 +603,7 @@
       "source_location": "L158",
       "_origin": "ast",
       "id": "links_route_delete",
-      "community": 1,
+      "community": 12,
       "norm_label": "delete()"
     },
     {
@@ -613,7 +613,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "whitelist_route",
-      "community": 1,
+      "community": 12,
       "norm_label": "route.ts"
     },
     {
@@ -623,7 +623,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "whitelist_route_get",
-      "community": 1,
+      "community": 12,
       "norm_label": "get()"
     },
     {
@@ -633,7 +633,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "whitelist_route_post",
-      "community": 1,
+      "community": 2,
       "norm_label": "post()"
     },
     {
@@ -663,7 +663,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "profile_route",
-      "community": 1,
+      "community": 12,
       "norm_label": "route.ts"
     },
     {
@@ -673,7 +673,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "profile_route_readnullabletext",
-      "community": 1,
+      "community": 12,
       "norm_label": "readnullabletext()"
     },
     {
@@ -683,7 +683,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "profile_route_readusername",
-      "community": 1,
+      "community": 6,
       "norm_label": "readusername()"
     },
     {
@@ -693,7 +693,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "profile_route_get",
-      "community": 1,
+      "community": 12,
       "norm_label": "get()"
     },
     {
@@ -703,7 +703,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "profile_route_post",
-      "community": 1,
+      "community": 12,
       "norm_label": "post()"
     },
     {
@@ -713,7 +713,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "subscription_route",
-      "community": 1,
+      "community": 12,
       "norm_label": "route.ts"
     },
     {
@@ -723,7 +723,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "subscription_route_post",
-      "community": 1,
+      "community": 12,
       "norm_label": "post()"
     },
     {
@@ -753,7 +753,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "create_page",
-      "community": 49,
+      "community": 12,
       "norm_label": "page.tsx"
     },
     {
@@ -763,7 +763,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "create_page_createpage",
-      "community": 1,
+      "community": 12,
       "norm_label": "createpage()"
     },
     {
@@ -773,14 +773,24 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "id_page",
-      "community": 12,
+      "community": 0,
       "norm_label": "page.tsx"
+    },
+    {
+      "label": "generateMetadata()",
+      "file_type": "code",
+      "source_file": "app/itinerary/[id]/page.tsx",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "id_page_generatemetadata",
+      "community": 1,
+      "norm_label": "generatemetadata()"
     },
     {
       "label": "ItineraryDetailPage()",
       "file_type": "code",
       "source_file": "app/itinerary/[id]/page.tsx",
-      "source_location": "L15",
+      "source_location": "L60",
       "_origin": "ast",
       "id": "id_page_itinerarydetailpage",
       "community": 1,
@@ -873,7 +883,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "username_page",
-      "community": 47,
+      "community": 12,
       "norm_label": "page.tsx"
     },
     {
@@ -883,7 +893,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "username_page_profilepage",
-      "community": 47,
+      "community": 12,
       "norm_label": "profilepage()"
     },
     {
@@ -893,7 +903,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "register_registerformclient",
-      "community": 6,
+      "community": 12,
       "norm_label": "registerformclient.tsx"
     },
     {
@@ -903,7 +913,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "register_registerformclient_props",
-      "community": 6,
+      "community": 12,
       "norm_label": "props"
     },
     {
@@ -913,7 +923,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "register_registerformclient_registerformclient",
-      "community": 6,
+      "community": 12,
       "norm_label": "registerformclient()"
     },
     {
@@ -923,7 +933,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "register_page",
-      "community": 6,
+      "community": 12,
       "norm_label": "page.tsx"
     },
     {
@@ -933,7 +943,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "register_page_registerpage",
-      "community": 6,
+      "community": 12,
       "norm_label": "registerpage()"
     },
     {
@@ -1063,7 +1073,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "components_admin_console_tableconfigs",
-      "community": 36,
+      "community": 2,
       "norm_label": "tableconfigs"
     },
     {
@@ -1093,7 +1103,7 @@
       "source_location": "L164",
       "_origin": "ast",
       "id": "components_admin_console_adminconsole",
-      "community": 12,
+      "community": 0,
       "norm_label": "adminconsole()"
     },
     {
@@ -1103,7 +1113,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_budget_field",
-      "community": 49,
+      "community": 12,
       "norm_label": "budget-field.tsx"
     },
     {
@@ -1113,7 +1123,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_budget_field_props",
-      "community": 49,
+      "community": 12,
       "norm_label": "props"
     },
     {
@@ -1123,7 +1133,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_budget_field_budgetfield",
-      "community": 49,
+      "community": 12,
       "norm_label": "budgetfield()"
     },
     {
@@ -1133,7 +1143,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_clone_itinerary_button",
-      "community": 12,
+      "community": 0,
       "norm_label": "clone-itinerary-button.tsx"
     },
     {
@@ -1143,7 +1153,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_clone_itinerary_button_cloneitinerarybutton",
-      "community": 12,
+      "community": 0,
       "norm_label": "cloneitinerarybutton()"
     },
     {
@@ -1153,7 +1163,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_icon_sprite",
-      "community": 12,
+      "community": 0,
       "norm_label": "icon-sprite.tsx"
     },
     {
@@ -1163,7 +1173,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_icon_sprite_iconsprite",
-      "community": 12,
+      "community": 0,
       "norm_label": "iconsprite()"
     },
     {
@@ -1173,7 +1183,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "components_icon_sprite_icon",
-      "community": 12,
+      "community": 0,
       "norm_label": "icon()"
     },
     {
@@ -1183,7 +1193,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions",
-      "community": 36,
+      "community": 0,
       "norm_label": "itinerary-detail-actions.tsx"
     },
     {
@@ -1193,7 +1203,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_activitydraft",
-      "community": 36,
+      "community": 0,
       "norm_label": "activitydraft"
     },
     {
@@ -1203,7 +1213,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_daydraft",
-      "community": 36,
+      "community": 0,
       "norm_label": "daydraft"
     },
     {
@@ -1213,7 +1223,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_props",
-      "community": 36,
+      "community": 0,
       "norm_label": "props"
     },
     {
@@ -1223,7 +1233,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_locationresult",
-      "community": 36,
+      "community": 0,
       "norm_label": "locationresult"
     },
     {
@@ -1233,7 +1243,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_defaultmapcenter",
-      "community": 36,
+      "community": 0,
       "norm_label": "defaultmapcenter"
     },
     {
@@ -1243,7 +1253,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_createblankactivity",
-      "community": 36,
+      "community": 0,
       "norm_label": "createblankactivity()"
     },
     {
@@ -1253,7 +1263,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_createblankday",
-      "community": 36,
+      "community": 0,
       "norm_label": "createblankday()"
     },
     {
@@ -1263,7 +1273,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_createdrafts",
-      "community": 36,
+      "community": 0,
       "norm_label": "createdrafts()"
     },
     {
@@ -1273,7 +1283,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_draftkey",
-      "community": 36,
+      "community": 0,
       "norm_label": "draftkey()"
     },
     {
@@ -1283,7 +1293,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_createlocationquerymap",
-      "community": 36,
+      "community": 0,
       "norm_label": "createlocationquerymap()"
     },
     {
@@ -1293,7 +1303,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_pointpicker",
-      "community": 36,
+      "community": 0,
       "norm_label": "pointpicker()"
     },
     {
@@ -1303,7 +1313,7 @@
       "source_location": "L169",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_itinerarydetailactions",
-      "community": 36,
+      "community": 0,
       "norm_label": "itinerarydetailactions()"
     },
     {
@@ -1313,7 +1323,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view",
-      "community": 47,
+      "community": 0,
       "norm_label": "itinerary-interactive-view.tsx"
     },
     {
@@ -1323,7 +1333,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_serializedactivity",
-      "community": 47,
+      "community": 0,
       "norm_label": "serializedactivity"
     },
     {
@@ -1333,7 +1343,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_serializedday",
-      "community": 47,
+      "community": 0,
       "norm_label": "serializedday"
     },
     {
@@ -1343,7 +1353,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_serializeditinerary",
-      "community": 47,
+      "community": 0,
       "norm_label": "serializeditinerary"
     },
     {
@@ -1353,7 +1363,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_routemap",
-      "community": 47,
+      "community": 0,
       "norm_label": "routemap()"
     },
     {
@@ -1363,7 +1373,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_itineraryinteractiveview",
-      "community": 47,
+      "community": 0,
       "norm_label": "itineraryinteractiveview()"
     },
     {
@@ -1413,7 +1423,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninitinerary",
-      "community": 12,
+      "community": 0,
       "norm_label": "jalaninitinerary"
     },
     {
@@ -1553,7 +1563,7 @@
       "source_location": "L185",
       "_origin": "ast",
       "id": "components_jalanin_app_pointpicker",
-      "community": 36,
+      "community": 0,
       "norm_label": "pointpicker()"
     },
     {
@@ -1583,7 +1593,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_jalanin_landing",
-      "community": 12,
+      "community": 0,
       "norm_label": "jalanin-landing.tsx"
     },
     {
@@ -1593,7 +1603,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_jalanin_landing_props",
-      "community": 12,
+      "community": 0,
       "norm_label": "props"
     },
     {
@@ -1603,7 +1613,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "components_jalanin_landing_jalaninlanding",
-      "community": 12,
+      "community": 0,
       "norm_label": "jalaninlanding()"
     },
     {
@@ -1613,7 +1623,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_price_input",
-      "community": 49,
+      "community": 0,
       "norm_label": "price-input.tsx"
     },
     {
@@ -1623,7 +1633,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_price_input_props",
-      "community": 49,
+      "community": 0,
       "norm_label": "props"
     },
     {
@@ -1633,7 +1643,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "components_price_input_priceinput",
-      "community": 49,
+      "community": 0,
       "norm_label": "priceinput()"
     },
     {
@@ -1643,7 +1653,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_saved_list",
-      "community": 12,
+      "community": 0,
       "norm_label": "saved-list.tsx"
     },
     {
@@ -1653,7 +1663,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_saved_list_saveditinerary",
-      "community": 12,
+      "community": 0,
       "norm_label": "saveditinerary"
     },
     {
@@ -1663,7 +1673,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "components_saved_list_savedlist",
-      "community": 12,
+      "community": 0,
       "norm_label": "savedlist()"
     },
     {
@@ -1673,7 +1683,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_share_itinerary_button",
-      "community": 4,
+      "community": 0,
       "norm_label": "share-itinerary-button.tsx"
     },
     {
@@ -1683,67 +1693,67 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_share_itinerary_button_props",
-      "community": 4,
+      "community": 0,
       "norm_label": "props"
     },
     {
       "label": "InstagramIcon()",
       "file_type": "code",
       "source_file": "components/share-itinerary-button.tsx",
-      "source_location": "L20",
+      "source_location": "L21",
       "_origin": "ast",
       "id": "components_share_itinerary_button_instagramicon",
-      "community": 4,
+      "community": 0,
       "norm_label": "instagramicon()"
     },
     {
       "label": "WhatsAppIcon()",
       "file_type": "code",
       "source_file": "components/share-itinerary-button.tsx",
-      "source_location": "L28",
+      "source_location": "L29",
       "_origin": "ast",
       "id": "components_share_itinerary_button_whatsappicon",
-      "community": 4,
+      "community": 0,
       "norm_label": "whatsappicon()"
     },
     {
       "label": "XIcon()",
       "file_type": "code",
       "source_file": "components/share-itinerary-button.tsx",
-      "source_location": "L34",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "components_share_itinerary_button_xicon",
-      "community": 4,
+      "community": 0,
       "norm_label": "xicon()"
     },
     {
       "label": "FacebookIcon()",
       "file_type": "code",
       "source_file": "components/share-itinerary-button.tsx",
-      "source_location": "L40",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "components_share_itinerary_button_facebookicon",
-      "community": 4,
+      "community": 0,
       "norm_label": "facebookicon()"
     },
     {
       "label": "SystemShareIcon()",
       "file_type": "code",
       "source_file": "components/share-itinerary-button.tsx",
-      "source_location": "L46",
+      "source_location": "L47",
       "_origin": "ast",
       "id": "components_share_itinerary_button_systemshareicon",
-      "community": 4,
+      "community": 0,
       "norm_label": "systemshareicon()"
     },
     {
       "label": "ShareItineraryButton()",
       "file_type": "code",
       "source_file": "components/share-itinerary-button.tsx",
-      "source_location": "L56",
+      "source_location": "L57",
       "_origin": "ast",
       "id": "components_share_itinerary_button_shareitinerarybutton",
-      "community": 4,
+      "community": 0,
       "norm_label": "shareitinerarybutton()"
     },
     {
@@ -1753,7 +1763,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_subscription_status",
-      "community": 12,
+      "community": 0,
       "norm_label": "subscription-status.tsx"
     },
     {
@@ -1763,7 +1773,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_subscription_status_userprops",
-      "community": 12,
+      "community": 0,
       "norm_label": "userprops"
     },
     {
@@ -1773,7 +1783,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "components_subscription_status_props",
-      "community": 12,
+      "community": 0,
       "norm_label": "props"
     },
     {
@@ -1783,7 +1793,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "components_subscription_status_subscriptionstatus",
-      "community": 12,
+      "community": 0,
       "norm_label": "subscriptionstatus()"
     },
     {
@@ -1833,7 +1843,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_time_input_timeinput",
-      "community": 9,
+      "community": 0,
       "norm_label": "timeinput()"
     },
     {
@@ -1843,7 +1853,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_activity_types",
-      "community": 42,
+      "community": 0,
       "norm_label": "activity-types.ts"
     },
     {
@@ -1853,7 +1863,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_activity_types_activity_types",
-      "community": 36,
+      "community": 0,
       "norm_label": "activity_types"
     },
     {
@@ -1863,7 +1873,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_activity_types_activitytype",
-      "community": 42,
+      "community": 0,
       "norm_label": "activitytype"
     },
     {
@@ -1873,7 +1883,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "lib_activity_types_isknownactivitytype",
-      "community": 42,
+      "community": 0,
       "norm_label": "isknownactivitytype()"
     },
     {
@@ -1883,7 +1893,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "lib_activity_types_activityicon",
-      "community": 47,
+      "community": 0,
       "norm_label": "activityicon()"
     },
     {
@@ -1893,7 +1903,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "lib_activity_types_normalizeactivitytype",
-      "community": 42,
+      "community": 0,
       "norm_label": "normalizeactivitytype()"
     },
     {
@@ -1903,7 +1913,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "lib_activity_types_activity_type_colors",
-      "community": 42,
+      "community": 0,
       "norm_label": "activity_type_colors"
     },
     {
@@ -1913,7 +1923,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "lib_activity_types_activitycost",
-      "community": 42,
+      "community": 0,
       "norm_label": "activitycost"
     },
     {
@@ -1923,7 +1933,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "lib_activity_types_tripday",
-      "community": 42,
+      "community": 0,
       "norm_label": "tripday"
     },
     {
@@ -1933,7 +1943,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "lib_activity_types_tripinsightline",
-      "community": 42,
+      "community": 0,
       "norm_label": "tripinsightline"
     },
     {
@@ -1943,7 +1953,7 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "lib_activity_types_computetripinsights",
-      "community": 42,
+      "community": 0,
       "norm_label": "computetripinsights()"
     },
     {
@@ -2243,7 +2253,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_auth",
-      "community": 1,
+      "community": 12,
       "norm_label": "auth.ts"
     },
     {
@@ -2253,7 +2263,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "lib_auth_adminemails",
-      "community": 1,
+      "community": 2,
       "norm_label": "adminemails()"
     },
     {
@@ -2263,7 +2273,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "lib_auth_hashtoken",
-      "community": 1,
+      "community": 12,
       "norm_label": "hashtoken()"
     },
     {
@@ -2283,7 +2293,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "lib_auth_clearsession",
-      "community": 1,
+      "community": 12,
       "norm_label": "clearsession()"
     },
     {
@@ -2293,7 +2303,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "lib_auth_getcurrentuser",
-      "community": 1,
+      "community": 12,
       "norm_label": "getcurrentuser()"
     },
     {
@@ -2303,7 +2313,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "lib_auth_isadminuser",
-      "community": 1,
+      "community": 2,
       "norm_label": "isadminuser()"
     },
     {
@@ -2313,7 +2323,7 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "lib_auth_requirecurrentuser",
-      "community": 1,
+      "community": 12,
       "norm_label": "requirecurrentuser()"
     },
     {
@@ -2323,7 +2333,7 @@
       "source_location": "L123",
       "_origin": "ast",
       "id": "lib_auth_requireadminuser",
-      "community": 1,
+      "community": 12,
       "norm_label": "requireadminuser()"
     },
     {
@@ -2333,7 +2343,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_format",
-      "community": 49,
+      "community": 0,
       "norm_label": "format.ts"
     },
     {
@@ -2343,7 +2353,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_format_formatrupiah",
-      "community": 47,
+      "community": 0,
       "norm_label": "formatrupiah()"
     },
     {
@@ -2353,7 +2363,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "lib_format_formatpriceinput",
-      "community": 49,
+      "community": 0,
       "norm_label": "formatpriceinput()"
     },
     {
@@ -2363,7 +2373,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "lib_format_parsepriceinput",
-      "community": 49,
+      "community": 0,
       "norm_label": "parsepriceinput()"
     },
     {
@@ -2593,7 +2603,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "lib_maps_parser_isgooglemapsurl",
-      "community": 8,
+      "community": 0,
       "norm_label": "isgooglemapsurl()"
     },
     {
@@ -2693,7 +2703,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_mylink_validator",
-      "community": 1,
+      "community": 12,
       "norm_label": "mylink-validator.ts"
     },
     {
@@ -2703,7 +2713,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "lib_mylink_validator_gethostname",
-      "community": 1,
+      "community": 12,
       "norm_label": "gethostname()"
     },
     {
@@ -2713,7 +2723,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "lib_mylink_validator_matchdomain",
-      "community": 1,
+      "community": 12,
       "norm_label": "matchdomain()"
     },
     {
@@ -2723,7 +2733,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "lib_mylink_validator_validatemylinkurl",
-      "community": 1,
+      "community": 12,
       "norm_label": "validatemylinkurl()"
     },
     {
@@ -2733,7 +2743,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "lib_mylink_validator_detectprovider",
-      "community": 1,
+      "community": 12,
       "norm_label": "detectprovider()"
     },
     {
@@ -2743,7 +2753,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_prisma",
-      "community": 1,
+      "community": 12,
       "norm_label": "prisma.ts"
     },
     {
@@ -2753,7 +2763,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "lib_prisma_globalforprisma",
-      "community": 1,
+      "community": 12,
       "norm_label": "globalforprisma"
     },
     {
@@ -2763,7 +2773,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "lib_prisma_createprismaclient",
-      "community": 1,
+      "community": 12,
       "norm_label": "createprismaclient()"
     },
     {
@@ -2773,7 +2783,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "lib_prisma_getprismaclient",
-      "community": 1,
+      "community": 12,
       "norm_label": "getprismaclient()"
     },
     {
@@ -2783,7 +2793,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "lib_prisma_prisma",
-      "community": 1,
+      "community": 12,
       "norm_label": "prisma"
     },
     {
@@ -3783,7 +3793,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_verify_prisma",
-      "community": 1,
+      "community": 12,
       "norm_label": "verify-prisma.ts"
     },
     {
@@ -3793,7 +3803,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "scripts_verify_prisma_main",
-      "community": 1,
+      "community": 12,
       "norm_label": "main()"
     },
     {
@@ -7005,7 +7015,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "norm_label": "delete (itinerary detail route)",
       "id": "_id__route_delete"
     },
@@ -7031,7 +7041,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 47,
+      "community": 12,
       "norm_label": "profilepage component",
       "id": "_username__page_profilepage"
     },
@@ -7044,7 +7054,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 36,
+      "community": 2,
       "norm_label": "default_activity_type",
       "id": "lib_activity_types_default_activity_type"
     },
@@ -7257,7 +7267,7 @@
       "author": null,
       "contributor": null,
       "rationale": "The application communicates with Supabase services (Auth and Storage) using direct HTTP fetch requests to Supabase REST endpoints (/auth/v1 and /storage/v1) instead of using the official Supabase JS SDK. This avoids SDK overhead and keeps the client lightweight.",
-      "community": 6,
+      "community": 1,
       "norm_label": "custom supabase rest api integration",
       "id": "lib_supabase_auth_custom_supabase_rest"
     },
@@ -10043,6 +10053,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/itinerary/[id]/page.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "id_page",
+      "target": "id_page_generatemetadata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/itinerary/[id]/page.tsx",
       "source_location": "L14",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -10147,6 +10167,17 @@
       "confidence_score": 1.0,
       "source": "id_page",
       "target": "lib_serialize_serializeitinerary"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/itinerary/[id]/page.tsx",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "id_page_generatemetadata",
+      "target": "lib_itineraries_getitinerarybyid"
     },
     {
       "relation": "calls",
@@ -12202,9 +12233,9 @@
       "source_file": "components/jalanin-app.tsx",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_jalanin_app",
-      "target": "components_share_itinerary_button",
-      "confidence_score": 1.0
+      "target": "components_share_itinerary_button"
     },
     {
       "relation": "imports",
@@ -12213,9 +12244,9 @@
       "source_file": "components/jalanin-app.tsx",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_jalanin_app",
-      "target": "components_share_itinerary_button_shareitinerarybutton",
-      "confidence_score": 1.0
+      "target": "components_share_itinerary_button_shareitinerarybutton"
     },
     {
       "relation": "imports_from",
@@ -19434,5 +19465,5 @@
       "source_file": "tasks/task-1-grid-layout.md"
     }
   ],
-  "built_at_commit": "1ec3242c703a6fe795d8cd0319f4a37ac9759a86"
+  "built_at_commit": "9d841bf7f34de7b9200720d14c8e9cf43c55c805"
 }
