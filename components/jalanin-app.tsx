@@ -9,6 +9,7 @@ import { TimeInput } from "./time-input";
 import { ACTIVITY_TYPE_COLORS, ACTIVITY_TYPES, activityIcon, computeTripInsights, DEFAULT_ACTIVITY_TYPE, isKnownActivityType } from "@/lib/activity-types";
 import { formatCompact, formatRupiah } from "@/lib/format";
 import { isGoogleMapsUrl, type ParsedLocation } from "@/lib/maps-parser";
+import { ShareItineraryButton } from "./share-itinerary-button";
 
 export type JalaninUser = {
   id: string;
@@ -869,16 +870,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                     </button>
                     </div>}
                    
-                    <button
-                      className="icon-action"
-                      onClick={() => {
-                        navigator.clipboard?.writeText(`${location.origin}/itinerary/${current.id}`);
-                        flash("Tautan itinerary berhasil disalin.");
-                      }}
-                      aria-label="Bagikan itinerary"
-                    >
-                      <Icon name="share" />
-                    </button>
+                    <ShareItineraryButton itinerary={current} variant="icon-action" />
                   </div>
 
                   {currentUser && (current.author.id === currentUser.id || currentUser.role === "ADMIN") ? (
@@ -1221,13 +1213,16 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                                   <Icon name="wallet" /> {formatRupiah(item.estimatedBudget)}
                                 </span>
                               </div>
-                              <div className="feed-card-engagement-stats">
-                                <span>
-                                  <Icon name="heart" /> {formatCompact(item.likesCount)}
-                                </span>
-                                <span>
-                                  <Icon name="bookmark" /> {formatCompact(item.savesCount)}
-                                </span>
+                              <div className="feed-card-engagement-stats" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                                <div style={{ display: "flex", gap: "16px" }}>
+                                  <span>
+                                    <Icon name="heart" /> {formatCompact(item.likesCount)}
+                                  </span>
+                                  <span>
+                                    <Icon name="bookmark" /> {formatCompact(item.savesCount)}
+                                  </span>
+                                </div>
+                                <ShareItineraryButton itinerary={item} variant="feed-card" />
                               </div>
                             </div>
                           </div>

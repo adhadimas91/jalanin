@@ -4,6 +4,7 @@ import { IconSprite, Icon } from "@/components/icon-sprite";
 import { ItineraryDetailActions } from "@/components/itinerary-detail-actions";
 import { ItineraryInteractiveView } from "@/components/itinerary-interactive-view";
 import { CloneItineraryButton } from "@/components/clone-itinerary-button";
+import { ShareItineraryButton } from "@/components/share-itinerary-button";
 import { getCurrentUser, isAdminUser } from "@/lib/auth";
 import { getItineraryById } from "@/lib/itineraries";
 import { formatRupiah } from "@/lib/format";
@@ -34,11 +35,14 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
         <Link className="plain-link" href="/">
           Kembali ke feed
         </Link>
-        {canManage ? (
-          <ItineraryDetailActions itinerary={serializedItinerary} />
-        ) : (
-          <CloneItineraryButton itineraryId={itinerary.id} />
-        )}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <ShareItineraryButton itinerary={serializedItinerary} />
+          {canManage ? (
+            <ItineraryDetailActions itinerary={serializedItinerary} />
+          ) : (
+            <CloneItineraryButton itineraryId={itinerary.id} />
+          )}
+        </div>
       </div>
       <section className="hero-card" style={{ marginTop: 16 }}>
         <img src={itinerary.coverImageUrl} alt={itinerary.destination} />
