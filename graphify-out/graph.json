@@ -193,7 +193,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "admin_page",
-      "community": 12,
+      "community": 2,
       "norm_label": "page.tsx"
     },
     {
@@ -203,7 +203,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "admin_page_adminpage",
-      "community": 12,
+      "community": 2,
       "norm_label": "adminpage()"
     },
     {
@@ -213,7 +213,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_table_id_route_ts_id_route",
-      "community": 12,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -223,7 +223,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "id_route_isadmintable",
-      "community": 12,
+      "community": 2,
       "norm_label": "isadmintable()"
     },
     {
@@ -233,7 +233,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "id_route_patch",
-      "community": 12,
+      "community": 2,
       "norm_label": "patch()"
     },
     {
@@ -243,7 +243,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "app_api_admin_table_id_route_ts_id_route_delete",
-      "community": 12,
+      "community": 2,
       "norm_label": "delete()"
     },
     {
@@ -253,7 +253,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "table_route",
-      "community": 12,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -263,7 +263,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "table_route_isadmintable",
-      "community": 12,
+      "community": 2,
       "norm_label": "isadmintable()"
     },
     {
@@ -273,7 +273,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "table_route_get",
-      "community": 12,
+      "community": 2,
       "norm_label": "get()"
     },
     {
@@ -283,7 +283,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "table_route_post",
-      "community": 12,
+      "community": 2,
       "norm_label": "post()"
     },
     {
@@ -293,7 +293,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "login_route",
-      "community": 6,
+      "community": 12,
       "norm_label": "route.ts"
     },
     {
@@ -303,7 +303,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "login_route_usernamefromemail",
-      "community": 6,
+      "community": 12,
       "norm_label": "usernamefromemail()"
     },
     {
@@ -313,7 +313,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "login_route_post",
-      "community": 6,
+      "community": 12,
       "norm_label": "post()"
     },
     {
@@ -343,7 +343,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "register_route",
-      "community": 6,
+      "community": 12,
       "norm_label": "route.ts"
     },
     {
@@ -353,7 +353,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "register_route_usernamefromemail",
-      "community": 6,
+      "community": 12,
       "norm_label": "usernamefromemail()"
     },
     {
@@ -363,7 +363,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "register_route_post",
-      "community": 6,
+      "community": 12,
       "norm_label": "post()"
     },
     {
@@ -473,7 +473,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "app_api_itineraries_id_route_ts_id_route_delete",
-      "community": 12,
+      "community": 2,
       "norm_label": "delete()"
     },
     {
@@ -683,7 +683,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "profile_route_readusername",
-      "community": 6,
+      "community": 12,
       "norm_label": "readusername()"
     },
     {
@@ -773,7 +773,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "id_page",
-      "community": 4,
+      "community": 17,
       "norm_label": "page.tsx"
     },
     {
@@ -783,7 +783,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "id_page_generatemetadata",
-      "community": 4,
+      "community": 1,
       "norm_label": "generatemetadata()"
     },
     {
@@ -833,7 +833,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "login_page",
-      "community": 6,
+      "community": 12,
       "norm_label": "page.tsx"
     },
     {
@@ -843,7 +843,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "login_page_loginpage",
-      "community": 6,
+      "community": 12,
       "norm_label": "loginpage()"
     },
     {
@@ -903,7 +903,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "register_registerformclient",
-      "community": 17,
+      "community": 12,
       "norm_label": "registerformclient.tsx"
     },
     {
@@ -913,7 +913,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "register_registerformclient_props",
-      "community": 17,
+      "community": 12,
       "norm_label": "props"
     },
     {
@@ -953,7 +953,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "saved_page",
-      "community": 4,
+      "community": 12,
       "norm_label": "page.tsx"
     },
     {
@@ -963,7 +963,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "saved_page_savedpage",
-      "community": 4,
+      "community": 12,
       "norm_label": "savedpage()"
     },
     {
@@ -1023,7 +1023,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "profile_page",
-      "community": 4,
+      "community": 12,
       "norm_label": "page.tsx"
     },
     {
@@ -1033,7 +1033,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "profile_page_profilesettingspage",
-      "community": 4,
+      "community": 12,
       "norm_label": "profilesettingspage()"
     },
     {
@@ -1050,7 +1050,7 @@
       "label": "Props",
       "file_type": "code",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L9",
+      "source_location": "L20",
       "_origin": "ast",
       "id": "components_admin_console_props",
       "community": 2,
@@ -1060,7 +1060,7 @@
       "label": "TableConfig",
       "file_type": "code",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L14",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "components_admin_console_tableconfig",
       "community": 2,
@@ -1070,7 +1070,7 @@
       "label": "tableConfigs",
       "file_type": "code",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L21",
+      "source_location": "L32",
       "_origin": "ast",
       "id": "components_admin_console_tableconfigs",
       "community": 2,
@@ -1080,7 +1080,7 @@
       "label": "stripMeta()",
       "file_type": "code",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L144",
+      "source_location": "L155",
       "_origin": "ast",
       "id": "components_admin_console_stripmeta",
       "community": 2,
@@ -1090,7 +1090,7 @@
       "label": "formatCell()",
       "file_type": "code",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L148",
+      "source_location": "L159",
       "_origin": "ast",
       "id": "components_admin_console_formatcell",
       "community": 2,
@@ -1100,7 +1100,7 @@
       "label": "AdminConsole()",
       "file_type": "code",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L164",
+      "source_location": "L175",
       "_origin": "ast",
       "id": "components_admin_console_adminconsole",
       "community": 4,
@@ -1143,7 +1143,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_clone_itinerary_button",
-      "community": 4,
+      "community": 17,
       "norm_label": "clone-itinerary-button.tsx"
     },
     {
@@ -1153,7 +1153,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_clone_itinerary_button_cloneitinerarybutton",
-      "community": 4,
+      "community": 17,
       "norm_label": "cloneitinerarybutton()"
     },
     {
@@ -1323,7 +1323,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view",
-      "community": 40,
+      "community": 42,
       "norm_label": "itinerary-interactive-view.tsx"
     },
     {
@@ -1333,7 +1333,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_serializedactivity",
-      "community": 40,
+      "community": 42,
       "norm_label": "serializedactivity"
     },
     {
@@ -1343,7 +1343,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_serializedday",
-      "community": 40,
+      "community": 42,
       "norm_label": "serializedday"
     },
     {
@@ -1353,7 +1353,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_serializeditinerary",
-      "community": 40,
+      "community": 42,
       "norm_label": "serializeditinerary"
     },
     {
@@ -1363,7 +1363,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_routemap",
-      "community": 40,
+      "community": 42,
       "norm_label": "routemap()"
     },
     {
@@ -1373,7 +1373,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_itineraryinteractiveview",
-      "community": 40,
+      "community": 42,
       "norm_label": "itineraryinteractiveview()"
     },
     {
@@ -1423,7 +1423,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninitinerary",
-      "community": 0,
+      "community": 4,
       "norm_label": "jalaninitinerary"
     },
     {
@@ -1923,7 +1923,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "lib_activity_types_isknownactivitytype",
-      "community": 42,
+      "community": 11,
       "norm_label": "isknownactivitytype()"
     },
     {
@@ -1933,7 +1933,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "lib_activity_types_activityicon",
-      "community": 40,
+      "community": 42,
       "norm_label": "activityicon()"
     },
     {
@@ -2013,7 +2013,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_admin_admintables",
-      "community": 12,
+      "community": 2,
       "norm_label": "admintables"
     },
     {
@@ -2283,7 +2283,7 @@
       "source_location": "L603",
       "_origin": "ast",
       "id": "lib_admin_deleteadminrecord",
-      "community": 12,
+      "community": 2,
       "norm_label": "deleteadminrecord()"
     },
     {
@@ -2323,7 +2323,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "lib_auth_adminemails",
-      "community": 12,
+      "community": 2,
       "norm_label": "adminemails()"
     },
     {
@@ -2343,7 +2343,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "lib_auth_createsession",
-      "community": 6,
+      "community": 12,
       "norm_label": "createsession()"
     },
     {
@@ -2373,7 +2373,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "lib_auth_isadminuser",
-      "community": 12,
+      "community": 2,
       "norm_label": "isadminuser()"
     },
     {
@@ -2413,7 +2413,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_format_formatrupiah",
-      "community": 40,
+      "community": 4,
       "norm_label": "formatrupiah()"
     },
     {
@@ -2893,7 +2893,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_supabase_auth",
-      "community": 6,
+      "community": 12,
       "norm_label": "supabase-auth.ts"
     },
     {
@@ -2903,7 +2903,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_supabase_auth_supabaseauthuser",
-      "community": 6,
+      "community": 12,
       "norm_label": "supabaseauthuser"
     },
     {
@@ -2913,7 +2913,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "lib_supabase_auth_supabaseauthresponse",
-      "community": 6,
+      "community": 12,
       "norm_label": "supabaseauthresponse"
     },
     {
@@ -2923,7 +2923,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "lib_supabase_auth_supabaseautherror",
-      "community": 6,
+      "community": 12,
       "norm_label": "supabaseautherror"
     },
     {
@@ -2933,7 +2933,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "lib_supabase_auth_supabaseautherror_constructor",
-      "community": 6,
+      "community": 12,
       "norm_label": ".constructor()"
     },
     {
@@ -2943,7 +2943,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "lib_supabase_auth_getsupabaseauthconfig",
-      "community": 6,
+      "community": 12,
       "norm_label": "getsupabaseauthconfig()"
     },
     {
@@ -2953,7 +2953,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "lib_supabase_auth_requestsupabaseauth",
-      "community": 6,
+      "community": 12,
       "norm_label": "requestsupabaseauth()"
     },
     {
@@ -2963,7 +2963,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "lib_supabase_auth_signupwithsupabaseauth",
-      "community": 6,
+      "community": 12,
       "norm_label": "signupwithsupabaseauth()"
     },
     {
@@ -2973,7 +2973,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "lib_supabase_auth_signinwithsupabaseauth",
-      "community": 6,
+      "community": 12,
       "norm_label": "signinwithsupabaseauth()"
     },
     {
@@ -3327,10 +3327,20 @@
       "norm_label": "@prisma/client"
     },
     {
-      "label": "dotenv",
+      "label": "@tanstack/react-table",
       "file_type": "code",
       "source_file": "package.json",
       "source_location": "L25",
+      "_origin": "ast",
+      "id": "package_dependencies_tanstack_react_table",
+      "community": 3,
+      "norm_label": "@tanstack/react-table"
+    },
+    {
+      "label": "dotenv",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L26",
       "_origin": "ast",
       "id": "package_dependencies_dotenv",
       "community": 3,
@@ -3340,7 +3350,7 @@
       "label": "maplibre-gl",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L26",
+      "source_location": "L27",
       "_origin": "ast",
       "id": "package_dependencies_maplibre_gl",
       "community": 3,
@@ -3350,7 +3360,7 @@
       "label": "next",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L27",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "package_dependencies_next",
       "community": 3,
@@ -3360,7 +3370,7 @@
       "label": "pg",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L28",
+      "source_location": "L29",
       "_origin": "ast",
       "id": "package_dependencies_pg",
       "community": 3,
@@ -3370,7 +3380,7 @@
       "label": "react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L29",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "package_dependencies_react",
       "community": 3,
@@ -3380,7 +3390,7 @@
       "label": "react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L30",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "package_dependencies_react_dom",
       "community": 3,
@@ -3390,7 +3400,7 @@
       "label": "devDependencies",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L32",
+      "source_location": "L33",
       "_origin": "ast",
       "id": "package_devdependencies",
       "community": 3,
@@ -3400,7 +3410,7 @@
       "label": "@tailwindcss/postcss",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L33",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "package_devdependencies_tailwindcss_postcss",
       "community": 3,
@@ -3410,7 +3420,7 @@
       "label": "@types/node",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L34",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "package_devdependencies_types_node",
       "community": 3,
@@ -3420,7 +3430,7 @@
       "label": "@types/pg",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L35",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "package_devdependencies_types_pg",
       "community": 3,
@@ -3430,7 +3440,7 @@
       "label": "@types/react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L36",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "package_devdependencies_types_react",
       "community": 3,
@@ -3440,7 +3450,7 @@
       "label": "@types/react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "package_devdependencies_types_react_dom",
       "community": 3,
@@ -3450,7 +3460,7 @@
       "label": "autoprefixer",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "package_devdependencies_autoprefixer",
       "community": 3,
@@ -3460,7 +3470,7 @@
       "label": "prisma",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L39",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "package_devdependencies_prisma",
       "community": 3,
@@ -3470,7 +3480,7 @@
       "label": "tailwindcss",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L40",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "package_devdependencies_tailwindcss",
       "community": 3,
@@ -3480,7 +3490,7 @@
       "label": "tsx",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L41",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "package_devdependencies_tsx",
       "community": 3,
@@ -3490,7 +3500,7 @@
       "label": "typescript",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L42",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "package_devdependencies_typescript",
       "community": 3,
@@ -3533,7 +3543,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "prisma_seed",
-      "community": 12,
+      "community": 6,
       "norm_label": "seed.ts"
     },
     {
@@ -3543,7 +3553,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "prisma_seed_adapter",
-      "community": 12,
+      "community": 6,
       "norm_label": "adapter"
     },
     {
@@ -3553,7 +3563,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "prisma_seed_prisma",
-      "community": 12,
+      "community": 6,
       "norm_label": "prisma"
     },
     {
@@ -3563,7 +3573,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "prisma_seed_seedactivity",
-      "community": 12,
+      "community": 6,
       "norm_label": "seedactivity"
     },
     {
@@ -3573,7 +3583,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "prisma_seed_seeditinerary",
-      "community": 12,
+      "community": 6,
       "norm_label": "seeditinerary"
     },
     {
@@ -3583,7 +3593,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "prisma_seed_itineraries",
-      "community": 12,
+      "community": 6,
       "norm_label": "itineraries"
     },
     {
@@ -3593,7 +3603,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "prisma_seed_ensureitinerary",
-      "community": 12,
+      "community": 6,
       "norm_label": "ensureitinerary()"
     },
     {
@@ -3603,7 +3613,7 @@
       "source_location": "L203",
       "_origin": "ast",
       "id": "prisma_seed_main",
-      "community": 12,
+      "community": 6,
       "norm_label": "main()"
     },
     {
@@ -6795,7 +6805,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 12,
+      "community": 2,
       "norm_label": "delete /api/admin/[table]/[id]",
       "id": "id_route_delete"
     },
@@ -7075,7 +7085,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 12,
+      "community": 2,
       "norm_label": "delete (itinerary detail route)",
       "id": "_id__route_delete"
     },
@@ -7101,7 +7111,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 40,
+      "community": 4,
       "norm_label": "profilepage component",
       "id": "_username__page_profilepage"
     },
@@ -7327,7 +7337,7 @@
       "author": null,
       "contributor": null,
       "rationale": "The application communicates with Supabase services (Auth and Storage) using direct HTTP fetch requests to Supabase REST endpoints (/auth/v1 and /storage/v1) instead of using the official Supabase JS SDK. This avoids SDK overhead and keeps the client lightweight.",
-      "community": 6,
+      "community": 1,
       "norm_label": "custom supabase rest api integration",
       "id": "lib_supabase_auth_custom_supabase_rest"
     },
@@ -10568,9 +10578,9 @@
       "source_file": "app/profile/[username]/page.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "username_page",
-      "target": "components_tracked_link",
-      "confidence_score": 1.0
+      "target": "components_tracked_link"
     },
     {
       "relation": "imports",
@@ -10579,9 +10589,9 @@
       "source_file": "app/profile/[username]/page.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "username_page",
-      "target": "components_tracked_link_profileanalytics",
-      "confidence_score": 1.0
+      "target": "components_tracked_link_profileanalytics"
     },
     {
       "relation": "imports",
@@ -10590,9 +10600,9 @@
       "source_file": "app/profile/[username]/page.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "username_page",
-      "target": "components_tracked_link_trackedlink",
-      "confidence_score": 1.0
+      "target": "components_tracked_link_trackedlink"
     },
     {
       "relation": "imports_from",
@@ -13216,9 +13226,9 @@
       "source_file": "components/tracked-link.tsx",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_tracked_link",
-      "target": "components_tracked_link_profileanalytics",
-      "confidence_score": 1.0
+      "target": "components_tracked_link_profileanalytics"
     },
     {
       "relation": "contains",
@@ -13226,9 +13236,9 @@
       "source_file": "components/tracked-link.tsx",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_tracked_link",
-      "target": "components_tracked_link_trackedlink",
-      "confidence_score": 1.0
+      "target": "components_tracked_link_trackedlink"
     },
     {
       "relation": "contains",
@@ -13236,9 +13246,9 @@
       "source_file": "components/tracked-link.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_tracked_link",
-      "target": "components_tracked_link_trackedlinkprops",
-      "confidence_score": 1.0
+      "target": "components_tracked_link_trackedlinkprops"
     },
     {
       "relation": "imports_from",
@@ -13247,9 +13257,9 @@
       "source_file": "components/tracked-link.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_tracked_link",
-      "target": "lib_analytics",
-      "confidence_score": 1.0
+      "target": "lib_analytics"
     },
     {
       "relation": "imports",
@@ -13258,9 +13268,9 @@
       "source_file": "components/tracked-link.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_tracked_link",
-      "target": "lib_analytics_trackevent",
-      "confidence_score": 1.0
+      "target": "lib_analytics_trackevent"
     },
     {
       "relation": "contains",
@@ -15850,6 +15860,16 @@
       "confidence_score": 1.0,
       "source": "package_dependencies",
       "target": "package_dependencies_react_dom"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "package_dependencies",
+      "target": "package_dependencies_tanstack_react_table",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -19741,5 +19761,5 @@
       "source_file": "tasks/task-1-grid-layout.md"
     }
   ],
-  "built_at_commit": "2b7149c884793be9891e16a41a44af16cf060ba7"
+  "built_at_commit": "c76bacc06f4fd050df87f55892f229fc2747d5bf"
 }

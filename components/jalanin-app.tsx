@@ -1265,12 +1265,26 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                     const isLarge = index % 10 === 2 || index % 10 === 7;
                     return (
                       <article key={item.id} className={`feed-card ${isLarge ? "large" : ""}`}>
-                        <button onClick={() => {
-                          setCurrentId(item.id);
-                          setDayIndex(0);
-                          setTab("days");
-                          window.scrollTo({ top: 0, behavior: "smooth" });
-                        }}>
+                        <div
+                          className="feed-card-link"
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => {
+                            setCurrentId(item.id);
+                            setDayIndex(0);
+                            setTab("days");
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setCurrentId(item.id);
+                              setDayIndex(0);
+                              setTab("days");
+                              window.scrollTo({ top: 0, behavior: "smooth" });
+                            }
+                          }}
+                        >
                           <img src={item.coverImageUrl} alt={item.destination} />
                           <div className="feed-card-overlay">
                             <div className="feed-card-overlay-top">
@@ -1299,7 +1313,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                               </div>
                             </div>
                           </div>
-                        </button>
+                        </div>
                       </article>
                     );
                   })

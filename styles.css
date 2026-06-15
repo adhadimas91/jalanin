@@ -945,7 +945,8 @@ svg {
   height: 100%;
 }
 
-.feed-card button {
+.feed-card button,
+.feed-card-link {
   display: block;
   width: 100%;
   height: 100%;
@@ -3118,4 +3119,210 @@ svg {
   stroke: currentColor;
   stroke-width: 2.5;
   fill: none;
+}
+
+/* ==========================================================================
+   Admin Datatable Styles
+   ========================================================================== */
+
+.admin-controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  background: var(--surface-soft);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+}
+
+.admin-search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+}
+
+.admin-search-wrapper svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.admin-search-input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  font-size: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  outline: none;
+  color: var(--text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-search-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(0, 149, 246, 0.15);
+}
+
+.admin-filter-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-filter-select {
+  padding: 8px 12px;
+  font-size: 13px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.admin-filter-select:focus {
+  border-color: var(--blue);
+}
+
+.admin-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-export-btn:hover {
+  background: var(--surface-soft);
+  border-color: var(--line-strong);
+}
+
+.admin-export-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Pagination Styles */
+.admin-pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.admin-pagination-info {
+  font-size: 13px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-entries-select {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+}
+
+.admin-pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.admin-page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.admin-page-btn:hover:not(.disabled):not(.active) {
+  background: var(--surface-soft);
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+
+.admin-page-btn.active {
+  background: var(--blue);
+  color: #ffffff;
+  border-color: var(--blue);
+  font-weight: 600;
+}
+
+.admin-page-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--surface-soft);
+  color: var(--muted-2);
+}
+
+/* Sortable Headers */
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  position: relative;
+  padding-right: 20px !important;
+}
+
+.sortable-header:hover {
+  background-color: var(--surface-soft);
+  color: var(--text) !important;
+}
+
+.sort-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  font-size: 10px;
+  color: var(--muted-2);
+  vertical-align: middle;
+}
+
+.sortable-header.sorted {
+  color: var(--text) !important;
+}
+
+.sortable-header.sorted .sort-indicator {
+  color: var(--blue);
 }

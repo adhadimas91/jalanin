@@ -47,19 +47,23 @@ export function SavedList({ initialSaves }: { initialSaves: SavedItinerary[] }) 
       <div className="server-list">
         {saves.length ? (
           saves.map((itinerary) => (
-            <Link
+            <div
               className="server-card"
-              href={`/itinerary/${itinerary.id}`}
               key={itinerary.id}
               style={{ display: "grid", gridTemplateColumns: "112px 1fr auto", gap: "12px", alignItems: "center" }}
             >
-              <img src={itinerary.coverImageUrl} alt={itinerary.destination} style={{ height: "96px", width: "112px", objectFit: "cover", borderRadius: "14px" }} />
-              <div>
-                <h3>{itinerary.title}</h3>
-                <p>
-                  {itinerary.destination} - {itinerary.durationDays} hari - {formatRupiah(itinerary.estimatedBudget)}
-                </p>
-              </div>
+              <Link
+                href={`/itinerary/${itinerary.id}`}
+                style={{ display: "grid", gridTemplateColumns: "112px 1fr", gap: "12px", alignItems: "center", textDecoration: "none", color: "inherit", width: "100%", height: "100%" }}
+              >
+                <img src={itinerary.coverImageUrl} alt={itinerary.destination} style={{ height: "96px", width: "112px", objectFit: "cover", borderRadius: "14px" }} />
+                <div>
+                  <h3>{itinerary.title}</h3>
+                  <p>
+                    {itinerary.destination} - {itinerary.durationDays} hari - {formatRupiah(itinerary.estimatedBudget)}
+                  </p>
+                </div>
+              </Link>
               <button
                 onClick={(e) => handleRemove(itinerary.id, e)}
                 disabled={loadingId === itinerary.id}
@@ -69,7 +73,7 @@ export function SavedList({ initialSaves }: { initialSaves: SavedItinerary[] }) 
                 <Icon name="x" />
                 <span>{loadingId === itinerary.id ? "Hapus..." : "Hapus"}</span>
               </button>
-            </Link>
+            </div>
           ))
         ) : (
           <div className="empty-state">Belum ada rute tersimpan.</div>

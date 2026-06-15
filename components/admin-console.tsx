@@ -1,9 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Icon, IconSprite } from "@/components/icon-sprite";
 import type { AdminSnapshot, AdminTable } from "@/lib/admin";
+import {
+  useReactTable,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  getPaginationRowModel,
+  flexRender,
+  type ColumnDef,
+  type SortingState,
+  type ColumnFiltersState,
+} from "@tanstack/react-table";
 import { DEFAULT_ACTIVITY_TYPE } from "@/lib/activity-types";
 
 type Props = {
@@ -170,6 +181,15 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [editorTab, setEditorTab] = useState<"form" | "json">("form");
+
+  // Datatable States (TanStack Table controlled states)
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   const config = tableConfigs[currentTable];
   const records = tables[currentTable];
@@ -357,6 +377,187 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     }
   }
 
+  // Definisi Kolom Dinamis untuk TanStack Table
+  const columns = useMemo<ColumnDef<Record<string, unknown>>[]>(() => {
+    const cols: ColumnDef<Record<string, unknown>>[] = [
+      {
+        id: "id",
+        header: "ID",
+        accessorFn: (row) => String(row.id ?? row.key ?? ""),
+        cell: (info) => info.getValue(),
+      },
+      ...config.columns.map((colName) => {
+        // Tentukan custom filterFn jika kolom bertipe boolean
+        let filterFn: any = undefined;
+        if (
+          colName === "isPro" ||
+          colName === "isPublished" ||
+          colName === "isActive"
+        ) {
+          filterFn = (row: any, columnId: string, filterValue: string) => {
+            if (!filterValue) return true;
+            const val = row.getValue(columnId);
+            if (columnId === "isPro") {
+              return !!val === (filterValue === "PRO");
+            }
+            if (columnId === "isPublished") {
+              return !!val === (filterValue === "PUBLISHED");
+            }
+            if (columnId === "isActive") {
+              return !!val === (filterValue === "ACTIVE");
+            }
+            return true;
+          };
+        }
+
+        return {
+          id: colName,
+          header: formatLabel(colName),
+          accessorKey: colName,
+          cell: (info: any) => formatCell(info.getValue()),
+          filterFn,
+        };
+      }),
+    ];
+    return cols;
+  }, [currentTable, config.columns]);
+
+  // Inisialisasi TanStack Table instance
+  const table = useReactTable({
+    data: records,
+    columns,
+    state: {
+      sorting,
+      columnFilters,
+      globalFilter,
+      pagination,
+    },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    globalFilterFn: (row, columnId, filterValue) => {
+      const q = String(filterValue).toLowerCase().trim();
+      if (!q) return true;
+
+      const record = row.original;
+      
+      // Cek property dasar
+      const baseMatch = Object.entries(record).some(([key, val]) => {
+        if (key.startsWith("_")) return false; // Abaikan meta
+        if (val === null || val === undefined) return false;
+        return String(val).toLowerCase().includes(q);
+      });
+
+      if (baseMatch) return true;
+
+      // Cek property relasi (nested di _related)
+      if (record._related && typeof record._related === "object") {
+        const rel = record._related as Record<string, unknown>;
+        
+        // Cek email user/author
+        const userEmail = (rel.user as Record<string, unknown>)?.email || (rel.author as Record<string, unknown>)?.email;
+        if (userEmail && String(userEmail).toLowerCase().includes(q)) return true;
+
+        // Cek username user/author
+        const username = (rel.user as Record<string, unknown>)?.username || (rel.author as Record<string, unknown>)?.username;
+        if (username && String(username).toLowerCase().includes(q)) return true;
+
+        // Cek itinerary title
+        const itineraryTitle = (rel.itinerary as Record<string, unknown>)?.title;
+        if (itineraryTitle && String(itineraryTitle).toLowerCase().includes(q)) return true;
+
+        // Cek itineraryDay title
+        const dayTitle = (rel.day as Record<string, unknown>)?.title;
+        if (dayTitle && String(dayTitle).toLowerCase().includes(q)) return true;
+      }
+
+      return false;
+    },
+  });
+
+  // Helper untuk menambahkan/memperbarui filter kolom
+  function handleFilterChange(columnId: string, value: string) {
+    setColumnFilters((prev) => {
+      const next = prev.filter((f) => f.id !== columnId);
+      if (value) {
+        next.push({ id: columnId, value });
+      }
+      return next;
+    });
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+  }
+
+  // Ambil nilai filter kolom saat ini
+  function getFilterValue(columnId: string): string {
+    const filter = columnFilters.find((f) => f.id === columnId);
+    return (filter?.value as string) ?? "";
+  }
+
+  const filteredRowsCount = table.getFilteredRowModel().rows.length;
+  const pageCount = table.getPageCount();
+  const pageIndex = pagination.pageIndex;
+  const pageSize = pagination.pageSize;
+  
+  const displayStartIndex = filteredRowsCount > 0 ? pageIndex * pageSize + 1 : 0;
+  const displayEndIndex = Math.min((pageIndex + 1) * pageSize, filteredRowsCount);
+
+  function getPageNumbers() {
+    const pages: (number | string)[] = [];
+    const activePage = pageIndex + 1;
+    if (pageCount <= 7) {
+      for (let i = 1; i <= pageCount; i++) pages.push(i);
+    } else {
+      if (activePage <= 4) {
+        pages.push(1, 2, 3, 4, 5, "...", pageCount);
+      } else if (activePage >= pageCount - 3) {
+        pages.push(1, "...", pageCount - 4, pageCount - 3, pageCount - 2, pageCount - 1, pageCount);
+      } else {
+        pages.push(1, "...", activePage - 1, activePage, activePage + 1, "...", pageCount);
+      }
+    }
+    return pages;
+  }
+
+  function handleExportCSV() {
+    const exportRows = table.getFilteredRowModel().rows;
+    const headers = ["id", ...config.columns];
+    const csvRows = [];
+    csvRows.push(headers.join(","));
+    
+    exportRows.forEach((row) => {
+      const record = row.original;
+      const rowValues = headers.map((col) => {
+        let val = col === "id" ? (record.id ?? record.key ?? "") : record[col];
+        if (val === null || val === undefined) {
+          return "";
+        }
+        let valStr = typeof val === "object" ? JSON.stringify(val) : String(val);
+        valStr = valStr.replace(/"/g, '""');
+        if (valStr.includes(",") || valStr.includes('"') || valStr.includes("\n") || valStr.includes("\r")) {
+          valStr = `"${valStr}"`;
+        }
+        return valStr;
+      });
+      csvRows.push(rowValues.join(","));
+    });
+    
+    const csvContent = "\uFEFF" + csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${currentTable}_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   return (
     <>
       <IconSprite />
@@ -388,17 +589,21 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
         </header>
 
         <section className="admin-summary-grid">
-          {(Object.keys(tableConfigs) as AdminTable[]).map((table) => (
+          {(Object.keys(tableConfigs) as AdminTable[]).map((tableId) => (
             <button
-              key={table}
-              className={`admin-summary-card ${currentTable === table ? "active" : ""}`}
+              key={tableId}
+              className={`admin-summary-card ${currentTable === tableId ? "active" : ""}`}
               onClick={() => {
-                setCurrentTable(table);
-                resetDraft(table);
+                setCurrentTable(tableId);
+                resetDraft(tableId);
+                setGlobalFilter("");
+                setSorting([]);
+                setColumnFilters([]);
+                setPagination({ pageIndex: 0, pageSize: 10 });
               }}
             >
-              <strong>{tables[table].length}</strong>
-              <span>{tableConfigs[table].label}</span>
+              <strong>{tables[tableId].length}</strong>
+              <span>{tableConfigs[tableId].label}</span>
             </button>
           ))}
         </section>
@@ -416,26 +621,136 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
               </button>
             </div>
 
+            {/* Datatable Controls Bar */}
+            <div className="admin-controls-bar">
+              <div className="admin-search-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input
+                  type="text"
+                  className="admin-search-input"
+                  placeholder={`Cari di tabel ${config.label}...`}
+                  value={globalFilter}
+                  onChange={(e) => {
+                    setGlobalFilter(e.target.value);
+                    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+                  }}
+                />
+              </div>
+
+              <div className="admin-filter-group">
+                {currentTable === "users" && (
+                  <>
+                    <select
+                      className="admin-filter-select"
+                      value={getFilterValue("role")}
+                      onChange={(e) => handleFilterChange("role", e.target.value)}
+                    >
+                      <option value="">Semua Role</option>
+                      <option value="USER">Role: USER</option>
+                      <option value="ADMIN">Role: ADMIN</option>
+                    </select>
+                    
+                    <select
+                      className="admin-filter-select"
+                      value={getFilterValue("isPro")}
+                      onChange={(e) => handleFilterChange("isPro", e.target.value)}
+                    >
+                      <option value="">Semua Plan</option>
+                      <option value="PRO">Plan: PRO</option>
+                      <option value="FREE">Plan: FREE</option>
+                    </select>
+                  </>
+                )}
+
+                {currentTable === "itineraries" && (
+                  <select
+                    className="admin-filter-select"
+                    value={getFilterValue("isPublished")}
+                    onChange={(e) => handleFilterChange("isPublished", e.target.value)}
+                  >
+                    <option value="">Semua Status</option>
+                    <option value="PUBLISHED">Status: Published</option>
+                    <option value="DRAFT">Status: Draft</option>
+                  </select>
+                )}
+
+                {currentTable === "myLinkWhitelistDomains" && (
+                  <select
+                    className="admin-filter-select"
+                    value={getFilterValue("isActive")}
+                    onChange={(e) => handleFilterChange("isActive", e.target.value)}
+                  >
+                    <option value="">Semua Status</option>
+                    <option value="ACTIVE">Status: Aktif</option>
+                    <option value="INACTIVE">Status: Nonaktif</option>
+                  </select>
+                )}
+
+                {currentTable === "activities" && (
+                  <select
+                    className="admin-filter-select"
+                    value={getFilterValue("category")}
+                    onChange={(e) => handleFilterChange("category", e.target.value)}
+                  >
+                    <option value="">Semua Kategori</option>
+                    <option value="attraction">Kategori: Wisata</option>
+                    <option value="food">Kategori: Kuliner</option>
+                    <option value="hotel">Kategori: Penginapan</option>
+                    <option value="transport">Kategori: Transportasi</option>
+                    <option value="shopping">Kategori: Belanja</option>
+                    <option value="other">Kategori: Lainnya</option>
+                  </select>
+                )}
+
+                <button className="admin-export-btn" onClick={handleExportCSV} title="Ekspor data ke CSV">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  <span>Export CSV</span>
+                </button>
+              </div>
+            </div>
+
             <div className="admin-table-scroll">
               <table className="admin-table">
                 <thead>
-                  <tr>
-                    <th>ID</th>
-                    {config.columns.map((column) => (
-                      <th key={column}>{column}</th>
-                    ))}
-                    <th>Aksi</th>
-                  </tr>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <tr key={headerGroup.id}>
+                      <th style={{ minWidth: "160px" }}>Aksi</th>
+                      {headerGroup.headers.map((header) => {
+                        const isSorted = header.column.getIsSorted();
+                        return (
+                          <th
+                            key={header.id}
+                            className={`sortable-header ${isSorted ? "sorted" : ""}`}
+                            onClick={header.column.getToggleSortingHandler()}
+                            style={{ whiteSpace: "nowrap" }}
+                          >
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(header.column.columnDef.header, header.getContext())}
+                            {isSorted && (
+                              <span className="sort-indicator">
+                                {isSorted === "asc" ? "▲" : "▼"}
+                              </span>
+                            )}
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  ))}
                 </thead>
                 <tbody>
-                  {records.map((record) => {
+                  {table.getRowModel().rows.map((row) => {
+                    const record = row.original;
                     const id = String(record.id ?? record.key ?? "");
                     return (
-                      <tr key={id}>
-                        <td className="mono-cell">{id}</td>
-                        {config.columns.map((column) => (
-                          <td key={column}>{formatCell(record[column])}</td>
-                        ))}
+                      <tr key={row.id}>
                         <td>
                           <div className="admin-row-actions">
                             <button
@@ -469,12 +784,110 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                             )}
                           </div>
                         </td>
+                        {row.getVisibleCells().map((cell) => (
+                          <td
+                            key={cell.id}
+                            className={cell.column.id === "id" ? "mono-cell" : ""}
+                          >
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </td>
+                        ))}
                       </tr>
                     );
                   })}
+                  {table.getRowModel().rows.length === 0 && (
+                    <tr>
+                      <td colSpan={config.columns.length + 2} style={{ textAlign: "center", padding: "24px", color: "var(--muted)" }}>
+                        Tidak ada record yang sesuai dengan filter atau pencarian.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination Controls */}
+            {filteredRowsCount > 0 && (
+              <div className="admin-pagination-bar">
+                <div className="admin-pagination-info">
+                  <span>Tampilkan</span>
+                  <select
+                    className="admin-entries-select"
+                    value={pageSize}
+                    onChange={(e) => {
+                      table.setPageSize(Number(e.target.value));
+                    }}
+                  >
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+                  <span>baris</span>
+                  <span style={{ margin: "0 8px", color: "var(--line)" }}>|</span>
+                  <span>
+                    Menampilkan <strong>{displayStartIndex}</strong> - <strong>{displayEndIndex}</strong> dari <strong>{filteredRowsCount}</strong> record
+                    {globalFilter.trim() || columnFilters.length > 0 ? " (difilter)" : ""}
+                  </span>
+                </div>
+
+                <div className="admin-pagination-pages">
+                  <button
+                    className={`admin-page-btn ${!table.getCanPreviousPage() ? "disabled" : ""}`}
+                    disabled={!table.getCanPreviousPage()}
+                    onClick={() => table.setPageIndex(0)}
+                    title="Halaman Pertama"
+                  >
+                    «
+                  </button>
+                  <button
+                    className={`admin-page-btn ${!table.getCanPreviousPage() ? "disabled" : ""}`}
+                    disabled={!table.getCanPreviousPage()}
+                    onClick={() => table.previousPage()}
+                    title="Halaman Sebelumnya"
+                  >
+                    ‹
+                  </button>
+
+                  {getPageNumbers().map((p, idx) => {
+                    if (p === "...") {
+                      return (
+                        <span key={`dots-${idx}`} className="admin-page-btn disabled">
+                          ...
+                        </span>
+                      );
+                    }
+                    const isPageActive = pageIndex + 1 === p;
+                    return (
+                      <button
+                        key={`page-${p}`}
+                        className={`admin-page-btn ${isPageActive ? "active" : ""}`}
+                        onClick={() => table.setPageIndex(Number(p) - 1)}
+                      >
+                        {p}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    className={`admin-page-btn ${!table.getCanNextPage() ? "disabled" : ""}`}
+                    disabled={!table.getCanNextPage()}
+                    onClick={() => table.nextPage()}
+                    title="Halaman Berikutnya"
+                  >
+                    ›
+                  </button>
+                  <button
+                    className={`admin-page-btn ${!table.getCanNextPage() ? "disabled" : ""}`}
+                    disabled={!table.getCanNextPage()}
+                    onClick={() => table.setPageIndex(pageCount - 1)}
+                    title="Halaman Terakhir"
+                  >
+                    »
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           <aside className="admin-editor-panel">
