@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Icon } from "./icon-sprite";
 import { formatRupiah } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics";
 
 type Props = {
   itinerary: {
@@ -84,6 +85,7 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
 
   // Event handlers
   const handleCopyLink = async () => {
+    trackEvent("share_copy_link", { itinerary_id: itinerary.id });
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopiedLink(true);
@@ -94,6 +96,7 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
   };
 
   const handleCopyText = async () => {
+    trackEvent("share_copy_text", { itinerary_id: itinerary.id, template: selectedTemplate });
     try {
       await navigator.clipboard.writeText(activeText);
       setCopiedText(true);
@@ -104,6 +107,7 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
   };
 
   const handleInstagramShare = async (type: "Post" | "Reel") => {
+    trackEvent("share_instagram", { itinerary_id: itinerary.id, type });
     try {
       await navigator.clipboard.writeText(activeText);
       setInstaFeedback(type);
@@ -115,6 +119,7 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
   };
 
   const handleSystemShare = async () => {
+    trackEvent("share_system", { itinerary_id: itinerary.id });
     try {
       const shareData: ShareData = {
         title: itinerary.title,
@@ -168,6 +173,7 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
           onClick={(e) => {
             e.stopPropagation();
             setIsOpen(true);
+            trackEvent("share_modal_open", { itinerary_id: itinerary.id, variant });
           }}
           aria-label="Bagikan"
         >
@@ -184,6 +190,7 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
           onClick={(e) => {
             e.stopPropagation();
             setIsOpen(true);
+            trackEvent("share_modal_open", { itinerary_id: itinerary.id, variant });
           }}
           aria-label="Bagikan itinerary"
         >
@@ -197,7 +204,10 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
       <button 
         className="ghost-chip share-btn-trigger" 
         type="button" 
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true);
+          trackEvent("share_modal_open", { itinerary_id: itinerary.id, variant });
+        }}
         style={{ display: "inline-flex", gap: "8px", alignItems: "center" }}
       >
         <Icon name="share" />
@@ -262,6 +272,7 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="share-platform-btn whatsapp"
+                onClick={() => trackEvent("share_platform", { platform: "whatsapp", itinerary_id: itinerary.id })}
               >
                 <span className="share-platform-icon"><WhatsAppIcon /></span>
                 <span>WhatsApp</span>
@@ -272,6 +283,7 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="share-platform-btn twitter"
+                onClick={() => trackEvent("share_platform", { platform: "twitter", itinerary_id: itinerary.id })}
               >
                 <span className="share-platform-icon"><XIcon /></span>
                 <span>Twitter / X</span>
@@ -282,6 +294,7 @@ export function ShareItineraryButton({ itinerary, variant = "ghost-chip" }: Prop
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="share-platform-btn facebook"
+                onClick={() => trackEvent("share_platform", { platform: "facebook", itinerary_id: itinerary.id })}
               >
                 <span className="share-platform-icon"><FacebookIcon /></span>
                 <span>Facebook</span>

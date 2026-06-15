@@ -10,6 +10,7 @@ import { ACTIVITY_TYPE_COLORS, ACTIVITY_TYPES, activityIcon, computeTripInsights
 import { formatCompact, formatRupiah } from "@/lib/format";
 import { isGoogleMapsUrl, type ParsedLocation } from "@/lib/maps-parser";
 import { ShareItineraryButton } from "./share-itinerary-button";
+import { trackEvent } from "@/lib/analytics";
 
 export type JalaninUser = {
   id: string;
@@ -342,6 +343,29 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
   const formSource = editSource ?? cloneSource;
   const isEditing = Boolean(editSource);
 
+  // Analytics - Track itinerary view
+  useEffect(() => {
+    if (current) {
+      trackEvent("view_itinerary", {
+        itinerary_id: current.id,
+        title: current.title,
+        destination: current.destination,
+        travel_style: current.travelStyle,
+        author_name: current.author.name,
+        estimated_budget: current.estimatedBudget,
+      });
+    }
+  }, [current?.id]);
+
+  // Analytics - Track debounced search queries
+  useEffect(() => {
+    if (!query.trim()) return;
+    const handler = setTimeout(() => {
+      trackEvent("search", { search_term: query.trim() });
+    }, 1500);
+    return () => clearTimeout(handler);
+  }, [query]);
+
   const filteredItems = useMemo(() => {
     const normalized = query.trim().toLowerCase();
 
@@ -425,6 +449,11 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
     });
 
     if (!result) return;
+    trackEvent(isSaved ? "unsave_itinerary" : "save_itinerary", {
+      itinerary_id: current.id,
+      title: current.title,
+      destination: current.destination,
+    });
     setSaved((previous) => (isSaved ? previous.filter((id) => id !== current.id) : [...previous, current.id]));
     setItems((previous) =>
       previous.map((item) =>
@@ -448,6 +477,11 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
     });
 
     if (!result) return;
+    trackEvent(isLiked ? "unlike_itinerary" : "like_itinerary", {
+      itinerary_id: current.id,
+      title: current.title,
+      destination: current.destination,
+    });
     setLiked((previous) => (isLiked ? previous.filter((id) => id !== current.id) : [...previous, current.id]));
     setItems((previous) =>
       previous.map((item) =>
@@ -464,11 +498,16 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
   async function cloneItinerary() {
     if (!current) return;
 
+    trackEvent("clone_itinerary_start", { itinerary_id: current.id, title: current.title });
     const result = await mutate(`/api/itineraries/${current.id}/clone`, {
       method: "POST",
     });
 
-    if (!result) return;
+    if (!result) {
+      trackEvent("clone_itinerary_failed", { itinerary_id: current.id, title: current.title });
+      return;
+    }
+    trackEvent("clone_itinerary_success", { itinerary_id: current.id, title: current.title, cloned_id: result.id });
     window.location.href = `/itinerary/${result.id}`;
   }
 
@@ -668,12 +707,32 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
     formData.set("daysJson", JSON.stringify(days));
     formData.set("durationDays", String(Math.max(Number(formData.get("durationDays") ?? 1), days.length || 1)));
 
+    const eventPrefix = isEditing ? "edit" : "create";
+    trackEvent(`${eventPrefix}_itinerary_start`, {
+      itinerary_id: isEditing ? editSource?.id : undefined,
+      title: formData.get("title")?.toString(),
+      destination: formData.get("destination")?.toString(),
+      travel_style: formData.get("travelStyle")?.toString(),
+      estimated_budget: Number(formData.get("estimatedBudget")) || 0,
+      duration_days: days.length,
+    });
+
     const result = await mutate(isEditing ? `/api/itineraries/${editSource?.id}` : "/api/itineraries", {
       method: isEditing ? "PUT" : "POST",
       body: formData,
     });
 
-    if (!result) return;
+    if (!result) {
+      trackEvent(`${eventPrefix}_itinerary_failed`, {
+        itinerary_id: isEditing ? editSource?.id : undefined,
+      });
+      return;
+    }
+
+    trackEvent(`${eventPrefix}_itinerary_success`, {
+      itinerary_id: result.id,
+      title: result.title,
+    });
     setItems((previous) => (isEditing ? previous.map((item) => (item.id === result.id ? result : item)) : [result, ...previous]));
     setCurrentId(result.id);
     setDrawerOpen(false);
@@ -934,7 +993,18 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                   ["days", "calendar", "Hari demi Hari"],
                   ["map", "route", "Peta"],
                 ].map(([value, icon, label]) => (
-                  <button key={value} className={`tab ${tab === value ? "active" : ""}`} onClick={() => setTab(value as typeof tab)}>
+                  <button
+                    key={value}
+                    className={`tab ${tab === value ? "active" : ""}`}
+                    onClick={() => {
+                      setTab(value as typeof tab);
+                      trackEvent("change_view_tab", {
+                        tab_name: value,
+                        itinerary_id: current?.id,
+                        title: current?.title,
+                      });
+                    }}
+                  >
                     <Icon name={icon} />
                     {label}
                   </button>
@@ -1178,7 +1248,10 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                     <button
                       key={category}
                       className={`chip ${filter === category ? "active" : ""}`}
-                      onClick={() => setFilter(category)}
+                      onClick={() => {
+                        setFilter(category);
+                        trackEvent("filter_changed", { filter_category: category });
+                      }}
                     >
                       {category}
                     </button>

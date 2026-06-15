@@ -10,6 +10,7 @@ import { TimeInput } from "./time-input";
 import type { JalaninItinerary } from "./jalanin-app";
 import { ACTIVITY_TYPES, DEFAULT_ACTIVITY_TYPE, isKnownActivityType } from "@/lib/activity-types";
 import { isGoogleMapsUrl, type ParsedLocation } from "@/lib/maps-parser";
+import { trackEvent } from "@/lib/analytics";
 
 type ActivityDraft = {
   time: string;
@@ -396,6 +397,15 @@ export function ItineraryDetailActions({ itinerary }: Props) {
     formData.set("daysJson", JSON.stringify(days));
     formData.set("durationDays", String(Math.max(Number(formData.get("durationDays") ?? 1), days.length || 1)));
 
+    trackEvent("edit_itinerary_start", {
+      itinerary_id: itinerary.id,
+      title: formData.get("title")?.toString(),
+      destination: formData.get("destination")?.toString(),
+      travel_style: formData.get("travelStyle")?.toString(),
+      estimated_budget: Number(formData.get("estimatedBudget")) || 0,
+      duration_days: days.length,
+    });
+
     const response = await fetch(`/api/itineraries/${itinerary.id}`, {
       method: "PUT",
       body: formData,
@@ -403,6 +413,7 @@ export function ItineraryDetailActions({ itinerary }: Props) {
 
     if (!response.ok) {
       const errText = await response.text();
+      trackEvent("edit_itinerary_failed", { itinerary_id: itinerary.id, error: errText });
       if (errText.startsWith("Batas maksimal")) {
         setLimitError(errText);
       } else {
@@ -411,6 +422,7 @@ export function ItineraryDetailActions({ itinerary }: Props) {
       return;
     }
 
+    trackEvent("edit_itinerary_success", { itinerary_id: itinerary.id });
     setIsEditing(false);
     router.refresh();
   }
@@ -420,17 +432,21 @@ export function ItineraryDetailActions({ itinerary }: Props) {
 
     setIsDeleting(true);
     setMessage("");
+    trackEvent("delete_itinerary_start", { itinerary_id: itinerary.id });
 
     const response = await fetch(`/api/itineraries/${itinerary.id}`, {
       method: "DELETE",
     });
 
     if (!response.ok) {
-      setMessage(await response.text());
+      const errText = await response.text();
+      trackEvent("delete_itinerary_failed", { itinerary_id: itinerary.id, error: errText });
+      setMessage(errText);
       setIsDeleting(false);
       return;
     }
 
+    trackEvent("delete_itinerary_success", { itinerary_id: itinerary.id });
     router.push("/");
     router.refresh();
   }

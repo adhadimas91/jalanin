@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 interface Props {
   whitelist: string;
@@ -43,8 +44,10 @@ export default function RegisterFormClient({ whitelist }: Props) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     const domain = email.split("@")[1]?.toLowerCase();
+    trackEvent("register_submit_attempt", { email_domain: domain });
     if (!domain || !allowedDomains.includes(domain)) {
       e.preventDefault();
+      trackEvent("register_validation_failed", { reason: "invalid_domain", email_domain: domain });
       setError(`Domain email tidak diperbolehkan. Gunakan: ${allowedDomains.join(", ")}`);
     }
   };
