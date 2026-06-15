@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatRupiah } from "@/lib/format";
+import { ProfileAnalytics, TrackedLink } from "@/components/tracked-link";
 
 export const dynamic = "force-dynamic";
 
@@ -34,11 +35,19 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
     },
   });
 
+  const profileUsername = user.username || user.id;
+
   return (
     <main className="page-center">
-      <Link className="plain-link" href="/">
+      <ProfileAnalytics username={profileUsername} isOwnProfile={isOwnProfile} />
+      <TrackedLink
+        className="plain-link"
+        href="/"
+        eventName="profile_back_to_feed"
+        eventParams={{ username: profileUsername }}
+      >
         Kembali ke feed
-      </Link>
+      </TrackedLink>
       <article className="profile-panel" style={{ marginTop: 16 }}>
         <img src={user.avatarUrl ?? "/uploads/default-avatar.svg"} alt={user.name ?? user.email} />
         <div>
@@ -73,22 +82,49 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
           </div>
           {currentUser?.id === user.id ? (
             <div className="profile-actions">
-              <Link className="mini-button muted" href="/saved">
+              <TrackedLink
+                className="mini-button muted"
+                href="/saved"
+                eventName="profile_click_saved_routes"
+                eventParams={{ username: profileUsername }}
+              >
                 Rute tersimpan
-              </Link>
-              <Link className="mini-button muted" href="/settings/profile">
+              </TrackedLink>
+              <TrackedLink
+                className="mini-button muted"
+                href="/settings/profile"
+                eventName="profile_click_edit_profile"
+                eventParams={{ username: profileUsername }}
+              >
                 Edit profil
-              </Link>
-              <Link className="mini-button muted" href="/settings/mylink" style={{ marginLeft: "8px" }}>
+              </TrackedLink>
+              <TrackedLink
+                className="mini-button muted"
+                href="/settings/mylink"
+                style={{ marginLeft: "8px" }}
+                eventName="profile_click_mylink_settings"
+                eventParams={{ username: profileUsername }}
+              >
                 Link MyLink
-              </Link>
+              </TrackedLink>
             </div>
           ) : null}
         </div>
       </article>
       <div className="server-list">
         {trips.map((trip) => (
-          <Link className="server-card" href={`/itinerary/${trip.id}`} key={trip.id}>
+          <TrackedLink
+            className="server-card"
+            href={`/itinerary/${trip.id}`}
+            key={trip.id}
+            eventName="profile_click_itinerary"
+            eventParams={{
+              itinerary_id: trip.id,
+              title: trip.title,
+              destination: trip.destination,
+              username: profileUsername,
+            }}
+          >
             <img src={trip.coverImageUrl} alt={trip.destination} />
             <div>
               <h3>
@@ -101,7 +137,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
                 {trip.destination} - {trip.durationDays} hari - {formatRupiah(trip.estimatedBudget)}
               </p>
             </div>
-          </Link>
+          </TrackedLink>
         ))}
       </div>
     </main>

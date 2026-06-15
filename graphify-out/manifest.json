@@ -125,9 +125,9 @@
     "semantic_hash": "589a9ea00a4cf57db9920c0b0f0cbe56"
   },
   "app/profile/[username]/page.tsx": {
-    "mtime": 1781330622.4908404,
-    "ast_hash": "41e4d19acf0846941a8889997abfca83",
-    "semantic_hash": "41e4d19acf0846941a8889997abfca83"
+    "mtime": 1781510059.0605593,
+    "ast_hash": "78ad7427ab9f88a530b93aa2d858eb5e",
+    "semantic_hash": ""
   },
   "app/register/RegisterFormClient.tsx": {
     "mtime": 1781507418.112543,
@@ -452,6 +452,11 @@
   "lib/analytics.ts": {
     "mtime": 1781507378.8913782,
     "ast_hash": "3ba7c08bd0fc1fb2f61dab600ab983d2",
+    "semantic_hash": ""
+  },
+  "components/tracked-link.tsx": {
+    "mtime": 1781510052.891039,
+    "ast_hash": "c247ee15cc981741636e26fa5efbdc37",
     "semantic_hash": ""
   }
 }

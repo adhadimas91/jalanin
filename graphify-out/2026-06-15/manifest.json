@@ -130,9 +130,9 @@
     "semantic_hash": "41e4d19acf0846941a8889997abfca83"
   },
   "app/register/RegisterFormClient.tsx": {
-    "mtime": 1781154121.9813335,
-    "ast_hash": "efe0701546a91299fc4b0ab2a01da284",
-    "semantic_hash": "efe0701546a91299fc4b0ab2a01da284"
+    "mtime": 1781507418.112543,
+    "ast_hash": "4c021653952fb0f49825e790f2d687c8",
+    "semantic_hash": ""
   },
   "app/register/page.tsx": {
     "mtime": 1781154099.0598938,
@@ -165,9 +165,9 @@
     "semantic_hash": "c0c8d234c5e10e3aa6aac7b24284b8ab"
   },
   "components/clone-itinerary-button.tsx": {
-    "mtime": 1780972497.2027664,
-    "ast_hash": "f2f544cbf8ee3646faed15ae5bfb6888",
-    "semantic_hash": "f2f544cbf8ee3646faed15ae5bfb6888"
+    "mtime": 1781507384.2781072,
+    "ast_hash": "3a977b69c02255db8202548508705cee",
+    "semantic_hash": ""
   },
   "components/icon-sprite.tsx": {
     "mtime": 1779765243.3048952,
@@ -175,9 +175,9 @@
     "semantic_hash": "1bfa1bceee984f99a5e18d0eda2b18ae"
   },
   "components/itinerary-detail-actions.tsx": {
-    "mtime": 1781330638.0889974,
-    "ast_hash": "6f8410ae6c8827bbcccc97d1786b6a3a",
-    "semantic_hash": "6f8410ae6c8827bbcccc97d1786b6a3a"
+    "mtime": 1781507427.0182028,
+    "ast_hash": "50c11683c71b999305598f9fb153e447",
+    "semantic_hash": ""
   },
   "components/itinerary-interactive-view.tsx": {
     "mtime": 1781330647.3635778,
@@ -185,8 +185,8 @@
     "semantic_hash": "00d17efa67a44a71f79a4d61f0ef0da2"
   },
   "components/jalanin-app.tsx": {
-    "mtime": 1781444636.2545455,
-    "ast_hash": "5804d422bd5892fc6ffcaef3cdb70861",
+    "mtime": 1781507493.0243907,
+    "ast_hash": "b5384984ed2a3ddf1575ed2c743daf3e",
     "semantic_hash": ""
   },
   "components/jalanin-landing.tsx": {
@@ -430,8 +430,8 @@
     "semantic_hash": "41b676b29eab7e876fb38e90b9164741"
   },
   "components/share-itinerary-button.tsx": {
-    "mtime": 1781446128.4737372,
-    "ast_hash": "b3f74a6f0d415dd9f36eeab5ab6c78de",
+    "mtime": 1781507414.1296365,
+    "ast_hash": "6558f62738ade98ee6b4c35e87bc74db",
     "semantic_hash": ""
   },
   "graphify-out/memory/query_20260614_131443_why_does_getcurrentuser___connect_api_routes___use.md": {
@@ -447,6 +447,11 @@
   "graphify-out/memory/query_20260614_131925_path_from_login_to_register.md": {
     "mtime": 1781443165.3920035,
     "ast_hash": "3761d66022b5151f1786883cf5bb4939",
+    "semantic_hash": ""
+  },
+  "lib/analytics.ts": {
+    "mtime": 1781507378.8913782,
+    "ast_hash": "3ba7c08bd0fc1fb2f61dab600ab983d2",
     "semantic_hash": ""
   }
 }

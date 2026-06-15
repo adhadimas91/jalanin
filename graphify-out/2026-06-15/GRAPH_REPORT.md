@@ -1,16 +1,16 @@
 # Graph Report - jalanin  (2026-06-15)
 
 ## Corpus Check
-- 87 files · ~42,733 words
+- 88 files · ~43,149 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 701 nodes · 1154 edges · 75 communities (53 shown, 22 thin omitted)
+- 703 nodes · 1165 edges · 74 communities (52 shown, 22 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7412a70a`
+- Built from commit: `0491c33c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -25,7 +25,6 @@
 - [[_COMMUNITY_Google Maps URL Parser|Google Maps URL Parser]]
 - [[_COMMUNITY_Time Inputs & Calculations|Time Inputs & Calculations]]
 - [[_COMMUNITY_Supabase Storage Integration|Supabase Storage Integration]]
-- [[_COMMUNITY_Database Seeding|Database Seeding]]
 - [[_COMMUNITY_Budget Fields|Budget Fields]]
 - [[_COMMUNITY_OSM Mapping Alternatives|OSM Mapping Alternatives]]
 - [[_COMMUNITY_MyLink Affiliate Settings|MyLink Affiliate Settings]]
@@ -130,55 +129,51 @@
 - **Supabase REST API Integration Pattern** — lib_supabase_auth_requestsupabaseauth, lib_supabase_storage_ensuresupabasestoragebucket, lib_supabase_storage_uploadimagetosupabasestorage [INFERRED 0.95]
 - **Explore Feed UI/UX Redesign Tasks** — tasks_task_1_grid_layout_grid_layout_task, tasks_task_2_hover_overlays_hover_overlays_task, tasks_task_3_search_filter_search_filter_task, tasks_task_4_card_click_card_click_task, tasks_task_5_mobile_nav_mobile_nav_task [EXTRACTED 1.00]
 
-## Communities (75 total, 22 thin omitted)
+## Communities (74 total, 22 thin omitted)
 
 ### Community 0 - "Interactive UI Components"
 Cohesion: 0.05
-Nodes (64): AdminConsole(), CloneItineraryButton(), Icon(), IconSprite(), ActivityDraft, createBlankActivity(), createBlankDay(), createDrafts() (+56 more)
+Nodes (66): ProfilePage Component, AdminConsole(), CloneItineraryButton(), Icon(), IconSprite(), ActivityDraft, createBlankActivity(), createBlankDay() (+58 more)
 
 ### Community 1 - "API Routes & User Sessions"
 Cohesion: 0.11
 Nodes (32): ItineraryDetailPage Component, PUT (Itinerary Detail Route), Home(), envStatus(), GET(), generateMetadata(), ItineraryDetailPage(), PUT() (+24 more)
 
 ### Community 2 - "Admin Panel & Console Operations"
-Cohesion: 0.08
-Nodes (45): DELETE (Itinerary Detail Route), AdminPage(), DELETE(), DELETE(), Props, TableConfig, tableConfigs, DELETE /api/admin/[table]/[id] (+37 more)
+Cohesion: 0.09
+Nodes (39): DELETE(), Props, TableConfig, tableConfigs, DELETE /api/admin/[table]/[id], isAdminTable(), PATCH(), DEFAULT_ACTIVITY_TYPE (+31 more)
 
 ### Community 3 - "Project Configurations"
 Cohesion: 0.05
 Nodes (38): dependencies, dotenv, maplibre-gl, next, pg, @prisma/adapter-pg, @prisma/client, react (+30 more)
 
 ### Community 5 - "Client-Side Prototype Logic"
-Cohesion: 0.12
-Nodes (28): metadata, Clone Rate Metric, Instagram untuk Itinerary Perjalanan, Jalanin Rute Ini (Clone Itinerary), Save Rate Metric, Simpan Rute (Save Itinerary), $(), Creator Revenue Protection (+20 more)
+Cohesion: 0.10
+Nodes (32): metadata, Clone Rate Metric, Instagram untuk Itinerary Perjalanan, Jalanin Rute Ini (Clone Itinerary), Save Rate Metric, Simpan Rute (Save Itinerary), $(), Creator Revenue Protection (+24 more)
 
 ### Community 6 - "Supabase Authentication Flow"
-Cohesion: 0.19
-Nodes (14): createSession(), getSupabaseAuthConfig(), requestSupabaseAuth(), signInWithSupabaseAuth(), signUpWithSupabaseAuth(), SupabaseAuthError, SupabaseAuthResponse, SupabaseAuthUser (+6 more)
+Cohesion: 0.16
+Nodes (16): createSession(), getSupabaseAuthConfig(), requestSupabaseAuth(), signInWithSupabaseAuth(), signUpWithSupabaseAuth(), SupabaseAuthError, SupabaseAuthResponse, SupabaseAuthUser (+8 more)
 
 ### Community 7 - "TypeScript Configuration"
 Cohesion: 0.08
 Nodes (23): compilerOptions, allowJs, baseUrl, esModuleInterop, forceConsistentCasingInFileNames, ignoreDeprecations, incremental, isolatedModules (+15 more)
 
 ### Community 8 - "Google Maps URL Parser"
-Cohesion: 0.29
-Nodes (12): buildGeocodeCandidates(), extractCoordsFromGoogleMapsUrl(), extractGoogleMapsUrl(), extractPlacePinCoords(), extractPlaceQueryFromGoogleMapsUrl(), geocodePlaceQuery(), geocodeWithGeoapify(), geocodeWithNominatim() (+4 more)
+Cohesion: 0.27
+Nodes (13): buildGeocodeCandidates(), extractCoordsFromGoogleMapsUrl(), extractGoogleMapsUrl(), extractPlacePinCoords(), extractPlaceQueryFromGoogleMapsUrl(), geocodePlaceQuery(), geocodeWithGeoapify(), geocodeWithNominatim() (+5 more)
 
 ### Community 9 - "Time Inputs & Calculations"
 Cohesion: 0.42
 Nodes (7): HOURS, MINUTES, Props, clampHour(), clampMinute(), formatActivityTime(), parseActivityTime()
 
 ### Community 10 - "Supabase Storage Integration"
-Cohesion: 0.04
-Nodes (46): 10. Responsive Rules, 11. Content Rules, 12. Accessibility, 13. Current Prototype Files, 14. Next UI Improvements, 1. Product Feel, 2. Design Principles, 3. Visual Direction (+38 more)
-
-### Community 11 - "Database Seeding"
-Cohesion: 0.32
-Nodes (7): adapter, ensureItinerary(), itineraries, main(), prisma, SeedActivity, SeedItinerary
+Cohesion: 0.05
+Nodes (42): 10. Responsive Rules, 11. Content Rules, 12. Accessibility, 13. Current Prototype Files, 14. Next UI Improvements, 1. Product Feel, 3. Visual Direction, 4. Color System (+34 more)
 
 ### Community 12 - "Budget Fields"
-Cohesion: 0.08
-Nodes (38): ProfilePage Component, POST(), BudgetField(), Props, CreatePage(), clearSession(), getCurrentUser(), hashToken() (+30 more)
+Cohesion: 0.07
+Nodes (47): DELETE (Itinerary Detail Route), AdminPage(), DELETE(), POST(), BudgetField(), Props, CreatePage(), adminEmails() (+39 more)
 
 ### Community 13 - "OSM Mapping Alternatives"
 Cohesion: 0.40
@@ -353,7 +348,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `render()` connect `Client-Side Prototype Logic` to `API Routes & User Sessions`?**
   _High betweenness centrality (0.092) - this node is a cross-community bridge._
 - **Why does `getCurrentUser()` connect `Budget Fields` to `Interactive UI Components`, `API Routes & User Sessions`, `Admin Panel & Console Operations`?**
-  _High betweenness centrality (0.084) - this node is a cross-community bridge._
+  _High betweenness centrality (0.083) - this node is a cross-community bridge._
 - **Are the 3 inferred relationships involving `getCurrentUser()` (e.g. with `DELETE()` and `DELETE()`) actually correct?**
   _`getCurrentUser()` has 3 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 3 inferred relationships involving `isAdminUser()` (e.g. with `DELETE()` and `DELETE()`) actually correct?**
@@ -361,4 +356,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `Prisma-Remote`, `GeoapifyFeature`, `metadata` to the rest of the system?**
   _332 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Interactive UI Components` be split into smaller, more focused modules?**
-  _Cohesion score 0.05280437756497948 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.050436953807740326 - nodes in this community are weakly interconnected._
