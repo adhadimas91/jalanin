@@ -1,16 +1,16 @@
-# Graph Report - jalanin  (2026-06-15)
+# Graph Report - jalanin  (2026-06-14)
 
 ## Corpus Check
-- 87 files · ~42,733 words
+- 87 files · ~42,678 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 701 nodes · 1154 edges · 75 communities (53 shown, 22 thin omitted)
+- 701 nodes · 1153 edges · 76 communities (53 shown, 23 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7412a70a`
+- Built from commit: `9d841bf7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -31,6 +31,7 @@
 - [[_COMMUNITY_MyLink Affiliate Settings|MyLink Affiliate Settings]]
 - [[_COMMUNITY_Development Checklists|Development Checklists]]
 - [[_COMMUNITY_MyLink Architecture Docs|MyLink Architecture Docs]]
+- [[_COMMUNITY_App Layout Setup|App Layout Setup]]
 - [[_COMMUNITY_Geoapify Search Endpoint|Geoapify Search Endpoint]]
 - [[_COMMUNITY_Brand Cover Templates|Brand Cover Templates]]
 - [[_COMMUNITY_Database Migrations - Itineraries|Database Migrations - Itineraries]]
@@ -130,7 +131,7 @@
 - **Supabase REST API Integration Pattern** — lib_supabase_auth_requestsupabaseauth, lib_supabase_storage_ensuresupabasestoragebucket, lib_supabase_storage_uploadimagetosupabasestorage [INFERRED 0.95]
 - **Explore Feed UI/UX Redesign Tasks** — tasks_task_1_grid_layout_grid_layout_task, tasks_task_2_hover_overlays_hover_overlays_task, tasks_task_3_search_filter_search_filter_task, tasks_task_4_card_click_card_click_task, tasks_task_5_mobile_nav_mobile_nav_task [EXTRACTED 1.00]
 
-## Communities (75 total, 22 thin omitted)
+## Communities (76 total, 23 thin omitted)
 
 ### Community 0 - "Interactive UI Components"
 Cohesion: 0.05
@@ -149,8 +150,8 @@ Cohesion: 0.05
 Nodes (38): dependencies, dotenv, maplibre-gl, next, pg, @prisma/adapter-pg, @prisma/client, react (+30 more)
 
 ### Community 5 - "Client-Side Prototype Logic"
-Cohesion: 0.12
-Nodes (28): metadata, Clone Rate Metric, Instagram untuk Itinerary Perjalanan, Jalanin Rute Ini (Clone Itinerary), Save Rate Metric, Simpan Rute (Save Itinerary), $(), Creator Revenue Protection (+20 more)
+Cohesion: 0.14
+Nodes (27): Clone Rate Metric, Instagram untuk Itinerary Perjalanan, Jalanin Rute Ini (Clone Itinerary), Save Rate Metric, Simpan Rute (Save Itinerary), $(), Creator Revenue Protection, allItineraries() (+19 more)
 
 ### Community 6 - "Supabase Authentication Flow"
 Cohesion: 0.19
@@ -343,17 +344,17 @@ Nodes (3): Acceptance Criteria, Checklist, Phase 10 - Deployment
 ## Knowledge Gaps
 - **331 isolated node(s):** `Prisma-Remote`, `GeoapifyFeature`, `metadata`, `Props`, `MyLink` (+326 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **22 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **23 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Home()` connect `API Routes & User Sessions` to `Budget Fields`, `Client-Side Prototype Logic`?**
-  _High betweenness centrality (0.096) - this node is a cross-community bridge._
-- **Why does `render()` connect `Client-Side Prototype Logic` to `API Routes & User Sessions`?**
   _High betweenness centrality (0.092) - this node is a cross-community bridge._
+- **Why does `render()` connect `Client-Side Prototype Logic` to `API Routes & User Sessions`?**
+  _High betweenness centrality (0.088) - this node is a cross-community bridge._
 - **Why does `getCurrentUser()` connect `Budget Fields` to `Interactive UI Components`, `API Routes & User Sessions`, `Admin Panel & Console Operations`?**
-  _High betweenness centrality (0.084) - this node is a cross-community bridge._
+  _High betweenness centrality (0.082) - this node is a cross-community bridge._
 - **Are the 3 inferred relationships involving `getCurrentUser()` (e.g. with `DELETE()` and `DELETE()`) actually correct?**
   _`getCurrentUser()` has 3 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 3 inferred relationships involving `isAdminUser()` (e.g. with `DELETE()` and `DELETE()`) actually correct?**

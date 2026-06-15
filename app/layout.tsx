@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "../styles.css";
 import "./next-overrides.css";
@@ -15,7 +16,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Google tag (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-DVV6GX51JE"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-DVV6GX51JE');
+          `}
+        </Script>
+      </body>
     </html>
   );
 }

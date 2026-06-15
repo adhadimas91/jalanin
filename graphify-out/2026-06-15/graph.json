@@ -803,27 +803,27 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_layout",
-      "community": 5,
+      "community": 17,
       "norm_label": "layout.tsx"
     },
     {
       "label": "metadata",
       "file_type": "code",
       "source_file": "app/layout.tsx",
-      "source_location": "L7",
+      "source_location": "L6",
       "_origin": "ast",
       "id": "app_layout_metadata",
-      "community": 5,
+      "community": 17,
       "norm_label": "metadata"
     },
     {
       "label": "RootLayout()",
       "file_type": "code",
       "source_file": "app/layout.tsx",
-      "source_location": "L12",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "app_layout_rootlayout",
-      "community": 5,
+      "community": 17,
       "norm_label": "rootlayout()"
     },
     {
@@ -10055,9 +10055,9 @@
       "source_file": "app/itinerary/[id]/page.tsx",
       "source_location": "L17",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "id_page",
-      "target": "id_page_generatemetadata"
+      "target": "id_page_generatemetadata",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10253,17 +10253,6 @@
       "confidence_score": 1.0,
       "source": "app_layout",
       "target": "app_layout_rootlayout"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/layout.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "source": "app_layout",
-      "target": "script",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -19476,5 +19465,5 @@
       "source_file": "tasks/task-1-grid-layout.md"
     }
   ],
-  "built_at_commit": "7412a70a4da45c84aedf4330b1751cbbf835bd7c"
+  "built_at_commit": "9d841bf7f34de7b9200720d14c8e9cf43c55c805"
 }
