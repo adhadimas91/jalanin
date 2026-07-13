@@ -3,7 +3,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { getItineraryById } from "@/lib/itineraries";
 import { prisma } from "@/lib/prisma";
 import { serializeItinerary } from "@/lib/serialize";
-import { uploadImageToSupabaseStorage } from "@/lib/supabase-storage";
+import { uploadImageToBlobStorage } from "@/lib/blob-storage";
 import { defaultActivity, fallbackDay, parseActivitiesJson, parseActivitiesText, parseDaysJson } from "@/lib/itinerary-form";
 
 export async function POST(request: Request) {
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
 
   if (imageFile instanceof File && imageFile.size > 0) {
     try {
-      coverImageUrl = await uploadImageToSupabaseStorage({
+      coverImageUrl = await uploadImageToBlobStorage({
         file: imageFile,
         userId: user.id,
       });

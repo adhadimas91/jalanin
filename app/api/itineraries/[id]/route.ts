@@ -4,7 +4,7 @@ import { defaultActivity, fallbackDay, parseActivitiesJson, parseActivitiesText,
 import { getItineraryById } from "@/lib/itineraries";
 import { prisma } from "@/lib/prisma";
 import { serializeItinerary } from "@/lib/serialize";
-import { uploadImageToSupabaseStorage } from "@/lib/supabase-storage";
+import { uploadImageToBlobStorage } from "@/lib/blob-storage";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
@@ -79,7 +79,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
   if (imageFile instanceof File && imageFile.size > 0) {
     try {
-      coverImageUrl = await uploadImageToSupabaseStorage({
+      coverImageUrl = await uploadImageToBlobStorage({
         file: imageFile,
         userId: user.id,
       });

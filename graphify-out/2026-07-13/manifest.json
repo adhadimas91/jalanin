@@ -20,9 +20,9 @@
     "semantic_hash": "7803cbea485366aa098516bed6cc9a13"
   },
   "app/api/auth/login/route.ts": {
-    "mtime": 1783912152.8798351,
-    "ast_hash": "c4b5ae2a4ec3bb4ed80fdacd419090be",
-    "semantic_hash": ""
+    "mtime": 1781330558.2768862,
+    "ast_hash": "add8b2a1937c3a18fee61a5949ace7f5",
+    "semantic_hash": "add8b2a1937c3a18fee61a5949ace7f5"
   },
   "app/api/auth/logout/route.ts": {
     "mtime": 1777883121.7438328,
@@ -30,13 +30,13 @@
     "semantic_hash": "26d3acac64bebe23d00da51fe20b66d8"
   },
   "app/api/auth/register/route.ts": {
-    "mtime": 1783912145.396689,
-    "ast_hash": "3b65393e9faeea6bedae15688e6019ff",
-    "semantic_hash": ""
+    "mtime": 1781330562.1892505,
+    "ast_hash": "7cf979bd22a993966a8a17953b4fe31d",
+    "semantic_hash": "7cf979bd22a993966a8a17953b4fe31d"
   },
   "app/api/health/route.ts": {
-    "mtime": 1783912196.3042293,
-    "ast_hash": "6dbae456d7e50c9585023aff64a51618",
+    "mtime": 1783910959.9168694,
+    "ast_hash": "caa018243da689637e901050fd2b6532",
     "semantic_hash": ""
   },
   "app/api/itineraries/[id]/clone/route.ts": {
@@ -263,6 +263,11 @@
     "mtime": 1781330486.670783,
     "ast_hash": "9426438e9601bd115e83cdf5df324afe",
     "semantic_hash": "9426438e9601bd115e83cdf5df324afe"
+  },
+  "lib/supabase-auth.ts": {
+    "mtime": 1781152697.8609388,
+    "ast_hash": "e989913cca411115c2cd2842d099849b",
+    "semantic_hash": "e989913cca411115c2cd2842d099849b"
   },
   "lib/time.ts": {
     "mtime": 1780558289.2046957,

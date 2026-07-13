@@ -193,7 +193,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "admin_page",
-      "community": 12,
+      "community": 2,
       "norm_label": "page.tsx"
     },
     {
@@ -203,7 +203,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "admin_page_adminpage",
-      "community": 12,
+      "community": 2,
       "norm_label": "adminpage()"
     },
     {
@@ -213,7 +213,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_table_id_route_ts_id_route",
-      "community": 12,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -223,7 +223,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "id_route_isadmintable",
-      "community": 12,
+      "community": 2,
       "norm_label": "isadmintable()"
     },
     {
@@ -233,7 +233,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "id_route_patch",
-      "community": 12,
+      "community": 2,
       "norm_label": "patch()"
     },
     {
@@ -243,7 +243,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "app_api_admin_table_id_route_ts_id_route_delete",
-      "community": 12,
+      "community": 2,
       "norm_label": "delete()"
     },
     {
@@ -253,7 +253,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "table_route",
-      "community": 12,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -263,7 +263,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "table_route_isadmintable",
-      "community": 12,
+      "community": 2,
       "norm_label": "isadmintable()"
     },
     {
@@ -273,7 +273,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "table_route_get",
-      "community": 12,
+      "community": 2,
       "norm_label": "get()"
     },
     {
@@ -283,7 +283,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "table_route_post",
-      "community": 12,
+      "community": 2,
       "norm_label": "post()"
     },
     {
@@ -293,17 +293,27 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "login_route",
-      "community": 12,
+      "community": 36,
       "norm_label": "route.ts"
+    },
+    {
+      "label": "usernameFromEmail()",
+      "file_type": "code",
+      "source_file": "app/api/auth/login/route.ts",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "login_route_usernamefromemail",
+      "community": 36,
+      "norm_label": "usernamefromemail()"
     },
     {
       "label": "POST()",
       "file_type": "code",
       "source_file": "app/api/auth/login/route.ts",
-      "source_location": "L6",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "login_route_post",
-      "community": 12,
+      "community": 36,
       "norm_label": "post()"
     },
     {
@@ -313,7 +323,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "logout_route",
-      "community": 12,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -323,7 +333,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "logout_route_post",
-      "community": 12,
+      "community": 2,
       "norm_label": "post()"
     },
     {
@@ -333,27 +343,27 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "register_route",
-      "community": 12,
+      "community": 36,
       "norm_label": "route.ts"
     },
     {
       "label": "usernameFromEmail()",
       "file_type": "code",
       "source_file": "app/api/auth/register/route.ts",
-      "source_location": "L6",
+      "source_location": "L7",
       "_origin": "ast",
       "id": "register_route_usernamefromemail",
-      "community": 12,
+      "community": 36,
       "norm_label": "usernamefromemail()"
     },
     {
       "label": "POST()",
       "file_type": "code",
       "source_file": "app/api/auth/register/route.ts",
-      "source_location": "L10",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "register_route_post",
-      "community": 12,
+      "community": 36,
       "norm_label": "post()"
     },
     {
@@ -380,7 +390,7 @@
       "label": "GET()",
       "file_type": "code",
       "source_file": "app/api/health/route.ts",
-      "source_location": "L12",
+      "source_location": "L17",
       "_origin": "ast",
       "id": "health_route_get",
       "community": 12,
@@ -463,7 +473,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "app_api_itineraries_id_route_ts_id_route_delete",
-      "community": 12,
+      "community": 2,
       "norm_label": "delete()"
     },
     {
@@ -623,7 +633,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "whitelist_route",
-      "community": 12,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -633,7 +643,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "whitelist_route_get",
-      "community": 12,
+      "community": 2,
       "norm_label": "get()"
     },
     {
@@ -643,7 +653,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "whitelist_route_post",
-      "community": 12,
+      "community": 2,
       "norm_label": "post()"
     },
     {
@@ -763,7 +773,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "create_page",
-      "community": 17,
+      "community": 12,
       "norm_label": "page.tsx"
     },
     {
@@ -773,7 +783,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "create_page_createpage",
-      "community": 17,
+      "community": 12,
       "norm_label": "createpage()"
     },
     {
@@ -803,7 +813,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "id_page_itinerarydetailpage",
-      "community": 12,
+      "community": 1,
       "norm_label": "itinerarydetailpage()"
     },
     {
@@ -843,7 +853,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "login_page",
-      "community": 12,
+      "community": 36,
       "norm_label": "page.tsx"
     },
     {
@@ -853,7 +863,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "login_page_loginpage",
-      "community": 12,
+      "community": 36,
       "norm_label": "loginpage()"
     },
     {
@@ -893,7 +903,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "username_page",
-      "community": 4,
+      "community": 12,
       "norm_label": "page.tsx"
     },
     {
@@ -903,7 +913,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "username_page_profilepage",
-      "community": 4,
+      "community": 12,
       "norm_label": "profilepage()"
     },
     {
@@ -913,7 +923,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "register_registerformclient",
-      "community": 4,
+      "community": 12,
       "norm_label": "registerformclient.tsx"
     },
     {
@@ -923,7 +933,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "register_registerformclient_props",
-      "community": 4,
+      "community": 12,
       "norm_label": "props"
     },
     {
@@ -1123,7 +1133,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_budget_field",
-      "community": 17,
+      "community": 12,
       "norm_label": "budget-field.tsx"
     },
     {
@@ -1133,7 +1143,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_budget_field_props",
-      "community": 17,
+      "community": 12,
       "norm_label": "props"
     },
     {
@@ -1143,7 +1153,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_budget_field_budgetfield",
-      "community": 17,
+      "community": 12,
       "norm_label": "budgetfield()"
     },
     {
@@ -1333,7 +1343,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view",
-      "community": 4,
+      "community": 47,
       "norm_label": "itinerary-interactive-view.tsx"
     },
     {
@@ -1343,7 +1353,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_serializedactivity",
-      "community": 4,
+      "community": 47,
       "norm_label": "serializedactivity"
     },
     {
@@ -1353,7 +1363,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_serializedday",
-      "community": 4,
+      "community": 47,
       "norm_label": "serializedday"
     },
     {
@@ -1363,7 +1373,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_serializeditinerary",
-      "community": 4,
+      "community": 47,
       "norm_label": "serializeditinerary"
     },
     {
@@ -1373,7 +1383,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_routemap",
-      "community": 4,
+      "community": 47,
       "norm_label": "routemap()"
     },
     {
@@ -1383,7 +1393,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_itineraryinteractiveview",
-      "community": 4,
+      "community": 47,
       "norm_label": "itineraryinteractiveview()"
     },
     {
@@ -1433,7 +1443,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninitinerary",
-      "community": 4,
+      "community": 11,
       "norm_label": "jalaninitinerary"
     },
     {
@@ -1693,7 +1703,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_share_itinerary_button",
-      "community": 4,
+      "community": 17,
       "norm_label": "share-itinerary-button.tsx"
     },
     {
@@ -1703,7 +1713,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_share_itinerary_button_props",
-      "community": 4,
+      "community": 17,
       "norm_label": "props"
     },
     {
@@ -1713,7 +1723,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_share_itinerary_button_instagramicon",
-      "community": 4,
+      "community": 17,
       "norm_label": "instagramicon()"
     },
     {
@@ -1723,7 +1733,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "components_share_itinerary_button_whatsappicon",
-      "community": 4,
+      "community": 17,
       "norm_label": "whatsappicon()"
     },
     {
@@ -1733,7 +1743,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "components_share_itinerary_button_xicon",
-      "community": 4,
+      "community": 17,
       "norm_label": "xicon()"
     },
     {
@@ -1743,7 +1753,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "components_share_itinerary_button_facebookicon",
-      "community": 4,
+      "community": 17,
       "norm_label": "facebookicon()"
     },
     {
@@ -1753,7 +1763,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "components_share_itinerary_button_systemshareicon",
-      "community": 4,
+      "community": 17,
       "norm_label": "systemshareicon()"
     },
     {
@@ -1763,7 +1773,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "components_share_itinerary_button_shareitinerarybutton",
-      "community": 4,
+      "community": 17,
       "norm_label": "shareitinerarybutton()"
     },
     {
@@ -1863,7 +1873,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_tracked_link",
-      "community": 4,
+      "community": 12,
       "norm_label": "tracked-link.tsx"
     },
     {
@@ -1873,7 +1883,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_tracked_link_trackedlinkprops",
-      "community": 4,
+      "community": 12,
       "norm_label": "trackedlinkprops"
     },
     {
@@ -1883,7 +1893,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "components_tracked_link_trackedlink",
-      "community": 4,
+      "community": 12,
       "norm_label": "trackedlink()"
     },
     {
@@ -1893,7 +1903,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "components_tracked_link_profileanalytics",
-      "community": 4,
+      "community": 12,
       "norm_label": "profileanalytics()"
     },
     {
@@ -1903,7 +1913,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_activity_types",
-      "community": 0,
+      "community": 42,
       "norm_label": "activity-types.ts"
     },
     {
@@ -1923,7 +1933,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_activity_types_activitytype",
-      "community": 0,
+      "community": 42,
       "norm_label": "activitytype"
     },
     {
@@ -1933,7 +1943,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "lib_activity_types_isknownactivitytype",
-      "community": 0,
+      "community": 42,
       "norm_label": "isknownactivitytype()"
     },
     {
@@ -1943,7 +1953,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "lib_activity_types_activityicon",
-      "community": 4,
+      "community": 47,
       "norm_label": "activityicon()"
     },
     {
@@ -1953,7 +1963,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "lib_activity_types_normalizeactivitytype",
-      "community": 0,
+      "community": 42,
       "norm_label": "normalizeactivitytype()"
     },
     {
@@ -1963,7 +1973,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "lib_activity_types_activity_type_colors",
-      "community": 0,
+      "community": 42,
       "norm_label": "activity_type_colors"
     },
     {
@@ -1973,7 +1983,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "lib_activity_types_activitycost",
-      "community": 0,
+      "community": 42,
       "norm_label": "activitycost"
     },
     {
@@ -1983,7 +1993,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "lib_activity_types_tripday",
-      "community": 0,
+      "community": 42,
       "norm_label": "tripday"
     },
     {
@@ -1993,7 +2003,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "lib_activity_types_tripinsightline",
-      "community": 0,
+      "community": 42,
       "norm_label": "tripinsightline"
     },
     {
@@ -2003,7 +2013,7 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "lib_activity_types_computetripinsights",
-      "community": 0,
+      "community": 42,
       "norm_label": "computetripinsights()"
     },
     {
@@ -2023,7 +2033,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_admin_admintables",
-      "community": 12,
+      "community": 2,
       "norm_label": "admintables"
     },
     {
@@ -2263,7 +2273,7 @@
       "source_location": "L352",
       "_origin": "ast",
       "id": "lib_admin_listadminrecords",
-      "community": 12,
+      "community": 2,
       "norm_label": "listadminrecords()"
     },
     {
@@ -2293,7 +2303,7 @@
       "source_location": "L603",
       "_origin": "ast",
       "id": "lib_admin_deleteadminrecord",
-      "community": 12,
+      "community": 2,
       "norm_label": "deleteadminrecord()"
     },
     {
@@ -2303,7 +2313,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_analytics",
-      "community": 4,
+      "community": 12,
       "norm_label": "analytics.ts"
     },
     {
@@ -2313,7 +2323,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_analytics_trackevent",
-      "community": 4,
+      "community": 12,
       "norm_label": "trackevent()"
     },
     {
@@ -2323,7 +2333,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_auth",
-      "community": 12,
+      "community": 2,
       "norm_label": "auth.ts"
     },
     {
@@ -2333,7 +2343,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "lib_auth_adminemails",
-      "community": 12,
+      "community": 2,
       "norm_label": "adminemails()"
     },
     {
@@ -2343,7 +2353,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "lib_auth_hashtoken",
-      "community": 12,
+      "community": 2,
       "norm_label": "hashtoken()"
     },
     {
@@ -2353,7 +2363,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "lib_auth_createsession",
-      "community": 12,
+      "community": 36,
       "norm_label": "createsession()"
     },
     {
@@ -2363,7 +2373,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "lib_auth_clearsession",
-      "community": 12,
+      "community": 2,
       "norm_label": "clearsession()"
     },
     {
@@ -2383,7 +2393,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "lib_auth_isadminuser",
-      "community": 12,
+      "community": 2,
       "norm_label": "isadminuser()"
     },
     {
@@ -2393,7 +2403,7 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "lib_auth_requirecurrentuser",
-      "community": 12,
+      "community": 2,
       "norm_label": "requirecurrentuser()"
     },
     {
@@ -2403,7 +2413,7 @@
       "source_location": "L123",
       "_origin": "ast",
       "id": "lib_auth_requireadminuser",
-      "community": 12,
+      "community": 2,
       "norm_label": "requireadminuser()"
     },
     {
@@ -2463,7 +2473,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_format_formatrupiah",
-      "community": 4,
+      "community": 17,
       "norm_label": "formatrupiah()"
     },
     {
@@ -2703,7 +2713,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_maps_parser_extractgooglemapsurl",
-      "community": 8,
+      "community": 11,
       "norm_label": "extractgooglemapsurl()"
     },
     {
@@ -2713,7 +2723,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "lib_maps_parser_isgooglemapsurl",
-      "community": 8,
+      "community": 11,
       "norm_label": "isgooglemapsurl()"
     },
     {
@@ -2935,6 +2945,96 @@
       "id": "lib_serialize_serializeitinerary",
       "community": 1,
       "norm_label": "serializeitinerary()"
+    },
+    {
+      "label": "supabase-auth.ts",
+      "file_type": "code",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "lib_supabase_auth",
+      "community": 36,
+      "norm_label": "supabase-auth.ts"
+    },
+    {
+      "label": "SupabaseAuthUser",
+      "file_type": "code",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "lib_supabase_auth_supabaseauthuser",
+      "community": 36,
+      "norm_label": "supabaseauthuser"
+    },
+    {
+      "label": "SupabaseAuthResponse",
+      "file_type": "code",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "lib_supabase_auth_supabaseauthresponse",
+      "community": 36,
+      "norm_label": "supabaseauthresponse"
+    },
+    {
+      "label": "SupabaseAuthError",
+      "file_type": "code",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "lib_supabase_auth_supabaseautherror",
+      "community": 36,
+      "norm_label": "supabaseautherror"
+    },
+    {
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "lib_supabase_auth_supabaseautherror_constructor",
+      "community": 36,
+      "norm_label": ".constructor()"
+    },
+    {
+      "label": "getSupabaseAuthConfig()",
+      "file_type": "code",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "lib_supabase_auth_getsupabaseauthconfig",
+      "community": 36,
+      "norm_label": "getsupabaseauthconfig()"
+    },
+    {
+      "label": "requestSupabaseAuth()",
+      "file_type": "code",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "lib_supabase_auth_requestsupabaseauth",
+      "community": 36,
+      "norm_label": "requestsupabaseauth()"
+    },
+    {
+      "label": "signUpWithSupabaseAuth()",
+      "file_type": "code",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "lib_supabase_auth_signupwithsupabaseauth",
+      "community": 36,
+      "norm_label": "signupwithsupabaseauth()"
+    },
+    {
+      "label": "signInWithSupabaseAuth()",
+      "file_type": "code",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L90",
+      "_origin": "ast",
+      "id": "lib_supabase_auth_signinwithsupabaseauth",
+      "community": 36,
+      "norm_label": "signinwithsupabaseauth()"
     },
     {
       "label": "time.ts",
@@ -6715,7 +6815,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 12,
+      "community": 2,
       "norm_label": "delete /api/admin/[table]/[id]",
       "id": "id_route_delete"
     },
@@ -6995,7 +7095,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 12,
+      "community": 2,
       "norm_label": "delete (itinerary detail route)",
       "id": "_id__route_delete"
     },
@@ -7008,7 +7108,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 12,
+      "community": 1,
       "norm_label": "itinerarydetailpage component",
       "id": "_id__page_itinerarydetailpage"
     },
@@ -7021,7 +7121,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 17,
       "norm_label": "profilepage component",
       "id": "_username__page_profilepage"
     },
@@ -7236,6 +7336,20 @@
       "community": 15,
       "norm_label": "task 5: mobile navigation",
       "id": "tasks_task_5_mobile_nav_mobile_nav_task"
+    },
+    {
+      "label": "Custom Supabase REST API Integration",
+      "file_type": "rationale",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "The application communicates with Supabase services (Auth and Storage) using direct HTTP fetch requests to Supabase REST endpoints (/auth/v1 and /storage/v1) instead of using the official Supabase JS SDK. This avoids SDK overhead and keeps the client lightweight.",
+      "community": 36,
+      "norm_label": "custom supabase rest api integration",
+      "id": "lib_supabase_auth_custom_supabase_rest"
     },
     {
       "label": "Default Avatar SVG",
@@ -7898,6 +8012,28 @@
       "target": "lib_prisma_prisma"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/auth/login/route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "login_route",
+      "target": "lib_supabase_auth"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/auth/login/route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "login_route",
+      "target": "lib_supabase_auth_signinwithsupabaseauth"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/auth/login/route.ts",
@@ -7906,6 +8042,47 @@
       "confidence_score": 1.0,
       "source": "login_route",
       "target": "login_route_post"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/auth/login/route.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "login_route",
+      "target": "login_route_usernamefromemail"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/auth/login/route.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "login_route_post",
+      "target": "login_route_usernamefromemail"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "app/api/auth/login/route.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "login_route_usernamefromemail",
+      "target": "register_route_usernamefromemail"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "app/api/profile/route.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "profile_route_readusername",
+      "target": "login_route_usernamefromemail"
     },
     {
       "relation": "references",
@@ -7927,6 +8104,17 @@
       "weight": 1.0,
       "source": "login_route_post",
       "target": "lib_auth_createsession"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/auth/login/route.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "login_route_post",
+      "target": "lib_supabase_auth_signinwithsupabaseauth"
     },
     {
       "relation": "imports_from",
@@ -8016,6 +8204,28 @@
       "target": "lib_prisma_prisma"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/auth/register/route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "register_route",
+      "target": "lib_supabase_auth"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/auth/register/route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "register_route",
+      "target": "lib_supabase_auth_signupwithsupabaseauth"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/auth/register/route.ts",
@@ -8076,6 +8286,17 @@
       "weight": 1.0,
       "source": "register_route_post",
       "target": "lib_auth_createsession"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/auth/register/route.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "register_route_post",
+      "target": "lib_supabase_auth_signupwithsupabaseauth"
     },
     {
       "relation": "contains",
@@ -9081,9 +9302,9 @@
       "source_file": "app/api/media/route.ts",
       "source_location": "L4",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "media_route",
-      "target": "media_route_get"
+      "target": "media_route_get",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -15048,6 +15269,128 @@
       "weight": 1.0,
       "source": "lib_serialize_serializeitinerary",
       "target": "prisma_seed_ensureitinerary"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L27",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_supabase_auth",
+      "target": "lib_supabase_auth_getsupabaseauthconfig"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L41",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_supabase_auth",
+      "target": "lib_supabase_auth_requestsupabaseauth"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L90",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_supabase_auth",
+      "target": "lib_supabase_auth_signinwithsupabaseauth"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L63",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_supabase_auth",
+      "target": "lib_supabase_auth_signupwithsupabaseauth"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_supabase_auth",
+      "target": "lib_supabase_auth_supabaseautherror"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_supabase_auth",
+      "target": "lib_supabase_auth_supabaseauthresponse"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_supabase_auth",
+      "target": "lib_supabase_auth_supabaseauthuser"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_supabase_auth_supabaseautherror",
+      "target": "lib_supabase_auth_supabaseautherror_constructor"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_supabase_auth_requestsupabaseauth",
+      "target": "lib_supabase_auth_getsupabaseauthconfig"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "lib_supabase_auth_requestsupabaseauth",
+      "target": "lib_supabase_auth_custom_supabase_rest"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_supabase_auth_signinwithsupabaseauth",
+      "target": "lib_supabase_auth_requestsupabaseauth"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/supabase-auth.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "lib_supabase_auth_signupwithsupabaseauth",
+      "target": "lib_supabase_auth_requestsupabaseauth"
     },
     {
       "relation": "contains",

@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSupabaseStorageStatus } from "@/lib/supabase-storage";
+import { getBlobStorageStatus } from "@/lib/blob-storage";
 
 function envStatus() {
   return {
     databaseUrl: Boolean(process.env.DATABASE_URL),
-    supabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
-    supabasePublishableKey: Boolean(
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    ),
-    supabaseStorage: getSupabaseStorageStatus(),
+    vercelBlob: getBlobStorageStatus(),
   };
 }
 

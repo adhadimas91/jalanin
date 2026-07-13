@@ -14,7 +14,7 @@
     "prisma:seed": "prisma db seed",
     "prisma:verify": "tsx scripts/verify-prisma.ts",
     "prisma:studio": "prisma studio",
-    "storage:setup": "tsx scripts/setup-supabase-storage.ts"
+    "storage:setup": "tsx scripts/setup-blob-storage.ts"
   },
   "prisma": {
     "seed": "./node_modules/.bin/tsx prisma/seed.ts"
@@ -23,6 +23,7 @@
     "@prisma/adapter-pg": "latest",
     "@prisma/client": "latest",
     "@tanstack/react-table": "^8.21.3",
+    "@vercel/blob": "^2.6.1",
     "dotenv": "latest",
     "maplibre-gl": "^5.24.0",
     "next": "latest",

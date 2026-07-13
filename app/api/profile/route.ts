@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { uploadImageToSupabaseStorage } from "@/lib/supabase-storage";
+import { uploadImageToBlobStorage } from "@/lib/blob-storage";
 
 function readNullableText(value: FormDataEntryValue | null) {
   const text = String(value ?? "").trim();
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
 
   if (avatarFile instanceof File && avatarFile.size > 0) {
     try {
-      avatarUrl = await uploadImageToSupabaseStorage({
+      avatarUrl = await uploadImageToBlobStorage({
         file: avatarFile,
         userId: user.id,
         folder: "avatars",
