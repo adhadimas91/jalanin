@@ -33,7 +33,7 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
   users: {
     label: "Users",
     description: "Kelola akun, profil, password hash, dan role admin.",
-    columns: ["email", "username", "name", "role", "isPro", "proExpiresAt", "maxPrivate", "maxPublic", "maxSaved", "maxMyLink", "city", "createdAt"],
+    columns: ["email", "username", "name", "role", "isPro", "isClaimed", "proExpiresAt", "maxPrivate", "maxPublic", "maxSaved", "maxMyLink", "city", "createdAt"],
     template: {
       email: "new-user@example.com",
       username: "newuser",
@@ -45,10 +45,27 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       role: "USER",
       isPro: false,
       proExpiresAt: null,
+      isClaimed: true,
       maxPrivate: 2,
       maxPublic: 5,
       maxSaved: 5,
       maxMyLink: 50,
+    },
+  },
+  accountClaims: {
+    label: "Klaim Akun",
+    description: "Kelola permohonan klaim profil kreator/influencer dan kirim link setup password.",
+    columns: ["userId", "claimantName", "claimantEmail", "socialHandle", "status", "proofNotes", "adminNotes", "token", "tokenExpiresAt", "createdAt"],
+    template: {
+      userId: "",
+      claimantName: "",
+      claimantEmail: "",
+      socialHandle: "@",
+      proofNotes: "",
+      status: "PENDING",
+      adminNotes: "",
+      token: null,
+      tokenExpiresAt: null,
     },
   },
   itineraries: {
@@ -377,6 +394,58 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     }
   }
 
+  async function handleApproveClaim(id: string) {
+    if (!window.confirm("Setujui klaim akun ini dan kirimkan email link setup password ke pemohon?")) {
+      return;
+    }
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/admin/claims/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "approve" }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Gagal menyetujui klaim");
+      }
+      await refreshTable("accountClaims");
+      await refreshTable("users");
+      setToast("Klaim akun berhasil disetujui!");
+      if (data.setupUrl) {
+        navigator.clipboard.writeText(data.setupUrl).catch(() => {});
+        alert(`Klaim disetujui!\nEmail notifikasi telah dikirim ke pemohon.\n\nTautan Setup Password:\n${data.setupUrl}\n\n(Tautan juga otomatis disalin ke clipboard).`);
+      }
+    } catch (err: any) {
+      setToast(err?.message || "Gagal memproses klaim.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleRejectClaim(id: string) {
+    const reason = window.prompt("Masukkan alasan penolakan klaim (opsional):");
+    if (reason === null) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/admin/claims/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "reject", adminNotes: reason }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Gagal menolak klaim");
+      }
+      await refreshTable("accountClaims");
+      setToast("Klaim akun telah ditolak.");
+    } catch (err: any) {
+      setToast(err?.message || "Gagal memproses penolakan klaim.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   // Definisi Kolom Dinamis untuk TanStack Table
   const columns = useMemo<ColumnDef<Record<string, unknown>>[]>(() => {
     const cols: ColumnDef<Record<string, unknown>>[] = [
@@ -387,12 +456,14 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
         cell: (info) => info.getValue(),
       },
       ...config.columns.map((colName) => {
-        // Tentukan custom filterFn jika kolom bertipe boolean
+        // Tentukan custom filterFn jika kolom bertipe boolean atau enum
         let filterFn: any = undefined;
         if (
           colName === "isPro" ||
+          colName === "isClaimed" ||
           colName === "isPublished" ||
-          colName === "isActive"
+          colName === "isActive" ||
+          colName === "status"
         ) {
           filterFn = (row: any, columnId: string, filterValue: string) => {
             if (!filterValue) return true;
@@ -400,11 +471,17 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
             if (columnId === "isPro") {
               return !!val === (filterValue === "PRO");
             }
+            if (columnId === "isClaimed") {
+              return !!val === (filterValue === "CLAIMED");
+            }
             if (columnId === "isPublished") {
               return !!val === (filterValue === "PUBLISHED");
             }
             if (columnId === "isActive") {
               return !!val === (filterValue === "ACTIVE");
+            }
+            if (columnId === "status") {
+              return String(val).toUpperCase() === filterValue.toUpperCase();
             }
             return true;
           };
@@ -414,7 +491,50 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
           id: colName,
           header: formatLabel(colName),
           accessorKey: colName,
-          cell: (info: any) => formatCell(info.getValue()),
+          cell: (info: any) => {
+            const val = info.getValue();
+            if (colName === "status" && currentTable === "accountClaims") {
+              const statusStr = String(val).toUpperCase();
+              if (statusStr === "APPROVED") {
+                return (
+                  <span style={{ fontSize: "11px", padding: "3px 8px", background: "#dcfce7", color: "#15803d", borderRadius: "999px", fontWeight: 700 }}>
+                    Disetujui
+                  </span>
+                );
+              }
+              if (statusStr === "REJECTED") {
+                return (
+                  <span style={{ fontSize: "11px", padding: "3px 8px", background: "#fee2e2", color: "#b91c1c", borderRadius: "999px", fontWeight: 700 }}>
+                    Ditolak
+                  </span>
+                );
+              }
+              return (
+                <span style={{ fontSize: "11px", padding: "3px 8px", background: "#fef3c7", color: "#b45309", borderRadius: "999px", fontWeight: 700 }}>
+                  Menunggu Review
+                </span>
+              );
+            }
+
+            if (colName === "isClaimed" && currentTable === "users") {
+              const isClaimed = !!val;
+              return isClaimed ? (
+                <span style={{ fontSize: "11px", padding: "3px 8px", background: "#e0f2fe", color: "#0369a1", borderRadius: "999px", fontWeight: 600 }}>
+                  Aktif
+                </span>
+              ) : (
+                <span style={{ fontSize: "11px", padding: "3px 8px", background: "#fef3c7", color: "#b45309", borderRadius: "999px", fontWeight: 700 }}>
+                  Kurasi (Unclaimed)
+                </span>
+              );
+            }
+
+            if (colName === "token" && val) {
+              return <span style={{ fontFamily: "monospace", fontSize: "11px", color: "var(--muted)" }}>{String(val).slice(0, 10)}...</span>;
+            }
+
+            return formatCell(val);
+          },
           filterFn,
         };
       }),
@@ -662,7 +782,30 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                       <option value="PRO">Plan: PRO</option>
                       <option value="FREE">Plan: FREE</option>
                     </select>
+
+                    <select
+                      className="admin-filter-select"
+                      value={getFilterValue("isClaimed")}
+                      onChange={(e) => handleFilterChange("isClaimed", e.target.value)}
+                    >
+                      <option value="">Semua Status Klaim</option>
+                      <option value="CLAIMED">Sudah Diklaim (Aktif)</option>
+                      <option value="UNCLAIMED">Belum Diklaim (Kurasi)</option>
+                    </select>
                   </>
+                )}
+
+                {currentTable === "accountClaims" && (
+                  <select
+                    className="admin-filter-select"
+                    value={getFilterValue("status")}
+                    onChange={(e) => handleFilterChange("status", e.target.value)}
+                  >
+                    <option value="">Semua Status</option>
+                    <option value="PENDING">Status: Menunggu Review</option>
+                    <option value="APPROVED">Status: Disetujui</option>
+                    <option value="REJECTED">Status: Ditolak</option>
+                  </select>
                 )}
 
                 {currentTable === "itineraries" && (
@@ -767,6 +910,46 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                             <button className="ghost-chip danger" onClick={() => handleDelete(id)}>
                               Delete
                             </button>
+
+                            {currentTable === "accountClaims" && (
+                              <>
+                                {String(record.status).toUpperCase() === "PENDING" && (
+                                  <>
+                                    <button
+                                      className="ghost-chip"
+                                      style={{ color: "#0095f6", fontWeight: 700, borderColor: "rgba(0, 149, 246, 0.4)" }}
+                                      onClick={() => handleApproveClaim(id)}
+                                      disabled={busy}
+                                      title="Setujui dan kirim email tautan setup password"
+                                    >
+                                      Approve
+                                    </button>
+                                    <button
+                                      className="ghost-chip danger"
+                                      onClick={() => handleRejectClaim(id)}
+                                      disabled={busy}
+                                      title="Tolak klaim akun"
+                                    >
+                                      Reject
+                                    </button>
+                                  </>
+                                )}
+                                {!!record.token && (
+                                  <button
+                                    className="ghost-chip"
+                                    onClick={() => {
+                                      const url = `${window.location.origin}/setup-password?token=${record.token}`;
+                                      navigator.clipboard.writeText(url).catch(() => {});
+                                      setToast("Tautan setup password berhasil disalin!");
+                                    }}
+                                    title="Salin tautan setup password"
+                                  >
+                                    Salin Link
+                                  </button>
+                                )}
+                              </>
+                            )}
+
                             {currentTable === "users" && (
                               <select
                                 className="admin-select-sub"
@@ -1040,7 +1223,17 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                               <option value="USER">USER</option>
                               <option value="ADMIN">ADMIN</option>
                             </select>
-                          ) : key === "bio" || key === "description" || key === "notes" ? (
+                          ) : key === "status" && currentTable === "accountClaims" ? (
+                            <select
+                              id={`form-field-${key}`}
+                              value={String(value ?? "PENDING")}
+                              onChange={(e) => updateDraftField(key, e.target.value)}
+                            >
+                              <option value="PENDING">PENDING (Menunggu Review)</option>
+                              <option value="APPROVED">APPROVED (Disetujui)</option>
+                              <option value="REJECTED">REJECTED (Ditolak)</option>
+                            </select>
+                          ) : key === "bio" || key === "description" || key === "notes" || key === "proofNotes" || key === "adminNotes" ? (
                             <textarea
                               id={`form-field-${key}`}
                               value={String(value ?? "")}

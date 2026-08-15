@@ -1,8 +1,11 @@
+import { randomBytes } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
+import { sendClaimApprovedEmail, sendClaimRejectedEmail, getBaseUrl } from "@/lib/email";
 
 export const adminTables = [
   "users",
+  "accountClaims",
   "itineraries",
   "days",
   "activities",
@@ -108,6 +111,14 @@ function readUserRole(value: unknown) {
   return String(value).toUpperCase() === "ADMIN" ? "ADMIN" : "USER";
 }
 
+function readAccountClaimStatus(value: unknown): "PENDING" | "APPROVED" | "REJECTED" {
+  const val = String(value).toUpperCase();
+  if (val === "APPROVED" || val === "REJECTED") {
+    return val;
+  }
+  return "PENDING";
+}
+
 async function fetchUsers() {
   return prisma.user.findMany({
     orderBy: {
@@ -120,6 +131,28 @@ async function fetchUsers() {
           saves: true,
           likes: true,
           sessions: true,
+          claims: true,
+        },
+      },
+    },
+    take: 100,
+  });
+}
+
+async function fetchAccountClaims() {
+  return prisma.accountClaim.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          name: true,
+          avatarUrl: true,
+          isClaimed: true,
         },
       },
     },
@@ -269,8 +302,20 @@ async function fetchMyLinkWhitelistDomains() {
 }
 
 export async function getAdminSnapshot(): Promise<AdminSnapshot> {
-  const [users, itineraries, days, activities, saves, likes, sessions, myLinkWhitelistDomains, appSettings] = await Promise.all([
+  const [
+    users,
+    accountClaims,
+    itineraries,
+    days,
+    activities,
+    saves,
+    likes,
+    sessions,
+    myLinkWhitelistDomains,
+    appSettings,
+  ] = await Promise.all([
     fetchUsers(),
+    fetchAccountClaims(),
     fetchItineraries(),
     fetchDays(),
     fetchActivities(),
@@ -286,6 +331,14 @@ export async function getAdminSnapshot(): Promise<AdminSnapshot> {
       serializeRecord({
         ...record,
         _related: record._count,
+      }),
+    ),
+    accountClaims: accountClaims.map((record) =>
+      serializeRecord({
+        ...record,
+        _related: {
+          user: record.user,
+        },
       }),
     ),
     itineraries: itineraries.map((record) =>
@@ -376,10 +429,26 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           role: readUserRole(data.role),
           isPro: readBoolean(data.isPro, false),
           proExpiresAt: readOptionalDate(data.proExpiresAt),
+          isClaimed: readBoolean(data.isClaimed, true),
           maxPrivate: readInt(data.maxPrivate, 2),
           maxPublic: readInt(data.maxPublic, 5),
           maxSaved: readInt(data.maxSaved, 5),
           maxMyLink: readInt(data.maxMyLink, 50),
+        },
+      });
+    case "accountClaims":
+      return prisma.accountClaim.create({
+        data: {
+          id: readOptionalString(data.id) ?? undefined,
+          userId: readString(data.userId),
+          claimantName: readString(data.claimantName),
+          claimantEmail: readString(data.claimantEmail),
+          socialHandle: readString(data.socialHandle),
+          proofNotes: readString(data.proofNotes),
+          status: readAccountClaimStatus(data.status),
+          adminNotes: readOptionalString(data.adminNotes),
+          token: readOptionalString(data.token),
+          tokenExpiresAt: readOptionalDate(data.tokenExpiresAt),
         },
       });
     case "itineraries":
@@ -501,10 +570,26 @@ export async function updateAdminRecord(
           role: readUserRole(data.role),
           isPro: readBoolean(data.isPro, false),
           proExpiresAt: readOptionalDate(data.proExpiresAt),
+          isClaimed: readBoolean(data.isClaimed, true),
           maxPrivate: readInt(data.maxPrivate, 2),
           maxPublic: readInt(data.maxPublic, 5),
           maxSaved: readInt(data.maxSaved, 5),
           maxMyLink: readInt(data.maxMyLink, 50),
+        },
+      });
+    case "accountClaims":
+      return prisma.accountClaim.update({
+        where: { id },
+        data: {
+          userId: readString(data.userId),
+          claimantName: readString(data.claimantName),
+          claimantEmail: readString(data.claimantEmail),
+          socialHandle: readString(data.socialHandle),
+          proofNotes: readString(data.proofNotes),
+          status: readAccountClaimStatus(data.status),
+          adminNotes: readOptionalString(data.adminNotes),
+          token: readOptionalString(data.token),
+          tokenExpiresAt: readOptionalDate(data.tokenExpiresAt),
         },
       });
     case "itineraries":
@@ -604,6 +689,8 @@ export async function deleteAdminRecord(table: AdminTable, id: string) {
   switch (table) {
     case "users":
       return prisma.user.delete({ where: { id } });
+    case "accountClaims":
+      return prisma.accountClaim.delete({ where: { id } });
     case "itineraries":
       return prisma.itinerary.delete({ where: { id } });
     case "days":
@@ -622,3 +709,74 @@ export async function deleteAdminRecord(table: AdminTable, id: string) {
       return prisma.appSetting.delete({ where: { key: id } });
   }
 }
+
+export async function approveAccountClaim(claimId: string, adminNotes?: string) {
+  const claim = await prisma.accountClaim.findUnique({
+    where: { id: claimId },
+    include: { user: true },
+  });
+
+  if (!claim) {
+    throw new Error("Data permohonan klaim tidak ditemukan");
+  }
+
+  // Generate random token for password setup (valid 48 hours)
+  const token = randomBytes(32).toString("hex");
+  const tokenExpiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000);
+
+  const updatedClaim = await prisma.accountClaim.update({
+    where: { id: claimId },
+    data: {
+      status: "APPROVED",
+      adminNotes: adminNotes ?? claim.adminNotes,
+      token,
+      tokenExpiresAt,
+    },
+  });
+
+  const baseUrl = getBaseUrl();
+  const setupUrl = `${baseUrl}/setup-password?token=${token}`;
+
+  await sendClaimApprovedEmail({
+    to: claim.claimantEmail,
+    claimantName: claim.claimantName,
+    username: claim.user.username || claim.user.name || claim.userId,
+    setupUrl,
+    expiresInHours: 48,
+  });
+
+  return {
+    claim: updatedClaim,
+    setupUrl,
+    token,
+  };
+}
+
+export async function rejectAccountClaim(claimId: string, adminNotes?: string) {
+  const claim = await prisma.accountClaim.findUnique({
+    where: { id: claimId },
+    include: { user: true },
+  });
+
+  if (!claim) {
+    throw new Error("Data permohonan klaim tidak ditemukan");
+  }
+
+  const updatedClaim = await prisma.accountClaim.update({
+    where: { id: claimId },
+    data: {
+      status: "REJECTED",
+      adminNotes: adminNotes ?? claim.adminNotes,
+    },
+  });
+
+  await sendClaimRejectedEmail({
+    to: claim.claimantEmail,
+    claimantName: claim.claimantName,
+    username: claim.user.username || claim.user.name || claim.userId,
+    reason: adminNotes,
+  });
+
+  return updatedClaim;
+}
+

@@ -10,6 +10,7 @@ export function serializeUser(user: {
   city: string | null;
   role?: string | null;
   isPro?: boolean | null;
+  isClaimed?: boolean | null;
 }) {
   return {
     id: user.id,
@@ -21,6 +22,7 @@ export function serializeUser(user: {
     city: user.city,
     role: user.role ?? "USER",
     isPro: !!user.isPro,
+    isClaimed: user.isClaimed !== false,
   };
 }
 

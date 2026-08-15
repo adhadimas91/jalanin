@@ -24,6 +24,7 @@ model User {
   role         UserRole         @default(USER)
   isPro        Boolean          @default(false)
   proExpiresAt DateTime?
+  isClaimed    Boolean          @default(true)
   maxPrivate   Int              @default(2)
   maxPublic    Int              @default(5)
   maxSaved     Int              @default(5)
@@ -35,6 +36,7 @@ model User {
   likes        Like[]
   sessions     Session[]
   myLinks      MyLink[]
+  claims       AccountClaim[]
 
   @@index([username])
 }
@@ -165,6 +167,32 @@ model AppSetting {
   value     String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+}
+
+enum AccountClaimStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model AccountClaim {
+  id             String             @id @default(cuid())
+  userId         String
+  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  claimantName   String
+  claimantEmail  String
+  socialHandle   String             @default("")
+  proofNotes     String             @default("")
+  status         AccountClaimStatus @default(PENDING)
+  adminNotes     String?
+  token          String?            @unique
+  tokenExpiresAt DateTime?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @default(now()) @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([token])
 }
 
 

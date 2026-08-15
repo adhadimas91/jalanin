@@ -51,7 +51,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
       <article className="profile-panel" style={{ marginTop: 16 }}>
         <img src={user.avatarUrl ?? "/uploads/default-avatar.svg"} alt={user.name ?? user.email} />
         <div>
-          <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <h2 style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
             {user.name ?? user.email}
             {user.isPro && (
               <span className="pro-badge" style={{
@@ -71,6 +71,23 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
                 PRO
               </span>
             )}
+            {!user.isClaimed && (
+              <span style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                color: "#d97706",
+                background: "#fef3c7",
+                padding: "2px 8px",
+                borderRadius: "999px",
+                border: "1px solid #fde68a",
+                display: "inline-flex",
+                alignItems: "center",
+                lineHeight: "1",
+                height: "fit-content"
+              }}>
+                Akun Kurasi
+              </span>
+            )}
           </h2>
           <p>
             @{user.username ?? user.id} - {user.city ?? "Indonesia"}. {user.bio ?? "Traveler Jalanin"}
@@ -80,6 +97,44 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
               <strong>{trips.length}</strong> dibuat
             </span> 
           </div>
+
+          {!user.isClaimed && !isOwnProfile && (
+            <div style={{
+              margin: "12px 0 6px 0",
+              padding: "12px 14px",
+              background: "linear-gradient(135deg, rgba(0, 149, 246, 0.08), rgba(255, 45, 85, 0.08))",
+              border: "1px solid rgba(0, 149, 246, 0.2)",
+              borderRadius: "12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "12px",
+              flexWrap: "wrap",
+            }}>
+              <div style={{ fontSize: "13px", color: "var(--text)", flex: 1, minWidth: "220px" }}>
+                <strong>Pemilik konten ini?</strong> Klaim akun Anda untuk mengelola rute perjalanan & kontak sendiri.
+              </div>
+              <TrackedLink
+                className="primary-button"
+                href={`/claim/${profileUsername}`}
+                style={{
+                  fontSize: "13px",
+                  padding: "8px 16px",
+                  borderRadius: "999px",
+                  textDecoration: "none",
+                  whiteSpace: "nowrap",
+                  background: "#0095f6",
+                  color: "#fff",
+                  fontWeight: 700,
+                }}
+                eventName="profile_click_claim_account"
+                eventParams={{ username: profileUsername }}
+              >
+                Klaim Akun Ini
+              </TrackedLink>
+            </div>
+          )}
+
           {currentUser?.id === user.id ? (
             <div className="profile-actions">
               <TrackedLink

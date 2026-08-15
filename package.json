@@ -27,6 +27,7 @@
     "dotenv": "latest",
     "maplibre-gl": "^5.24.0",
     "next": "latest",
+    "nodemailer": "^9.0.5",
     "pg": "latest",
     "react": "latest",
     "react-dom": "latest"
@@ -34,6 +35,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "latest",
     "@types/node": "latest",
+    "@types/nodemailer": "^8.0.1",
     "@types/pg": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
