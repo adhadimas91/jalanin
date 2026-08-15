@@ -66,8 +66,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
   const durationDays = Number(formData.get("durationDays") ?? 1);
   const finalDurationDays = Math.max(durationDays, days.length || 1);
-  if (finalDurationDays > 5 || days.length > 5) {
-    return new NextResponse("Batas maksimal durasi itinerary adalah 5 hari.", { status: 400 });
+  if (finalDurationDays > 25 || days.length > 25) {
+    return new NextResponse("Batas maksimal durasi itinerary adalah 25 hari.", { status: 400 });
   }
 
   if (days.some((day) => day.activities.length > 10)) {

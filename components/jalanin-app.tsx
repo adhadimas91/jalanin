@@ -532,8 +532,8 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
   function addDay() {
     setDayDrafts((previous) => {
-      if (previous.length >= 5) {
-        flash("Batas maksimal durasi itinerary adalah 5 hari.");
+      if (previous.length >= 25) {
+        flash("Batas maksimal durasi itinerary adalah 25 hari.");
         return previous;
       }
       const next = [...previous, createBlankDay(previous.length)];
@@ -1377,7 +1377,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               </label>
               <label>
                 <span>Durasi</span>
-                <input name="durationDays" type="number" min="1" max="5" required defaultValue={formSource?.durationDays ?? 1} />
+                <input name="durationDays" type="number" min="1" max="25" required defaultValue={formSource?.durationDays ?? 1} />
               </label>
             </div>
             <label>

@@ -220,8 +220,8 @@ export function ItineraryDetailActions({ itinerary }: Props) {
 
   function addDay() {
     setDayDrafts((previous) => {
-      if (previous.length >= 5) {
-        setMessage("Batas maksimal durasi itinerary adalah 5 hari.");
+      if (previous.length >= 25) {
+        setMessage("Batas maksimal durasi itinerary adalah 25 hari.");
         return previous;
       }
       const next = [...previous, createBlankDay(previous.length)];
@@ -504,7 +504,7 @@ export function ItineraryDetailActions({ itinerary }: Props) {
               </label>
               <label>
                 <span>Durasi</span>
-                <input name="durationDays" type="number" min="1" max="5" required defaultValue={itinerary.durationDays} />
+                <input name="durationDays" type="number" min="1" max="25" required defaultValue={itinerary.durationDays} />
               </label>
             </div>
             <label>

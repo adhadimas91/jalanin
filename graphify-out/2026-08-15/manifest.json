@@ -125,8 +125,8 @@
     "semantic_hash": "589a9ea00a4cf57db9920c0b0f0cbe56"
   },
   "app/profile/[username]/page.tsx": {
-    "mtime": 1781510059.0605593,
-    "ast_hash": "78ad7427ab9f88a530b93aa2d858eb5e",
+    "mtime": 1786789448.1776779,
+    "ast_hash": "61306295dd7bdbb8e452f6f33d334608",
     "semantic_hash": ""
   },
   "app/register/RegisterFormClient.tsx": {
@@ -155,8 +155,8 @@
     "semantic_hash": "8bee068e80eceaf5d1d4651d0e18a2dd"
   },
   "components/admin-console.tsx": {
-    "mtime": 1781512822.7065635,
-    "ast_hash": "211c1b8af23c5a60b9905f79d8a50898",
+    "mtime": 1786789526.3179657,
+    "ast_hash": "e93f6aeb7660a07a67843b340f9ce6f1",
     "semantic_hash": ""
   },
   "components/budget-field.tsx": {
@@ -220,9 +220,9 @@
     "semantic_hash": "c1d6846564eb3264e8e0c18753b3fda8"
   },
   "lib/admin.ts": {
-    "mtime": 1781330479.937426,
-    "ast_hash": "f6919f7bd3f6a3f9609c9b1eccfac406",
-    "semantic_hash": "f6919f7bd3f6a3f9609c9b1eccfac406"
+    "mtime": 1786789378.718009,
+    "ast_hash": "560743ee401c46df2f9c1dddb70d1b86",
+    "semantic_hash": ""
   },
   "lib/auth.ts": {
     "mtime": 1781330481.9929543,
@@ -260,9 +260,9 @@
     "semantic_hash": "5ef29170b587395ce50080ba82b19341"
   },
   "lib/serialize.ts": {
-    "mtime": 1781330486.670783,
-    "ast_hash": "9426438e9601bd115e83cdf5df324afe",
-    "semantic_hash": "9426438e9601bd115e83cdf5df324afe"
+    "mtime": 1786789537.8736987,
+    "ast_hash": "641cfa25df365118463fbd5d2b0cb155",
+    "semantic_hash": ""
   },
   "lib/time.ts": {
     "mtime": 1780558289.2046957,
@@ -275,8 +275,8 @@
     "semantic_hash": "52ed1c7a4989680aeab87ff88fe8c7c7"
   },
   "package.json": {
-    "mtime": 1783910973.3082614,
-    "ast_hash": "33440266d9a59d0a6d75118ee1c5aa38",
+    "mtime": 1786789305.8824356,
+    "ast_hash": "3ebd976123a7db5815b89233f9283622",
     "semantic_hash": ""
   },
   "postcss.config.mjs": {
@@ -457,6 +457,51 @@
   "app/api/media/route.ts": {
     "mtime": 1783911966.430838,
     "ast_hash": "e59a789c48b727e403193aa4332a936d",
+    "semantic_hash": ""
+  },
+  "app/api/admin/claims/[id]/route.ts": {
+    "mtime": 1786789391.7711992,
+    "ast_hash": "be4afbb6c4a1a86ec981165c83685368",
+    "semantic_hash": ""
+  },
+  "app/api/auth/setup-password/route.ts": {
+    "mtime": 1786789404.4925969,
+    "ast_hash": "bacd0e1249759432ff54b28d7c4c9a41",
+    "semantic_hash": ""
+  },
+  "app/api/claim/route.ts": {
+    "mtime": 1786789385.3455803,
+    "ast_hash": "730d0cc3d30e1528b34b54a6edc5dd23",
+    "semantic_hash": ""
+  },
+  "app/claim/[username]/page.tsx": {
+    "mtime": 1786789436.358527,
+    "ast_hash": "324500476a24e68fab3a6d27557079fa",
+    "semantic_hash": ""
+  },
+  "app/claim/page.tsx": {
+    "mtime": 1786789428.8130443,
+    "ast_hash": "3dfa61e34d7034c328a8a65dfe43ebcf",
+    "semantic_hash": ""
+  },
+  "app/setup-password/page.tsx": {
+    "mtime": 1786789411.525034,
+    "ast_hash": "b155812e0ef552f6ecd93ac37c80eacd",
+    "semantic_hash": ""
+  },
+  "components/claim-account-form.tsx": {
+    "mtime": 1786789422.168035,
+    "ast_hash": "2115cc3834d7c9b158745ceb4aa51e16",
+    "semantic_hash": ""
+  },
+  "lib/email.ts": {
+    "mtime": 1786789320.4780998,
+    "ast_hash": "2e32fc86385f76a43e36cdb01d3dae5d",
+    "semantic_hash": ""
+  },
+  "lib/password.ts": {
+    "mtime": 1777882834.8398576,
+    "ast_hash": "b194902b6cbbc9fa409bcf4f1b82cb19",
     "semantic_hash": ""
   }
 }

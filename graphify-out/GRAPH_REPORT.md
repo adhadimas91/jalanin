@@ -6,11 +6,11 @@
 
 ## Summary
 - 519 nodes · 1018 edges · 42 communities (23 shown, 19 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.84)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `27c1a900`
+- Built from commit: `2fc7aefe`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -98,11 +98,11 @@ Nodes (52): ActivityDraft, createBlankActivity(), createBlankDay(), createDrafts
 
 ### Community 1 - "API Routes & User Sessions"
 Cohesion: 0.14
-Nodes (27): envStatus(), GET(), PUT (Itinerary Detail Route), POST(), Home(), DEFAULT_ACTIVITY_TYPE, allowedImageTypes, getBlobStorageStatus() (+19 more)
+Nodes (27): envStatus(), GET(), PUT(), POST(), Home(), DEFAULT_ACTIVITY_TYPE, allowedImageTypes, getBlobStorageStatus() (+19 more)
 
 ### Community 2 - "Admin Panel & Console Operations"
 Cohesion: 0.07
-Nodes (56): AdminPage(), POST(), DELETE /api/admin/[table]/[id], isAdminTable(), PATCH(), GET(), isAdminTable(), POST() (+48 more)
+Nodes (56): AdminPage(), POST(), DELETE(), isAdminTable(), PATCH(), GET(), isAdminTable(), POST() (+48 more)
 
 ### Community 3 - "Project Configurations"
 Cohesion: 0.05
@@ -110,7 +110,7 @@ Nodes (41): autoprefixer, devDependencies, autoprefixer, prisma, tailwindcss, @t
 
 ### Community 4 - "Community 4"
 Cohesion: 0.08
-Nodes (35): CreatePage(), generateMetadata(), ItineraryDetailPage Component, ProfilePage Component, Props, RegisterFormClient(), BudgetField(), Props (+27 more)
+Nodes (35): CreatePage(), generateMetadata(), ItineraryDetailPage(), ProfilePage(), Props, RegisterFormClient(), BudgetField(), Props (+27 more)
 
 ### Community 5 - "Client-Side Prototype Logic"
 Cohesion: 0.12

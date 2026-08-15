@@ -50,8 +50,8 @@ export async function POST(request: Request) {
   const days = structuredDays.length ? structuredDays : fallbackDay(fallbackActivities);
 
   const durationDays = Number(formData.get("durationDays") ?? 1);
-  if (durationDays > 5 || days.length > 5) {
-    return new NextResponse("Batas maksimal durasi itinerary adalah 5 hari.", { status: 400 });
+  if (durationDays > 25 || days.length > 25) {
+    return new NextResponse("Batas maksimal durasi itinerary adalah 25 hari.", { status: 400 });
   }
 
   if (days.some((day) => day.activities.length > 10)) {
