@@ -828,10 +828,14 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
               <section className="post-card">
                 <div className="post-header">
                   <div className="post-user">
-                    <img src={current.author.avatarUrl ?? "/uploads/default-avatar.svg"} alt={current.author.name ?? current.author.email} />
+                    <Link href={`/profile/${current.author.username ?? current.author.id}`} style={{ display: "contents" }} aria-label={`Profil ${current.author.name ?? current.author.username}`}>
+                      <img src={current.author.avatarUrl ?? "/uploads/default-avatar.svg"} alt={current.author.name ?? current.author.email} style={{ cursor: "pointer" }} />
+                    </Link>
                     <div>
                       <strong style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                        {current.author.name ?? current.author.username ?? current.author.email}
+                        <Link href={`/profile/${current.author.username ?? current.author.id}`} style={{ color: "inherit", textDecoration: "none" }}>
+                          {current.author.name ?? current.author.username ?? current.author.email}
+                        </Link>
                         {current.author.isPro && (
                           <span className="pro-badge" style={{
                             fontSize: "9px",
@@ -874,7 +878,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                   <div className="hero-overlay">
                     <p>{current.destination}</p>
                     <h1>{current.title}</h1>
-                    <div className="creator-line" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <Link href={`/profile/${current.author.username ?? current.author.id}`} style={{ display: "flex", alignItems: "center", gap: "8px", color: "inherit", textDecoration: "none" }} className="creator-line">
                       <img src={current.author.avatarUrl ?? "/uploads/default-avatar.svg"} alt={current.author.name ?? current.author.email} />
                       <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
                         {current.author.name ?? current.author.username ?? current.author.email}
@@ -896,7 +900,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                           </span>
                         )}
                       </span>
-                    </div>
+                    </Link>
                     {!current.isPublished && (
                       <div className="remix-badge" style={{ marginTop: "12px", display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(229, 62, 62, 0.85)", padding: "5px 12px", borderRadius: "12px", fontSize: "11px", color: "#ffffff", fontWeight: 700, border: "1px solid rgba(255, 255, 255, 0.15)", marginRight: "8px" }}>
                         <Icon name="shield" />
@@ -951,7 +955,9 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
 
                 <section className="caption-block">
                   <p>
-                    <strong>{current.author.username ?? "jalanin"}</strong> {current.description}
+                    <Link href={`/profile/${current.author.username ?? current.author.id}`} style={{ color: "inherit", textDecoration: "none" }}>
+                      <strong>@{current.author.username ?? "jalanin"}</strong>
+                    </Link>{" "}{current.description}
                   </p>
                   <div className="caption-tags">
                     {[current.travelStyle, current.destination.split(",")[0], `${current.durationDays} hari`].map((tag) => (

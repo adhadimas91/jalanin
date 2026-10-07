@@ -94,7 +94,7 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
         <div className="hero-overlay">
           <p>{itinerary.destination}</p>
           <h1>{itinerary.title}</h1>
-          <div className="creator-line" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <Link href={`/profile/${itinerary.author.username ?? itinerary.author.id}`} className="creator-line" style={{ display: "flex", alignItems: "center", gap: "8px", color: "inherit", textDecoration: "none" }}>
             <img src={itinerary.author.avatarUrl ?? "/uploads/default-avatar.svg"} alt={itinerary.author.name ?? itinerary.author.email} />
             <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
               {itinerary.author.name ?? itinerary.author.email}
@@ -116,7 +116,7 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
                 </span>
               )}
             </span>
-          </div>
+          </Link>
           {!itinerary.isPublished && (
             <div className="remix-badge" style={{ marginTop: "12px", display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(229, 62, 62, 0.85)", padding: "5px 12px", borderRadius: "12px", fontSize: "11px", color: "#ffffff", fontWeight: 700, border: "1px solid rgba(255, 255, 255, 0.15)", marginRight: "8px" }}>
               <Icon name="shield" />
@@ -161,7 +161,9 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
       </section>
       <section className="caption-block" style={{ marginTop: 16 }}>
         <p>
-          <strong>{itinerary.author.username ?? itinerary.author.name ?? "jalanin"}</strong> {itinerary.description}
+          <Link href={`/profile/${itinerary.author.username ?? itinerary.author.id}`} style={{ color: "inherit", textDecoration: "none" }}>
+            <strong>@{itinerary.author.username ?? itinerary.author.name ?? "jalanin"}</strong>
+          </Link>{" "}{itinerary.description}
         </p>
         {itinerary.notes && (
           <div style={{ marginTop: 8, fontSize: "13px", color: "var(--muted)", lineHeight: "1.5" }}>

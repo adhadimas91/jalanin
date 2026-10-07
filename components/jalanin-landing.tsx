@@ -98,16 +98,18 @@ export function JalaninLanding({ itineraries }: Props) {
 
           <div className="landing-mosaic">
             {gallery.map((item, index) => (
-              <article
+              <Link
                 key={item.id}
+                href={`/itinerary/${item.id}`}
                 className={`landing-mosaic-card card-${index + 1}`}
+                style={{ textDecoration: "none", color: "inherit" }}
               >
                 <img src={item.coverImageUrl} alt={item.destination} />
                 <div className="landing-mosaic-meta">
                   <strong>{item.title}</strong>
                   <span>{item.destination}</span>
                 </div>
-              </article>
+              </Link>
             ))}
             <div className="landing-floating-badge badge-top">100% verified routes</div>
             <div className="landing-floating-badge badge-bottom">Remix itinerary in one tap</div>
@@ -117,9 +119,11 @@ export function JalaninLanding({ itineraries }: Props) {
         <section className="landing-showcase" id="about">
           <div className="landing-showcase-stack">
             {featured.slice(0, 2).map((item) => (
-              <article key={item.id} className="landing-photo-card">
-                <img src={item.coverImageUrl} alt={item.destination} />
-              </article>
+              <Link key={item.id} href={`/itinerary/${item.id}`} style={{ display: "contents" }}>
+                <article className="landing-photo-card" style={{ cursor: "pointer" }}>
+                  <img src={item.coverImageUrl} alt={item.destination} />
+                </article>
+              </Link>
             ))}
           </div>
 
@@ -199,16 +203,41 @@ export function JalaninLanding({ itineraries }: Props) {
 
           <div className="landing-destination-grid">
             {destinationCards.map((item) => (
-              <article className="landing-destination-card" key={item.id}>
+              <Link
+                key={item.id}
+                href={`/itinerary/${item.id}`}
+                className="landing-destination-card"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
                 <img src={item.coverImageUrl} alt={item.destination} />
                 <div className="landing-destination-body">
                   <div>
                     <h3>{item.title}</h3>
                     <p>{item.destination}</p>
+                    <Link
+                      href={`/profile/${item.author.username ?? item.author.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "5px",
+                        fontSize: "12px",
+                        color: "var(--text-muted, #888)",
+                        textDecoration: "none",
+                        marginTop: "4px",
+                      }}
+                    >
+                      <img
+                        src={item.author.avatarUrl ?? "/uploads/default-avatar.svg"}
+                        alt={item.author.name ?? item.author.email}
+                        style={{ width: "18px", height: "18px", borderRadius: "50%", objectFit: "cover" }}
+                      />
+                      <span>@{item.author.username ?? "creator"}</span>
+                    </Link>
                   </div>
                   <span>{formatRupiah(item.estimatedBudget)}</span>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </section>
@@ -216,3 +245,4 @@ export function JalaninLanding({ itineraries }: Props) {
     </>
   );
 }
+
