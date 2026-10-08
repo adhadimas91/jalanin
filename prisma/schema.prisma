@@ -37,6 +37,7 @@ model User {
   sessions     Session[]
   myLinks      MyLink[]
   claims       AccountClaim[]
+  passwordResetTokens PasswordResetToken[]
 
   @@index([username])
 }
@@ -167,6 +168,18 @@ model AppSetting {
   value     String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 enum AccountClaimStatus {

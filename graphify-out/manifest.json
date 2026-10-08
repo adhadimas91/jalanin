@@ -105,8 +105,8 @@
     "semantic_hash": ""
   },
   "app/itinerary/[id]/page.tsx": {
-    "mtime": 1781446120.9206681,
-    "ast_hash": "ae2b3c32bf41d897211ed57b031aca5f",
+    "mtime": 1791346961.5240133,
+    "ast_hash": "8e326d0d0423993b2a9679ad469996d5",
     "semantic_hash": ""
   },
   "app/layout.tsx": {
@@ -115,9 +115,9 @@
     "semantic_hash": ""
   },
   "app/login/page.tsx": {
-    "mtime": 1781152697.845471,
-    "ast_hash": "aa942604d1afbb37db8fcb03691ac6f5",
-    "semantic_hash": "aa942604d1afbb37db8fcb03691ac6f5"
+    "mtime": 1791444126.424591,
+    "ast_hash": "a94951cb43ffa43dd42af47f0de64d39",
+    "semantic_hash": ""
   },
   "app/page.tsx": {
     "mtime": 1781061003.5120525,
@@ -185,14 +185,14 @@
     "semantic_hash": "00d17efa67a44a71f79a4d61f0ef0da2"
   },
   "components/jalanin-app.tsx": {
-    "mtime": 1786794287.7671123,
-    "ast_hash": "b1e6258beaa59c845a1bba1fc1674927",
+    "mtime": 1791346046.0722628,
+    "ast_hash": "c89685d04cf07ef4df2279c7d310c35b",
     "semantic_hash": ""
   },
   "components/jalanin-landing.tsx": {
-    "mtime": 1778745425.709103,
-    "ast_hash": "e7ee546269778b78b33823f8edadbfff",
-    "semantic_hash": "e7ee546269778b78b33823f8edadbfff"
+    "mtime": 1791444750.0611238,
+    "ast_hash": "dcfb2f55c29f14dc53e05251ceb12bf3",
+    "semantic_hash": ""
   },
   "components/price-input.tsx": {
     "mtime": 1780504046.4328914,
@@ -495,13 +495,33 @@
     "semantic_hash": ""
   },
   "lib/email.ts": {
-    "mtime": 1786789320.4780998,
-    "ast_hash": "2e32fc86385f76a43e36cdb01d3dae5d",
+    "mtime": 1791361913.4834268,
+    "ast_hash": "0cb86097bdfb5d4f15469ac0491ee0f4",
     "semantic_hash": ""
   },
   "lib/password.ts": {
     "mtime": 1777882834.8398576,
     "ast_hash": "b194902b6cbbc9fa409bcf4f1b82cb19",
+    "semantic_hash": ""
+  },
+  "app/api/auth/forgot-password/route.ts": {
+    "mtime": 1791361927.1529484,
+    "ast_hash": "96f9512a8dfabaf4a3255c0f98f54d9f",
+    "semantic_hash": ""
+  },
+  "app/api/auth/reset-password/route.ts": {
+    "mtime": 1791361945.9064915,
+    "ast_hash": "1e4b77c4d40f3c9f1c7fdee56e7caedc",
+    "semantic_hash": ""
+  },
+  "app/forgot-password/page.tsx": {
+    "mtime": 1791361957.8611069,
+    "ast_hash": "a6ccbd5e851c0a62aaf2103bd75321c6",
+    "semantic_hash": ""
+  },
+  "app/reset-password/page.tsx": {
+    "mtime": 1791444113.283593,
+    "ast_hash": "da9dd88a8b40c4bf09d8aa5ffa18773d",
     "semantic_hash": ""
   }
 }

@@ -1315,6 +1315,40 @@ svg {
   margin-top: 14px;
 }
 
+.auth-error-box,
+.auth-error {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  padding: 10px 14px;
+  border-radius: var(--radius-xs);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.auth-success-box {
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: var(--text);
+  padding: 18px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  margin: 16px 0;
+}
+
+.auth-success-box p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.auth-success-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
 .auth-links a,
 .plain-link,
 .server-card h3 {

@@ -203,20 +203,27 @@ export function JalaninLanding({ itineraries }: Props) {
 
           <div className="landing-destination-grid">
             {destinationCards.map((item) => (
-              <Link
+              <article
                 key={item.id}
-                href={`/itinerary/${item.id}`}
                 className="landing-destination-card"
-                style={{ textDecoration: "none", color: "inherit" }}
               >
-                <img src={item.coverImageUrl} alt={item.destination} />
+                <Link
+                  href={`/itinerary/${item.id}`}
+                  style={{ textDecoration: "none", color: "inherit", display: "block" }}
+                >
+                  <img src={item.coverImageUrl} alt={item.destination} />
+                </Link>
                 <div className="landing-destination-body">
                   <div>
-                    <h3>{item.title}</h3>
+                    <Link
+                      href={`/itinerary/${item.id}`}
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      <h3>{item.title}</h3>
+                    </Link>
                     <p>{item.destination}</p>
                     <Link
                       href={`/profile/${item.author.username ?? item.author.id}`}
-                      onClick={(e) => e.stopPropagation()}
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
@@ -237,7 +244,7 @@ export function JalaninLanding({ itineraries }: Props) {
                   </div>
                   <span>{formatRupiah(item.estimatedBudget)}</span>
                 </div>
-              </Link>
+              </article>
             ))}
           </div>
         </section>

@@ -12,7 +12,12 @@ export default function LoginPage() {
             <input name="email" type="email" required defaultValue="" />
           </label>
           <label>
-            Password
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span>Password</span>
+              <Link href="/forgot-password" style={{ fontSize: "12px", color: "var(--blue)", textDecoration: "none", fontWeight: 600 }}>
+                Lupa password?
+              </Link>
+            </div>
             <input name="password" type="password" required defaultValue="" />
           </label>
           <button className="primary-button wide" type="submit">

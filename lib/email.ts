@@ -47,7 +47,7 @@ export async function sendClaimApprovedEmail(params: {
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #111; line-height: 1.6;">
       <div style="text-align: center; margin-bottom: 24px;">
         <h1 style="color: #0095f6; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">Jalanin</h1>
-        <p style="color: #737373; margin: 4px 0 0 0; font-size: 14px;">Platform Komunitas & Itinerary Perjalanan</p>
+        <p style="color: #737373; margin: 4px 0 0 0; font-size: 14px;">Platform Komunitas &amp; Itinerary Perjalanan</p>
       </div>
 
       <div style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
@@ -57,7 +57,7 @@ export async function sendClaimApprovedEmail(params: {
 
         <div style="margin: 28px 0; text-align: center;">
           <a href="${setupUrl}" style="background-color: #0095f6; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 999px; font-weight: 700; font-size: 15px; display: inline-block; box-shadow: 0 4px 14px rgba(0, 149, 246, 0.3);">
-            Atur Password Baru & Masuk Akun
+            Atur Password Baru &amp; Masuk Akun
           </a>
         </div>
 
@@ -185,5 +185,75 @@ export async function sendClaimRejectedEmail(params: {
   } catch (error) {
     console.error("Gagal kirim notifikasi penolakan klaim:", error);
     return { success: false, error };
+  }
+}
+
+export async function sendPasswordResetEmail(params: {
+  to: string;
+  name: string | null;
+  resetUrl: string;
+}) {
+  const { to, name, resetUrl } = params;
+  const transporter = getTransporter();
+
+  const subject = `[Jalanin] Reset Password Akun Anda`;
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #111; line-height: 1.6;">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <h1 style="color: #0095f6; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">Jalanin</h1>
+        <p style="color: #737373; margin: 4px 0 0 0; font-size: 14px;">Platform Komunitas &amp; Itinerary Perjalanan</p>
+      </div>
+
+      <div style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
+        <h2 style="font-size: 20px; font-weight: 700; margin-top: 0;">Halo ${name || "Traveler"},</h2>
+        <p>Kami menerima permintaan untuk mereset password akun Jalanin Anda.</p>
+        <p>Klik tombol di bawah untuk membuat password baru. Link ini hanya berlaku selama <strong>1 jam</strong>.</p>
+
+        <div style="margin: 32px 0; text-align: center;">
+          <a href="${resetUrl}" style="background-color: #0095f6; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 999px; font-weight: 700; font-size: 15px; display: inline-block; box-shadow: 0 4px 14px rgba(0, 149, 246, 0.3);">
+            Reset Password Saya
+          </a>
+        </div>
+
+        <div style="background: #f8fafc; border-radius: 12px; padding: 16px; margin: 20px 0;">
+          <p style="margin: 0; font-size: 13px; color: #6b7280;">
+            🔒 Jika Anda tidak pernah meminta reset password, abaikan email ini. Password Anda tidak akan berubah.
+          </p>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #f0f0f0; margin: 20px 0;" />
+        <p style="font-size: 12px; color: #9ca3af; word-break: break-all;">
+          Jika tombol di atas tidak berfungsi, buka tautan berikut di browser:<br />
+          <a href="${resetUrl}" style="color: #0095f6;">${resetUrl}</a>
+        </p>
+      </div>
+
+      <p style="text-align: center; font-size: 12px; color: #9ca3af; margin-top: 24px;">
+        &copy; ${new Date().getFullYear()} Jalanin. Seluruh hak cipta dilindungi.
+      </p>
+    </div>
+  `;
+
+  if (!transporter) {
+    console.log("----------------------------------------------------");
+    console.log(`[SIMULATED EMAIL - SMTP NOT CONFIGURED]`);
+    console.log(`To: ${to}`);
+    console.log(`Subject: ${subject}`);
+    console.log(`Reset URL: ${resetUrl}`);
+    console.log("----------------------------------------------------");
+    return { success: true, simulated: true, resetUrl };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: defaultFrom,
+      to,
+      subject,
+      html,
+    });
+    return { success: true, messageId: info.messageId, resetUrl };
+  } catch (error) {
+    console.error("Gagal mengirim email reset password:", error);
+    return { success: false, error, resetUrl };
   }
 }
