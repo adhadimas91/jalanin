@@ -12841,7 +12841,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/jalanin-landing.tsx",
-      "source_location": "L238",
+      "source_location": "L245",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_landing_jalaninlanding",
