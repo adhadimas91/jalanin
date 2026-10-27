@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser, isAdminUser } from "@/lib/auth";
+import { getCurrentUser, getImpersonatorUser, isAdminUser } from "@/lib/auth";
 import { defaultActivity, fallbackDay, parseActivitiesJson, parseActivitiesText, parseDaysJson } from "@/lib/itinerary-form";
 import { getItineraryById } from "@/lib/itineraries";
 import { prisma } from "@/lib/prisma";
@@ -36,26 +36,30 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   }
 
   const isPublished = formData.get("isPublished") === null ? existing.isPublished : formData.get("isPublished") === "true";
+  const impersonator = await getImpersonatorUser();
+  const isAdminOrCurating = isAdminUser(user) || !user.isClaimed || !!impersonator;
 
-  if (existing.isPublished && !isPublished) {
-    const privateCount = await prisma.itinerary.count({
-      where: {
-        authorId: user.id,
-        isPublished: false,
-      },
-    });
-    if (privateCount >= user.maxPrivate) {
-      return new NextResponse(`Batas maksimal itinerary privat adalah ${user.maxPrivate}. Silakan hapus atau ubah status itinerary privat Anda yang lain menjadi publik.`, { status: 400 });
-    }
-  } else if (!existing.isPublished && isPublished) {
-    const publicCount = await prisma.itinerary.count({
-      where: {
-        authorId: user.id,
-        isPublished: true,
-      },
-    });
-    if (publicCount >= user.maxPublic) {
-      return new NextResponse(`Batas maksimal itinerary publik adalah ${user.maxPublic}. Silakan hapus atau ubah status itinerary publik Anda yang lain menjadi privat.`, { status: 400 });
+  if (!isAdminOrCurating) {
+    if (existing.isPublished && !isPublished) {
+      const privateCount = await prisma.itinerary.count({
+        where: {
+          authorId: user.id,
+          isPublished: false,
+        },
+      });
+      if (privateCount >= user.maxPrivate) {
+        return new NextResponse(`Batas maksimal itinerary privat adalah ${user.maxPrivate}. Silakan hapus atau ubah status itinerary privat Anda yang lain menjadi publik.`, { status: 400 });
+      }
+    } else if (!existing.isPublished && isPublished) {
+      const publicCount = await prisma.itinerary.count({
+        where: {
+          authorId: user.id,
+          isPublished: true,
+        },
+      });
+      if (publicCount >= user.maxPublic) {
+        return new NextResponse(`Batas maksimal itinerary publik adalah ${user.maxPublic}. Silakan hapus atau ubah status itinerary publik Anda yang lain menjadi privat.`, { status: 400 });
+      }
     }
   }
 
@@ -63,6 +67,13 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   const structuredActivities = parseActivitiesJson(formData.get("activitiesJson"));
   const fallbackActivities = structuredActivities.length ? structuredActivities : parseActivitiesText(formData.get("activities"));
   const days = structuredDays.length ? structuredDays : fallbackDay(fallbackActivities);
+
+  if (isPublished) {
+    const hasDay1Activities = days.length > 0 && days[0].activities.length > 0;
+    if (!hasDay1Activities) {
+      return new NextResponse("Itinerary hanya bisa dipublish jika aktivitas hari pertama sudah dibuat.", { status: 400 });
+    }
+  }
 
   const durationDays = Number(formData.get("durationDays") ?? 1);
   const finalDurationDays = Math.max(durationDays, days.length || 1);
@@ -155,4 +166,78 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
   });
 
   return NextResponse.json({ ok: true });
+}
+
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  const { id } = await params;
+  const itinerary = await prisma.itinerary.findUnique({
+    where: { id },
+    include: {
+      days: {
+        include: {
+          activities: true,
+        },
+        orderBy: { dayNumber: "asc" },
+      },
+    },
+  });
+
+  if (!itinerary) {
+    return new NextResponse("Itinerary tidak ditemukan.", { status: 404 });
+  }
+
+  const impersonator = await getImpersonatorUser();
+  const isAdminOrCurating = isAdminUser(user) || !user.isClaimed || !!impersonator;
+
+  if (itinerary.authorId !== user.id && !isAdminOrCurating) {
+    return new NextResponse("Kamu tidak punya akses untuk mengubah itinerary ini.", { status: 403 });
+  }
+
+  let body: { isPublished?: boolean } = {};
+  const contentType = request.headers.get("content-type") || "";
+  if (contentType.includes("application/json")) {
+    body = await request.json();
+  } else {
+    const formData = await request.formData();
+    body = { isPublished: formData.get("isPublished") === "true" };
+  }
+
+  const isPublished = body.isPublished !== undefined ? Boolean(body.isPublished) : true;
+
+  if (isPublished) {
+    const hasDay1Activities = itinerary.days.length > 0 && itinerary.days[0].activities.length > 0;
+    if (!hasDay1Activities) {
+      return new NextResponse("Itinerary hanya bisa dipublish jika aktivitas hari pertama sudah dibuat.", { status: 400 });
+    }
+  }
+
+  if (!isAdminOrCurating) {
+    if (itinerary.isPublished && !isPublished) {
+      const privateCount = await prisma.itinerary.count({
+        where: { authorId: user.id, isPublished: false },
+      });
+      if (privateCount >= user.maxPrivate) {
+        return new NextResponse(`Batas maksimal itinerary privat adalah ${user.maxPrivate}. Silakan hapus atau ubah status itinerary privat Anda yang lain menjadi publik.`, { status: 400 });
+      }
+    } else if (!itinerary.isPublished && isPublished) {
+      const publicCount = await prisma.itinerary.count({
+        where: { authorId: user.id, isPublished: true },
+      });
+      if (publicCount >= user.maxPublic) {
+        return new NextResponse(`Batas maksimal itinerary publik adalah ${user.maxPublic}. Silakan hapus atau ubah status itinerary publik Anda yang lain menjadi privat.`, { status: 400 });
+      }
+    }
+  }
+
+  const updated = await prisma.itinerary.update({
+    where: { id },
+    data: { isPublished },
+  });
+
+  return NextResponse.json({ success: true, isPublished: updated.isPublished });
 }

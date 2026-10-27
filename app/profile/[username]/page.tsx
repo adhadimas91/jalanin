@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, isAdminUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatRupiah } from "@/lib/format";
 import { ProfileAnalytics, TrackedLink } from "@/components/tracked-link";
@@ -132,6 +132,45 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
               >
                 Klaim Akun Ini
               </TrackedLink>
+            </div>
+          )}
+
+          {isAdminUser(currentUser) && !user.isClaimed && (
+            <div style={{
+              margin: "12px 0 6px 0",
+              padding: "12px 14px",
+              background: "#fffbeb",
+              border: "1px solid #fde68a",
+              borderRadius: "12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "12px",
+              flexWrap: "wrap",
+            }}>
+              <div style={{ fontSize: "13px", color: "#92400e", flex: 1, minWidth: "220px" }}>
+                <strong>Akses Admin:</strong> Akun ini berstatus <strong>Akun Kurasi</strong>. Masuk sebagai akun ini untuk membuat itinerary atas nama kreator ini.
+              </div>
+              <form action="/api/admin/impersonate" method="POST" style={{ margin: 0 }}>
+                <input type="hidden" name="userId" value={user.id} />
+                <button
+                  type="submit"
+                  style={{
+                    fontSize: "13px",
+                    padding: "8px 16px",
+                    borderRadius: "999px",
+                    border: "none",
+                    whiteSpace: "nowrap",
+                    background: "#d97706",
+                    color: "#fff",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  Masuk & Buat Itinerary
+                </button>
+              </form>
             </div>
           )}
 

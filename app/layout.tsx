@@ -4,6 +4,8 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import "../styles.css";
 import "./next-overrides.css";
 
+import { ImpersonationBanner } from "@/components/impersonation-banner";
+
 export const metadata: Metadata = {
   title: "Jalanin - Temukan trip. Simpan rute. Jalanin.",
   description: "Platform sosial travel untuk menemukan, menyimpan, dan menggunakan itinerary.",
@@ -17,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body>
+        <ImpersonationBanner />
         {children}
         {/* Google tag (gtag.js) */}
         <Script

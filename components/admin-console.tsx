@@ -446,6 +446,29 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     }
   }
 
+  async function handleImpersonate(userId: string) {
+    if (!window.confirm("Masuk sebagai akun kurasi ini untuk membuat itinerary? Anda dapat kembali ke admin kapan saja melalui banner di atas.")) {
+      return;
+    }
+    setBusy(true);
+    try {
+      const res = await fetch("/api/admin/impersonate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err || "Gagal masuk sebagai akun kurasi.");
+      }
+      const data = await res.json();
+      window.location.href = data.redirectUrl || "/create";
+    } catch (err: any) {
+      setToast(err?.message || "Gagal masuk sebagai akun kurasi.");
+      setBusy(false);
+    }
+  }
+
   // Definisi Kolom Dinamis untuk TanStack Table
   const columns = useMemo<ColumnDef<Record<string, unknown>>[]>(() => {
     const cols: ColumnDef<Record<string, unknown>>[] = [
@@ -910,6 +933,23 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                             <button className="ghost-chip danger" onClick={() => handleDelete(id)}>
                               Delete
                             </button>
+
+                            {currentTable === "users" && !record.isClaimed && (
+                              <button
+                                className="ghost-chip"
+                                style={{
+                                  color: "#d97706",
+                                  borderColor: "rgba(217, 119, 6, 0.4)",
+                                  fontWeight: 700,
+                                  background: "#fffbeb",
+                                }}
+                                onClick={() => handleImpersonate(id)}
+                                disabled={busy}
+                                title="Masuk sebagai akun kurasi ini untuk membuat itinerary"
+                              >
+                                Masuk & Buat Itinerary
+                              </button>
+                            )}
 
                             {currentTable === "accountClaims" && (
                               <>

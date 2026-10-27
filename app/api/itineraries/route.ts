@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, getImpersonatorUser, isAdminUser } from "@/lib/auth";
 import { getItineraryById } from "@/lib/itineraries";
 import { prisma } from "@/lib/prisma";
 import { serializeItinerary } from "@/lib/serialize";
@@ -20,34 +20,45 @@ export async function POST(request: Request) {
     return new NextResponse("Judul, destinasi, dan deskripsi wajib diisi.", { status: 400 });
   }
 
-  const isPublished = formData.get("isPublished") === null ? true : formData.get("isPublished") === "true";
+  const isPublished = formData.get("isPublished") === "true";
+  const impersonator = await getImpersonatorUser();
+  const isAdminOrCurating = isAdminUser(user) || !user.isClaimed || !!impersonator;
 
-  if (!isPublished) {
-    const privateCount = await prisma.itinerary.count({
-      where: {
-        authorId: user.id,
-        isPublished: false,
-      },
-    });
-    if (privateCount >= user.maxPrivate) {
-      return new NextResponse(`Batas maksimal itinerary privat adalah ${user.maxPrivate}. Silakan hapus atau ubah status itinerary privat Anda yang lain menjadi publik.`, { status: 400 });
-    }
-  } else {
-    const publicCount = await prisma.itinerary.count({
-      where: {
-        authorId: user.id,
-        isPublished: true,
-      },
-    });
-    if (publicCount >= user.maxPublic) {
-      return new NextResponse(`Batas maksimal itinerary publik adalah ${user.maxPublic}. Silakan hapus atau ubah status itinerary publik Anda yang lain menjadi privat.`, { status: 400 });
+  if (!isAdminOrCurating) {
+    if (!isPublished) {
+      const privateCount = await prisma.itinerary.count({
+        where: {
+          authorId: user.id,
+          isPublished: false,
+        },
+      });
+      if (privateCount >= user.maxPrivate) {
+        return new NextResponse(`Batas maksimal itinerary privat adalah ${user.maxPrivate}. Silakan hapus atau ubah status itinerary privat Anda yang lain menjadi publik.`, { status: 400 });
+      }
+    } else {
+      const publicCount = await prisma.itinerary.count({
+        where: {
+          authorId: user.id,
+          isPublished: true,
+        },
+      });
+      if (publicCount >= user.maxPublic) {
+        return new NextResponse(`Batas maksimal itinerary publik adalah ${user.maxPublic}. Silakan hapus atau ubah status itinerary publik Anda yang lain menjadi privat.`, { status: 400 });
+      }
     }
   }
 
   const structuredDays = parseDaysJson(formData.get("daysJson"));
   const structuredActivities = parseActivitiesJson(formData.get("activitiesJson"));
   const fallbackActivities = structuredActivities.length ? structuredActivities : parseActivitiesText(formData.get("activities"));
-  const days = structuredDays.length ? structuredDays : fallbackDay(fallbackActivities);
+  const days = structuredDays.length ? structuredDays : fallbackActivities.length ? fallbackDay(fallbackActivities) : [];
+
+  if (isPublished) {
+    const hasDay1Activities = days.length > 0 && days[0].activities.length > 0;
+    if (!hasDay1Activities) {
+      return new NextResponse("Itinerary hanya bisa dipublish jika aktivitas hari pertama sudah dibuat.", { status: 400 });
+    }
+  }
 
   const durationDays = Number(formData.get("durationDays") ?? 1);
   if (durationDays > 25 || days.length > 25) {
@@ -76,6 +87,14 @@ export async function POST(request: Request) {
 
   const originalItineraryId = formData.get("originalItineraryId") ? String(formData.get("originalItineraryId")) : null;
 
+  const daysToCreate = days.length
+    ? days
+    : Array.from({ length: Math.min(Math.max(durationDays, 1), 25) }, (_, i) => ({
+        dayNumber: i + 1,
+        title: `Hari ${i + 1}`,
+        activities: [],
+      }));
+
   const created = await prisma.itinerary.create({
     data: {
       title,
@@ -90,15 +109,11 @@ export async function POST(request: Request) {
       originalItineraryId,
       authorId: user.id,
       days: {
-        create: days.map((day) => ({
+        create: daysToCreate.map((day) => ({
           dayNumber: day.dayNumber,
           title: day.title,
           activities: {
-            create: day.activities.length
-              ? day.activities
-              : [
-                  defaultActivity(),
-                ],
+            create: day.activities,
           },
         })),
       },

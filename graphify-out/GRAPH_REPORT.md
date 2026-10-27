@@ -1,16 +1,16 @@
 # Graph Report - jalanin  (2026-10-27)
 
 ## Corpus Check
-- 104 files · ~51,087 words
+- 107 files · ~53,152 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 560 nodes · 1089 edges · 48 communities (28 shown, 20 thin omitted)
+- 571 nodes · 1133 edges · 50 communities (30 shown, 20 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 27 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5329a81a`
+- Built from commit: `778a3626`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -57,16 +57,18 @@
 - page.tsx
 - Jalanin — AGENTS.md
 - Icon
+- trackEvent
+- Icon
+- time-input.tsx
 - format.ts
-- itinerary-interactive-view.tsx
 
 ## God Nodes (most connected - your core abstractions)
-1. `getCurrentUser()` - 50 edges
-2. `prisma` - 33 edges
-3. `JalaninApp()` - 21 edges
-4. `Icon()` - 20 edges
-5. `compilerOptions` - 20 edges
-6. `isAdminUser()` - 18 edges
+1. `getCurrentUser()` - 53 edges
+2. `prisma` - 34 edges
+3. `isAdminUser()` - 26 edges
+4. `JalaninApp()` - 21 edges
+5. `Icon()` - 20 edges
+6. `compilerOptions` - 20 edges
 7. `formatRupiah()` - 16 edges
 8. `Jalanin` - 15 edges
 9. `getAdminSnapshot()` - 14 edges
@@ -79,10 +81,10 @@
   app/page.tsx → script.js
 - `selectItinerary()` --implements--> `Simpan Rute (Save Itinerary)`  [INFERRED]
   script.js → jalanin_mvp.md
-- `GET()` --calls--> `getCurrentUser()`  [EXTRACTED]
-  app/api/mylink/links/route.ts → lib/auth.ts
-- `DELETE()` --calls--> `getCurrentUser()`  [EXTRACTED]
-  app/api/mylink/links/route.ts → lib/auth.ts
+- `generateMetadata()` --calls--> `getItineraryById()`  [EXTRACTED]
+  app/itinerary/[id]/page.tsx → lib/itineraries.ts
+- `validateMyLinkUrl()` --shares_data_with--> `main()`  [INFERRED]
+  lib/mylink-validator.ts → prisma/seed.ts
 
 ## Import Cycles
 - None detected.
@@ -96,19 +98,19 @@
 - **MyLink Validation System** — lib_mylink_validator_validatemylinkurl, lib_mylink_validator_matchdomain, lib_mylink_validator_gethostname, lib_mylink_validator_detectprovider [EXTRACTED 1.00]
 - **Explore Feed UI/UX Redesign Tasks** — tasks_task_1_grid_layout_grid_layout_task, tasks_task_2_hover_overlays_hover_overlays_task, tasks_task_3_search_filter_search_filter_task, tasks_task_4_card_click_card_click_task, tasks_task_5_mobile_nav_mobile_nav_task [EXTRACTED 1.00]
 
-## Communities (48 total, 20 thin omitted)
+## Communities (50 total, 20 thin omitted)
 
 ### Community 0 - "Interactive UI Components"
-Cohesion: 0.12
-Nodes (27): ActivityDraft, createBlankActivity(), createBlankDay(), createLocationQueryMap(), DayDraft, defaultMapCenter, draftKey(), filters (+19 more)
+Cohesion: 0.11
+Nodes (28): ActivityDraft, activityPoints(), createBlankActivity(), createBlankDay(), createLocationQueryMap(), DayDraft, defaultMapCenter, draftKey() (+20 more)
 
 ### Community 1 - "API Routes & User Sessions"
-Cohesion: 0.09
-Nodes (42): envStatus(), GET(), POST(), DELETE(), POST(), DELETE(), PUT(), DELETE() (+34 more)
+Cohesion: 0.13
+Nodes (29): envStatus(), GET(), PATCH(), PUT(), POST(), POST(), Home(), getImpersonatorUser() (+21 more)
 
 ### Community 2 - "Admin Panel & Console Operations"
 Cohesion: 0.09
-Nodes (45): AdminPage(), DELETE(), isAdminTable(), PATCH(), GET(), isAdminTable(), POST(), AdminConsole() (+37 more)
+Nodes (48): AdminPage(), DELETE(), isAdminTable(), PATCH(), GET(), isAdminTable(), POST(), DELETE() (+40 more)
 
 ### Community 3 - "Project Configurations"
 Cohesion: 0.09
@@ -116,23 +118,23 @@ Nodes (23): autoprefixer, devDependencies, autoprefixer, prisma, tailwindcss, @t
 
 ### Community 4 - "Community 4"
 Cohesion: 0.16
-Nodes (10): ProfilePage(), Props, RegisterFormClient(), Props, ShareItineraryButton(), ProfileAnalytics(), TrackedLink(), TrackedLinkProps (+2 more)
+Nodes (11): generateMetadata(), ItineraryDetailPage(), ItineraryInteractiveView(), RouteMap(), SerializedActivity, SerializedDay, SerializedItinerary, Props (+3 more)
 
 ### Community 5 - "Client-Side Prototype Logic"
-Cohesion: 0.12
-Nodes (25): metadata, Clone Rate Metric, Instagram untuk Itinerary Perjalanan, Jalanin Rute Ini (Clone Itinerary), Save Rate Metric, Simpan Rute (Save Itinerary), Creator Revenue Protection, allItineraries() (+17 more)
+Cohesion: 0.11
+Nodes (26): metadata, ImpersonationBanner(), Clone Rate Metric, Instagram untuk Itinerary Perjalanan, Jalanin Rute Ini (Clone Itinerary), Save Rate Metric, Simpan Rute (Save Itinerary), Creator Revenue Protection (+18 more)
 
 ### Community 6 - "Supabase Authentication Flow"
-Cohesion: 0.24
-Nodes (11): DELETE(), GET(), POST(), PUT(), detectProvider(), getHostname(), matchDomain(), validateMyLinkUrl() (+3 more)
+Cohesion: 0.21
+Nodes (14): ActivityDraft, createBlankActivity(), createBlankDay(), createDrafts(), createLocationQueryMap(), DayDraft, defaultMapCenter, draftKey() (+6 more)
 
 ### Community 7 - "TypeScript Configuration"
 Cohesion: 0.06
 Nodes (32): DOM, DOM.Iterable, ES2022, .next/dev/types/**/*.ts, next-env.d.ts, .next/types/**/*.ts, node, node_modules (+24 more)
 
 ### Community 8 - "Google Maps URL Parser"
-Cohesion: 0.10
-Nodes (34): POST(), ActivityDraft, createBlankActivity(), createBlankDay(), createDrafts(), createLocationQueryMap(), DayDraft, defaultMapCenter (+26 more)
+Cohesion: 0.27
+Nodes (13): POST(), buildGeocodeCandidates(), extractCoordsFromGoogleMapsUrl(), extractGoogleMapsUrl(), extractPlacePinCoords(), extractPlaceQueryFromGoogleMapsUrl(), geocodePlaceQuery(), geocodeWithGeoapify() (+5 more)
 
 ### Community 9 - "Time Inputs & Calculations"
 Cohesion: 0.05
@@ -147,8 +149,8 @@ Cohesion: 0.50
 Nodes (3): Answer, Q: Why does getCurrentUser() connect API Routes & User Sessions to Interactive UI Components, Admin Panel & Console Operations, Itinerary Creation & Forms, Budget Fields?, Source Nodes
 
 ### Community 12 - "Budget Fields"
-Cohesion: 0.08
-Nodes (30): POST(), POST(), GET(), POST(), POST(), usernameFromEmail(), hashToken(), POST() (+22 more)
+Cohesion: 0.06
+Nodes (36): POST(), DELETE(), POST(), DELETE(), POST(), DELETE(), GET(), POST() (+28 more)
 
 ### Community 13 - "OSM Mapping Alternatives"
 Cohesion: 0.40
@@ -183,16 +185,24 @@ Cohesion: 0.33
 Nodes (5): Architecture, Env truth, Gotchas, Jalanin — AGENTS.md, Verify changes (no lint/test scripts exist)
 
 ### Community 44 - "Icon"
-Cohesion: 0.20
-Nodes (12): SavedPage(), ProfileSettingsPage(), CloneItineraryButton(), Icon(), IconSprite(), JalaninLanding(), Props, SavedItinerary (+4 more)
+Cohesion: 0.11
+Nodes (25): POST(), GET(), POST(), POST(), POST(), GET(), POST(), POST() (+17 more)
 
-### Community 45 - "format.ts"
-Cohesion: 0.31
-Nodes (7): CreatePage(), BudgetField(), Props, PriceInput(), Props, formatPriceInput(), parsePriceInput()
+### Community 45 - "trackEvent"
+Cohesion: 0.26
+Nodes (8): ProfilePage(), Props, RegisterFormClient(), CloneItineraryButton(), ProfileAnalytics(), TrackedLink(), TrackedLinkProps, trackEvent()
 
-### Community 46 - "itinerary-interactive-view.tsx"
-Cohesion: 0.28
-Nodes (8): ItineraryInteractiveView(), RouteMap(), SerializedActivity, SerializedDay, SerializedItinerary, activityPoints(), RouteMap(), activityIcon()
+### Community 46 - "Icon"
+Cohesion: 0.32
+Nodes (9): Icon(), IconSprite(), JalaninLanding(), Props, SavedItinerary, SavedList(), Props, SubscriptionStatus() (+1 more)
+
+### Community 47 - "time-input.tsx"
+Cohesion: 0.40
+Nodes (8): HOURS, MINUTES, Props, TimeInput(), clampHour(), clampMinute(), formatActivityTime(), parseActivityTime()
+
+### Community 48 - "format.ts"
+Cohesion: 0.60
+Nodes (4): PriceInput(), Props, formatPriceInput(), parsePriceInput()
 
 ## Knowledge Gaps
 - **175 isolated node(s):** `Prisma-Remote`, `GeoapifyFeature`, `Props`, `metadata`, `Props` (+170 more)
@@ -202,17 +212,17 @@ Nodes (8): ItineraryInteractiveView(), RouteMap(), SerializedActivity, Serialize
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `getCurrentUser()` connect `API Routes & User Sessions` to `Admin Panel & Console Operations`, `Community 4`, `Supabase Authentication Flow`, `Budget Fields`, `format.ts`, `Icon`?**
-  _High betweenness centrality (0.084) - this node is a cross-community bridge._
-- **Why does `Home()` connect `API Routes & User Sessions` to `Client-Side Prototype Logic`?**
-  _High betweenness centrality (0.063) - this node is a cross-community bridge._
-- **Why does `render()` connect `Client-Side Prototype Logic` to `API Routes & User Sessions`?**
-  _High betweenness centrality (0.049) - this node is a cross-community bridge._
+- **Why does `getCurrentUser()` connect `Budget Fields` to `API Routes & User Sessions`, `Admin Panel & Console Operations`, `Community 4`, `Client-Side Prototype Logic`, `Icon`, `trackEvent`?**
+  _High betweenness centrality (0.078) - this node is a cross-community bridge._
+- **Why does `prisma` connect `Budget Fields` to `API Routes & User Sessions`, `Admin Panel & Console Operations`, `email.ts`, `Icon`, `trackEvent`?**
+  _High betweenness centrality (0.045) - this node is a cross-community bridge._
+- **Why does `Home()` connect `API Routes & User Sessions` to `Budget Fields`, `Client-Side Prototype Logic`?**
+  _High betweenness centrality (0.044) - this node is a cross-community bridge._
 - **What connects `Prisma-Remote`, `GeoapifyFeature`, `Props` to the rest of the system?**
   _175 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Interactive UI Components` be split into smaller, more focused modules?**
-  _Cohesion score 0.11576354679802955 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11494252873563218 - nodes in this community are weakly interconnected._
 - **Should `API Routes & User Sessions` be split into smaller, more focused modules?**
-  _Cohesion score 0.08892921960072596 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.13225371120107962 - nodes in this community are weakly interconnected._
 - **Should `Admin Panel & Console Operations` be split into smaller, more focused modules?**
-  _Cohesion score 0.09224489795918367 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08635703918722787 - nodes in this community are weakly interconnected._

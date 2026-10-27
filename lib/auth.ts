@@ -41,9 +41,12 @@ export async function createSession(userId: string) {
   });
 }
 
+export const impersonatorCookieName = "jalanin_admin_impersonator";
+
 export async function clearSession() {
   const cookieStore = await cookies();
   const rawToken = cookieStore.get(sessionCookieName)?.value;
+  const adminRawToken = cookieStore.get(impersonatorCookieName)?.value;
 
   if (rawToken) {
     await prisma.session.deleteMany({
@@ -55,6 +58,122 @@ export async function clearSession() {
 
   cookieStore.delete(sessionCookieName);
   cookieStore.set(sessionCookieName, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    expires: new Date(0),
+    maxAge: 0,
+    path: "/",
+  });
+
+  if (adminRawToken) {
+    cookieStore.delete(impersonatorCookieName);
+    cookieStore.set(impersonatorCookieName, "", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      expires: new Date(0),
+      maxAge: 0,
+      path: "/",
+    });
+  }
+}
+
+export async function getImpersonatorUser() {
+  const cookieStore = await cookies();
+  const rawToken = cookieStore.get(impersonatorCookieName)?.value;
+
+  if (!rawToken) {
+    return null;
+  }
+
+  const session = await prisma.session.findUnique({
+    where: {
+      token: hashToken(rawToken),
+    },
+    include: {
+      user: true,
+    },
+  });
+
+  if (!session || session.expiresAt < new Date()) {
+    return null;
+  }
+
+  if (!isAdminUser(session.user)) {
+    return null;
+  }
+
+  return session.user;
+}
+
+export async function startImpersonation(targetUserId: string) {
+  const currentAdmin = (await getImpersonatorUser()) ?? (await requireAdminUser());
+  if (!currentAdmin) {
+    throw new Error("Hanya admin yang dapat masuk sebagai akun kurasi.");
+  }
+
+  const targetUser = await prisma.user.findUnique({
+    where: { id: targetUserId },
+  });
+
+  if (!targetUser) {
+    throw new Error("Akun user tidak ditemukan.");
+  }
+
+  if (targetUser.isClaimed) {
+    throw new Error("Hanya akun dengan status Akun Kurasi (belum diklaim) yang dapat dimasuki.");
+  }
+
+  const cookieStore = await cookies();
+  const existingImpersonator = cookieStore.get(impersonatorCookieName)?.value;
+  const currentSessionToken = cookieStore.get(sessionCookieName)?.value;
+
+  if (!existingImpersonator && currentSessionToken) {
+    cookieStore.set(impersonatorCookieName, currentSessionToken, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      expires: new Date(Date.now() + sessionDays * 24 * 60 * 60 * 1000),
+      path: "/",
+    });
+  }
+
+  await createSession(targetUser.id);
+  return targetUser;
+}
+
+export async function stopImpersonation() {
+  const cookieStore = await cookies();
+  const adminRawToken = cookieStore.get(impersonatorCookieName)?.value;
+  const currentRawToken = cookieStore.get(sessionCookieName)?.value;
+
+  if (currentRawToken) {
+    try {
+      await prisma.session.deleteMany({
+        where: {
+          token: hashToken(currentRawToken),
+        },
+      });
+    } catch (error) {
+      console.error("Gagal menghapus session impersonation:", error);
+    }
+  }
+
+  if (adminRawToken) {
+    cookieStore.set(sessionCookieName, adminRawToken, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      expires: new Date(Date.now() + sessionDays * 24 * 60 * 60 * 1000),
+      path: "/",
+    });
+  } else {
+    cookieStore.delete(sessionCookieName);
+  }
+
+  cookieStore.delete(impersonatorCookieName);
+  cookieStore.set(impersonatorCookieName, "", {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

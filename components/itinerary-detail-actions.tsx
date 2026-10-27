@@ -394,6 +394,12 @@ export function ItineraryDetailActions({ itinerary }: Props) {
       }))
       .filter((day) => day.activities.length);
 
+    const isPublished = formData.get("isPublished") === "true";
+    if (isPublished && (!days.length || !days[0].activities.length)) {
+      setMessage("Itinerary hanya bisa dipublish jika aktivitas hari pertama sudah dibuat.");
+      return;
+    }
+
     formData.set("daysJson", JSON.stringify(days));
     formData.set("durationDays", String(Math.max(Number(formData.get("durationDays") ?? 1), days.length || 1)));
 
@@ -451,9 +457,101 @@ export function ItineraryDetailActions({ itinerary }: Props) {
     router.refresh();
   }
 
+  const [isTogglingPublish, setIsTogglingPublish] = useState(false);
+
+  const hasDay1Activities = useMemo(() => {
+    return itinerary.days.length > 0 && itinerary.days[0].activities.length > 0;
+  }, [itinerary.days]);
+
+  async function handleTogglePublish(targetState: boolean) {
+    if (targetState && !hasDay1Activities) {
+      alert("Itinerary hanya bisa dipublish jika aktivitas hari pertama sudah dibuat.");
+      return;
+    }
+
+    setIsTogglingPublish(true);
+    setMessage("");
+
+    try {
+      const response = await fetch(`/api/itineraries/${itinerary.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isPublished: targetState }),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        if (errText.startsWith("Batas maksimal")) {
+          setLimitError(errText);
+        } else {
+          setMessage(errText);
+          alert(errText);
+        }
+        setIsTogglingPublish(false);
+        return;
+      }
+
+      trackEvent(targetState ? "quick_publish_itinerary_success" : "quick_unpublish_itinerary_success", {
+        itinerary_id: itinerary.id,
+      });
+      router.refresh();
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : "Gagal mengubah status visibilitas.";
+      setMessage(errMsg);
+      alert(errMsg);
+    } finally {
+      setIsTogglingPublish(false);
+    }
+  }
+
   return (
     <>
-      <div className="detail-actions">
+      <div className="detail-actions" style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+        {!itinerary.isPublished && hasDay1Activities && (
+          <button
+            className="primary-button"
+            type="button"
+            style={{
+              background: "linear-gradient(135deg, #16a34a, #15803d)",
+              color: "#ffffff",
+              border: "none",
+              fontWeight: 800,
+              fontSize: "12px",
+              padding: "7px 14px",
+              borderRadius: "999px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              cursor: "pointer",
+              boxShadow: "0 2px 10px rgba(22, 163, 74, 0.3)",
+            }}
+            onClick={() => handleTogglePublish(true)}
+            disabled={isTogglingPublish}
+            title="Aktivitas hari pertama sudah tersedia. Klik untuk langsung mempublikasikan itinerary ini ke Publik!"
+          >
+            <span>{isTogglingPublish ? "Mempublikasikan..." : "🚀 Publish ke Publik"}</span>
+          </button>
+        )}
+
+        {itinerary.isPublished && (
+          <button
+            className="ghost-chip"
+            type="button"
+            style={{
+              fontSize: "11px",
+              padding: "5px 10px",
+              color: "var(--muted)",
+            }}
+            onClick={() => handleTogglePublish(false)}
+            disabled={isTogglingPublish}
+            title="Ubah status itinerary kembali menjadi Privat"
+          >
+            <span>{isTogglingPublish ? "Menyimpan..." : "Jadikan Privat"}</span>
+          </button>
+        )}
+
         <button className="ghost-chip" type="button" onClick={() => setIsEditing(true)}>
           <Icon name="grid" />
           <span>Edit</span>
