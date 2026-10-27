@@ -249,8 +249,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_claims_id_route",
-      "community": 41,
-      "community_name": "email.ts",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -260,8 +260,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_admin_claims_id_route_post",
-      "community": 41,
-      "community_name": "email.ts",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -271,8 +271,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_exit_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -282,8 +282,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_exit_route_get",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "get()"
     },
     {
@@ -293,8 +293,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_exit_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -304,8 +304,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -315,8 +315,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -359,8 +359,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_login_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -370,8 +370,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_login_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -414,8 +414,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_register_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -425,8 +425,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_register_route_usernamefromemail",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "usernamefromemail()"
     },
     {
@@ -436,8 +436,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_api_auth_register_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -447,8 +447,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_reset_password_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -458,8 +458,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_api_auth_reset_password_route_hashtoken",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "hashtoken()"
     },
     {
@@ -469,8 +469,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_api_auth_reset_password_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -480,8 +480,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_setup_password_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -491,8 +491,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_setup_password_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -637,6 +637,17 @@
       "community": 2,
       "community_name": "Admin Panel & Console Operations",
       "norm_label": "delete()"
+    },
+    {
+      "label": "PATCH()",
+      "file_type": "code",
+      "source_file": "app/api/itineraries/[id]/route.ts",
+      "source_location": "L171",
+      "_origin": "ast",
+      "id": "app_api_itineraries_id_route_patch",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
+      "norm_label": "patch()"
     },
     {
       "label": "route.ts",
@@ -1074,8 +1085,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_itinerary_id_page_generatemetadata",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "generatemetadata()"
     },
     {
@@ -1096,8 +1107,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_layout",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 5,
+      "community_name": "Client-Side Prototype Logic",
       "norm_label": "layout.tsx"
     },
     {
@@ -1107,8 +1118,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_layout_metadata",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 5,
+      "community_name": "Client-Side Prototype Logic",
       "norm_label": "metadata"
     },
     {
@@ -1118,8 +1129,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_layout_rootlayout",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 5,
+      "community_name": "Client-Side Prototype Logic",
       "norm_label": "rootlayout()"
     },
     {
@@ -1217,8 +1228,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_profile_username_page",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "page.tsx"
     },
     {
@@ -1228,8 +1239,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_profile_username_page_profilepage",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "profilepage()"
     },
     {
@@ -1239,8 +1250,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_register_registerformclient",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "registerformclient.tsx"
     },
     {
@@ -1250,8 +1261,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_register_registerformclient_props",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "props"
     },
     {
@@ -1261,8 +1272,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_register_registerformclient_registerformclient",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "registerformclient()"
     },
     {
@@ -1745,8 +1756,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_budget_field",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "budget-field.tsx"
     },
     {
@@ -1756,8 +1767,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_budget_field_props",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "props"
     },
     {
@@ -1767,8 +1778,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_budget_field_budgetfield",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "budgetfield()"
     },
     {
@@ -1800,8 +1811,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_clone_itinerary_button",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "clone-itinerary-button.tsx"
     },
     {
@@ -1811,8 +1822,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_clone_itinerary_button_cloneitinerarybutton",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "cloneitinerarybutton()"
     },
     {
@@ -1822,8 +1833,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_icon_sprite",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "icon-sprite.tsx"
     },
     {
@@ -1833,8 +1844,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_icon_sprite_iconsprite",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "iconsprite()"
     },
     {
@@ -1844,8 +1855,8 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "components_icon_sprite_icon",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "icon()"
     },
     {
@@ -1855,8 +1866,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_impersonation_banner",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 5,
+      "community_name": "Client-Side Prototype Logic",
       "norm_label": "impersonation-banner.tsx"
     },
     {
@@ -1866,8 +1877,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_impersonation_banner_impersonationbanner",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 5,
+      "community_name": "Client-Side Prototype Logic",
       "norm_label": "impersonationbanner()"
     },
     {
@@ -1877,8 +1888,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "itinerary-detail-actions.tsx"
     },
     {
@@ -1888,8 +1899,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_activitydraft",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "activitydraft"
     },
     {
@@ -1899,8 +1910,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_daydraft",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "daydraft"
     },
     {
@@ -1910,8 +1921,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_props",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "props"
     },
     {
@@ -1921,8 +1932,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_locationresult",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "locationresult"
     },
     {
@@ -1932,8 +1943,8 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_defaultmapcenter",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "defaultmapcenter"
     },
     {
@@ -1943,8 +1954,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_createblankactivity",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "createblankactivity()"
     },
     {
@@ -1954,8 +1965,8 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_createblankday",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "createblankday()"
     },
     {
@@ -1965,8 +1976,8 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_createdrafts",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "createdrafts()"
     },
     {
@@ -1976,8 +1987,8 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_draftkey",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "draftkey()"
     },
     {
@@ -1987,8 +1998,8 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_createlocationquerymap",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "createlocationquerymap()"
     },
     {
@@ -1998,8 +2009,8 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_pointpicker",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "pointpicker()"
     },
     {
@@ -2009,8 +2020,8 @@
       "source_location": "L170",
       "_origin": "ast",
       "id": "components_itinerary_detail_actions_itinerarydetailactions",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "itinerarydetailactions()"
     },
     {
@@ -2130,8 +2141,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninitinerary",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "jalaninitinerary"
     },
     {
@@ -2284,8 +2295,8 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "components_jalanin_app_pointpicker",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 6,
+      "community_name": "Supabase Authentication Flow",
       "norm_label": "pointpicker()"
     },
     {
@@ -2317,8 +2328,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_jalanin_landing",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "jalanin-landing.tsx"
     },
     {
@@ -2328,8 +2339,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_jalanin_landing_props",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "props"
     },
     {
@@ -2339,8 +2350,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "components_jalanin_landing_jalaninlanding",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "jalaninlanding()"
     },
     {
@@ -2350,8 +2361,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_price_input",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 48,
+      "community_name": "format.ts",
       "norm_label": "price-input.tsx"
     },
     {
@@ -2361,8 +2372,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_price_input_props",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 48,
+      "community_name": "format.ts",
       "norm_label": "props"
     },
     {
@@ -2372,8 +2383,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "components_price_input_priceinput",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 48,
+      "community_name": "format.ts",
       "norm_label": "priceinput()"
     },
     {
@@ -2383,8 +2394,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_saved_list",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "saved-list.tsx"
     },
     {
@@ -2394,8 +2405,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_saved_list_saveditinerary",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "saveditinerary"
     },
     {
@@ -2405,8 +2416,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "components_saved_list_savedlist",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "savedlist()"
     },
     {
@@ -2504,8 +2515,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_subscription_status",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "subscription-status.tsx"
     },
     {
@@ -2515,8 +2526,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_subscription_status_userprops",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "userprops"
     },
     {
@@ -2526,8 +2537,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "components_subscription_status_props",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "props"
     },
     {
@@ -2537,8 +2548,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "components_subscription_status_subscriptionstatus",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 46,
+      "community_name": "Icon",
       "norm_label": "subscriptionstatus()"
     },
     {
@@ -2548,8 +2559,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_time_input",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 47,
+      "community_name": "time-input.tsx",
       "norm_label": "time-input.tsx"
     },
     {
@@ -2559,8 +2570,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_time_input_props",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 47,
+      "community_name": "time-input.tsx",
       "norm_label": "props"
     },
     {
@@ -2570,8 +2581,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_time_input_hours",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 47,
+      "community_name": "time-input.tsx",
       "norm_label": "hours"
     },
     {
@@ -2581,8 +2592,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "components_time_input_minutes",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 47,
+      "community_name": "time-input.tsx",
       "norm_label": "minutes"
     },
     {
@@ -2592,8 +2603,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_time_input_timeinput",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 47,
+      "community_name": "time-input.tsx",
       "norm_label": "timeinput()"
     },
     {
@@ -2603,8 +2614,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_tracked_link",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "tracked-link.tsx"
     },
     {
@@ -2614,8 +2625,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_tracked_link_trackedlinkprops",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "trackedlinkprops"
     },
     {
@@ -2625,8 +2636,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "components_tracked_link_trackedlink",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "trackedlink()"
     },
     {
@@ -2636,8 +2647,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "components_tracked_link_profileanalytics",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "profileanalytics()"
     },
     {
@@ -2691,8 +2702,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "lib_activity_types_activityicon",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "activityicon()"
     },
     {
@@ -3109,8 +3120,8 @@
       "source_location": "L713",
       "_origin": "ast",
       "id": "lib_admin_approveaccountclaim",
-      "community": 41,
-      "community_name": "email.ts",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "approveaccountclaim()"
     },
     {
@@ -3120,8 +3131,8 @@
       "source_location": "L755",
       "_origin": "ast",
       "id": "lib_admin_rejectaccountclaim",
-      "community": 41,
-      "community_name": "email.ts",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "rejectaccountclaim()"
     },
     {
@@ -3131,8 +3142,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_analytics",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "analytics.ts"
     },
     {
@@ -3142,8 +3153,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_analytics_trackevent",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 45,
+      "community_name": "trackEvent",
       "norm_label": "trackevent()"
     },
     {
@@ -3153,8 +3164,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_auth",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "auth.ts"
     },
     {
@@ -3175,8 +3186,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "lib_auth_hashtoken",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "hashtoken()"
     },
     {
@@ -3186,8 +3197,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "lib_auth_createsession",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "createsession()"
     },
     {
@@ -3208,8 +3219,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "lib_auth_getimpersonatoruser",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "getimpersonatoruser()"
     },
     {
@@ -3219,8 +3230,8 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "lib_auth_startimpersonation",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "startimpersonation()"
     },
     {
@@ -3230,8 +3241,8 @@
       "source_location": "L146",
       "_origin": "ast",
       "id": "lib_auth_stopimpersonation",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "stopimpersonation()"
     },
     {
@@ -3263,8 +3274,8 @@
       "source_location": "L238",
       "_origin": "ast",
       "id": "lib_auth_requirecurrentuser",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "requirecurrentuser()"
     },
     {
@@ -3274,8 +3285,8 @@
       "source_location": "L250",
       "_origin": "ast",
       "id": "lib_auth_requireadminuser",
-      "community": 41,
-      "community_name": "email.ts",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "requireadminuser()"
     },
     {
@@ -3428,8 +3439,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_format",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 48,
+      "community_name": "format.ts",
       "norm_label": "format.ts"
     },
     {
@@ -3450,8 +3461,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "lib_format_formatpriceinput",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 48,
+      "community_name": "format.ts",
       "norm_label": "formatpriceinput()"
     },
     {
@@ -3461,8 +3472,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "lib_format_parsepriceinput",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 48,
+      "community_name": "format.ts",
       "norm_label": "parsepriceinput()"
     },
     {
@@ -3714,8 +3725,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "lib_maps_parser_isgooglemapsurl",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "isgooglemapsurl()"
     },
     {
@@ -3879,8 +3890,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_password",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "password.ts"
     },
     {
@@ -3890,8 +3901,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_password_scrypt",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "scrypt"
     },
     {
@@ -3901,8 +3912,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "lib_password_hashpassword",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 2,
+      "community_name": "Admin Panel & Console Operations",
       "norm_label": "hashpassword()"
     },
     {
@@ -3912,8 +3923,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "lib_password_verifypassword",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "verifypassword()"
     },
     {
@@ -4011,8 +4022,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_time",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 47,
+      "community_name": "time-input.tsx",
       "norm_label": "time.ts"
     },
     {
@@ -4022,8 +4033,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_time_parseactivitytime",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 47,
+      "community_name": "time-input.tsx",
       "norm_label": "parseactivitytime()"
     },
     {
@@ -4033,8 +4044,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_time_formatactivitytime",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 47,
+      "community_name": "time-input.tsx",
       "norm_label": "formatactivitytime()"
     },
     {
@@ -4044,8 +4055,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "lib_time_clamphour",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 47,
+      "community_name": "time-input.tsx",
       "norm_label": "clamphour()"
     },
     {
@@ -4055,8 +4066,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "lib_time_clampminute",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 47,
+      "community_name": "time-input.tsx",
       "norm_label": "clampminute()"
     },
     {
@@ -4088,8 +4099,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "package",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "package.json"
     },
     {
@@ -4099,8 +4110,8 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "package_name",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "name"
     },
     {
@@ -4110,8 +4121,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "package_version",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "version"
     },
     {
@@ -4121,8 +4132,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "package_private",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "private"
     },
     {
@@ -4132,8 +4143,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "package_type",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "type"
     },
     {
@@ -4143,8 +4154,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "package_scripts",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "scripts"
     },
     {
@@ -4154,8 +4165,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "package_scripts_dev",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "dev"
     },
     {
@@ -4165,8 +4176,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "package_scripts_build",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "build"
     },
     {
@@ -4176,8 +4187,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "package_scripts_vercel_build",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "vercel-build"
     },
     {
@@ -4187,8 +4198,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "package_scripts_start",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "start"
     },
     {
@@ -4198,8 +4209,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "package_scripts_prisma_compile",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma:compile"
     },
     {
@@ -4209,8 +4220,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "package_scripts_prisma_generate",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma:generate"
     },
     {
@@ -4220,8 +4231,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "package_scripts_prisma_migrate",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma:migrate"
     },
     {
@@ -4231,8 +4242,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "package_scripts_prisma_seed",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma:seed"
     },
     {
@@ -4242,8 +4253,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "package_scripts_prisma_verify",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma:verify"
     },
     {
@@ -4253,8 +4264,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "package_scripts_prisma_studio",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma:studio"
     },
     {
@@ -4264,8 +4275,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "package_scripts_storage_setup",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "storage:setup"
     },
     {
@@ -4275,8 +4286,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "package_prisma",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma"
     },
     {
@@ -4286,8 +4297,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "package_prisma_seed",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "seed"
     },
     {
@@ -4836,8 +4847,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "prisma_seed",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "seed.ts"
     },
     {
@@ -4847,8 +4858,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "prisma_seed_adapter",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "adapter"
     },
     {
@@ -4858,8 +4869,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "prisma_seed_prisma",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "prisma"
     },
     {
@@ -4869,8 +4880,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "prisma_seed_main",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "main()"
     },
     {
@@ -6233,9 +6244,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "norm_label": "default_activity_type",
-      "community_name": "Interactive UI Components",
+      "community_name": "Admin Panel & Console Operations",
       "id": "lib_activity_types_default_activity_type"
     },
     {
@@ -8369,6 +8380,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/itineraries/[id]/route.ts",
+      "source_location": "L171",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_itineraries_id_route",
+      "target": "app_api_itineraries_id_route_patch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/itineraries/[id]/route.ts",
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
@@ -8746,6 +8768,42 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_itineraries_id_route_delete",
+      "target": "lib_auth_isadminuser"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/itineraries/[id]/route.ts",
+      "source_location": "L172",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_itineraries_id_route_patch",
+      "target": "lib_auth_getcurrentuser"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/itineraries/[id]/route.ts",
+      "source_location": "L194",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_itineraries_id_route_patch",
+      "target": "lib_auth_getimpersonatoruser"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/itineraries/[id]/route.ts",
+      "source_location": "L195",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_itineraries_id_route_patch",
       "target": "lib_auth_isadminuser"
     },
     {
@@ -12955,7 +13013,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/itinerary-detail-actions.tsx",
-      "source_location": "L591",
+      "source_location": "L683",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_detail_actions_itinerarydetailactions",
@@ -13040,7 +13098,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/itinerary-detail-actions.tsx",
-      "source_location": "L649",
+      "source_location": "L741",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_detail_actions_itinerarydetailactions",

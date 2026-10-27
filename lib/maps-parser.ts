@@ -176,7 +176,7 @@ async function geocodeWithNominatim(
   };
 }
 
-async function geocodePlaceQuery(
+export async function geocodePlaceQuery(
   query: string,
 ): Promise<{ lat: number; lng: number; name: string } | null> {
   for (const candidate of buildGeocodeCandidates(query)) {

@@ -100,8 +100,8 @@
     "semantic_hash": ""
   },
   "app/create/page.tsx": {
-    "mtime": 1793109120.8861325,
-    "ast_hash": "9b7a22107f9e8778e3729240fa62b7f4",
+    "mtime": 1793116473.5541434,
+    "ast_hash": "339de8365b1be9d2f9bd7406031e6abe",
     "semantic_hash": ""
   },
   "app/itinerary/[id]/page.tsx": {
@@ -245,9 +245,9 @@
     "semantic_hash": "7bd7086cca0b6ecd1a4e47182d6b557b"
   },
   "lib/maps-parser.ts": {
-    "mtime": 1781193712.496883,
-    "ast_hash": "ad3ccc1fdc96170d0c0fcfadaa7d50d1",
-    "semantic_hash": "ad3ccc1fdc96170d0c0fcfadaa7d50d1"
+    "mtime": 1793116212.882998,
+    "ast_hash": "37927b470d033e6a6610d8c36bb8635b",
+    "semantic_hash": ""
   },
   "lib/mylink-validator.ts": {
     "mtime": 1781330383.1277864,
@@ -275,8 +275,8 @@
     "semantic_hash": "52ed1c7a4989680aeab87ff88fe8c7c7"
   },
   "package.json": {
-    "mtime": 1786789305.8824356,
-    "ast_hash": "3ebd976123a7db5815b89233f9283622",
+    "mtime": 1793116011.2792487,
+    "ast_hash": "6b7caf43cde2ad41f0f493b0adef822b",
     "semantic_hash": ""
   },
   "postcss.config.mjs": {
@@ -547,6 +547,31 @@
   "components/impersonation-banner.tsx": {
     "mtime": 1793085774.336139,
     "ast_hash": "29bfd701acefecb86470ec4e4e825473",
+    "semantic_hash": ""
+  },
+  "app/api/admin/ai/extract-youtube/route.ts": {
+    "mtime": 1793116252.244415,
+    "ast_hash": "5a4e408cd6bc42d3ec95fcdf7babdeca",
+    "semantic_hash": ""
+  },
+  "components/ai-youtube-importer.tsx": {
+    "mtime": 1793116416.675273,
+    "ast_hash": "fb121408d68eaa9ce365d042e10e2687",
+    "semantic_hash": ""
+  },
+  "components/create-itinerary-form.tsx": {
+    "mtime": 1793116446.3743923,
+    "ast_hash": "659197372cf526d5a2a5722dbcbcf91a",
+    "semantic_hash": ""
+  },
+  "lib/youtube-ai.ts": {
+    "mtime": 1793116361.062104,
+    "ast_hash": "489ffb4ae18d49aa8931a62f5a10a983",
+    "semantic_hash": ""
+  },
+  "tasks/task-ai-youtube-itinerary.md": {
+    "mtime": 1793116503.092705,
+    "ast_hash": "05601e03bac51709f9eb2055cc0c1359",
     "semantic_hash": ""
   }
 }

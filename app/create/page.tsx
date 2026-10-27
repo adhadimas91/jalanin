@@ -1,4 +1,4 @@
-import { BudgetField } from "@/components/budget-field";
+import { CreateItineraryForm } from "@/components/create-itinerary-form";
 import { getCurrentUser, getImpersonatorUser, isAdminUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
@@ -149,61 +149,10 @@ export default async function CreatePage() {
         )}
 
         <p>
-          Isi rincian perjalanan Anda. Setelah itinerary dibuat, Anda dapat menambahkan aktivitas harian di halaman detail sebelum mempublikasikannya.
+          Isi rincian perjalanan Anda secara manual atau gunakan bantuan AI untuk mengekstrak langsung dari link video YouTube travel vlog.
         </p>
-        <form className="stack-form" action="/api/itineraries" method="post" encType="multipart/form-data">
-          <label>
-            Judul itinerary
-            <input name="title" required />
-          </label>
-          <label>
-            Destinasi utama
-            <input name="destination" required />
-          </label>
-          <div className="form-grid">
-            <label>
-              Durasi
-              <input name="durationDays" type="number" min="1" max="25" defaultValue={1} required />
-            </label>
-            <BudgetField />
-          </div>
-          <label>
-            Travel style
-            <select name="travelStyle" defaultValue="Budget trip">
-              <option>Budget trip</option>
-              <option>Kuliner</option>
-              <option>Couple</option>
-              <option>Nature</option>
-              <option>City tour</option>
-              <option>Family</option>
-            </select>
-          </label>
-          <input type="hidden" name="isPublished" value="false" />
-          <label>
-            Cover image
-            <input name="imageFile" type="file" accept="image/png,image/jpeg,image/webp" />
-          </label>
-          <input type="hidden" name="coverImageUrl" value="/uploads/default-cover.svg" />
-          <label>
-            Deskripsi
-            <textarea name="description" rows={4} required />
-          </label>
-          <label>
-            Catatan
-            <textarea name="notes" rows={3} />
-          </label>
-          <button className="primary-button wide" type="submit">
-            Buat Itinerary & Lanjut Tambah Aktivitas
-          </button>
-          <p style={{ fontSize: "12px", color: "var(--muted)", textAlign: "center", margin: "4px 0 0 0" }}>
-            Itinerary akan disimpan sebagai draf privat terlebih dahulu. Anda dapat mempublikasikannya setelah melengkapi aktivitas hari pertama di halaman detail.
-            {isAdmin && (
-              <span style={{ display: "block", color: "#166534", marginTop: "4px", fontWeight: 600 }}>
-                👑 Mode Admin: Batas maksimal kuota publik dan privat akan di-bypass secara otomatis saat mempublikasikan itinerary yang sudah dilengkapi.
-              </span>
-            )}
-          </p>
-        </form>
+
+        <CreateItineraryForm isAdmin={isAdmin} curatedUserId={!user.isClaimed ? user.id : undefined} />
       </section>
     </main>
   );
