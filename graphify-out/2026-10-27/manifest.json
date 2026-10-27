@@ -180,13 +180,13 @@
     "semantic_hash": ""
   },
   "components/itinerary-interactive-view.tsx": {
-    "mtime": 1781330647.3635778,
-    "ast_hash": "00d17efa67a44a71f79a4d61f0ef0da2",
-    "semantic_hash": "00d17efa67a44a71f79a4d61f0ef0da2"
+    "mtime": 1793119337.3484552,
+    "ast_hash": "e6bb720725cb83ef82dfc60e3bc140b5",
+    "semantic_hash": ""
   },
   "components/jalanin-app.tsx": {
-    "mtime": 1793071454.9837565,
-    "ast_hash": "643fc16341c7a673973f88dec42de7d8",
+    "mtime": 1793119385.7929049,
+    "ast_hash": "aa8130dc3e1400ff7d04a0516ee69478",
     "semantic_hash": ""
   },
   "components/jalanin-landing.tsx": {
@@ -555,23 +555,28 @@
     "semantic_hash": ""
   },
   "components/ai-youtube-importer.tsx": {
-    "mtime": 1793116416.675273,
-    "ast_hash": "fb121408d68eaa9ce365d042e10e2687",
+    "mtime": 1793117127.8633735,
+    "ast_hash": "478d00bc45a84e250ac3b7597ac65744",
     "semantic_hash": ""
   },
   "components/create-itinerary-form.tsx": {
-    "mtime": 1793116446.3743923,
-    "ast_hash": "659197372cf526d5a2a5722dbcbcf91a",
+    "mtime": 1793117155.250126,
+    "ast_hash": "ea8e54ddf871e33020ec5529b285ab91",
     "semantic_hash": ""
   },
   "lib/youtube-ai.ts": {
-    "mtime": 1793116361.062104,
-    "ast_hash": "489ffb4ae18d49aa8931a62f5a10a983",
+    "mtime": 1793117059.076253,
+    "ast_hash": "d74a4627caabe3444489a79bb1638c95",
     "semantic_hash": ""
   },
   "tasks/task-ai-youtube-itinerary.md": {
     "mtime": 1793116503.092705,
     "ast_hash": "05601e03bac51709f9eb2055cc0c1359",
+    "semantic_hash": ""
+  },
+  "components/itinerary-route-board.tsx": {
+    "mtime": 1793119232.475162,
+    "ast_hash": "ed2f478387329e73ed85987f18cc1066",
     "semantic_hash": ""
   }
 }

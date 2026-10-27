@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import maplibregl from "maplibre-gl";
-import "maplibre-gl/dist/maplibre-gl.css";
 import { Icon } from "@/components/icon-sprite";
 import { formatRupiah } from "@/lib/format";
 import { activityIcon } from "@/lib/activity-types";
@@ -58,87 +56,7 @@ type SerializedItinerary = {
   days: SerializedDay[];
 };
 
-function RouteMap({ activities }: { activities: SerializedActivity[] }) {
-  const mapRef = useRef<HTMLDivElement | null>(null);
-  const points = useMemo(() => {
-    return activities.filter((activity) => typeof activity.latitude === "number" && typeof activity.longitude === "number") as Array<
-      SerializedActivity & { latitude: number; longitude: number }
-    >;
-  }, [activities]);
-
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    const defaultMapCenter: [number, number] = [106.8272, -6.1754];
-    const mapStyleUrl = "https://tiles.openfreemap.org/styles/liberty";
-
-    const center: [number, number] = points[0] ? [points[0].longitude, points[0].latitude] : defaultMapCenter;
-    const map = new maplibregl.Map({
-      container: mapRef.current,
-      style: mapStyleUrl,
-      center,
-      zoom: points.length ? 12 : 10,
-      scrollZoom: false,
-    });
-    map.dragRotate.disable();
-    map.touchZoomRotate.disableRotation();
-
-    map.on("load", () => {
-      points.forEach((point, index) => {
-        const marker = document.createElement("div");
-        marker.className = "route-marker";
-        marker.textContent = String(index + 1);
-        new maplibregl.Marker({ element: marker }).setLngLat([point.longitude, point.latitude]).addTo(map);
-      });
-
-      if (points.length > 1) {
-        const coordinates: [number, number][] = points.map((point) => [point.longitude, point.latitude]);
-        map.addSource("activity-route", {
-          type: "geojson",
-          data: {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "LineString",
-              coordinates,
-            },
-          },
-        });
-        map.addLayer({
-          id: "route-line",
-          type: "line",
-          source: "activity-route",
-          layout: {
-            "line-join": "round",
-            "line-cap": "round",
-          },
-          paint: {
-            "line-color": "#ee6b5e",
-            "line-width": 4.5,
-          },
-        });
-
-        // Fit map bounds
-        const bounds = coordinates.reduce(
-          (acc, coord) => acc.extend(coord),
-          new maplibregl.LngLatBounds(coordinates[0], coordinates[0])
-        );
-        map.fitBounds(bounds, { padding: 40 });
-      }
-    });
-
-    return () => {
-      map.remove();
-    };
-  }, [points]);
-
-  return (
-    <div className="route-map-wrap">
-      <div className="real-map" ref={mapRef} />
-      {!points.length && <div className="map-empty">Belum ada titik koordinat lokasi di hari ini.</div>}
-    </div>
-  );
-}
+import { ItineraryRouteBoard } from "@/components/itinerary-route-board";
 
 export function ItineraryInteractiveView({ itinerary }: { itinerary: SerializedItinerary }) {
   const [tab, setTab] = useState<"days" | "map">("days");
@@ -249,22 +167,7 @@ export function ItineraryInteractiveView({ itinerary }: { itinerary: SerializedI
                 ))}
               </div>
             </div>
-            <div className="route-board">
-              <RouteMap activities={currentDay.activities} />
-              <div className="route-list">
-                {currentDay.activities.map((activity, index) => (
-                  <article className="route-step" key={activity.id}>
-                    <span>{index + 1}</span>
-                    <div>
-                      <strong>{activity.title}</strong>
-                      <small>
-                        {activity.time} - {activity.locationName || activity.category}
-                      </small>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
+            <ItineraryRouteBoard activities={currentDay.activities} />
           </>
         )}
       </section>

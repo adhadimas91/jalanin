@@ -10,6 +10,7 @@ import { ACTIVITY_TYPE_COLORS, ACTIVITY_TYPES, activityIcon, computeTripInsights
 import { formatCompact, formatRupiah } from "@/lib/format";
 import { isGoogleMapsUrl, type ParsedLocation } from "@/lib/maps-parser";
 import { ShareItineraryButton } from "./share-itinerary-button";
+import { ItineraryRouteBoard } from "./itinerary-route-board";
 import { trackEvent } from "@/lib/analytics";
 
 export type JalaninUser = {
@@ -242,70 +243,7 @@ function PointPicker({
   return <div className="activity-map-picker" ref={mapRef} />;
 }
 
-function RouteMap({ activities }: { activities: Array<JalaninActivity | ActivityDraft> }) {
-  const mapRef = useRef<HTMLDivElement | null>(null);
-  const points = useMemo(() => activityPoints(activities), [activities]);
 
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    const center: [number, number] = points[0] ? [points[0].longitude, points[0].latitude] : defaultMapCenter;
-    const map = new maplibregl.Map({
-      container: mapRef.current,
-      style: mapStyleUrl,
-      center,
-      zoom: points.length ? 12 : 10,
-      scrollZoom: false,
-    });
-    map.dragRotate.disable();
-    map.touchZoomRotate.disableRotation();
-
-    map.on("load", () => {
-      points.forEach((point, index) => {
-        const marker = document.createElement("div");
-        marker.className = "route-marker";
-        marker.textContent = String(index + 1);
-        new maplibregl.Marker({ element: marker }).setLngLat([point.longitude, point.latitude]).addTo(map);
-      });
-
-      if (points.length > 1) {
-        const coordinates: [number, number][] = points.map((point) => [point.longitude, point.latitude]);
-        map.addSource("activity-route", {
-          type: "geojson",
-          data: {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "LineString",
-              coordinates,
-            },
-          },
-        });
-        map.addLayer({
-          id: "activity-route-line",
-          type: "line",
-          source: "activity-route",
-          paint: {
-            "line-color": "#e85d75",
-            "line-width": 4,
-            "line-opacity": 0.85,
-          },
-        });
-        const bounds = coordinates.reduce((box, coordinate) => box.extend(coordinate as [number, number]), new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
-        map.fitBounds(bounds, { padding: 48, maxZoom: 14 });
-      }
-    });
-
-    return () => map.remove();
-  }, [points]);
-
-  return (
-    <div className="route-map-wrap">
-      <div className="large-map real-map" ref={mapRef} />
-      {!points.length ? <div className="map-empty">Tambahkan koordinat aktivitas untuk melihat rute.</div> : null}
-    </div>
-  );
-}
 
 export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Props) {
   const [items, setItems] = useState(itineraries);
@@ -1098,22 +1036,7 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                         ))}
                       </div>
                     </div>
-                    <div className="route-board">
-                      <RouteMap activities={currentDay.activities} />
-                      <div className="route-list">
-                        {currentDay.activities.map((activity, index) => (
-                          <article className="route-step" key={activity.id}>
-                            <span>{index + 1}</span>
-                            <div>
-                              <strong>{activity.title}</strong>
-                              <small>
-                                {activity.time} - {activity.locationName || activity.category}
-                              </small>
-                            </div>
-                          </article>
-                        ))}
-                      </div>
-                    </div>
+                    <ItineraryRouteBoard activities={currentDay.activities} />
                   </>
                 )}
               </section>

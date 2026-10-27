@@ -249,8 +249,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_ai_extract_youtube_route",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "route.ts"
     },
     {
@@ -260,8 +260,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_admin_ai_extract_youtube_route_post",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "post()"
     },
     {
@@ -271,8 +271,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_claims_id_route",
-      "community": 41,
-      "community_name": "email.ts",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -282,8 +282,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_admin_claims_id_route_post",
-      "community": 41,
-      "community_name": "email.ts",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -293,8 +293,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_exit_route",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -304,8 +304,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_exit_route_get",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "get()"
     },
     {
@@ -315,8 +315,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_exit_route_post",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -326,8 +326,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_route",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -337,8 +337,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_route_post",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -381,8 +381,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_login_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -392,8 +392,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_login_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -436,8 +436,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_register_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -447,8 +447,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_register_route_usernamefromemail",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "usernamefromemail()"
     },
     {
@@ -458,8 +458,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_api_auth_register_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -469,8 +469,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_reset_password_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -480,8 +480,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_api_auth_reset_password_route_hashtoken",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "hashtoken()"
     },
     {
@@ -491,8 +491,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_api_auth_reset_password_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -502,8 +502,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_setup_password_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "route.ts"
     },
     {
@@ -513,8 +513,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_setup_password_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "post()"
     },
     {
@@ -546,8 +546,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_health_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "route.ts"
     },
     {
@@ -557,8 +557,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_health_route_envstatus",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "envstatus()"
     },
     {
@@ -568,8 +568,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_api_health_route_get",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "get()"
     },
     {
@@ -601,8 +601,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_itineraries_id_like_route",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -612,8 +612,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_itineraries_id_like_route_post",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -623,8 +623,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "app_api_itineraries_id_like_route_delete",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "delete()"
     },
     {
@@ -667,8 +667,8 @@
       "source_location": "L171",
       "_origin": "ast",
       "id": "app_api_itineraries_id_route_patch",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "patch()"
     },
     {
@@ -678,8 +678,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_itineraries_id_save_route",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -689,8 +689,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_itineraries_id_save_route_post",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -700,8 +700,8 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "app_api_itineraries_id_save_route_delete",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "delete()"
     },
     {
@@ -843,8 +843,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_mylink_whitelist_route",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -854,8 +854,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_mylink_whitelist_route_get",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "get()"
     },
     {
@@ -865,8 +865,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "app_api_mylink_whitelist_route_post",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -898,8 +898,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_profile_route",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -909,8 +909,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_profile_route_readnullabletext",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "readnullabletext()"
     },
     {
@@ -920,8 +920,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_api_profile_route_readusername",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "readusername()"
     },
     {
@@ -931,8 +931,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "app_api_profile_route_get",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "get()"
     },
     {
@@ -942,8 +942,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "app_api_profile_route_post",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -953,8 +953,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_subscription_route",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -964,8 +964,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_subscription_route_post",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -1041,8 +1041,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_create_page",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "page.tsx"
     },
     {
@@ -1052,8 +1052,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_create_page_createpage",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "createpage()"
     },
     {
@@ -1107,8 +1107,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "app_itinerary_id_page_generatemetadata",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "generatemetadata()"
     },
     {
@@ -1118,8 +1118,8 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "app_itinerary_id_page_itinerarydetailpage",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "itinerarydetailpage()"
     },
     {
@@ -1129,8 +1129,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_layout",
-      "community": 5,
-      "community_name": "Client-Side Prototype Logic",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "layout.tsx"
     },
     {
@@ -1140,8 +1140,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_layout_metadata",
-      "community": 5,
-      "community_name": "Client-Side Prototype Logic",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "metadata"
     },
     {
@@ -1151,8 +1151,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_layout_rootlayout",
-      "community": 5,
-      "community_name": "Client-Side Prototype Logic",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "rootlayout()"
     },
     {
@@ -1261,8 +1261,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_profile_username_page_profilepage",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "profilepage()"
     },
     {
@@ -1360,8 +1360,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_saved_page",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "page.tsx"
     },
     {
@@ -1371,8 +1371,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_saved_page_savedpage",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "savedpage()"
     },
     {
@@ -1778,8 +1778,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ai_youtube_importer",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "ai-youtube-importer.tsx"
     },
     {
@@ -1789,8 +1789,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_ai_youtube_importer_aiyoutubeimporterprops",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "aiyoutubeimporterprops"
     },
     {
@@ -1800,8 +1800,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_ai_youtube_importer_aiyoutubeimporter",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "aiyoutubeimporter()"
     },
     {
@@ -1888,8 +1888,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_create_itinerary_form",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "create-itinerary-form.tsx"
     },
     {
@@ -1899,8 +1899,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_create_itinerary_form_createitineraryformprops",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "createitineraryformprops"
     },
     {
@@ -1910,8 +1910,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "components_create_itinerary_form_createitineraryform",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "createitineraryform()"
     },
     {
@@ -1954,8 +1954,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_impersonation_banner",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "impersonation-banner.tsx"
     },
     {
@@ -1965,8 +1965,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_impersonation_banner_impersonationbanner",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "impersonationbanner()"
     },
     {
@@ -2127,7 +2127,7 @@
       "label": "SerializedActivity",
       "file_type": "code",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L11",
+      "source_location": "L9",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_serializedactivity",
       "community": 4,
@@ -2138,7 +2138,7 @@
       "label": "SerializedDay",
       "file_type": "code",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L32",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_serializedday",
       "community": 4,
@@ -2149,7 +2149,7 @@
       "label": "SerializedItinerary",
       "file_type": "code",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L39",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_serializeditinerary",
       "community": 4,
@@ -2157,26 +2157,92 @@
       "norm_label": "serializeditinerary"
     },
     {
-      "label": "RouteMap()",
-      "file_type": "code",
-      "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L61",
-      "_origin": "ast",
-      "id": "components_itinerary_interactive_view_routemap",
-      "community": 4,
-      "community_name": "Community 4",
-      "norm_label": "routemap()"
-    },
-    {
       "label": "ItineraryInteractiveView()",
       "file_type": "code",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L143",
+      "source_location": "L61",
       "_origin": "ast",
       "id": "components_itinerary_interactive_view_itineraryinteractiveview",
       "community": 4,
       "community_name": "Community 4",
       "norm_label": "itineraryinteractiveview()"
+    },
+    {
+      "label": "itinerary-route-board.tsx",
+      "file_type": "code",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "components_itinerary_route_board",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "itinerary-route-board.tsx"
+    },
+    {
+      "label": "RouteActivityItem",
+      "file_type": "code",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "components_itinerary_route_board_routeactivityitem",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "routeactivityitem"
+    },
+    {
+      "label": "ItineraryRouteBoardProps",
+      "file_type": "code",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "components_itinerary_route_board_itineraryrouteboardprops",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "itineraryrouteboardprops"
+    },
+    {
+      "label": "defaultMapCenter",
+      "file_type": "code",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "components_itinerary_route_board_defaultmapcenter",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "defaultmapcenter"
+    },
+    {
+      "label": "escapeHtml()",
+      "file_type": "code",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "components_itinerary_route_board_escapehtml",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "escapehtml()"
+    },
+    {
+      "label": "buildPopupHtml()",
+      "file_type": "code",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "components_itinerary_route_board_buildpopuphtml",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "buildpopuphtml()"
+    },
+    {
+      "label": "ItineraryRouteBoard()",
+      "file_type": "code",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L108",
+      "_origin": "ast",
+      "id": "components_itinerary_route_board_itineraryrouteboard",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "itineraryrouteboard()"
     },
     {
       "label": "jalanin-app.tsx",
@@ -2185,48 +2251,48 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_jalanin_app",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "jalanin-app.tsx"
     },
     {
       "label": "JalaninUser",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninuser",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "jalaninuser"
     },
     {
       "label": "JalaninActivity",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L27",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninactivity",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "jalaninactivity"
     },
     {
       "label": "JalaninDay",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L45",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninday",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "jalaninday"
     },
     {
       "label": "JalaninItinerary",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L52",
+      "source_location": "L53",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninitinerary",
       "community": 0,
@@ -2237,150 +2303,150 @@
       "label": "Props",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L79",
+      "source_location": "L80",
       "_origin": "ast",
       "id": "components_jalanin_app_props",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "props"
     },
     {
       "label": "filters",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L86",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "components_jalanin_app_filters",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "filters"
     },
     {
       "label": "ActivityDraft",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L88",
+      "source_location": "L89",
       "_origin": "ast",
       "id": "components_jalanin_app_activitydraft",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "activitydraft"
     },
     {
       "label": "DayDraft",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L103",
+      "source_location": "L104",
       "_origin": "ast",
       "id": "components_jalanin_app_daydraft",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "daydraft"
     },
     {
       "label": "LocationResult",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L108",
+      "source_location": "L109",
       "_origin": "ast",
       "id": "components_jalanin_app_locationresult",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "locationresult"
     },
     {
       "label": "defaultMapCenter",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L118",
+      "source_location": "L119",
       "_origin": "ast",
       "id": "components_jalanin_app_defaultmapcenter",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "defaultmapcenter"
     },
     {
       "label": "createBlankActivity()",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L120",
+      "source_location": "L121",
       "_origin": "ast",
       "id": "components_jalanin_app_createblankactivity",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "createblankactivity()"
     },
     {
       "label": "createBlankDay()",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L137",
+      "source_location": "L138",
       "_origin": "ast",
       "id": "components_jalanin_app_createblankday",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "createblankday()"
     },
     {
       "label": "fromActivity()",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L144",
+      "source_location": "L145",
       "_origin": "ast",
       "id": "components_jalanin_app_fromactivity",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "fromactivity()"
     },
     {
       "label": "fromDay()",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L161",
+      "source_location": "L162",
       "_origin": "ast",
       "id": "components_jalanin_app_fromday",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "fromday()"
     },
     {
       "label": "draftKey()",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L168",
+      "source_location": "L169",
       "_origin": "ast",
       "id": "components_jalanin_app_draftkey",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "draftkey()"
     },
     {
       "label": "createLocationQueryMap()",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L172",
+      "source_location": "L173",
       "_origin": "ast",
       "id": "components_jalanin_app_createlocationquerymap",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "createlocationquerymap()"
     },
     {
       "label": "activityPoints()",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L180",
+      "source_location": "L181",
       "_origin": "ast",
       "id": "components_jalanin_app_activitypoints",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "activitypoints()"
     },
     {
       "label": "PointPicker()",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L186",
+      "source_location": "L187",
       "_origin": "ast",
       "id": "components_jalanin_app_pointpicker",
       "community": 0,
@@ -2388,25 +2454,14 @@
       "norm_label": "pointpicker()"
     },
     {
-      "label": "RouteMap()",
-      "file_type": "code",
-      "source_file": "components/jalanin-app.tsx",
-      "source_location": "L245",
-      "_origin": "ast",
-      "id": "components_jalanin_app_routemap",
-      "community": 0,
-      "community_name": "Interactive UI Components",
-      "norm_label": "routemap()"
-    },
-    {
       "label": "JalaninApp()",
       "file_type": "code",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L310",
+      "source_location": "L248",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninapp",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "jalaninapp()"
     },
     {
@@ -2746,8 +2801,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_activity_types",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "activity-types.ts"
     },
     {
@@ -2757,8 +2812,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_activity_types_activity_types",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "activity_types"
     },
     {
@@ -2768,8 +2823,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_activity_types_activitytype",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "activitytype"
     },
     {
@@ -2779,8 +2834,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "lib_activity_types_isknownactivitytype",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "isknownactivitytype()"
     },
     {
@@ -2801,8 +2856,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "lib_activity_types_normalizeactivitytype",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "normalizeactivitytype()"
     },
     {
@@ -2812,8 +2867,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "lib_activity_types_activity_type_colors",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "activity_type_colors"
     },
     {
@@ -2823,8 +2878,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "lib_activity_types_activitycost",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "activitycost"
     },
     {
@@ -2834,8 +2889,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "lib_activity_types_tripday",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "tripday"
     },
     {
@@ -2845,8 +2900,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "lib_activity_types_tripinsightline",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "tripinsightline"
     },
     {
@@ -2856,8 +2911,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "lib_activity_types_computetripinsights",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "computetripinsights()"
     },
     {
@@ -3208,8 +3263,8 @@
       "source_location": "L713",
       "_origin": "ast",
       "id": "lib_admin_approveaccountclaim",
-      "community": 41,
-      "community_name": "email.ts",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "approveaccountclaim()"
     },
     {
@@ -3219,8 +3274,8 @@
       "source_location": "L755",
       "_origin": "ast",
       "id": "lib_admin_rejectaccountclaim",
-      "community": 41,
-      "community_name": "email.ts",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "rejectaccountclaim()"
     },
     {
@@ -3252,8 +3307,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_auth",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "auth.ts"
     },
     {
@@ -3263,8 +3318,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "lib_auth_adminemails",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "adminemails()"
     },
     {
@@ -3274,8 +3329,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "lib_auth_hashtoken",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "hashtoken()"
     },
     {
@@ -3285,8 +3340,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "lib_auth_createsession",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "createsession()"
     },
     {
@@ -3307,8 +3362,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "lib_auth_getimpersonatoruser",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "getimpersonatoruser()"
     },
     {
@@ -3318,8 +3373,8 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "lib_auth_startimpersonation",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "startimpersonation()"
     },
     {
@@ -3329,8 +3384,8 @@
       "source_location": "L146",
       "_origin": "ast",
       "id": "lib_auth_stopimpersonation",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "stopimpersonation()"
     },
     {
@@ -3340,8 +3395,8 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "lib_auth_getcurrentuser",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "getcurrentuser()"
     },
     {
@@ -3351,8 +3406,8 @@
       "source_location": "L230",
       "_origin": "ast",
       "id": "lib_auth_isadminuser",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "isadminuser()"
     },
     {
@@ -3362,8 +3417,8 @@
       "source_location": "L238",
       "_origin": "ast",
       "id": "lib_auth_requirecurrentuser",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "requirecurrentuser()"
     },
     {
@@ -3373,8 +3428,8 @@
       "source_location": "L250",
       "_origin": "ast",
       "id": "lib_auth_requireadminuser",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "requireadminuser()"
     },
     {
@@ -3406,8 +3461,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "lib_blob_storage_getblobstoragestatus",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "getblobstoragestatus()"
     },
     {
@@ -3571,8 +3626,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "lib_format_formatcompact",
-      "community": 0,
-      "community_name": "Interactive UI Components",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "formatcompact()"
     },
     {
@@ -3978,8 +4033,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_password",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "password.ts"
     },
     {
@@ -3989,8 +4044,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_password_scrypt",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "scrypt"
     },
     {
@@ -4000,8 +4055,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "lib_password_hashpassword",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "hashpassword()"
     },
     {
@@ -4011,8 +4066,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "lib_password_verifypassword",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 44,
+      "community_name": "Icon",
       "norm_label": "verifypassword()"
     },
     {
@@ -4165,8 +4220,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_youtube_ai",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "youtube-ai.ts"
     },
     {
@@ -4176,8 +4231,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "lib_youtube_ai_extractedactivity",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "extractedactivity"
     },
     {
@@ -4187,8 +4242,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "lib_youtube_ai_extractedday",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "extractedday"
     },
     {
@@ -4198,8 +4253,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "lib_youtube_ai_aiitineraryresult",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "aiitineraryresult"
     },
     {
@@ -4209,8 +4264,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "lib_youtube_ai_extractyoutubevideoid",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "extractyoutubevideoid()"
     },
     {
@@ -4220,8 +4275,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "lib_youtube_ai_fetchyoutubemetadata",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "fetchyoutubemetadata()"
     },
     {
@@ -4231,8 +4286,8 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "lib_youtube_ai_callgeminiapi",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "callgeminiapi()"
     },
     {
@@ -4242,8 +4297,8 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "lib_youtube_ai_extractitineraryfromyoutube",
-      "community": 8,
-      "community_name": "Google Maps URL Parser",
+      "community": 45,
+      "community_name": "isAdminUser",
       "norm_label": "extractitineraryfromyoutube()"
     },
     {
@@ -12881,10 +12936,22 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L7",
+      "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_interactive_view",
+      "target": "components_icon_sprite",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board",
       "target": "components_icon_sprite",
       "confidence_score": 1.0
     },
@@ -13073,7 +13140,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L7",
+      "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_interactive_view",
@@ -13089,6 +13156,18 @@
       "weight": 1.0,
       "source": "components_itinerary_interactive_view_itineraryinteractiveview",
       "target": "components_icon_sprite_icon"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board",
+      "target": "components_icon_sprite_icon",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -13742,7 +13821,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L143",
+      "source_location": "L61",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_interactive_view",
@@ -13753,18 +13832,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L61",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "components_itinerary_interactive_view",
-      "target": "components_itinerary_interactive_view_routemap",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L11",
+      "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_interactive_view",
@@ -13775,7 +13843,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L32",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_interactive_view",
@@ -13786,7 +13854,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L39",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_interactive_view",
@@ -13798,7 +13866,31 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L9",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_interactive_view",
+      "target": "components_itinerary_route_board",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-interactive-view.tsx",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_interactive_view",
+      "target": "components_itinerary_route_board_itineraryrouteboard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-interactive-view.tsx",
+      "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_interactive_view",
@@ -13810,7 +13902,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L9",
+      "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_interactive_view",
@@ -13822,7 +13914,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L8",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_interactive_view",
@@ -13834,7 +13926,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L8",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_interactive_view",
@@ -13842,32 +13934,12 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "components_itinerary_interactive_view_itineraryinteractiveview",
-      "target": "components_itinerary_interactive_view_routemap"
-    },
-    {
-      "relation": "semantically_similar_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "components_itinerary_interactive_view_routemap",
-      "target": "components_jalanin_app_routemap"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L184",
+      "source_location": "L102",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_interactive_view_itineraryinteractiveview",
@@ -13879,7 +13951,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/itinerary-interactive-view.tsx",
-      "source_location": "L228",
+      "source_location": "L146",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_itinerary_interactive_view_itineraryinteractiveview",
@@ -13888,8 +13960,170 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board",
+      "target": "components_itinerary_route_board_buildpopuphtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board",
+      "target": "components_itinerary_route_board_defaultmapcenter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board",
+      "target": "components_itinerary_route_board_escapehtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L108",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board",
+      "target": "components_itinerary_route_board_itineraryrouteboard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board",
+      "target": "components_itinerary_route_board_itineraryrouteboardprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board",
+      "target": "components_itinerary_route_board_routeactivityitem",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board",
+      "target": "lib_format",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board",
+      "target": "lib_format_formatrupiah",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L88",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_jalanin_app",
+      "target": "components_itinerary_route_board",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board_buildpopuphtml",
+      "target": "components_itinerary_route_board_escapehtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board_buildpopuphtml",
+      "target": "lib_format_formatrupiah",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L207",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board_itineraryrouteboard",
+      "target": "components_itinerary_route_board_buildpopuphtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components/itinerary-route-board.tsx",
+      "source_location": "L407",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_itinerary_route_board_itineraryrouteboard",
+      "target": "lib_format_formatrupiah"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/jalanin-app.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_jalanin_app",
+      "target": "components_itinerary_route_board_itineraryrouteboard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/jalanin-app.tsx",
+      "source_location": "L89",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -13900,7 +14134,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L180",
+      "source_location": "L181",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -13911,7 +14145,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L120",
+      "source_location": "L121",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -13922,7 +14156,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L137",
+      "source_location": "L138",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -13933,7 +14167,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L172",
+      "source_location": "L173",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -13944,7 +14178,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L103",
+      "source_location": "L104",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -13955,7 +14189,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L118",
+      "source_location": "L119",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -13966,7 +14200,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L168",
+      "source_location": "L169",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -13977,7 +14211,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L86",
+      "source_location": "L87",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -13988,7 +14222,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L144",
+      "source_location": "L145",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -13999,7 +14233,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L161",
+      "source_location": "L162",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -14010,7 +14244,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L27",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -14021,7 +14255,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L310",
+      "source_location": "L248",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -14032,7 +14266,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L45",
+      "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -14043,7 +14277,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L52",
+      "source_location": "L53",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -14054,7 +14288,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -14065,7 +14299,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L108",
+      "source_location": "L109",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -14076,7 +14310,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L186",
+      "source_location": "L187",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -14087,22 +14321,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L79",
+      "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
       "target": "components_jalanin_app_props",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "components/jalanin-app.tsx",
-      "source_location": "L245",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "components_jalanin_app",
-      "target": "components_jalanin_app_routemap",
       "confidence_score": 1.0
     },
     {
@@ -14265,7 +14488,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -14277,7 +14500,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app",
@@ -14385,7 +14608,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L140",
+      "source_location": "L141",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_createblankday",
@@ -14397,7 +14620,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L164",
+      "source_location": "L165",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_fromday",
@@ -14409,7 +14632,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L325",
+      "source_location": "L263",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_jalaninapp",
@@ -14421,7 +14644,7 @@
       "context": "argument",
       "confidence": "INFERRED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L164",
+      "source_location": "L165",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_fromday",
@@ -14433,7 +14656,7 @@
       "context": "argument",
       "confidence": "INFERRED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L395",
+      "source_location": "L333",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_jalaninapp",
@@ -14445,7 +14668,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L175",
+      "source_location": "L176",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_createlocationquerymap",
@@ -14457,7 +14680,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L1482",
+      "source_location": "L1405",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_jalaninapp",
@@ -14469,23 +14692,11 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L328",
+      "source_location": "L266",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_jalaninapp",
       "target": "components_jalanin_app_createlocationquerymap",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "components/jalanin-app.tsx",
-      "source_location": "L247",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "components_jalanin_app_routemap",
-      "target": "components_jalanin_app_activitypoints",
       "confidence_score": 1.0
     },
     {
@@ -14497,16 +14708,6 @@
       "weight": 1.0,
       "source": "components_jalanin_app_jalaninapp",
       "target": "components_jalanin_app_pointpicker"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "components/jalanin-app.tsx",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "components_jalanin_app_jalaninapp",
-      "target": "components_jalanin_app_routemap"
     },
     {
       "relation": "references",
@@ -14544,7 +14745,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L1039",
+      "source_location": "L977",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_jalaninapp",
@@ -14556,7 +14757,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L380",
+      "source_location": "L318",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_jalaninapp",
@@ -14578,7 +14779,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L1507",
+      "source_location": "L1430",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_jalaninapp",
@@ -14590,7 +14791,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L349",
+      "source_location": "L287",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_jalaninapp",
@@ -14602,7 +14803,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L949",
+      "source_location": "L887",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_jalaninapp",
@@ -14614,7 +14815,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/jalanin-app.tsx",
-      "source_location": "L952",
+      "source_location": "L890",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_jalanin_app_jalaninapp",
@@ -20628,5 +20829,5 @@
       "source_file": "tasks/task-1-grid-layout.md"
     }
   ],
-  "built_at_commit": "c598aa50136df4fd1bf880d2d5acc4fe3ce9a273"
+  "built_at_commit": "7e6fb707a8d64d6123689eb0b6c080e5d2c0a20d"
 }

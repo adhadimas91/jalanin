@@ -180,13 +180,13 @@
     "semantic_hash": ""
   },
   "components/itinerary-interactive-view.tsx": {
-    "mtime": 1781330647.3635778,
-    "ast_hash": "00d17efa67a44a71f79a4d61f0ef0da2",
-    "semantic_hash": "00d17efa67a44a71f79a4d61f0ef0da2"
+    "mtime": 1793119337.3484552,
+    "ast_hash": "e6bb720725cb83ef82dfc60e3bc140b5",
+    "semantic_hash": ""
   },
   "components/jalanin-app.tsx": {
-    "mtime": 1793071454.9837565,
-    "ast_hash": "643fc16341c7a673973f88dec42de7d8",
+    "mtime": 1793119385.7929049,
+    "ast_hash": "aa8130dc3e1400ff7d04a0516ee69478",
     "semantic_hash": ""
   },
   "components/jalanin-landing.tsx": {
@@ -572,6 +572,11 @@
   "tasks/task-ai-youtube-itinerary.md": {
     "mtime": 1793116503.092705,
     "ast_hash": "05601e03bac51709f9eb2055cc0c1359",
+    "semantic_hash": ""
+  },
+  "components/itinerary-route-board.tsx": {
+    "mtime": 1793120220.9009786,
+    "ast_hash": "92c3d67ba6c9f569f690be40f5bf9500",
     "semantic_hash": ""
   }
 }
