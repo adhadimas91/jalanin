@@ -1,11 +1,18 @@
 import nodemailer from "nodemailer";
 
 function getTransporter() {
-  const host = process.env.SMTP_HOST;
-  const port = Number(process.env.SMTP_PORT || 587);
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
-  const secure = process.env.SMTP_SECURE === "true" || port === 465;
+  const isGmail =
+    process.env.SMTP_SERVICE === "gmail" ||
+    (!process.env.SMTP_HOST && Boolean(user?.toLowerCase().includes("@gmail.com")));
+
+  const host = process.env.SMTP_HOST || (isGmail ? "smtp.gmail.com" : undefined);
+  const port = Number(process.env.SMTP_PORT || (isGmail ? 465 : 587));
+  const secure =
+    process.env.SMTP_SECURE !== undefined
+      ? process.env.SMTP_SECURE === "true"
+      : port === 465 || isGmail;
 
   if (!host || !user || !pass) {
     return null;
@@ -22,7 +29,12 @@ function getTransporter() {
   });
 }
 
-const defaultFrom = process.env.EMAIL_FROM || "Jalanin <noreply@jalanin.id>";
+function getDefaultFrom() {
+  return (
+    process.env.EMAIL_FROM ||
+    (process.env.SMTP_USER ? `Jalanin <${process.env.SMTP_USER}>` : "Jalanin <noreply@jalanin.id>")
+  );
+}
 
 export function getBaseUrl() {
   return (
@@ -90,7 +102,7 @@ export async function sendClaimApprovedEmail(params: {
 
   try {
     const info = await transporter.sendMail({
-      from: defaultFrom,
+      from: getDefaultFrom(),
       to,
       subject,
       html,
@@ -132,7 +144,7 @@ export async function sendClaimSubmittedEmail(params: {
 
   try {
     await transporter.sendMail({
-      from: defaultFrom,
+      from: getDefaultFrom(),
       to,
       subject,
       html,
@@ -176,7 +188,7 @@ export async function sendClaimRejectedEmail(params: {
 
   try {
     await transporter.sendMail({
-      from: defaultFrom,
+      from: getDefaultFrom(),
       to,
       subject,
       html,
@@ -246,7 +258,7 @@ export async function sendPasswordResetEmail(params: {
 
   try {
     const info = await transporter.sendMail({
-      from: defaultFrom,
+      from: getDefaultFrom(),
       to,
       subject,
       html,

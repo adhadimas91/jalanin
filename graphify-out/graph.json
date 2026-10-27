@@ -249,8 +249,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_claims_id_route",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "route.ts"
     },
     {
@@ -260,8 +260,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_admin_claims_id_route_post",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "post()"
     },
     {
@@ -271,8 +271,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_forgot_password_route",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "route.ts"
     },
     {
@@ -282,8 +282,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_forgot_password_route_hashtoken",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "hashtoken()"
     },
     {
@@ -293,8 +293,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_api_auth_forgot_password_route_post",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "post()"
     },
     {
@@ -304,8 +304,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_login_route",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -315,8 +315,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_login_route_post",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -348,8 +348,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_register_route",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -359,8 +359,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_register_route_usernamefromemail",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "usernamefromemail()"
     },
     {
@@ -370,8 +370,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_api_auth_register_route_post",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -381,8 +381,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_reset_password_route",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -392,8 +392,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_api_auth_reset_password_route_hashtoken",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "hashtoken()"
     },
     {
@@ -403,8 +403,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_api_auth_reset_password_route_post",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -414,8 +414,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_setup_password_route",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -425,8 +425,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_setup_password_route_post",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -436,8 +436,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_claim_route",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "route.ts"
     },
     {
@@ -447,8 +447,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_claim_route_post",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "post()"
     },
     {
@@ -744,8 +744,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_mylink_whitelist_route",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -755,8 +755,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_mylink_whitelist_route_get",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "get()"
     },
     {
@@ -2988,8 +2988,8 @@
       "source_location": "L713",
       "_origin": "ast",
       "id": "lib_admin_approveaccountclaim",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "approveaccountclaim()"
     },
     {
@@ -2999,8 +2999,8 @@
       "source_location": "L755",
       "_origin": "ast",
       "id": "lib_admin_rejectaccountclaim",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "rejectaccountclaim()"
     },
     {
@@ -3065,8 +3065,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "lib_auth_createsession",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "createsession()"
     },
     {
@@ -3109,8 +3109,8 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "lib_auth_requirecurrentuser",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "requirecurrentuser()"
     },
     {
@@ -3120,8 +3120,8 @@
       "source_location": "L123",
       "_origin": "ast",
       "id": "lib_auth_requireadminuser",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "requireadminuser()"
     },
     {
@@ -3175,8 +3175,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_email",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "email.ts"
     },
     {
@@ -3186,63 +3186,74 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_email_gettransporter",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "gettransporter()"
+    },
+    {
+      "label": "getDefaultFrom()",
+      "file_type": "code",
+      "source_file": "lib/email.ts",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "lib_email_getdefaultfrom",
+      "community": 41,
+      "community_name": "email.ts",
+      "norm_label": "getdefaultfrom()"
     },
     {
       "label": "getBaseUrl()",
       "file_type": "code",
       "source_file": "lib/email.ts",
-      "source_location": "L27",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "lib_email_getbaseurl",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "getbaseurl()"
     },
     {
       "label": "sendClaimApprovedEmail()",
       "file_type": "code",
       "source_file": "lib/email.ts",
-      "source_location": "L35",
+      "source_location": "L47",
       "_origin": "ast",
       "id": "lib_email_sendclaimapprovedemail",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "sendclaimapprovedemail()"
     },
     {
       "label": "sendClaimSubmittedEmail()",
       "file_type": "code",
       "source_file": "lib/email.ts",
-      "source_location": "L105",
+      "source_location": "L117",
       "_origin": "ast",
       "id": "lib_email_sendclaimsubmittedemail",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "sendclaimsubmittedemail()"
     },
     {
       "label": "sendClaimRejectedEmail()",
       "file_type": "code",
       "source_file": "lib/email.ts",
-      "source_location": "L147",
+      "source_location": "L159",
       "_origin": "ast",
       "id": "lib_email_sendclaimrejectedemail",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "sendclaimrejectedemail()"
     },
     {
       "label": "sendPasswordResetEmail()",
       "file_type": "code",
       "source_file": "lib/email.ts",
-      "source_location": "L191",
+      "source_location": "L203",
       "_origin": "ast",
       "id": "lib_email_sendpasswordresetemail",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "sendpasswordresetemail()"
     },
     {
@@ -3703,8 +3714,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_password",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "password.ts"
     },
     {
@@ -3714,8 +3725,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_password_scrypt",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "scrypt"
     },
     {
@@ -3725,8 +3736,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "lib_password_hashpassword",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "hashpassword()"
     },
     {
@@ -3736,8 +3747,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "lib_password_verifypassword",
-      "community": 6,
-      "community_name": "Supabase Authentication Flow",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "verifypassword()"
     },
     {
@@ -3912,8 +3923,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "package",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "package.json"
     },
     {
@@ -3923,8 +3934,8 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "package_name",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "name"
     },
     {
@@ -3934,8 +3945,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "package_version",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "version"
     },
     {
@@ -3945,8 +3956,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "package_private",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "private"
     },
     {
@@ -3956,8 +3967,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "package_type",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "type"
     },
     {
@@ -3967,8 +3978,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "package_scripts",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "scripts"
     },
     {
@@ -3978,8 +3989,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "package_scripts_dev",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "dev"
     },
     {
@@ -3989,8 +4000,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "package_scripts_build",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "build"
     },
     {
@@ -4000,8 +4011,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "package_scripts_vercel_build",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "vercel-build"
     },
     {
@@ -4011,8 +4022,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "package_scripts_start",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "start"
     },
     {
@@ -4022,8 +4033,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "package_scripts_prisma_compile",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma:compile"
     },
     {
@@ -4033,8 +4044,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "package_scripts_prisma_generate",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma:generate"
     },
     {
@@ -4044,8 +4055,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "package_scripts_prisma_migrate",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma:migrate"
     },
     {
@@ -4055,8 +4066,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "package_scripts_prisma_seed",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma:seed"
     },
     {
@@ -4066,8 +4077,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "package_scripts_prisma_verify",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma:verify"
     },
     {
@@ -4077,8 +4088,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "package_scripts_prisma_studio",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma:studio"
     },
     {
@@ -4088,8 +4099,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "package_scripts_storage_setup",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "storage:setup"
     },
     {
@@ -4099,8 +4110,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "package_prisma",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "prisma"
     },
     {
@@ -4110,8 +4121,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "package_prisma_seed",
-      "community": 3,
-      "community_name": "Project Configurations",
+      "community": 9,
+      "community_name": "Time Inputs & Calculations",
       "norm_label": "seed"
     },
     {
@@ -15214,11 +15225,22 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/email.ts",
-      "source_location": "L27",
+      "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_email",
       "target": "lib_email_getbaseurl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/email.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_email",
+      "target": "lib_email_getdefaultfrom",
       "confidence_score": 1.0
     },
     {
@@ -15236,7 +15258,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/email.ts",
-      "source_location": "L35",
+      "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_email",
@@ -15247,7 +15269,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/email.ts",
-      "source_location": "L147",
+      "source_location": "L159",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_email",
@@ -15258,7 +15280,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/email.ts",
-      "source_location": "L105",
+      "source_location": "L117",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_email",
@@ -15269,7 +15291,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/email.ts",
-      "source_location": "L191",
+      "source_location": "L203",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_email",
@@ -15281,7 +15303,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/email.ts",
-      "source_location": "L43",
+      "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_email_sendclaimapprovedemail",
@@ -15293,7 +15315,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/email.ts",
-      "source_location": "L154",
+      "source_location": "L166",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_email_sendclaimrejectedemail",
@@ -15305,7 +15327,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/email.ts",
-      "source_location": "L111",
+      "source_location": "L123",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_email_sendclaimsubmittedemail",
@@ -15317,11 +15339,59 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/email.ts",
-      "source_location": "L197",
+      "source_location": "L209",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_email_sendpasswordresetemail",
       "target": "lib_email_gettransporter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/email.ts",
+      "source_location": "L105",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_email_sendclaimapprovedemail",
+      "target": "lib_email_getdefaultfrom",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/email.ts",
+      "source_location": "L191",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_email_sendclaimrejectedemail",
+      "target": "lib_email_getdefaultfrom",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/email.ts",
+      "source_location": "L147",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_email_sendclaimsubmittedemail",
+      "target": "lib_email_getdefaultfrom",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/email.ts",
+      "source_location": "L261",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_email_sendpasswordresetemail",
+      "target": "lib_email_getdefaultfrom",
       "confidence_score": 1.0
     },
     {
@@ -18866,5 +18936,5 @@
       "source_file": "tasks/task-1-grid-layout.md"
     }
   ],
-  "built_at_commit": "98e7397f2ff1845d5d9fc65e29cabe0d95ac4562"
+  "built_at_commit": "effbe2af4092183c0313746b16e4103179180bcd"
 }
