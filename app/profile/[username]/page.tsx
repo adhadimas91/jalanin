@@ -162,6 +162,15 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
               >
                 Link MyLink
               </TrackedLink>
+              <form action="/api/auth/logout" method="post" style={{ display: "inline-flex", margin: 0, marginLeft: "8px" }}>
+                <button
+                  type="submit"
+                  className="mini-button muted"
+                  style={{ color: "#e53e3e", borderColor: "rgba(229, 62, 62, 0.3)" }}
+                >
+                  Logout
+                </button>
+              </form>
             </div>
           ) : null}
         </div>

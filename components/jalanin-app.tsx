@@ -1618,8 +1618,8 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
         </Link>
         {currentUser ? (
           <form action="/api/auth/logout" method="post" className="mobile-logout-form">
-            <button type="submit">
-              <Icon name="x" />
+            <button type="submit" aria-label="Logout">
+              <Icon name="log-out" />
               <span>Logout</span>
             </button>
           </form>

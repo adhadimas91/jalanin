@@ -160,13 +160,12 @@ If Vercel shows `Cannot resolve environment variable: DATABASE_URL`, the Vercel 
 
 `SUPABASE_SERVICE_ROLE_KEY` is server-only. Never expose it in client code or prefix it with `NEXT_PUBLIC_`.
 
-## Demo Account
+## Initial Seed Data
 
-Seed account:
+Jalankan seed untuk inisialisasi whitelist domain dan pengaturan aplikasi default:
 
-```text
-Email: risa@jalanin.local
-Password: jalanin123
+```bash
+npm run prisma:seed
 ```
 
 ## Main Routes

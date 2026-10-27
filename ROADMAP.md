@@ -524,7 +524,7 @@ Minimal 30 itinerary awal.
 
 - [ ] User can register.
 - [ ] User can login.
-- [ ] User can logout.
+- [x] User can logout.
 - [ ] Guest can view feed.
 - [ ] Guest can view detail.
 - [ ] Logged-in user can create itinerary.

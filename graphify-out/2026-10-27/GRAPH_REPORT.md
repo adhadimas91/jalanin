@@ -1,16 +1,16 @@
-# Graph Report - jalanin  (2026-10-26)
+# Graph Report - jalanin  (2026-10-27)
 
 ## Corpus Check
-- 103 files · ~51,695 words
+- 103 files · ~51,665 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 559 nodes · 1083 edges · 45 communities (25 shown, 20 thin omitted)
+- 560 nodes · 1091 edges · 45 communities (25 shown, 20 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `effbe2af`
+- Built from commit: `3ee8ea62`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -78,8 +78,8 @@
   script.js → jalanin_mvp.md
 - `CreatePage()` --calls--> `getCurrentUser()`  [EXTRACTED]
   app/create/page.tsx → lib/auth.ts
-- `ProfileSettingsPage()` --calls--> `getCurrentUser()`  [EXTRACTED]
-  app/settings/profile/page.tsx → lib/auth.ts
+- `tableConfigs` --references--> `DEFAULT_ACTIVITY_TYPE`  [EXTRACTED]
+  components/admin-console.tsx → lib/activity-types.ts
 
 ## Import Cycles
 - None detected.
@@ -105,23 +105,23 @@ Nodes (28): envStatus(), GET(), PUT(), POST(), POST(), generateMetadata(), Home(
 
 ### Community 2 - "Admin Panel & Console Operations"
 Cohesion: 0.09
-Nodes (47): AdminPage(), DELETE(), isAdminTable(), PATCH(), GET(), isAdminTable(), POST(), DELETE() (+39 more)
+Nodes (46): AdminPage(), DELETE(), isAdminTable(), PATCH(), GET(), isAdminTable(), POST(), DELETE() (+38 more)
 
 ### Community 3 - "Project Configurations"
-Cohesion: 0.09
-Nodes (23): autoprefixer, devDependencies, autoprefixer, prisma, tailwindcss, @tailwindcss/postcss, tsx, @types/node (+15 more)
+Cohesion: 0.05
+Nodes (41): autoprefixer, devDependencies, autoprefixer, prisma, tailwindcss, @tailwindcss/postcss, tsx, @types/node (+33 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.10
-Nodes (27): ItineraryDetailPage(), ProfilePage(), Props, RegisterFormClient(), ProfileSettingsPage(), CloneItineraryButton(), Icon(), IconSprite() (+19 more)
+Nodes (26): ItineraryDetailPage(), ProfilePage(), Props, RegisterFormClient(), CloneItineraryButton(), Icon(), IconSprite(), ItineraryInteractiveView() (+18 more)
 
 ### Community 5 - "Client-Side Prototype Logic"
 Cohesion: 0.12
 Nodes (25): metadata, Clone Rate Metric, Instagram untuk Itinerary Perjalanan, Jalanin Rute Ini (Clone Itinerary), Save Rate Metric, Simpan Rute (Save Itinerary), Creator Revenue Protection, allItineraries() (+17 more)
 
 ### Community 6 - "Supabase Authentication Flow"
-Cohesion: 0.32
-Nodes (7): adapter, ensureItinerary(), itineraries, main(), prisma, SeedActivity, SeedItinerary
+Cohesion: 0.18
+Nodes (17): POST(), POST(), usernameFromEmail(), hashToken(), POST(), POST(), createSession(), hashPassword() (+9 more)
 
 ### Community 7 - "TypeScript Configuration"
 Cohesion: 0.06
@@ -132,8 +132,8 @@ Cohesion: 0.29
 Nodes (12): POST(), buildGeocodeCandidates(), extractCoordsFromGoogleMapsUrl(), extractGoogleMapsUrl(), extractPlacePinCoords(), extractPlaceQueryFromGoogleMapsUrl(), geocodePlaceQuery(), geocodeWithGeoapify() (+4 more)
 
 ### Community 9 - "Time Inputs & Calculations"
-Cohesion: 0.05
-Nodes (41): dotenv, maplibre-gl, next, nodemailer, dependencies, dotenv, maplibre-gl, next (+33 more)
+Cohesion: 0.09
+Nodes (23): dotenv, maplibre-gl, next, nodemailer, dependencies, dotenv, maplibre-gl, next (+15 more)
 
 ### Community 10 - "Supabase Storage Integration"
 Cohesion: 0.10
@@ -144,8 +144,8 @@ Cohesion: 0.50
 Nodes (3): Answer, Q: Why does getCurrentUser() connect API Routes & User Sessions to Interactive UI Components, Admin Panel & Console Operations, Itinerary Creation & Forms, Budget Fields?, Source Nodes
 
 ### Community 12 - "Budget Fields"
-Cohesion: 0.07
-Nodes (41): POST(), POST(), POST(), usernameFromEmail(), hashToken(), POST(), POST(), POST() (+33 more)
+Cohesion: 0.08
+Nodes (34): POST(), POST(), DELETE(), POST(), DELETE(), POST(), DELETE(), GET() (+26 more)
 
 ### Community 13 - "OSM Mapping Alternatives"
 Cohesion: 0.40
@@ -172,8 +172,8 @@ Cohesion: 0.12
 Nodes (15): API Routes, Auth Flow, Current Gaps, Database, Demo Account, Development, Environment, Install (+7 more)
 
 ### Community 41 - "email.ts"
-Cohesion: 0.22
-Nodes (15): POST(), hashToken(), POST(), POST(), approveAccountClaim(), rejectAccountClaim(), requireAdminUser(), requireCurrentUser() (+7 more)
+Cohesion: 0.26
+Nodes (15): POST(), hashToken(), POST(), POST(), approveAccountClaim(), rejectAccountClaim(), requireAdminUser(), getBaseUrl() (+7 more)
 
 ### Community 43 - "Jalanin — AGENTS.md"
 Cohesion: 0.33
@@ -187,7 +187,7 @@ Nodes (5): Architecture, Env truth, Gotchas, Jalanin — AGENTS.md, Verify chang
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `getCurrentUser()` connect `Budget Fields` to `Interactive UI Components`, `API Routes & User Sessions`, `Admin Panel & Console Operations`, `Community 4`, `email.ts`?**
+- **Why does `getCurrentUser()` connect `Budget Fields` to `Interactive UI Components`, `API Routes & User Sessions`, `Admin Panel & Console Operations`, `Community 4`?**
   _High betweenness centrality (0.083) - this node is a cross-community bridge._
 - **Why does `Home()` connect `API Routes & User Sessions` to `Budget Fields`, `Client-Side Prototype Logic`?**
   _High betweenness centrality (0.063) - this node is a cross-community bridge._
@@ -200,4 +200,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `API Routes & User Sessions` be split into smaller, more focused modules?**
   _Cohesion score 0.1337126600284495 - nodes in this community are weakly interconnected._
 - **Should `Admin Panel & Console Operations` be split into smaller, more focused modules?**
-  _Cohesion score 0.08672699849170437 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08941176470588236 - nodes in this community are weakly interconnected._

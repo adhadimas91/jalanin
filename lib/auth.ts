@@ -54,6 +54,14 @@ export async function clearSession() {
   }
 
   cookieStore.delete(sessionCookieName);
+  cookieStore.set(sessionCookieName, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    expires: new Date(0),
+    maxAge: 0,
+    path: "/",
+  });
 }
 
 export async function getCurrentUser() {

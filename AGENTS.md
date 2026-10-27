@@ -11,7 +11,7 @@ Next.js App Router app (Instagram-for-itineraries). React + TS strict, Prisma 6 
 - `prisma:generate` is NOT optional: generated client lives in `generated/prisma/` (gitignored), imports use `../generated/prisma/client.js`. Re-run it after pulling or changing `prisma/schema.prisma`. It shells out to `tsc` via the `prisma:compile` script to emit `.js` next to `.ts`.
 - Dev/build use the `--webpack` flag (`next dev --webpack`, `next build --webpack`) — do not remove it or switch to turbopack without checking.
 - `lib/prisma.ts` throws if `DATABASE_URL` is missing at runtime; importing it in a script requires `dotenv/config` (it imports it itself).
-- Seed: `npm run prisma:seed` (tsx, `prisma/seed.ts`). Demo login: `risa@jalanin.local` / `jalanin123`.
+- Seed: `npm run prisma:seed` (tsx, `prisma/seed.ts`) seeds initial MyLink whitelist domains and app settings.
 - npm may need `PATH=/usr/local/bin:/usr/local/lib/node_modules/npm/bin:$PATH` (per README).
 
 ## Env truth

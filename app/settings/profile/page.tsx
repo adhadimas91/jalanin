@@ -99,6 +99,17 @@ export default async function ProfileSettingsPage() {
             Simpan Profil
           </button>
         </form>
+        <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid var(--line)" }}>
+          <form action="/api/auth/logout" method="post">
+            <button
+              type="submit"
+              className="ghost-chip danger"
+              style={{ width: "100%", justifyContent: "center", display: "flex", padding: "12px", color: "#e53e3e", borderColor: "rgba(229, 62, 62, 0.4)" }}
+            >
+              Logout dari Akun
+            </button>
+          </form>
+        </div>
       </section>
 
       <SubscriptionStatus
