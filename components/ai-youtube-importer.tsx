@@ -263,9 +263,30 @@ export function AiYoutubeImporter({ onExtracted, curatedUserId }: AiYoutubeImpor
                       </div>
                       <div style={{ paddingLeft: "8px" }}>
                         {day.activities.map((act, i) => (
-                          <div key={i} style={{ color: "#475569", lineHeight: "1.4", margin: "2px 0" }}>
-                            • <strong>[{act.time}]</strong> {act.title} @ <em>{act.locationName}</em> ({act.category})
-                            {act.latitude ? " 📍 (Peta Terhubung)" : ""}
+                          <div key={i} style={{ color: "#475569", lineHeight: "1.5", margin: "4px 0", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "6px" }}>
+                            <div>
+                              • <strong>[{act.time}]</strong> {act.title} @ <em>{act.locationName}</em> <span style={{ fontSize: "11px", color: "#64748b" }}>({act.category})</span>
+                            </div>
+                            {act.latitude !== null && act.latitude !== undefined && act.longitude !== null && act.longitude !== undefined && (
+                              <span
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "3px",
+                                  background: "#ecfdf5",
+                                  border: "1px solid #a7f3d0",
+                                  color: "#065f46",
+                                  padding: "2px 7px",
+                                  borderRadius: "6px",
+                                  fontSize: "11px",
+                                  fontFamily: "monospace",
+                                  fontWeight: 600,
+                                }}
+                                title={`Latitude: ${act.latitude}, Longitude: ${act.longitude}`}
+                              >
+                                📍 Lat: {Number(act.latitude).toFixed(4)}, Long: {Number(act.longitude).toFixed(4)}
+                              </span>
+                            )}
                           </div>
                         ))}
                       </div>

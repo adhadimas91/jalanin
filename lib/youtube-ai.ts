@@ -183,6 +183,7 @@ Instruksi Pemrosesan:
    - Ekstrak aktivitas secara kronologis dari pagi ke malam.
    - Cantumkan jam estimasi ("08:00", "12:30", "16:00", dsb).
    - Ekstrak nama lokasi spesifik (contoh: "Gudeg Sagan", "Villa Gamaya", "Museum Sonobudoyo").
+   - SERTAKAN KOORDINAT PETA (latitude & longitude): Untuk setiap lokasi/spot tempat wisata, kuliner, atau hotel, wajib berikan estimasi titik koordinat GPS latitude (angka desimal negatif untuk Indonesia selatan, misal -7.7xxx untuk Jogja) dan longitude (misal 110.3xxx untuk Jogja) yang akurat.
    - Kategori aktivitas: "Kuliner" | "Wisata" | "Akomodasi" | "Transportasi" | "Activity".
    - Estimasi biaya dalam IDR (angka bulat). Jika tidak disebutkan secara eksplisit, berikan estimasi wajar atau 0.
    - Deskripsi singkat aktivitas.
@@ -206,6 +207,8 @@ WAJIB output HANYA JSON murni (valid JSON) sesuai struktur berikut tanpa format 
           "time": "string (HH:mm)",
           "title": "string",
           "locationName": "string",
+          "latitude": number,
+          "longitude": number,
           "category": "string",
           "estimatedCost": number,
           "description": "string"
@@ -293,11 +296,13 @@ async function quickGeocode(query: string): Promise<{ lat: number; lng: number; 
       const activities: ExtractedActivity[] = await Promise.all(
         rawActivities.map(async (act: any, actIdx: number) => {
           const locationName = String(act.locationName || "").trim();
-          let lat: number | null = null;
-          let lng: number | null = null;
+          
+          // Inisialisasi koordinat dari Gemini AI
+          let lat: number | null = typeof act.latitude === "number" && !isNaN(act.latitude) ? act.latitude : null;
+          let lng: number | null = typeof act.longitude === "number" && !isNaN(act.longitude) ? act.longitude : null;
           let formattedAddress = locationName;
-          let mapProvider = "";
-          let customLocation = true;
+          let mapProvider = lat !== null && lng !== null ? "ai-gemini" : "";
+          let customLocation = lat === null || lng === null;
 
           if (locationName) {
             try {

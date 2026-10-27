@@ -16620,7 +16620,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/youtube-ai.ts",
-      "source_location": "L363",
+      "source_location": "L368",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_youtube_ai_extractitineraryfromyoutube",
@@ -18086,7 +18086,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/youtube-ai.ts",
-      "source_location": "L219",
+      "source_location": "L222",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_youtube_ai_extractitineraryfromyoutube",
@@ -20628,5 +20628,5 @@
       "source_file": "tasks/task-1-grid-layout.md"
     }
   ],
-  "built_at_commit": "c4e7b526a817d977791f87c29fdf005d843ae478"
+  "built_at_commit": "c598aa50136df4fd1bf880d2d5acc4fe3ce9a273"
 }

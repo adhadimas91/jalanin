@@ -24,6 +24,7 @@ export function CreateItineraryForm({ isAdmin, curatedUserId }: CreateItineraryF
     daysCount: number;
     activitiesCount: number;
     videoTitle?: string;
+    coordsCount?: number;
   } | null>(null);
 
   const handleAiExtracted = (data: AiItineraryResult) => {
@@ -41,10 +42,15 @@ export function CreateItineraryForm({ isAdmin, curatedUserId }: CreateItineraryF
     if (data.days && data.days.length > 0) {
       setDaysJson(JSON.stringify(data.days));
       const totalActs = data.days.reduce((acc, d) => acc + d.activities.length, 0);
+      const withCoords = data.days.reduce(
+        (acc, d) => acc + d.activities.filter((a) => a.latitude !== null && a.longitude !== null).length,
+        0
+      );
       setAiExtractedInfo({
         daysCount: data.days.length,
         activitiesCount: totalActs,
         videoTitle: data.title,
+        coordsCount: withCoords,
       });
     }
   };
@@ -75,7 +81,7 @@ export function CreateItineraryForm({ isAdmin, curatedUserId }: CreateItineraryF
               ✨ Data AI Siap Disimpan!
             </div>
             <div style={{ fontSize: "12px", color: "#15803d" }}>
-              {aiExtractedInfo.daysCount} Hari & {aiExtractedInfo.activitiesCount} Aktivitas dari YouTube telah diintegrasikan. Tekan tombol buat di bawah untuk langsung menyimpan draft lengkap ke sistem.
+              {aiExtractedInfo.daysCount} Hari, {aiExtractedInfo.activitiesCount} Aktivitas ({aiExtractedInfo.coordsCount ?? 0} lokasi lengkap dengan koordinat peta Lat & Long). Tekan tombol simpan di bawah untuk menyimpan draft lengkap ke sistem.
             </div>
           </div>
           <button
