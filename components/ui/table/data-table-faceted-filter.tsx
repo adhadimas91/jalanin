@@ -38,7 +38,14 @@ export function DataTableFacetedFilter<TData, TValue>({
 
   const columnFilterValue = column?.getFilterValue();
   const selectedValues = React.useMemo(
-    () => new Set(Array.isArray(columnFilterValue) ? columnFilterValue : []),
+    () =>
+      new Set(
+        Array.isArray(columnFilterValue)
+          ? columnFilterValue
+          : typeof columnFilterValue === 'string' && columnFilterValue
+            ? [columnFilterValue]
+            : []
+      ),
     [columnFilterValue]
   );
 
@@ -108,47 +115,73 @@ export function DataTableFacetedFilter<TData, TValue>({
           </>
         )}
       </PopoverTrigger>
-      <PopoverContent className='w-[12.5rem] p-0' align='start'>
-        <Command>
-          <CommandInput placeholder={title} />
-          <CommandList className='max-h-full'>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup className='max-h-[18.75rem] overflow-x-hidden overflow-y-auto'>
-              {options.map((option) => {
-                const isSelected = selectedValues.has(option.value);
+        <PopoverContent className='w-[16rem] p-0' align='start'>
+          <Command>
+            <CommandInput placeholder={`Cari ${title?.toLowerCase() ?? 'filter'}...`} />
+            <CommandList className='max-h-full'>
+              <CommandEmpty>Tidak ditemukan.</CommandEmpty>
+              <CommandGroup className='max-h-[18.75rem] overflow-x-hidden overflow-y-auto'>
+                {options.map((option) => {
+                  const isSelected = selectedValues.has(option.value);
+                  const searchValue = [
+                    option.label,
+                    option.description ?? '',
+                    ...(option.keywords ?? [])
+                  ]
+                    .filter(Boolean)
+                    .join(' ');
 
-                return (
-                  <CommandItem key={option.value} onSelect={() => onItemSelect(option, isSelected)}>
-                    <div
-                      className={cn(
-                        'border-primary flex size-4 items-center justify-center rounded-sm border',
-                        isSelected ? 'bg-primary' : 'opacity-50 [&_svg]:invisible'
-                      )}
+                  return (
+                    <CommandItem
+                      key={option.value}
+                      value={searchValue}
+                      onSelect={() => onItemSelect(option, isSelected)}
                     >
-                      <Icons.check />
-                    </div>
-                    {option.icon && <option.icon />}
-                    <span className='truncate'>{option.label}</span>
-                    {option.count && (
-                      <span className='ml-auto font-mono text-xs'>{option.count}</span>
+                      <div
+                        className={cn(
+                          'border-primary flex size-4 shrink-0 items-center justify-center rounded-sm border',
+                          isSelected
+                            ? 'bg-primary text-primary-foreground'
+                            : 'opacity-50 [&_svg]:invisible'
+                        )}
+                      >
+                        <Icons.check className='text-primary-foreground size-3.5' />
+                      </div>
+                      {option.icon && (
+                        <option.icon className='text-muted-foreground size-4 shrink-0' />
+                      )}
+                      <div className='flex min-w-0 flex-1 flex-col'>
+                        <span className='truncate'>{option.label}</span>
+                        {option.description && (
+                          <span className='text-muted-foreground truncate text-xs'>
+                            {option.description}
+                          </span>
+                        )}
+                      </div>
+                      {option.count !== undefined && (
+                          <span className='text-muted-foreground ml-auto pl-1 font-mono text-xs'>
+                            {option.count}
+                          </span>
                     )}
-                  </CommandItem>
-                );
+                        </CommandItem>
+                      );
               })}
-            </CommandGroup>
-            {selectedValues.size > 0 && (
-              <>
-                <CommandSeparator />
-                <CommandGroup>
-                  <CommandItem onSelect={() => onReset()} className='justify-center text-center'>
-                    Clear filters
-                  </CommandItem>
-                </CommandGroup>
-              </>
-            )}
+                    </CommandGroup>
+            {
+                    selectedValues.size > 0 && (
+                      <>
+                        <CommandSeparator />
+                        <CommandGroup>
+                          <CommandItem onSelect={() => onReset()} className='justify-center text-center'>
+                            Reset filter
+                          </CommandItem>
+                        </CommandGroup>
+                      </>
+                    )
+                  }
           </CommandList>
-        </Command>
-      </PopoverContent>
+          </Command>
+        </PopoverContent>
     </Popover>
   );
 }

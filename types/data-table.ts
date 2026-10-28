@@ -17,6 +17,8 @@ declare module '@tanstack/react-table' {
 export interface Option {
   label: string;
   value: string;
+  description?: string;
+  keywords?: string[];
   count?: number;
   icon?: React.ComponentType<{ className?: string }>;
 }

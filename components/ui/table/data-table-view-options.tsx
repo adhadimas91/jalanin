@@ -21,13 +21,9 @@ interface DataTableViewOptionsProps<TData> {
 }
 
 export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
-  const columns = React.useMemo(
-    () =>
-      table
-        .getAllColumns()
-        .filter((column) => typeof column.accessorFn !== 'undefined' && column.getCanHide()),
-    [table]
-  );
+  const columns = table
+    .getAllColumns()
+    .filter((column) => typeof column.accessorFn !== 'undefined' && column.getCanHide());
 
   return (
     <Popover>
@@ -37,7 +33,7 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
             aria-label='Toggle columns'
             variant='outline'
             size='sm'
-            className='ml-auto hidden h-8 lg:flex'
+            className='ml-auto flex h-8'
           />
         }
       >
@@ -45,26 +41,32 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
         View
         <Icons.chevronsUpDown className='ml-auto opacity-50' />
       </PopoverTrigger>
-      <PopoverContent align='end' className='w-44 p-0'>
+      <PopoverContent align='end' className='w-48 p-0'>
         <Command>
-          <CommandInput placeholder='Search columns...' />
+          <CommandInput placeholder='Cari kolom...' />
           <CommandList>
-            <CommandEmpty>No columns found.</CommandEmpty>
+            <CommandEmpty>Kolom tidak ditemukan.</CommandEmpty>
             <CommandGroup>
-              {columns.map((column) => (
-                <CommandItem
-                  key={column.id}
-                  onSelect={() => column.toggleVisibility(!column.getIsVisible())}
-                >
-                  <span className='truncate'>{column.columnDef.meta?.label ?? column.id}</span>
-                  <Icons.check
-                    className={cn(
-                      'ml-auto size-4 shrink-0',
-                      column.getIsVisible() ? 'opacity-100' : 'opacity-0'
-                    )}
-                  />
-                </CommandItem>
-              ))}
+              {columns.map((column) => {
+                const isVisible = column.getIsVisible();
+                const label = column.columnDef.meta?.label ?? column.id;
+
+                return (
+                  <CommandItem
+                    key={column.id}
+                    value={label}
+                    onSelect={() => column.toggleVisibility(!isVisible)}
+                  >
+                    <span className='truncate'>{label}</span>
+                    <Icons.check
+                      className={cn(
+                        'ml-auto size-4 shrink-0',
+                        isVisible ? 'opacity-100' : 'opacity-0'
+                      )}
+                    />
+                  </CommandItem>
+                );
+              })}
             </CommandGroup>
           </CommandList>
         </Command>

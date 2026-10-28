@@ -168,6 +168,7 @@ async function fetchItineraries() {
     include: {
       author: {
         select: {
+          id: true,
           email: true,
           username: true,
           name: true,
@@ -199,7 +200,17 @@ async function fetchDays() {
     include: {
       itinerary: {
         select: {
+          id: true,
           title: true,
+          authorId: true,
+          author: {
+            select: {
+              id: true,
+              email: true,
+              username: true,
+              name: true,
+            },
+          },
         },
       },
       _count: {
@@ -225,8 +236,25 @@ async function fetchActivities() {
     include: {
       day: {
         select: {
+          id: true,
           title: true,
+          dayNumber: true,
           itineraryId: true,
+          itinerary: {
+            select: {
+              id: true,
+              title: true,
+              authorId: true,
+              author: {
+                select: {
+                  id: true,
+                  email: true,
+                  username: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
       },
     },
