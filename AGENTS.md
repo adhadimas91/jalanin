@@ -23,4 +23,5 @@ Next.js App Router app (Instagram-for-itineraries). React + TS strict, Prisma 6 
 - Entry: `app/` routes (feed `/`, `/login`, `/register`, `/create`, `/saved`, `/itinerary/[id]`, `/profile/[username]`, plus `/admin`, `/settings`, `/claim`, `/setup-password`...). API in `app/api/`.
 - Shared logic in `lib/` (`auth.ts`, `prisma.ts`, `itineraries.ts`, `analytics.ts`, `maps-parser.ts`, `mylink-validator.ts`...). Path alias `@/*` → repo root.
 - Root-level `index.html`, `script.js`, `styles.css` are the pre-migration UI prototype leftovers — the real UI is `app/` + `components/`.
+- **Admin UI Kit (`next-shadcn/`)**: Always use `next-shadcn/` as the canonical UI kit and design/component reference for all Admin UI work (`/admin`, `components/admin-*`, tables, forms, layouts, charts). Inspect and port/adapt components from `next-shadcn/src/components/` and `next-shadcn/src/features/` rather than creating custom ad-hoc admin styles (see `.agents/rules/admin-ui.md`).
 - `graphify-out/graph.json` exists: for architecture questions run `graphify query "<q>"` first; after modifying code run `graphify update .` (see `.agents/rules/graphify.md`).
