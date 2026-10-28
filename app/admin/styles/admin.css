@@ -13,7 +13,7 @@
 
   [data-theme],
   [data-theme] body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden overscroll-none;
     background-image: none;
   }
 
@@ -69,6 +69,7 @@
     clip-path: circle(0% at var(--x, 50%) var(--y, 50%));
     opacity: 0.7;
   }
+
   to {
     clip-path: circle(150% at var(--x, 50%) var(--y, 50%));
     opacity: 1;
@@ -83,6 +84,7 @@
   from {
     height: 0;
   }
+
   to {
     height: var(--radix-accordion-content-height, var(--accordion-panel-height, auto));
   }
@@ -92,8 +94,8 @@
   from {
     height: var(--radix-accordion-content-height, var(--accordion-panel-height, auto));
   }
+
   to {
     height: 0;
   }
 }
-

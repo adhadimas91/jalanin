@@ -122,16 +122,16 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
     group: 'Manajemen Pengguna',
     icon: Icons.teams,
     columns: [
-      'email',
-      'username',
       'name',
+      'username',
+      'email',
       'role',
       'isPro',
       'isClaimed',
+      'city',
       'instagram',
       'tiktok',
       'youtube',
-      'city',
       'createdAt'
     ],
     template: {
@@ -229,7 +229,7 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
     description: 'Atur hari per itinerary dengan nomor hari dan judulnya.',
     group: 'Konten & Perjalanan',
     icon: Icons.calendar,
-    columns: ['itineraryId', 'dayNumber', 'title'],
+    columns: ['title', 'dayNumber', 'itineraryId'],
     template: {
       itineraryId: '',
       dayNumber: 1,
@@ -242,14 +242,14 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
     group: 'Konten & Perjalanan',
     icon: Icons.mapPin,
     columns: [
-      'itineraryDayId',
-      'time',
       'title',
+      'time',
       'locationName',
-      'latitude',
-      'longitude',
       'category',
       'estimatedCost',
+      'itineraryDayId',
+      'latitude',
+      'longitude',
       'orderIndex'
     ],
     template: {
@@ -322,19 +322,19 @@ const SIDEBAR_GROUPS: {
   label: TableConfig['group'];
   tables: AdminTable[];
 }[] = [
-  {
-    label: 'Manajemen Pengguna',
-    tables: ['users', 'accountClaims', 'sessions']
-  },
-  {
-    label: 'Konten & Perjalanan',
-    tables: ['itineraries', 'days', 'activities', 'saves', 'likes']
-  },
-  {
-    label: 'Konfigurasi Sistem',
-    tables: ['myLinkWhitelistDomains', 'appSettings']
-  }
-];
+    {
+      label: 'Manajemen Pengguna',
+      tables: ['users', 'accountClaims', 'sessions']
+    },
+    {
+      label: 'Konten & Perjalanan',
+      tables: ['itineraries', 'days', 'activities', 'saves', 'likes']
+    },
+    {
+      label: 'Konfigurasi Sistem',
+      tables: ['myLinkWhitelistDomains', 'appSettings']
+    }
+  ];
 
 const ROLE_FILTER_OPTIONS: Option[] = [
   { label: 'USER', value: 'USER' },
@@ -385,6 +385,66 @@ const SUBSCRIPTION_PLAN_OPTIONS = [
   { value: 'pro_indefinite', label: 'PRO (Seterusnya)' }
 ];
 
+const DEFAULT_HIDDEN_COLUMNS: Record<AdminTable, VisibilityState> = {
+  users: {
+    id: false,
+    email: false,
+    city: false,
+    instagram: false,
+    tiktok: false,
+    youtube: false,
+    createdAt: false
+  },
+  accountClaims: {
+    id: false,
+    userId: false,
+    claimantEmail: false,
+    adminNotes: false,
+    token: false,
+    tokenExpiresAt: false
+  },
+  sessions: {
+    id: false
+  },
+  itineraries: {
+    id: false,
+    authorId: false
+  },
+  days: {
+    id: false
+  },
+  activities: {
+    id: false,
+    itineraryDayId: false,
+    latitude: false,
+    longitude: false,
+    orderIndex: false
+  },
+  saves: {
+    id: false
+  },
+  likes: {
+    id: false
+  },
+  myLinkWhitelistDomains: {
+    id: false
+  },
+  appSettings: {
+    id: false
+  }
+};
+
+function formatShortDate(value: unknown) {
+  if (!value) return '—';
+  const date = new Date(String(value));
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleDateString('id-ID', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  });
+}
+
 function stripMeta(record: Record<string, unknown>) {
   return Object.fromEntries(Object.entries(record).filter(([key]) => !key.startsWith('_')));
 }
@@ -429,6 +489,7 @@ function getSubscriptionOption(expiryDateStr: string | null | undefined, isPro: 
 
 export function AdminConsole({ initialData, adminEmail }: Props) {
   const [tables, setTables] = useState(initialData);
+  const [activeView, setActiveView] = useState<'overview' | AdminTable>('users');
   const [currentTable, setCurrentTable] = useState<AdminTable>('users');
   const [editorMode, setEditorMode] = useState<'create' | 'edit'>('create');
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -448,7 +509,9 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
   // Datatable States (TanStack Table controlled states)
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    DEFAULT_HIDDEN_COLUMNS.users
+  );
   const [globalFilter, setGlobalFilter] = useState('');
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -467,12 +530,13 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
 
   const selectTable = useCallback(
     (tableId: AdminTable) => {
+      setActiveView(tableId);
       setCurrentTable(tableId);
       resetDraft(tableId);
       setGlobalFilter('');
       setSorting([]);
       setColumnFilters([]);
-      setColumnVisibility({});
+      setColumnVisibility(DEFAULT_HIDDEN_COLUMNS[tableId]);
       setPagination({ pageIndex: 0, pageSize: 10 });
     },
     [resetDraft]
@@ -662,7 +726,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
       setApproveClaimId(null);
       toast.success('Klaim akun berhasil disetujui!');
       if (data.setupUrl) {
-        navigator.clipboard.writeText(data.setupUrl).catch(() => {});
+        navigator.clipboard.writeText(data.setupUrl).catch(() => { });
         setApprovedSetupUrl(data.setupUrl);
       }
     } catch (err: unknown) {
@@ -737,180 +801,9 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     };
   }, [tables]);
 
-  // Dynamic Column Definitions for TanStack Table
+  // Dynamic Column Definitions for TanStack Table (next-shadcn users-table pattern)
   const columns = useMemo<ColumnDef<Record<string, unknown>>[]>(() => {
     const dataCols: ColumnDef<Record<string, unknown>>[] = [
-      {
-        id: 'actions',
-        enableHiding: false,
-        enableSorting: false,
-        header: () => <span className='text-xs font-medium'>Aksi</span>,
-        cell: ({ row }) => {
-          const record = row.original;
-          const id = String(record.id ?? record.key ?? '');
-          const currentSubOption =
-            currentTable === 'users'
-              ? getSubscriptionOption(
-                  record.proExpiresAt as string | null | undefined,
-                  Boolean(record.isPro)
-                )
-              : 'free';
-
-          return (
-            <div className='flex items-center gap-1.5'>
-              {currentTable === 'users' && (
-                <Select
-                  items={SUBSCRIPTION_PLAN_OPTIONS}
-                  value={currentSubOption}
-                  onValueChange={(val) => {
-                    if (val !== null && val !== currentSubOption) {
-                      void handleSubscriptionChange(id, record, val);
-                    }
-                  }}
-                  disabled={busy}
-                >
-                  <SelectTrigger size='sm' className='h-7 w-[142px] text-xs'>
-                    <SelectValue placeholder='Plan' />
-                  </SelectTrigger>
-                  <SelectContent align='start'>
-                    <SelectGroup>
-                      <SelectLabel>Ubah Langganan</SelectLabel>
-                      {SUBSCRIPTION_PLAN_OPTIONS.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              )}
-
-              {currentTable === 'users' && !record.isClaimed && (
-                <Button
-                  variant='outline'
-                  size='sm'
-                  className='h-7 border-amber-500/40 bg-amber-500/10 px-2 text-xs text-amber-700 hover:bg-amber-500/20 dark:text-amber-300'
-                  onClick={() => setImpersonateUserId(id)}
-                  disabled={busy}
-                  title='Masuk sebagai akun kurasi ini untuk membuat itinerary'
-                >
-                  <Icons.login className='size-3.5' />
-                  Impersonate
-                </Button>
-              )}
-
-              {currentTable === 'accountClaims' &&
-                String(record.status).toUpperCase() === 'PENDING' && (
-                  <>
-                    <Button
-                      variant='default'
-                      size='sm'
-                      className='h-7 px-2 text-xs'
-                      onClick={() => setApproveClaimId(id)}
-                      disabled={busy}
-                    >
-                      <Icons.check className='size-3.5' />
-                      Approve
-                    </Button>
-                    <Button
-                      variant='destructive'
-                      size='sm'
-                      className='h-7 px-2 text-xs'
-                      onClick={() => {
-                        setRejectClaimId(id);
-                        setRejectReason('');
-                      }}
-                      disabled={busy}
-                    >
-                      <Icons.close className='size-3.5' />
-                      Reject
-                    </Button>
-                  </>
-                )}
-
-              {currentTable === 'accountClaims' && Boolean(record.token) && (
-                <Button
-                  variant='outline'
-                  size='sm'
-                  className='h-7 px-2 text-xs'
-                  onClick={() => {
-                    const url = `${window.location.origin}/setup-password?token=${record.token}`;
-                    navigator.clipboard.writeText(url).catch(() => {});
-                    toast.success('Tautan setup password berhasil disalin!');
-                  }}
-                >
-                  <Icons.copy className='size-3.5' />
-                  Salin Link
-                </Button>
-              )}
-
-              <DropdownMenu modal={false}>
-                <DropdownMenuTrigger
-                  render={<Button variant='ghost' size='icon' className='size-7' />}
-                >
-                  <span className='sr-only'>Buka menu aksi</span>
-                  <Icons.ellipsis className='size-4' />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align='start' className='w-48'>
-                  <DropdownMenuGroup>
-                    <DropdownMenuLabel>Aksi Record</DropdownMenuLabel>
-                  </DropdownMenuGroup>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => openEditSheet(id, record)}>
-                    <Icons.edit className='mr-2 size-4' />
-                    Edit Record
-                  </DropdownMenuItem>
-                  {currentTable === 'users' && !record.isClaimed && (
-                    <DropdownMenuItem onClick={() => setImpersonateUserId(id)}>
-                      <Icons.login className='mr-2 size-4' />
-                      Masuk & Buat Itinerary
-                    </DropdownMenuItem>
-                  )}
-                  {currentTable === 'accountClaims' &&
-                    String(record.status).toUpperCase() === 'PENDING' && (
-                      <>
-                        <DropdownMenuItem onClick={() => setApproveClaimId(id)}>
-                          <Icons.check className='mr-2 size-4' />
-                          Approve Klaim
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          variant='destructive'
-                          onClick={() => {
-                            setRejectClaimId(id);
-                            setRejectReason('');
-                          }}
-                        >
-                          <Icons.close className='mr-2 size-4' />
-                          Reject Klaim
-                        </DropdownMenuItem>
-                      </>
-                    )}
-                  {currentTable === 'accountClaims' && Boolean(record.token) && (
-                    <DropdownMenuItem
-                      onClick={() => {
-                        const url = `${window.location.origin}/setup-password?token=${record.token}`;
-                        navigator.clipboard.writeText(url).catch(() => {});
-                        toast.success('Tautan setup password berhasil disalin!');
-                      }}
-                    >
-                      <Icons.copy className='mr-2 size-4' />
-                      Salin Link Setup
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    variant='destructive'
-                    onClick={() => setDeleteTargetId(id)}
-                  >
-                    <Icons.trash className='mr-2 size-4' />
-                    Hapus Record
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          );
-        }
-      },
       {
         id: 'id',
         accessorFn: (row) => String(row.id ?? row.key ?? ''),
@@ -954,9 +847,9 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
             label: formatLabel(colName),
             ...(filterOptions
               ? {
-                  variant: 'multiSelect' as const,
-                  options: filterOptions
-                }
+                variant: 'multiSelect' as const,
+                options: filterOptions
+              }
               : {})
           },
           header: ({ column }: { column: Column<Record<string, unknown>, unknown> }) => (
@@ -964,31 +857,115 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
           ),
           filterFn: isFilterable
             ? (row, columnId, filterValue: string | string[] | undefined) => {
-                const values = Array.isArray(filterValue)
-                  ? filterValue
-                  : filterValue
-                    ? [filterValue]
-                    : [];
-                if (values.length === 0) return true;
+              const values = Array.isArray(filterValue)
+                ? filterValue
+                : filterValue
+                  ? [filterValue]
+                  : [];
+              if (values.length === 0) return true;
 
-                const raw = row.getValue(columnId);
-                let normalized = String(raw ?? '');
+              const raw = row.getValue(columnId);
+              let normalized = String(raw ?? '');
 
-                if (columnId === 'isPro') {
-                  normalized = raw ? 'PRO' : 'FREE';
-                } else if (columnId === 'isClaimed') {
-                  normalized = raw ? 'CLAIMED' : 'UNCLAIMED';
-                } else if (columnId === 'isPublished') {
-                  normalized = raw ? 'PUBLISHED' : 'DRAFT';
-                } else if (columnId === 'isActive') {
-                  normalized = raw ? 'ACTIVE' : 'INACTIVE';
-                }
-
-                return values.some((v) => v.toUpperCase() === normalized.toUpperCase());
+              if (columnId === 'isPro') {
+                normalized = raw ? 'PRO' : 'FREE';
+              } else if (columnId === 'isClaimed') {
+                normalized = raw ? 'CLAIMED' : 'UNCLAIMED';
+              } else if (columnId === 'isPublished') {
+                normalized = raw ? 'PUBLISHED' : 'DRAFT';
+              } else if (columnId === 'isActive') {
+                normalized = raw ? 'ACTIVE' : 'INACTIVE';
               }
+
+              return values.some((v) => v.toUpperCase() === normalized.toUpperCase());
+            }
             : undefined,
           cell: (info) => {
             const val = info.getValue();
+            const record = info.row.original;
+            const rel =
+              record._related && typeof record._related === 'object'
+                ? (record._related as Record<string, unknown>)
+                : undefined;
+
+            // Stacked Name + Email cell (matching next-shadcn users-table/columns.tsx)
+            if (colName === 'name' && currentTable === 'users') {
+              return (
+                <div className='flex flex-col'>
+                  <span className='font-medium'>{formatCell(val)}</span>
+                  <span className='text-muted-foreground text-xs'>
+                    {formatCell(record.email)}
+                  </span>
+                </div>
+              );
+            }
+
+            if (colName === 'username' && currentTable === 'users') {
+              const handle = val ? `@${String(val).replace(/^@/, '')}` : '—';
+              const city = record.city ? String(record.city) : null;
+              return (
+                <div className='flex flex-col'>
+                  <span>{handle}</span>
+                  {city && <span className='text-muted-foreground text-xs'>{city}</span>}
+                </div>
+              );
+            }
+
+            if (colName === 'claimantName' && currentTable === 'accountClaims') {
+              return (
+                <div className='flex flex-col'>
+                  <span className='font-medium'>{formatCell(val)}</span>
+                  <span className='text-muted-foreground text-xs'>
+                    {formatCell(record.claimantEmail)}
+                  </span>
+                </div>
+              );
+            }
+
+            if (colName === 'title' && currentTable === 'itineraries') {
+              const author = rel?.author as Record<string, unknown> | undefined;
+              const authorSub = author?.username
+                ? `@${String(author.username)}`
+                : author?.email
+                  ? String(author.email)
+                  : null;
+              return (
+                <div className='flex flex-col'>
+                  <span className='max-w-[220px] truncate font-medium'>{formatCell(val)}</span>
+                  {authorSub && (
+                    <span className='text-muted-foreground text-xs'>{authorSub}</span>
+                  )}
+                </div>
+              );
+            }
+
+            if (colName === 'userId' && rel?.user && typeof rel.user === 'object') {
+              const u = rel.user as Record<string, unknown>;
+              return (
+                <div className='flex flex-col'>
+                  <span className='max-w-[200px] truncate font-medium'>
+                    {String(u.email ?? val ?? '—')}
+                  </span>
+                  <span className='text-muted-foreground font-mono text-[11px]'>
+                    {String(val ?? '').slice(0, 10)}
+                  </span>
+                </div>
+              );
+            }
+
+            if (colName === 'itineraryId' && rel?.itinerary && typeof rel.itinerary === 'object') {
+              const it = rel.itinerary as Record<string, unknown>;
+              return (
+                <div className='flex flex-col'>
+                  <span className='max-w-[200px] truncate font-medium'>
+                    {String(it.title ?? val ?? '—')}
+                  </span>
+                  <span className='text-muted-foreground font-mono text-[11px]'>
+                    {String(val ?? '').slice(0, 10)}
+                  </span>
+                </div>
+              );
+            }
 
             if (colName === 'status' && currentTable === 'accountClaims') {
               const statusStr = String(val).toUpperCase();
@@ -1082,156 +1059,286 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
               }
             }
 
-            return <span className='max-w-[280px] truncate block'>{formatCell(val)}</span>;
+            if (colName.endsWith('At')) {
+              return (
+                <span className='text-muted-foreground text-xs tabular-nums'>
+                  {formatShortDate(val)}
+                </span>
+              );
+            }
+
+            return <span className='block max-w-[220px] truncate'>{formatCell(val)}</span>;
           }
         };
-      })
+      }),
+    {
+      id: 'actions',
+      size: 48,
+      enableHiding: false,
+      enableSorting: false,
+      cell: ({ row }) => {
+        const record = row.original;
+        const id = String(record.id ?? record.key ?? '');
+        const currentSubOption =
+          currentTable === 'users'
+            ? getSubscriptionOption(
+              record.proExpiresAt as string | null | undefined,
+              Boolean(record.isPro)
+            )
+            : 'free';
+
+        return (
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger
+              render={<Button variant='ghost' className='h-8 w-8 p-0' />}
+            >
+              <span className='sr-only'>Open menu</span>
+              <Icons.ellipsis className='h-4 w-4' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end' className='w-52'>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              </DropdownMenuGroup>
+              <DropdownMenuItem onClick={() => openEditSheet(id, record)}>
+                <Icons.edit className='mr-2 h-4 w-4' />
+                Update
+              </DropdownMenuItem>
+              {currentTable === 'users' && !record.isClaimed && (
+                <DropdownMenuItem onClick={() => setImpersonateUserId(id)}>
+                  <Icons.login className='mr-2 h-4 w-4' />
+                  Impersonate (Buat Trip)
+                </DropdownMenuItem>
+              )}
+              {currentTable === 'users' && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel>Ubah Langganan</DropdownMenuLabel>
+                    {SUBSCRIPTION_PLAN_OPTIONS.map((opt) => (
+                      <DropdownMenuItem
+                        key={opt.value}
+                        disabled={busy || opt.value === currentSubOption}
+                        onClick={() => void handleSubscriptionChange(id, record, opt.value)}
+                      >
+                        <Icons.check
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            opt.value === currentSubOption ? 'opacity-100' : 'opacity-0'
+                          )}
+                        />
+                        {opt.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuGroup>
+                </>
+              )}
+              {currentTable === 'accountClaims' &&
+                String(record.status).toUpperCase() === 'PENDING' && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => setApproveClaimId(id)}>
+                      <Icons.check className='mr-2 h-4 w-4' />
+                      Approve Klaim
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      variant='destructive'
+                      onClick={() => {
+                        setRejectClaimId(id);
+                        setRejectReason('');
+                      }}
+                    >
+                      <Icons.close className='mr-2 h-4 w-4' />
+                      Reject Klaim
+                    </DropdownMenuItem>
+                  </>
+                )}
+              {currentTable === 'accountClaims' && Boolean(record.token) && (
+                <DropdownMenuItem
+                  onClick={() => {
+                    const url = `${window.location.origin}/setup-password?token=${record.token}`;
+                    navigator.clipboard.writeText(url).catch(() => { });
+                    toast.success('Tautan setup password berhasil disalin!');
+                  }}
+                >
+                  <Icons.copy className='mr-2 h-4 w-4' />
+                  Salin Link Setup
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant='destructive'
+                onClick={() => setDeleteTargetId(id)}
+              >
+                <Icons.trash className='mr-2 h-4 w-4' />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      }
+}
     ];
 
-    return dataCols;
+return dataCols;
   }, [currentTable, config.columns, busy, handleSubscriptionChange, openEditSheet]);
 
-  const table = useReactTable({
-    data: records,
-    columns,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      globalFilter,
-      pagination,
-      columnPinning: { left: ['actions'] }
-    },
-    onSortingChange: setSorting,
-    onColumnFiltersChange: (updater) => {
-      setColumnFilters(updater);
-      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-    },
-    onColumnVisibilityChange: setColumnVisibility,
-    onGlobalFilterChange: (val) => {
-      setGlobalFilter(val);
-      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-    },
-    onPaginationChange: setPagination,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    globalFilterFn: (row, _columnId, filterValue) => {
-      const q = String(filterValue).toLowerCase().trim();
-      if (!q) return true;
+const table = useReactTable({
+  data: records,
+  columns,
+  state: {
+    sorting,
+    columnFilters,
+    columnVisibility,
+    globalFilter,
+    pagination,
+      columnPinning: { right: ['actions'] }
+  },
+  onSortingChange: setSorting,
+  onColumnFiltersChange: (updater) => {
+    setColumnFilters(updater);
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+  },
+  onColumnVisibilityChange: setColumnVisibility,
+  onGlobalFilterChange: (val) => {
+    setGlobalFilter(val);
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+  },
+  onPaginationChange: setPagination,
+  getCoreRowModel: getCoreRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+  getSortedRowModel: getSortedRowModel(),
+  getPaginationRowModel: getPaginationRowModel(),
+  getFacetedRowModel: getFacetedRowModel(),
+  getFacetedUniqueValues: getFacetedUniqueValues(),
+  globalFilterFn: (row, _columnId, filterValue) => {
+    const q = String(filterValue).toLowerCase().trim();
+    if (!q) return true;
 
-      const record = row.original;
+    const record = row.original;
 
-      const baseMatch = Object.entries(record).some(([key, val]) => {
-        if (key.startsWith('_')) return false;
-        if (val === null || val === undefined) return false;
-        return String(val).toLowerCase().includes(q);
-      });
-
-      if (baseMatch) return true;
-
-      if (record._related && typeof record._related === 'object') {
-        const rel = record._related as Record<string, unknown>;
-
-        const userEmail =
-          (rel.user as Record<string, unknown>)?.email ||
-          (rel.author as Record<string, unknown>)?.email;
-        if (userEmail && String(userEmail).toLowerCase().includes(q)) return true;
-
-        const username =
-          (rel.user as Record<string, unknown>)?.username ||
-          (rel.author as Record<string, unknown>)?.username;
-        if (username && String(username).toLowerCase().includes(q)) return true;
-
-        const itineraryTitle = (rel.itinerary as Record<string, unknown>)?.title;
-        if (itineraryTitle && String(itineraryTitle).toLowerCase().includes(q)) return true;
-
-        const dayTitle = (rel.day as Record<string, unknown>)?.title;
-        if (dayTitle && String(dayTitle).toLowerCase().includes(q)) return true;
-      }
-
-      return false;
-    }
-  });
-
-  function handleExportCSV() {
-    const exportRows = table.getFilteredRowModel().rows;
-    const headers = ['id', ...config.columns];
-    const csvRows = [headers.join(',')];
-
-    exportRows.forEach((row) => {
-      const record = row.original;
-      const rowValues = headers.map((col) => {
-        const val = col === 'id' ? (record.id ?? record.key ?? '') : record[col];
-        if (val === null || val === undefined) {
-          return '';
-        }
-        let valStr = typeof val === 'object' ? JSON.stringify(val) : String(val);
-        valStr = valStr.replace(/"/g, '""');
-        if (
-          valStr.includes(',') ||
-          valStr.includes('"') ||
-          valStr.includes('\n') ||
-          valStr.includes('\r')
-        ) {
-          valStr = `"${valStr}"`;
-        }
-        return valStr;
-      });
-      csvRows.push(rowValues.join(','));
+    const baseMatch = Object.entries(record).some(([key, val]) => {
+      if (key.startsWith('_')) return false;
+      if (val === null || val === undefined) return false;
+      return String(val).toLowerCase().includes(q);
     });
 
-    const csvContent = '\uFEFF' + csvRows.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute(
-      'download',
-      `${currentTable}_export_${new Date().toISOString().slice(0, 10)}.csv`
-    );
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast.success(`Data ${config.label} berhasil diekspor ke CSV.`);
+    if (baseMatch) return true;
+
+    if (record._related && typeof record._related === 'object') {
+      const rel = record._related as Record<string, unknown>;
+
+      const userEmail =
+        (rel.user as Record<string, unknown>)?.email ||
+        (rel.author as Record<string, unknown>)?.email;
+      if (userEmail && String(userEmail).toLowerCase().includes(q)) return true;
+
+      const username =
+        (rel.user as Record<string, unknown>)?.username ||
+        (rel.author as Record<string, unknown>)?.username;
+      if (username && String(username).toLowerCase().includes(q)) return true;
+
+      const itineraryTitle = (rel.itinerary as Record<string, unknown>)?.title;
+      if (itineraryTitle && String(itineraryTitle).toLowerCase().includes(q)) return true;
+
+      const dayTitle = (rel.day as Record<string, unknown>)?.title;
+      if (dayTitle && String(dayTitle).toLowerCase().includes(q)) return true;
+    }
+
+    return false;
   }
+});
 
-  const adminInitials = adminEmail.slice(0, 2).toUpperCase();
+function handleExportCSV() {
+  const exportRows = table.getFilteredRowModel().rows;
+  const headers = ['id', ...config.columns];
+  const csvRows = [headers.join(',')];
 
-  return (
-    <SidebarProvider defaultOpen>
-      {/* Left Navigation Sidebar (next-shadcn AppSidebar pattern) */}
-      <Sidebar collapsible='icon'>
-        <SidebarHeader>
+  exportRows.forEach((row) => {
+    const record = row.original;
+    const rowValues = headers.map((col) => {
+      const val = col === 'id' ? (record.id ?? record.key ?? '') : record[col];
+      if (val === null || val === undefined) {
+        return '';
+      }
+      let valStr = typeof val === 'object' ? JSON.stringify(val) : String(val);
+      valStr = valStr.replace(/"/g, '""');
+      if (
+        valStr.includes(',') ||
+        valStr.includes('"') ||
+        valStr.includes('\n') ||
+        valStr.includes('\r')
+      ) {
+        valStr = `"${valStr}"`;
+      }
+      return valStr;
+    });
+    csvRows.push(rowValues.join(','));
+  });
+
+  const csvContent = '\uFEFF' + csvRows.join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute(
+    'download',
+    `${currentTable}_export_${new Date().toISOString().slice(0, 10)}.csv`
+  );
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  toast.success(`Data ${config.label} berhasil diekspor ke CSV.`);
+}
+
+const adminInitials = adminEmail.slice(0, 2).toUpperCase();
+
+return (
+  <SidebarProvider defaultOpen>
+    {/* Left Navigation Sidebar (next-shadcn AppSidebar pattern) */}
+    <Sidebar collapsible='icon'>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size='lg' onClick={() => selectTable('users')}>
+              <div className='bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
+                <Icons.logo className='size-4' />
+              </div>
+              <div className='grid flex-1 text-left text-sm leading-tight'>
+                <span className='truncate font-semibold'>Jalanin Admin</span>
+                <span className='text-muted-foreground truncate text-xs'>Backoffice Console</span>
+              </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+
+      <SidebarContent className='overflow-x-hidden'>
+        <SidebarGroup className='py-0'>
+          <SidebarGroupLabel>Overview</SidebarGroupLabel>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton size='lg' onClick={() => selectTable('users')}>
-                <div className='bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
-                  <Icons.logo className='size-4' />
-                </div>
-                <div className='grid flex-1 text-left text-sm leading-tight'>
-                  <span className='truncate font-semibold'>Jalanin Admin</span>
-                  <span className='text-muted-foreground truncate text-xs'>Backoffice Console</span>
-                </div>
+              <SidebarMenuButton
+                tooltip='Dashboard'
+                isActive={activeView === 'overview'}
+                onClick={() => setActiveView('overview')}
+              >
+                <Icons.dashboard />
+                <span>Dashboard</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-        </SidebarHeader>
+        </SidebarGroup>
 
-        <SidebarContent className='overflow-x-hidden'>
-          {SIDEBAR_GROUPS.map((group) => (
-            <SidebarGroup key={group.label} className='py-1'>
+        {SIDEBAR_GROUPS.map((group) => (
+            <SidebarGroup key={group.label} className='py-0'>
               <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
               <SidebarMenu>
                 {group.tables.map((tableId) => {
                   const itemConfig = tableConfigs[tableId];
                   const ItemIcon = itemConfig.icon;
                   const count = tables[tableId].length;
-                  const isActive = currentTable === tableId;
+                  const isActive = activeView === tableId;
 
                   return (
                     <SidebarMenuItem key={tableId}>
@@ -1323,9 +1430,9 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
         <SidebarRail />
       </Sidebar>
 
-      {/* Main Content Area (next-shadcn SidebarInset + Header + PageContainer) */}
-      <SidebarInset>
-        <header className='bg-background/60 sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between gap-2 border-b backdrop-blur-md md:h-14'>
+    {/* Main Content Area (next-shadcn SidebarInset + Header + PageContainer) */}
+    <SidebarInset>
+        <header className='bg-background/60 sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between gap-2 backdrop-blur-md md:h-14'>
           <div className='flex items-center gap-2 px-4'>
             <SidebarTrigger className='-ml-1' />
             <Separator orientation='vertical' className='mr-2 data-[orientation=vertical]:h-4' />
@@ -1333,23 +1440,31 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
               <BreadcrumbList>
                 <BreadcrumbItem className='hidden md:block'>
                   <BreadcrumbLink
-                    render={<button type='button' onClick={() => selectTable('users')} />}
+                    render={<button type='button' onClick={() => setActiveView('overview')} />}
                   >
-                    Admin Console
+                    Dashboard
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className='hidden md:block'>
                   <Icons.slash />
                 </BreadcrumbSeparator>
-                <BreadcrumbItem className='hidden lg:block'>
-                  <span className='text-muted-foreground'>{config.group}</span>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className='hidden lg:block'>
-                  <Icons.slash />
-                </BreadcrumbSeparator>
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{config.label}</BreadcrumbPage>
-                </BreadcrumbItem>
+                {activeView === 'overview' ? (
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>Overview</BreadcrumbPage>
+                  </BreadcrumbItem>
+                ) : (
+                  <>
+                    <BreadcrumbItem className='hidden lg:block'>
+                      <span className='text-muted-foreground'>{config.group}</span>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className='hidden lg:block'>
+                      <Icons.slash />
+                    </BreadcrumbSeparator>
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{config.label}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </>
+                )}
               </BreadcrumbList>
             </Breadcrumb>
           </div>
@@ -1381,637 +1496,633 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
           </div>
         </header>
 
+              {activeView === 'overview' ? (
+                <PageContainer
+                  pageTitle='Overview'
+                  pageDescription='Ringkasan statistik dan akses cepat ke seluruh tabel database Jalanin.'
+                >
+                  <div className='flex flex-1 flex-col space-y-6'>
+                    {/* KPI Overview Cards (next-shadcn overview pattern) */}
+                    <div className='*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs sm:grid-cols-2 lg:grid-cols-4'>
+                      <Card
+                        className='@container/card cursor-pointer transition-all hover:shadow-md'
+                        onClick={() => selectTable('users')}
+                      >
+                        <CardHeader>
+                          <CardDescription>Total Users</CardDescription>
+                          <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
+                            {tables.users.length}
+                          </CardTitle>
+                          <CardAction>
+                            <Badge variant='outline'>
+                              <Icons.pro className='size-3' />
+                              {kpiStats.proUsersCount} PRO
+                            </Badge>
+                          </CardAction>
+                        </CardHeader>
+                        <CardFooter className='flex-col items-start gap-1 text-xs'>
+                          <div className='flex items-center gap-1.5 font-medium'>
+                            {kpiStats.unclaimedUsersCount} akun kurasi (unclaimed)
+                          </div>
+                          <div className='text-muted-foreground'>Klik untuk kelola pengguna</div>
+                        </CardFooter>
+                      </Card>
+
+                      <Card
+                        className='@container/card cursor-pointer transition-all hover:shadow-md'
+                        onClick={() => selectTable('accountClaims')}
+                      >
+                        <CardHeader>
+                          <CardDescription>Klaim Akun</CardDescription>
+                          <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
+                            {tables.accountClaims.length}
+                          </CardTitle>
+                          <CardAction>
+                            <Badge variant={kpiStats.pendingClaimsCount > 0 ? 'default' : 'outline'}>
+                              <Icons.clock className='size-3' />
+                              {kpiStats.pendingClaimsCount} Pending
+                            </Badge>
+                          </CardAction>
+                        </CardHeader>
+                        <CardFooter className='flex-col items-start gap-1 text-xs'>
+                          <div className='flex items-center gap-1.5 font-medium'>
+                            Verifikasi kreator & influencer
+                          </div>
+                          <div className='text-muted-foreground'>Approve & kirim link setup password</div>
+                        </CardFooter>
+                      </Card>
+
+                      <Card
+                        className='@container/card cursor-pointer transition-all hover:shadow-md'
+                        onClick={() => selectTable('itineraries')}
+                      >
+                        <CardHeader>
+                          <CardDescription>Itineraries</CardDescription>
+                          <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
+                            {tables.itineraries.length}
+                          </CardTitle>
+                          <CardAction>
+                            <Badge variant='outline'>
+                              <Icons.route className='size-3' />
+                              {kpiStats.publishedItinerariesCount} Public
+                            </Badge>
+                          </CardAction>
+                        </CardHeader>
+                        <CardFooter className='flex-col items-start gap-1 text-xs'>
+                          <div className='flex items-center gap-1.5 font-medium'>
+                            {tables.days.length} hari · {tables.activities.length} aktivitas
+                          </div>
+                          <div className='text-muted-foreground'>Klik untuk kelola daftar perjalanan</div>
+                        </CardFooter>
+                      </Card>
+
+                    <Card
+                      className='@container/card cursor-pointer transition-all hover:shadow-md'
+                      onClick={() => selectTable('myLinkWhitelistDomains')}
+                    >
+                      <CardHeader>
+                        <CardDescription>Interaksi & Konfigurasi</CardDescription>
+                        <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
+                          {tables.saves.length + tables.likes.length}
+                        </CardTitle>
+                        <CardAction>
+                          <Badge variant='outline'>
+                            <Icons.world className='size-3' />
+                            {tables.myLinkWhitelistDomains.length} Domain
+                          </Badge>
+                        </CardAction>
+                      </CardHeader>
+                      <CardFooter className='flex-col items-start gap-1 text-xs'>
+                        <div className='flex items-center gap-1.5 font-medium'>
+                          {tables.saves.length} disimpan · {tables.likes.length} disukai
+                        </div>
+                        <div className='text-muted-foreground'>
+                          {tables.appSettings.length} kunci konfigurasi aktif
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </div>
+
+                            {/* All Tables Directory Grid */}
+              <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+                            {(Object.keys(tableConfigs) as AdminTable[]).map((tableId) => {
+                              const itemConfig = tableConfigs[tableId];
+                              const ItemIcon = itemConfig.icon;
+                              return (
+                                <Card
+                                  key={tableId}
+                                  className='cursor-pointer transition-all hover:shadow-md'
+                                  onClick={() => selectTable(tableId)}
+                                >
+                    <CardHeader>
+                      <CardDescription className='flex items-center gap-2'>
+                        <ItemIcon className='size-4' />
+                        {itemConfig.group}
+                      </CardDescription>
+                      <CardTitle className='text-lg font-semibold'>{itemConfig.label}</CardTitle>
+                      <CardAction>
+                        <Badge variant='secondary'>{tables[tableId].length} records</Badge>
+                      </CardAction>
+                    </CardHeader>
+                    <CardFooter className='text-muted-foreground text-xs'>
+                      {itemConfig.description}
+                    </CardFooter>
+                  </Card>
+                  );
+                })}
+                </div>
+            </div>
+        </PageContainer>
+        ) : (
         <PageContainer
           pageTitle={config.label}
           pageDescription={config.description}
           pageHeaderAction={
-            <div className='flex flex-wrap items-center gap-2'>
+            <div className='flex items-center gap-2'>
               <Button variant='outline' size='sm' onClick={handleExportCSV}>
                 <Icons.download className='size-4' />
                 Export CSV
               </Button>
               <Button size='sm' onClick={openCreateSheet}>
                 <Icons.add className='size-4' />
-                New Record
+                Add New
               </Button>
             </div>
           }
         >
-          <div className='flex flex-1 flex-col space-y-6'>
-            {/* KPI Overview Cards (next-shadcn overview pattern) */}
-            <div className='*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs sm:grid-cols-2 lg:grid-cols-4'>
-              <Card
-                className={cn(
-                  '@container/card cursor-pointer transition-all hover:shadow-md',
-                  currentTable === 'users' && 'ring-primary ring-2'
-                )}
-                onClick={() => selectTable('users')}
-              >
-                <CardHeader>
-                  <CardDescription>Total Users</CardDescription>
-                  <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
-                    {tables.users.length}
-                  </CardTitle>
-                  <CardAction>
-                    <Badge variant='outline'>
-                      <Icons.pro className='size-3' />
-                      {kpiStats.proUsersCount} PRO
-                    </Badge>
-                  </CardAction>
-                </CardHeader>
-                <CardFooter className='flex-col items-start gap-1 text-xs'>
-                  <div className='flex items-center gap-1.5 font-medium'>
-                    {kpiStats.unclaimedUsersCount} akun kurasi (unclaimed)
-                  </div>
-                  <div className='text-muted-foreground'>Klik untuk kelola pengguna</div>
-                </CardFooter>
-              </Card>
-
-              <Card
-                className={cn(
-                  '@container/card cursor-pointer transition-all hover:shadow-md',
-                  currentTable === 'accountClaims' && 'ring-primary ring-2'
-                )}
-                onClick={() => selectTable('accountClaims')}
-              >
-                <CardHeader>
-                  <CardDescription>Klaim Akun</CardDescription>
-                  <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
-                    {tables.accountClaims.length}
-                  </CardTitle>
-                  <CardAction>
-                    <Badge variant={kpiStats.pendingClaimsCount > 0 ? 'default' : 'outline'}>
-                      <Icons.clock className='size-3' />
-                      {kpiStats.pendingClaimsCount} Pending
-                    </Badge>
-                  </CardAction>
-                </CardHeader>
-                <CardFooter className='flex-col items-start gap-1 text-xs'>
-                  <div className='flex items-center gap-1.5 font-medium'>
-                    Verifikasi kreator & influencer
-                  </div>
-                  <div className='text-muted-foreground'>Approve & kirim link setup password</div>
-                </CardFooter>
-              </Card>
-
-              <Card
-                className={cn(
-                  '@container/card cursor-pointer transition-all hover:shadow-md',
-                  currentTable === 'itineraries' && 'ring-primary ring-2'
-                )}
-                onClick={() => selectTable('itineraries')}
-              >
-                <CardHeader>
-                  <CardDescription>Itineraries</CardDescription>
-                  <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
-                    {tables.itineraries.length}
-                  </CardTitle>
-                  <CardAction>
-                    <Badge variant='outline'>
-                      <Icons.route className='size-3' />
-                      {kpiStats.publishedItinerariesCount} Public
-                    </Badge>
-                  </CardAction>
-                </CardHeader>
-                <CardFooter className='flex-col items-start gap-1 text-xs'>
-                  <div className='flex items-center gap-1.5 font-medium'>
-                    {tables.days.length} hari · {tables.activities.length} aktivitas
-                  </div>
-                  <div className='text-muted-foreground'>Klik untuk kelola daftar perjalanan</div>
-                </CardFooter>
-              </Card>
-
-              <Card
-                className={cn(
-                  '@container/card cursor-pointer transition-all hover:shadow-md',
-                  currentTable === 'myLinkWhitelistDomains' && 'ring-primary ring-2'
-                )}
-                onClick={() => selectTable('myLinkWhitelistDomains')}
-              >
-                <CardHeader>
-                  <CardDescription>Interaksi & Konfigurasi</CardDescription>
-                  <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
-                    {tables.saves.length + tables.likes.length}
-                  </CardTitle>
-                  <CardAction>
-                    <Badge variant='outline'>
-                      <Icons.world className='size-3' />
-                      {tables.myLinkWhitelistDomains.length} Domain
-                    </Badge>
-                  </CardAction>
-                </CardHeader>
-                <CardFooter className='flex-col items-start gap-1 text-xs'>
-                  <div className='flex items-center gap-1.5 font-medium'>
-                    {tables.saves.length} disimpan · {tables.likes.length} disukai
-                  </div>
-                  <div className='text-muted-foreground'>
-                    {tables.appSettings.length} kunci konfigurasi aktif
-                  </div>
-                </CardFooter>
-              </Card>
-            </div>
-
-            {/* Quick Table Switcher Pills */}
-            <div className='flex flex-wrap items-center gap-1.5'>
-              {(Object.keys(tableConfigs) as AdminTable[]).map((tableId) => {
-                const itemConfig = tableConfigs[tableId];
-                const ItemIcon = itemConfig.icon;
-                const active = currentTable === tableId;
-                return (
-                  <Button
-                    key={tableId}
-                    variant={active ? 'default' : 'outline'}
-                    size='sm'
-                    className='h-8 gap-1.5 text-xs'
-                    onClick={() => selectTable(tableId)}
-                  >
-                    <ItemIcon className='size-3.5' />
-                    <span>{itemConfig.label}</span>
-                    <Badge
-                      variant={active ? 'secondary' : 'outline'}
-                      className='ml-0.5 rounded-sm px-1.5 py-0 text-[10px]'
-                    >
-                      {tables[tableId].length}
-                    </Badge>
-                  </Button>
-                );
-              })}
-            </div>
-
-            {/* Main Shadcn DataTable */}
-            <DataTable table={table} ariaLabel={`Tabel ${config.label}`}>
-              <DataTableToolbar
-                table={table}
-                globalFilter={globalFilter}
-                onGlobalFilterChange={setGlobalFilter}
-                searchPlaceholder={`Cari di ${config.label}...`}
-              />
-            </DataTable>
-          </div>
-        </PageContainer>
-      </SidebarInset>
-
-      {/* Record Create / Edit Sheet (next-shadcn user-form-sheet pattern) */}
-      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent className='flex h-full max-h-dvh flex-col overflow-hidden sm:max-w-xl'>
-          <SheetHeader className='shrink-0'>
-            <SheetTitle>
-              {editorMode === 'create' ? `Buat ${config.label}` : `Edit ${config.label}`}
-            </SheetTitle>
-            <SheetDescription>
-              {editorMode === 'create'
-                ? `Isi detail form atau JSON di bawah untuk menambahkan record baru ke tabel ${config.label}.`
-                : `Perbarui field record ID: ${editingId} pada tabel ${config.label}.`}
-            </SheetDescription>
-          </SheetHeader>
-
-          <Tabs
-            value={editorTab}
-            onValueChange={(val) => setEditorTab(val as 'form' | 'json')}
-            className='flex min-h-0 flex-1 flex-col overflow-hidden'
-          >
-            <TabsList className='w-full shrink-0'>
-              <TabsTrigger value='form' className='flex-1'>
-                <Icons.forms className='size-4' />
-                Form Editor
-              </TabsTrigger>
-              <TabsTrigger value='json' className='flex-1'>
-                <Icons.fileCode className='size-4' />
-                JSON Editor
-              </TabsTrigger>
-            </TabsList>
-
-            <div className='mt-3 -mr-2 min-h-0 flex-1 overflow-y-auto pr-2'>
-              {(() => {
-                let parsedDraft: Record<string, unknown> = {};
-                let parseError = '';
-                try {
-                  parsedDraft = JSON.parse(draft);
-                } catch (err) {
-                  parseError = err instanceof Error ? err.message : 'Invalid JSON';
-                }
-                const formFields = Object.keys(parsedDraft).filter((key) => !key.startsWith('_'));
-
-                return (
-                  <>
-                    <TabsContent value='form' className='flex-none space-y-4 pb-4'>
-                      {parseError ? (
-                        <Alert variant='destructive'>
-                          <Icons.alertCircle />
-                          <AlertTitle>Format JSON Tidak Valid</AlertTitle>
-                          <AlertDescription>
-                            {parseError}. Silakan perbaiki di tab JSON Editor terlebih dahulu.
-                          </AlertDescription>
-                        </Alert>
-                      ) : (
-                        <div className='grid grid-cols-1 gap-4'>
-                          {formFields.map((key) => {
-                            const value = parsedDraft[key];
-                            const labelText = formatLabel(key);
-
-                            if (
-                              currentTable === 'users' &&
-                              (key === 'isPro' || key === 'proExpiresAt')
-                            ) {
-                              if (key === 'proExpiresAt') return null;
-
-                              const isProVal = Boolean(parsedDraft.isPro);
-                              const expiresAtVal = parsedDraft.proExpiresAt as
-                                | string
-                                | null
-                                | undefined;
-                              const currentPlan = getSubscriptionOption(expiresAtVal, isProVal);
-
-                              return (
-                                <div key='plan-selector' className='space-y-2'>
-                                  <Label htmlFor='form-field-plan'>Subscription Plan</Label>
-                                  <Select
-                                    items={SUBSCRIPTION_PLAN_OPTIONS}
-                                    value={currentPlan}
-                                    onValueChange={(val) => {
-                                      if (!val) return;
-                                      let isPro = false;
-                                      let proExpiresAt: string | null = null;
-                                      let limits = {
-                                        maxPrivate: 2,
-                                        maxPublic: 5,
-                                        maxSaved: 5,
-                                        maxMyLink: 50
-                                      };
-
-                                      if (val !== 'free') {
-                                        isPro = true;
-                                        limits = {
-                                          maxPrivate: 100,
-                                          maxPublic: 100,
-                                          maxSaved: 100,
-                                          maxMyLink: 100
-                                        };
-
-                                        const now = new Date();
-                                        if (val === 'pro_1m') {
-                                          now.setMonth(now.getMonth() + 1);
-                                          proExpiresAt = now.toISOString();
-                                        } else if (val === 'pro_3m') {
-                                          now.setMonth(now.getMonth() + 3);
-                                          proExpiresAt = now.toISOString();
-                                        } else if (val === 'pro_6m') {
-                                          now.setMonth(now.getMonth() + 6);
-                                          proExpiresAt = now.toISOString();
-                                        } else if (val === 'pro_1y') {
-                                          now.setFullYear(now.getFullYear() + 1);
-                                          proExpiresAt = now.toISOString();
-                                        }
-                                      }
-
-                                      try {
-                                        const parsed = JSON.parse(draft) as Record<
-                                          string,
-                                          unknown
-                                        >;
-                                        parsed.isPro = isPro;
-                                        parsed.proExpiresAt = proExpiresAt;
-                                        parsed.maxPrivate = limits.maxPrivate;
-                                        parsed.maxPublic = limits.maxPublic;
-                                        parsed.maxSaved = limits.maxSaved;
-                                        parsed.maxMyLink = limits.maxMyLink;
-                                        setDraft(JSON.stringify(parsed, null, 2));
-                                      } catch {
-                                        // ignore
-                                      }
-                                    }}
-                                  >
-                                    <SelectTrigger id='form-field-plan' className='w-full'>
-                                      <SelectValue placeholder='Pilih plan' />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {SUBSCRIPTION_PLAN_OPTIONS.map((opt) => (
-                                        <SelectItem key={opt.value} value={opt.value}>
-                                          {opt.label}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                              );
-                            }
-
-                            if (typeof value === 'boolean') {
-                              return (
-                                <div
-                                  key={key}
-                                  className='flex items-center justify-between rounded-lg border p-3 shadow-2xs'
-                                >
-                                  <Label htmlFor={`form-field-${key}`} className='cursor-pointer'>
-                                    {labelText}
-                                  </Label>
-                                  <Switch
-                                    id={`form-field-${key}`}
-                                    checked={value}
-                                    onCheckedChange={(checked) => updateDraftField(key, checked)}
-                                  />
-                                </div>
-                              );
-                            }
-
-                            return (
-                              <div key={key} className='space-y-2'>
-                                <Label htmlFor={`form-field-${key}`}>{labelText}</Label>
-                                {currentTable === 'appSettings' &&
-                                key === 'key' &&
-                                editorMode === 'edit' ? (
-                                  <Input
-                                    id={`form-field-${key}`}
-                                    type='text'
-                                    value={
-                                      value !== null && value !== undefined ? String(value) : ''
-                                    }
-                                    disabled
-                                  />
-                                ) : key === 'role' ? (
-                                  <Select
-                                    items={[
-                                      { value: 'USER', label: 'USER' },
-                                      { value: 'ADMIN', label: 'ADMIN' }
-                                    ]}
-                                    value={String(value ?? 'USER')}
-                                    onValueChange={(val) => {
-                                      if (val) updateDraftField(key, val);
-                                    }}
-                                  >
-                                    <SelectTrigger id={`form-field-${key}`} className='w-full'>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value='USER'>USER</SelectItem>
-                                      <SelectItem value='ADMIN'>ADMIN</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                ) : key === 'status' && currentTable === 'accountClaims' ? (
-                                  <Select
-                                    items={[
-                                      { value: 'PENDING', label: 'PENDING (Menunggu Review)' },
-                                      { value: 'APPROVED', label: 'APPROVED (Disetujui)' },
-                                      { value: 'REJECTED', label: 'REJECTED (Ditolak)' }
-                                    ]}
-                                    value={String(value ?? 'PENDING')}
-                                    onValueChange={(val) => {
-                                      if (val) updateDraftField(key, val);
-                                    }}
-                                  >
-                                    <SelectTrigger id={`form-field-${key}`} className='w-full'>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value='PENDING'>
-                                        PENDING (Menunggu Review)
-                                      </SelectItem>
-                                      <SelectItem value='APPROVED'>
-                                        APPROVED (Disetujui)
-                                      </SelectItem>
-                                      <SelectItem value='REJECTED'>REJECTED (Ditolak)</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                ) : key === 'bio' ||
-                                  key === 'description' ||
-                                  key === 'notes' ||
-                                  key === 'proofNotes' ||
-                                  key === 'adminNotes' ? (
-                                  <Textarea
-                                    id={`form-field-${key}`}
-                                    value={String(value ?? '')}
-                                    onChange={(e) => updateDraftField(key, e.target.value)}
-                                    rows={3}
-                                  />
-                                ) : key.endsWith('At') ? (
-                                  <Input
-                                    id={`form-field-${key}`}
-                                    type='datetime-local'
-                                    value={
-                                      value
-                                        ? new Date(String(value)).toISOString().slice(0, 16)
-                                        : ''
-                                    }
-                                    onChange={(e) =>
-                                      updateDraftField(
-                                        key,
-                                        e.target.value
-                                          ? new Date(e.target.value).toISOString()
-                                          : null
-                                      )
-                                    }
-                                  />
-                                ) : typeof value === 'number' ? (
-                                  <Input
-                                    id={`form-field-${key}`}
-                                    type='number'
-                                    value={
-                                      value !== null && value !== undefined ? String(value) : ''
-                                    }
-                                    onChange={(e) =>
-                                      updateDraftField(
-                                        key,
-                                        e.target.value === '' ? null : Number(e.target.value)
-                                      )
-                                    }
-                                  />
-                                ) : (
-                                  <Input
-                                    id={`form-field-${key}`}
-                                    type='text'
-                                    value={
-                                      value !== null && value !== undefined ? String(value) : ''
-                                    }
-                                    onChange={(e) => updateDraftField(key, e.target.value)}
-                                  />
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </TabsContent>
-
-                    <TabsContent value='json' className='flex-none space-y-4 pb-4'>
-                      {parseError && (
-                        <Alert variant='destructive'>
-                          <Icons.alertCircle />
-                          <AlertTitle>Format JSON Tidak Valid</AlertTitle>
-                          <AlertDescription>{parseError}</AlertDescription>
-                        </Alert>
-                      )}
-                      <Textarea
-                        className='min-h-[360px] font-mono text-xs leading-relaxed'
-                        value={draft}
-                        onChange={(event) => setDraft(event.target.value)}
-                        spellCheck={false}
-                      />
-                    </TabsContent>
-                  </>
-                );
-              })()}
-
-              {currentTable === 'appSettings' ? (
-                <Alert className='mt-2 mb-4'>
-                  <Icons.info />
-                  <AlertTitle>Panduan Kunci App Settings</AlertTitle>
-                  <AlertDescription>
-                    <ul className='mt-1 list-disc space-y-1 pl-4 text-xs'>
-                      <li>
-                        <code>whatsapp_number</code>: Nomor WhatsApp Admin (contoh:{' '}
-                        <code>088293681133</code>)
-                      </li>
-                      <li>
-                        <code>price_1m / 3m / 6m / 1y</code>: Harga Plan (contoh:{' '}
-                        <code>Rp 29.900</code>)
-                      </li>
-                      <li>
-                        <code>rate_1m / 3m / 6m / 1y</code>: Keterangan biaya (contoh:{' '}
-                        <code>/bulan</code>, <code>Rp 26.633/bln</code>)
-                      </li>
-                      <li>
-                        <code>promo_1m / 3m / 6m / 1y</code>: Badge Promo/Hemat (contoh:{' '}
-                        <code>11% Hemat</code>)
-                      </li>
-                      <li>
-                        <code>email_whitelist</code>: Whitelist domain email pendaftaran (contoh:{' '}
-                        <code>gmail.com,outlook.com,yahoo.com,icloud.com</code>)
-                      </li>
-                    </ul>
-                  </AlertDescription>
-                </Alert>
-              ) : (
-                <Alert className='mt-2 mb-4'>
-                  <Icons.info />
-                  <AlertTitle>Tips Editor</AlertTitle>
-                  <AlertDescription className='text-xs'>
-                    Anda dapat beralih antara Form Editor dan JSON Editor kapan saja. Field dengan
-                    prefix <code>_</code> hanya untuk tampilan relasi dan otomatis diabaikan saat
-                    menyimpan.
-                  </AlertDescription>
-                </Alert>
-              )}
-            </div>
-          </Tabs>
-
-          <SheetFooter className='shrink-0 flex-row justify-end gap-2 border-t pt-4'>
-            <Button
-              type='button'
-              variant='outline'
-              onClick={() => resetDraft(currentTable)}
-              disabled={busy}
-            >
-              Reset Template
-            </Button>
-            <Button type='button' onClick={handleSave} isLoading={busy}>
-              <Icons.check className='size-4' />
-              {editorMode === 'create' ? 'Create Record' : 'Update Record'}
-            </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
-
-      {/* Delete Confirmation AlertModal (next-shadcn pattern) */}
-      <AlertModal
-        isOpen={Boolean(deleteTargetId)}
-        onClose={() => setDeleteTargetId(null)}
-        onConfirm={confirmDelete}
-        loading={busy}
-      />
-
-      {/* Approve Claim Modal */}
-      <Modal
-        title='Setujui Klaim Akun'
-        description='Setujui permohonan klaim akun ini dan kirimkan email tautan setup password ke pemohon?'
-        isOpen={Boolean(approveClaimId)}
-        onClose={() => setApproveClaimId(null)}
-      >
-        <div className='flex w-full items-center justify-end gap-2 pt-6'>
-          <Button variant='outline' onClick={() => setApproveClaimId(null)} disabled={busy}>
-            Batal
-          </Button>
-          <Button onClick={confirmApproveClaim} isLoading={busy}>
-            <Icons.check className='size-4' />
-            Setujui & Kirim Email
-          </Button>
-        </div>
-      </Modal>
-
-      {/* Setup URL Result Modal */}
-      <Modal
-        title='Klaim Disetujui!'
-        description='Email notifikasi telah dikirim ke pemohon. Tautan setup password juga telah disalin ke clipboard.'
-        isOpen={Boolean(approvedSetupUrl)}
-        onClose={() => setApprovedSetupUrl(null)}
-      >
-        <div className='space-y-4 pt-2'>
-          <div className='flex items-center gap-2'>
-            <Input readOnly value={approvedSetupUrl ?? ''} className='font-mono text-xs' />
-            <Button
-              variant='outline'
-              size='icon'
-              onClick={() => {
-                if (approvedSetupUrl) {
-                  navigator.clipboard.writeText(approvedSetupUrl).catch(() => {});
-                  toast.success('Tautan disalin ke clipboard!');
-                }
-              }}
-            >
-              <Icons.copy className='size-4' />
-            </Button>
-          </div>
-          <div className='flex justify-end'>
-            <Button onClick={() => setApprovedSetupUrl(null)}>Selesai</Button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* Reject Claim Modal */}
-      <Modal
-        title='Tolak Klaim Akun'
-        description='Masukkan alasan penolakan klaim (opsional) yang akan dikirimkan ke email pemohon.'
-        isOpen={Boolean(rejectClaimId)}
-        onClose={() => setRejectClaimId(null)}
-      >
-        <div className='space-y-4 pt-2'>
-          <div className='space-y-2'>
-            <Label htmlFor='reject-reason-input'>Alasan Penolakan</Label>
-            <Textarea
-              id='reject-reason-input'
-              placeholder='Contoh: Bukti kepemilikan akun sosial media belum sesuai...'
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              rows={3}
+          <DataTable table={table} ariaLabel={`Tabel ${config.label}`}>
+            <DataTableToolbar
+              table={table}
+              globalFilter={globalFilter}
+              onGlobalFilterChange={setGlobalFilter}
+              searchPlaceholder={`Search ${config.label.toLowerCase()}...`}
             />
-          </div>
-          <div className='flex justify-end gap-2'>
-            <Button variant='outline' onClick={() => setRejectClaimId(null)} disabled={busy}>
-              Batal
-            </Button>
-            <Button variant='destructive' onClick={confirmRejectClaim} isLoading={busy}>
-              Tolak Klaim
-            </Button>
-          </div>
-        </div>
-      </Modal>
+          </DataTable>
+    </PageContainer>
+        )}
+  </SidebarInset>
 
-      {/* Impersonate Confirmation Modal */}
-      <Modal
-        title='Masuk Sebagai Akun Kurasi'
-        description='Anda akan masuk sebagai akun kurasi ini untuk membuat atau mengedit itinerary. Anda dapat kembali ke Admin Console kapan saja melalui banner di bagian atas halaman.'
-        isOpen={Boolean(impersonateUserId)}
-        onClose={() => setImpersonateUserId(null)}
+      {/* Record Create / Edit Sheet (next-shadcn user-form-sheet pattern) */ }
+<Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+  <SheetContent className='flex h-full max-h-dvh flex-col overflow-hidden sm:max-w-xl'>
+    <SheetHeader className='shrink-0'>
+      <SheetTitle>
+        {editorMode === 'create' ? `Buat ${config.label}` : `Edit ${config.label}`}
+      </SheetTitle>
+      <SheetDescription>
+        {editorMode === 'create'
+          ? `Isi detail form atau JSON di bawah untuk menambahkan record baru ke tabel ${config.label}.`
+          : `Perbarui field record ID: ${editingId} pada tabel ${config.label}.`}
+      </SheetDescription>
+    </SheetHeader>
+
+    <Tabs
+      value={editorTab}
+      onValueChange={(val) => setEditorTab(val as 'form' | 'json')}
+      className='flex min-h-0 flex-1 flex-col overflow-hidden'
+    >
+      <TabsList className='w-full shrink-0'>
+        <TabsTrigger value='form' className='flex-1'>
+          <Icons.forms className='size-4' />
+          Form Editor
+        </TabsTrigger>
+        <TabsTrigger value='json' className='flex-1'>
+          <Icons.fileCode className='size-4' />
+          JSON Editor
+        </TabsTrigger>
+      </TabsList>
+
+      <div className='mt-3 -mr-2 min-h-0 flex-1 overflow-y-auto pr-2'>
+        {(() => {
+          let parsedDraft: Record<string, unknown> = {};
+          let parseError = '';
+          try {
+            parsedDraft = JSON.parse(draft);
+          } catch (err) {
+            parseError = err instanceof Error ? err.message : 'Invalid JSON';
+          }
+          const formFields = Object.keys(parsedDraft).filter((key) => !key.startsWith('_'));
+
+          return (
+            <>
+              <TabsContent value='form' className='flex-none space-y-4 pb-4'>
+                {parseError ? (
+                  <Alert variant='destructive'>
+                    <Icons.alertCircle />
+                    <AlertTitle>Format JSON Tidak Valid</AlertTitle>
+                    <AlertDescription>
+                      {parseError}. Silakan perbaiki di tab JSON Editor terlebih dahulu.
+                    </AlertDescription>
+                  </Alert>
+                ) : (
+                  <div className='grid grid-cols-1 gap-4'>
+                    {formFields.map((key) => {
+                      const value = parsedDraft[key];
+                      const labelText = formatLabel(key);
+
+                      if (
+                        currentTable === 'users' &&
+                        (key === 'isPro' || key === 'proExpiresAt')
+                      ) {
+                        if (key === 'proExpiresAt') return null;
+
+                        const isProVal = Boolean(parsedDraft.isPro);
+                        const expiresAtVal = parsedDraft.proExpiresAt as
+                          | string
+                          | null
+                          | undefined;
+                        const currentPlan = getSubscriptionOption(expiresAtVal, isProVal);
+
+                        return (
+                          <div key='plan-selector' className='space-y-2'>
+                            <Label htmlFor='form-field-plan'>Subscription Plan</Label>
+                            <Select
+                              items={SUBSCRIPTION_PLAN_OPTIONS}
+                              value={currentPlan}
+                              onValueChange={(val) => {
+                                if (!val) return;
+                                let isPro = false;
+                                let proExpiresAt: string | null = null;
+                                let limits = {
+                                  maxPrivate: 2,
+                                  maxPublic: 5,
+                                  maxSaved: 5,
+                                  maxMyLink: 50
+                                };
+
+                                if (val !== 'free') {
+                                  isPro = true;
+                                  limits = {
+                                    maxPrivate: 100,
+                                    maxPublic: 100,
+                                    maxSaved: 100,
+                                    maxMyLink: 100
+                                  };
+
+                                  const now = new Date();
+                                  if (val === 'pro_1m') {
+                                    now.setMonth(now.getMonth() + 1);
+                                    proExpiresAt = now.toISOString();
+                                  } else if (val === 'pro_3m') {
+                                    now.setMonth(now.getMonth() + 3);
+                                    proExpiresAt = now.toISOString();
+                                  } else if (val === 'pro_6m') {
+                                    now.setMonth(now.getMonth() + 6);
+                                    proExpiresAt = now.toISOString();
+                                  } else if (val === 'pro_1y') {
+                                    now.setFullYear(now.getFullYear() + 1);
+                                    proExpiresAt = now.toISOString();
+                                  }
+                                }
+
+                                try {
+                                  const parsed = JSON.parse(draft) as Record<
+                                    string,
+                                    unknown
+                                  >;
+                                  parsed.isPro = isPro;
+                                  parsed.proExpiresAt = proExpiresAt;
+                                  parsed.maxPrivate = limits.maxPrivate;
+                                  parsed.maxPublic = limits.maxPublic;
+                                  parsed.maxSaved = limits.maxSaved;
+                                  parsed.maxMyLink = limits.maxMyLink;
+                                  setDraft(JSON.stringify(parsed, null, 2));
+                                } catch {
+                                  // ignore
+                                }
+                              }}
+                            >
+                              <SelectTrigger id='form-field-plan' className='w-full'>
+                                <SelectValue placeholder='Pilih plan' />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {SUBSCRIPTION_PLAN_OPTIONS.map((opt) => (
+                                  <SelectItem key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        );
+                      }
+
+                      if (typeof value === 'boolean') {
+                        return (
+                          <div
+                            key={key}
+                            className='flex items-center justify-between rounded-lg border p-3 shadow-2xs'
+                          >
+                            <Label htmlFor={`form-field-${key}`} className='cursor-pointer'>
+                              {labelText}
+                            </Label>
+                            <Switch
+                              id={`form-field-${key}`}
+                              checked={value}
+                              onCheckedChange={(checked) => updateDraftField(key, checked)}
+                            />
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div key={key} className='space-y-2'>
+                          <Label htmlFor={`form-field-${key}`}>{labelText}</Label>
+                          {currentTable === 'appSettings' &&
+                            key === 'key' &&
+                            editorMode === 'edit' ? (
+                            <Input
+                              id={`form-field-${key}`}
+                              type='text'
+                              value={
+                                value !== null && value !== undefined ? String(value) : ''
+                              }
+                              disabled
+                            />
+                          ) : key === 'role' ? (
+                            <Select
+                              items={[
+                                { value: 'USER', label: 'USER' },
+                                { value: 'ADMIN', label: 'ADMIN' }
+                              ]}
+                              value={String(value ?? 'USER')}
+                              onValueChange={(val) => {
+                                if (val) updateDraftField(key, val);
+                              }}
+                            >
+                              <SelectTrigger id={`form-field-${key}`} className='w-full'>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value='USER'>USER</SelectItem>
+                                <SelectItem value='ADMIN'>ADMIN</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          ) : key === 'status' && currentTable === 'accountClaims' ? (
+                            <Select
+                              items={[
+                                { value: 'PENDING', label: 'PENDING (Menunggu Review)' },
+                                { value: 'APPROVED', label: 'APPROVED (Disetujui)' },
+                                { value: 'REJECTED', label: 'REJECTED (Ditolak)' }
+                              ]}
+                              value={String(value ?? 'PENDING')}
+                              onValueChange={(val) => {
+                                if (val) updateDraftField(key, val);
+                              }}
+                            >
+                              <SelectTrigger id={`form-field-${key}`} className='w-full'>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value='PENDING'>
+                                  PENDING (Menunggu Review)
+                                </SelectItem>
+                                <SelectItem value='APPROVED'>
+                                  APPROVED (Disetujui)
+                                </SelectItem>
+                                <SelectItem value='REJECTED'>REJECTED (Ditolak)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          ) : key === 'bio' ||
+                            key === 'description' ||
+                            key === 'notes' ||
+                            key === 'proofNotes' ||
+                            key === 'adminNotes' ? (
+                            <Textarea
+                              id={`form-field-${key}`}
+                              value={String(value ?? '')}
+                              onChange={(e) => updateDraftField(key, e.target.value)}
+                              rows={3}
+                            />
+                          ) : key.endsWith('At') ? (
+                            <Input
+                              id={`form-field-${key}`}
+                              type='datetime-local'
+                              value={
+                                value
+                                  ? new Date(String(value)).toISOString().slice(0, 16)
+                                  : ''
+                              }
+                              onChange={(e) =>
+                                updateDraftField(
+                                  key,
+                                  e.target.value
+                                    ? new Date(e.target.value).toISOString()
+                                    : null
+                                )
+                              }
+                            />
+                          ) : typeof value === 'number' ? (
+                            <Input
+                              id={`form-field-${key}`}
+                              type='number'
+                              value={
+                                value !== null && value !== undefined ? String(value) : ''
+                              }
+                              onChange={(e) =>
+                                updateDraftField(
+                                  key,
+                                  e.target.value === '' ? null : Number(e.target.value)
+                                )
+                              }
+                            />
+                          ) : (
+                            <Input
+                              id={`form-field-${key}`}
+                              type='text'
+                              value={
+                                value !== null && value !== undefined ? String(value) : ''
+                              }
+                              onChange={(e) => updateDraftField(key, e.target.value)}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value='json' className='flex-none space-y-4 pb-4'>
+                {parseError && (
+                  <Alert variant='destructive'>
+                    <Icons.alertCircle />
+                    <AlertTitle>Format JSON Tidak Valid</AlertTitle>
+                    <AlertDescription>{parseError}</AlertDescription>
+                  </Alert>
+                )}
+                <Textarea
+                  className='min-h-[360px] font-mono text-xs leading-relaxed'
+                  value={draft}
+                  onChange={(event) => setDraft(event.target.value)}
+                  spellCheck={false}
+                />
+              </TabsContent>
+            </>
+          );
+        })()}
+
+        {currentTable === 'appSettings' ? (
+          <Alert className='mt-2 mb-4'>
+            <Icons.info />
+            <AlertTitle>Panduan Kunci App Settings</AlertTitle>
+            <AlertDescription>
+              <ul className='mt-1 list-disc space-y-1 pl-4 text-xs'>
+                <li>
+                  <code>whatsapp_number</code>: Nomor WhatsApp Admin (contoh:{' '}
+                  <code>088293681133</code>)
+                </li>
+                <li>
+                  <code>price_1m / 3m / 6m / 1y</code>: Harga Plan (contoh:{' '}
+                  <code>Rp 29.900</code>)
+                </li>
+                <li>
+                  <code>rate_1m / 3m / 6m / 1y</code>: Keterangan biaya (contoh:{' '}
+                  <code>/bulan</code>, <code>Rp 26.633/bln</code>)
+                </li>
+                <li>
+                  <code>promo_1m / 3m / 6m / 1y</code>: Badge Promo/Hemat (contoh:{' '}
+                  <code>11% Hemat</code>)
+                </li>
+                <li>
+                  <code>email_whitelist</code>: Whitelist domain email pendaftaran (contoh:{' '}
+                  <code>gmail.com,outlook.com,yahoo.com,icloud.com</code>)
+                </li>
+              </ul>
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <Alert className='mt-2 mb-4'>
+            <Icons.info />
+            <AlertTitle>Tips Editor</AlertTitle>
+            <AlertDescription className='text-xs'>
+              Anda dapat beralih antara Form Editor dan JSON Editor kapan saja. Field dengan
+              prefix <code>_</code> hanya untuk tampilan relasi dan otomatis diabaikan saat
+              menyimpan.
+            </AlertDescription>
+          </Alert>
+        )}
+      </div>
+    </Tabs>
+
+    <SheetFooter className='shrink-0 flex-row justify-end gap-2 border-t pt-4'>
+      <Button
+        type='button'
+        variant='outline'
+        onClick={() => resetDraft(currentTable)}
+        disabled={busy}
       >
-        <div className='flex justify-end gap-2 pt-6'>
-          <Button variant='outline' onClick={() => setImpersonateUserId(null)} disabled={busy}>
-            Batal
-          </Button>
-          <Button onClick={confirmImpersonate} isLoading={busy}>
-            <Icons.login className='size-4' />
-            Masuk & Buat Itinerary
-          </Button>
-        </div>
-      </Modal>
-    </SidebarProvider>
+        Reset Template
+      </Button>
+      <Button type='button' onClick={handleSave} isLoading={busy}>
+        <Icons.check className='size-4' />
+        {editorMode === 'create' ? 'Create Record' : 'Update Record'}
+      </Button>
+    </SheetFooter>
+  </SheetContent>
+</Sheet>
+
+{/* Delete Confirmation AlertModal (next-shadcn pattern) */ }
+<AlertModal
+  isOpen={Boolean(deleteTargetId)}
+  onClose={() => setDeleteTargetId(null)}
+  onConfirm={confirmDelete}
+  loading={busy}
+/>
+
+{/* Approve Claim Modal */ }
+<Modal
+  title='Setujui Klaim Akun'
+  description='Setujui permohonan klaim akun ini dan kirimkan email tautan setup password ke pemohon?'
+  isOpen={Boolean(approveClaimId)}
+  onClose={() => setApproveClaimId(null)}
+>
+  <div className='flex w-full items-center justify-end gap-2 pt-6'>
+    <Button variant='outline' onClick={() => setApproveClaimId(null)} disabled={busy}>
+      Batal
+    </Button>
+    <Button onClick={confirmApproveClaim} isLoading={busy}>
+      <Icons.check className='size-4' />
+      Setujui & Kirim Email
+    </Button>
+  </div>
+</Modal>
+
+{/* Setup URL Result Modal */ }
+<Modal
+  title='Klaim Disetujui!'
+  description='Email notifikasi telah dikirim ke pemohon. Tautan setup password juga telah disalin ke clipboard.'
+  isOpen={Boolean(approvedSetupUrl)}
+  onClose={() => setApprovedSetupUrl(null)}
+>
+  <div className='space-y-4 pt-2'>
+    <div className='flex items-center gap-2'>
+      <Input readOnly value={approvedSetupUrl ?? ''} className='font-mono text-xs' />
+      <Button
+        variant='outline'
+        size='icon'
+        onClick={() => {
+          if (approvedSetupUrl) {
+            navigator.clipboard.writeText(approvedSetupUrl).catch(() => { });
+            toast.success('Tautan disalin ke clipboard!');
+          }
+        }}
+      >
+        <Icons.copy className='size-4' />
+      </Button>
+    </div>
+    <div className='flex justify-end'>
+      <Button onClick={() => setApprovedSetupUrl(null)}>Selesai</Button>
+    </div>
+  </div>
+</Modal>
+
+{/* Reject Claim Modal */ }
+<Modal
+  title='Tolak Klaim Akun'
+  description='Masukkan alasan penolakan klaim (opsional) yang akan dikirimkan ke email pemohon.'
+  isOpen={Boolean(rejectClaimId)}
+  onClose={() => setRejectClaimId(null)}
+>
+  <div className='space-y-4 pt-2'>
+    <div className='space-y-2'>
+      <Label htmlFor='reject-reason-input'>Alasan Penolakan</Label>
+      <Textarea
+        id='reject-reason-input'
+        placeholder='Contoh: Bukti kepemilikan akun sosial media belum sesuai...'
+        value={rejectReason}
+        onChange={(e) => setRejectReason(e.target.value)}
+        rows={3}
+      />
+    </div>
+    <div className='flex justify-end gap-2'>
+      <Button variant='outline' onClick={() => setRejectClaimId(null)} disabled={busy}>
+        Batal
+      </Button>
+      <Button variant='destructive' onClick={confirmRejectClaim} isLoading={busy}>
+        Tolak Klaim
+      </Button>
+    </div>
+  </div>
+</Modal>
+
+{/* Impersonate Confirmation Modal */ }
+<Modal
+  title='Masuk Sebagai Akun Kurasi'
+  description='Anda akan masuk sebagai akun kurasi ini untuk membuat atau mengedit itinerary. Anda dapat kembali ke Admin Console kapan saja melalui banner di bagian atas halaman.'
+  isOpen={Boolean(impersonateUserId)}
+  onClose={() => setImpersonateUserId(null)}
+>
+  <div className='flex justify-end gap-2 pt-6'>
+    <Button variant='outline' onClick={() => setImpersonateUserId(null)} disabled={busy}>
+      Batal
+    </Button>
+    <Button onClick={confirmImpersonate} isLoading={busy}>
+      <Icons.login className='size-4' />
+      Masuk & Buat Itinerary
+    </Button>
+  </div>
+</Modal>
+    </SidebarProvider >
   );
 }

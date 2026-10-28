@@ -30,10 +30,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       enableColorScheme
     >
       <ActiveThemeProvider initialTheme={themeToApply}>
-        <div className='bg-background text-foreground min-h-svh font-sans antialiased'>
-          <Toaster />
-          {children}
-        </div>
+          <div
+            data-theme={themeToApply}
+            className='bg-background text-foreground min-h-svh overflow-x-hidden overscroll-none font-sans antialiased'
+          >
+            <Toaster />
+            {children}
+          </div>
       </ActiveThemeProvider>
     </ThemeProvider>
   );
