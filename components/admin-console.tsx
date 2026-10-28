@@ -16,7 +16,8 @@ import {
   type ColumnDef,
   type SortingState,
   type ColumnFiltersState,
-  type VisibilityState
+  type VisibilityState,
+  type RowSelectionState
 } from '@tanstack/react-table';
 import { DEFAULT_ACTIVITY_TYPE } from '@/lib/activity-types';
 import { toast } from 'sonner';
@@ -30,6 +31,7 @@ import { Modal } from '@/components/ui/modal';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -238,7 +240,7 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
   },
   activities: {
     label: 'Activities',
-    description: 'Kelola aktivitas, urutan, kategori, dan biaya di tiap hari itinerary.',
+    description: 'Kelola aktivitas, urutan, kategori, biaya, dan tautan MyLink di tiap hari itinerary.',
     group: 'Konten & Perjalanan',
     icon: Icons.mapPin,
     columns: [
@@ -247,6 +249,7 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       'locationName',
       'category',
       'estimatedCost',
+      'myLinkId',
       'itineraryDayId',
       'authorId',
       'latitude',
@@ -267,7 +270,22 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       description: '',
       estimatedCost: 0,
       category: DEFAULT_ACTIVITY_TYPE,
+      myLinkId: null,
       orderIndex: 0
+    }
+  },
+  myLinks: {
+    label: 'MyLinks',
+    description:
+      'Kelola pustaka tautan booking/affiliate MyLink milik pengguna yang disematkan pada aktivitas.',
+    group: 'Konten & Perjalanan',
+    icon: Icons.link,
+    columns: ['label', 'provider', 'actualUrl', 'usageCount', 'userId', 'createdAt'],
+    template: {
+      userId: '',
+      label: 'Tiket Masuk / Booking Hotel',
+      provider: 'Klook',
+      actualUrl: 'https://www.klook.com/'
     }
   },
   saves: {
@@ -329,7 +347,7 @@ const SIDEBAR_GROUPS: {
     },
     {
       label: 'Konten & Perjalanan',
-      tables: ['itineraries', 'days', 'activities', 'saves', 'likes']
+      tables: ['itineraries', 'days', 'activities', 'myLinks', 'saves', 'likes']
     },
     {
       label: 'Konfigurasi Sistem',
@@ -377,6 +395,16 @@ const ACTIVITY_CATEGORY_OPTIONS: Option[] = [
   { label: 'Lainnya', value: 'other' }
 ];
 
+const MYLINK_PROVIDER_OPTIONS: Option[] = [
+  { label: 'Klook', value: 'Klook' },
+  { label: 'Agoda', value: 'Agoda' },
+  { label: 'Traveloka', value: 'Traveloka' },
+  { label: 'Tiket.com', value: 'Tiket.com' },
+  { label: 'Booking.com', value: 'Booking.com' },
+  { label: 'WhatsApp', value: 'WhatsApp' },
+  { label: 'Custom', value: 'Custom' }
+];
+
 const SUBSCRIPTION_PLAN_OPTIONS = [
   { value: 'free', label: 'Plan: FREE' },
   { value: 'pro_1m', label: 'PRO (1 Bulan)' },
@@ -418,6 +446,7 @@ const DEFAULT_HIDDEN_COLUMNS: Record<AdminTable, VisibilityState> = {
     longitude: false,
     orderIndex: false
   },
+  myLinks: {},
   saves: {
     id: false
   },
@@ -487,8 +516,9 @@ function formatColumnLabel(table: AdminTable, key: string) {
     return ACCOUNT_CLAIM_COLUMN_LABELS[key];
   }
   if (
-    key === 'authorId' &&
-    (table === 'itineraries' || table === 'days' || table === 'activities')
+    (key === 'authorId' &&
+      (table === 'itineraries' || table === 'days' || table === 'activities')) ||
+    (key === 'userId' && table === 'myLinks')
   ) {
     return 'Nama User';
   }
@@ -497,6 +527,12 @@ function formatColumnLabel(table: AdminTable, key: string) {
   }
   if (key === 'itineraryDayId' && table === 'activities') {
     return 'Hari Itinerary';
+  }
+  if (key === 'myLinkId' && table === 'activities') {
+    return 'My Link Id';
+  }
+  if (key === 'usageCount' && table === 'myLinks') {
+    return 'Digunakan di Activity';
   }
   return formatLabel(key);
 }
@@ -525,7 +561,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState(JSON.stringify(tableConfigs.users.template, null, 2));
   const [busy, setBusy] = useState(false);
-  const [editorTab, setEditorTab] = useState<'form' | 'json'>('form');
+  const [editorTab, setEditorTab] = useState<'form' | 'json' | 'bulk'>('form');
   const [sheetOpen, setSheetOpen] = useState(false);
 
   // Modal states
@@ -536,12 +572,60 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
   const [rejectReason, setRejectReason] = useState('');
   const [impersonateUserId, setImpersonateUserId] = useState<string | null>(null);
 
+  // Bulk Add states (Create Sheet -> Bulk Add tab)
+  const [bulkMyLinkUserId, setBulkMyLinkUserId] = useState<string>('');
+  const [bulkMyLinkRows, setBulkMyLinkRows] = useState<
+    Array<{ label: string; actualUrl: string; provider: string }>
+  >([
+    { label: '', actualUrl: '', provider: 'Klook' },
+    { label: '', actualUrl: '', provider: 'Traveloka' }
+  ]);
+  const [bulkPasteText, setBulkPasteText] = useState('');
+  const [bulkActivityDayId, setBulkActivityDayId] = useState<string>('');
+  const [bulkActivityMyLinkId, setBulkActivityMyLinkId] = useState<string>('__none__');
+  const [bulkActivityRows, setBulkActivityRows] = useState<
+    Array<{
+      time: string;
+      title: string;
+      locationName: string;
+      category: string;
+      estimatedCost: number;
+    }>
+  >([
+    { time: '09:00', title: '', locationName: '', category: 'wisata', estimatedCost: 0 },
+    { time: '12:00', title: '', locationName: '', category: 'kuliner', estimatedCost: 0 }
+  ]);
+  const [bulkJsonDraft, setBulkJsonDraft] = useState<string>(
+    JSON.stringify([tableConfigs.users.template], null, 2)
+  );
+
+  // Bulk Action Modal states (DataTable row selection)
+  const [bulkDeleteConfirmOpen, setBulkDeleteConfirmOpen] = useState(false);
+  const [bulkSetMyLinkModalOpen, setBulkSetMyLinkModalOpen] = useState(false);
+  const [bulkSelectedMyLinkId, setBulkSelectedMyLinkId] = useState<string>('__none__');
+  const [bulkEditModalOpen, setBulkEditModalOpen] = useState(false);
+  const [bulkEditProvider, setBulkEditProvider] = useState<string>('__keep__');
+  const [bulkEditUserId, setBulkEditUserId] = useState<string>('__keep__');
+  const [bulkEditCategory, setBulkEditCategory] = useState<string>('__keep__');
+
+  // MyLink Activity Usage Manager Sheet states
+  const [managingMyLinkId, setManagingMyLinkId] = useState<string | null>(null);
+  const [usageTab, setUsageTab] = useState<'linked' | 'add'>('linked');
+  const [linkedSearch, setLinkedSearch] = useState('');
+  const [selectedLinkedActivityIds, setSelectedLinkedActivityIds] = useState<string[]>([]);
+  const [reassignTargetMyLinkId, setReassignTargetMyLinkId] = useState<string>('__none__');
+  const [addActivitySearch, setAddActivitySearch] = useState('');
+  const [addActivityItineraryFilter, setAddActivityItineraryFilter] = useState<string>('__all__');
+  const [addActivityOnlyUnlinked, setAddActivityOnlyUnlinked] = useState<boolean>(false);
+  const [selectedCandidateActivityIds, setSelectedCandidateActivityIds] = useState<string[]>([]);
+
   // Datatable States (TanStack Table controlled states)
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     DEFAULT_HIDDEN_COLUMNS.users
   );
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [globalFilter, setGlobalFilter] = useState('');
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -555,6 +639,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     setEditorMode('create');
     setEditingId(null);
     setDraft(JSON.stringify(tableConfigs[table].template, null, 2));
+    setBulkJsonDraft(JSON.stringify([tableConfigs[table].template], null, 2));
     setEditorTab('form');
   }, []);
 
@@ -566,6 +651,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
       setGlobalFilter('');
       setSorting([]);
       setColumnFilters([]);
+      setRowSelection({});
       setColumnVisibility(DEFAULT_HIDDEN_COLUMNS[tableId]);
       setPagination({ pageIndex: 0, pageSize: 10 });
     },
@@ -576,6 +662,24 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     resetDraft(currentTable);
     setSheetOpen(true);
   }, [currentTable, resetDraft]);
+
+  const openBulkCreateSheet = useCallback(() => {
+    resetDraft(currentTable);
+    setEditorTab('bulk');
+    setSheetOpen(true);
+  }, [currentTable, resetDraft]);
+
+  const openMyLinkUsageManager = useCallback((myLinkId: string, initialTab: 'linked' | 'add' = 'linked') => {
+    setManagingMyLinkId(myLinkId);
+    setUsageTab(initialTab);
+    setLinkedSearch('');
+    setSelectedLinkedActivityIds([]);
+    setReassignTargetMyLinkId('__none__');
+    setAddActivitySearch('');
+    setAddActivityItineraryFilter('__all__');
+    setAddActivityOnlyUnlinked(false);
+    setSelectedCandidateActivityIds([]);
+  }, []);
 
   const openEditSheet = useCallback((id: string, record: Record<string, unknown>) => {
     setEditorMode('edit');
@@ -632,6 +736,11 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
       }
 
       await refreshTable(currentTable);
+      if (currentTable === 'activities') {
+        await refreshTable('myLinks');
+      } else if (currentTable === 'myLinks') {
+        await refreshTable('activities');
+      }
       resetDraft(currentTable);
       setSheetOpen(false);
       toast.success(
@@ -658,6 +767,11 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
       }
 
       await refreshTable(currentTable);
+      if (currentTable === 'activities') {
+        await refreshTable('myLinks');
+      } else if (currentTable === 'myLinks') {
+        await refreshTable('activities');
+      }
       if (editingId === deleteTargetId) {
         resetDraft(currentTable);
       }
@@ -667,6 +781,131 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
       toast.error(error instanceof Error ? error.message : 'Gagal menghapus record.');
     } finally {
       setBusy(false);
+    }
+  }
+
+  const executeBulkAction = useCallback(
+    async (
+      payload: Record<string, unknown>,
+      successMessage: string,
+      tablesToRefresh: AdminTable[] = [currentTable]
+    ) => {
+      setBusy(true);
+      try {
+        const response = await fetch('/api/admin/bulk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+        const uniqueTables = Array.from(new Set(tablesToRefresh));
+        await Promise.all(uniqueTables.map((t) => refreshTable(t)));
+        toast.success(successMessage);
+        return true;
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : 'Gagal menjalankan aksi bulk.');
+        return false;
+      } finally {
+        setBusy(false);
+      }
+    },
+    [currentTable, refreshTable]
+  );
+
+  async function handleBulkCreate() {
+    if (currentTable === 'myLinks') {
+      const validRows = bulkMyLinkRows.filter(
+        (r) => r.label.trim() !== '' && r.actualUrl.trim() !== ''
+      );
+      if (validRows.length === 0) {
+        toast.error('Isi minimal 1 baris MyLink (Label & Actual URL).');
+        return;
+      }
+      if (!bulkMyLinkUserId.trim()) {
+        toast.error('Pilih atau isi User ID pemilik MyLink terlebih dahulu.');
+        return;
+      }
+      const items = validRows.map((r) => ({
+        userId: bulkMyLinkUserId.trim(),
+        label: r.label.trim(),
+        actualUrl: r.actualUrl.trim(),
+        provider: r.provider || 'Custom'
+      }));
+      const ok = await executeBulkAction(
+        { action: 'bulkCreate', table: 'myLinks', items },
+        `${items.length} MyLink berhasil ditambahkan secara bulk.`,
+        ['myLinks', 'activities']
+      );
+      if (ok) {
+        setBulkMyLinkRows([
+          { label: '', actualUrl: '', provider: 'Klook' },
+          { label: '', actualUrl: '', provider: 'Traveloka' }
+        ]);
+        setBulkPasteText('');
+        setSheetOpen(false);
+      }
+      return;
+    }
+
+    if (currentTable === 'activities') {
+      const validRows = bulkActivityRows.filter(
+        (r) => r.title.trim() !== '' && r.locationName.trim() !== ''
+      );
+      if (validRows.length === 0) {
+        toast.error('Isi minimal 1 baris Activity (Title & Location Name).');
+        return;
+      }
+      if (!bulkActivityDayId.trim()) {
+        toast.error('Pilih atau isi Itinerary Day ID terlebih dahulu.');
+        return;
+      }
+      const items = validRows.map((r) => ({
+        itineraryDayId: bulkActivityDayId.trim(),
+        time: r.time.trim() || '09:00',
+        title: r.title.trim(),
+        locationName: r.locationName.trim(),
+        category: r.category || 'wisata',
+        estimatedCost: Number(r.estimatedCost) || 0,
+        description: '',
+        mapsUrl: '',
+        myLinkId:
+          bulkActivityMyLinkId && bulkActivityMyLinkId !== '__none__'
+            ? bulkActivityMyLinkId
+            : null
+      }));
+      const ok = await executeBulkAction(
+        { action: 'bulkCreate', table: 'activities', items },
+        `${items.length} Activity berhasil ditambahkan secara bulk.`,
+        ['activities', 'myLinks']
+      );
+      if (ok) {
+        setBulkActivityRows([
+          { time: '09:00', title: '', locationName: '', category: 'wisata', estimatedCost: 0 },
+          { time: '12:00', title: '', locationName: '', category: 'kuliner', estimatedCost: 0 }
+        ]);
+        setSheetOpen(false);
+      }
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(bulkJsonDraft);
+      if (!Array.isArray(parsed) || parsed.length === 0) {
+        toast.error('JSON harus berupa array berisi minimal 1 objek record.');
+        return;
+      }
+      const ok = await executeBulkAction(
+        { action: 'bulkCreate', table: currentTable, items: parsed },
+        `${parsed.length} record ${config.label} berhasil ditambahkan secara bulk.`,
+        [currentTable]
+      );
+      if (ok) {
+        setSheetOpen(false);
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Format JSON Array tidak valid.');
     }
   }
 
@@ -856,6 +1095,58 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     return map;
   }, [tables.days]);
 
+  const myLinkByIdMap = useMemo(() => {
+    const map = new Map<string, Record<string, unknown>>();
+    for (const ml of tables.myLinks ?? []) {
+      if (ml.id) map.set(String(ml.id), ml);
+    }
+    return map;
+  }, [tables.myLinks]);
+
+  const getActivitiesForMyLink = useCallback(
+    (myLinkId: string): Record<string, unknown>[] => {
+      if (!myLinkId) return [];
+      const resultMap = new Map<string, Record<string, unknown>>();
+      const knownActivityIdsInTable = new Set<string>();
+
+      for (const act of tables.activities ?? []) {
+        const actId = String(act.id ?? '');
+        if (!actId) continue;
+        knownActivityIdsInTable.add(actId);
+        if (String(act.myLinkId ?? '') === myLinkId) {
+          resultMap.set(actId, act);
+        }
+      }
+
+      const mlRecord = myLinkByIdMap.get(myLinkId);
+      const rel =
+        mlRecord?._related && typeof mlRecord._related === 'object'
+          ? (mlRecord._related as Record<string, unknown>)
+          : undefined;
+      if (Array.isArray(rel?.activities)) {
+        for (const rawAct of rel.activities) {
+          if (!rawAct || typeof rawAct !== 'object') continue;
+          const actObj = rawAct as Record<string, unknown>;
+          const actId = String(actObj.id ?? '');
+          if (!actId || resultMap.has(actId)) continue;
+          // Only fallback to _related.activities if not already overridden in tables.activities
+          if (!knownActivityIdsInTable.has(actId)) {
+            resultMap.set(actId, {
+              ...actObj,
+              myLinkId,
+              _related: {
+                day: actObj.day
+              }
+            });
+          }
+        }
+      }
+
+      return Array.from(resultMap.values());
+    },
+    [tables.activities, myLinkByIdMap]
+  );
+
   const resolveRecordUser = useCallback(
     (record: Record<string, unknown>, tableId: AdminTable): Record<string, unknown> | undefined => {
       const rel =
@@ -973,6 +1264,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
       if (u?.email) return String(u.email);
       if (u?.username) return String(u.username);
       if (tableId === 'itineraries' && record.authorId) return String(record.authorId);
+      if (tableId === 'myLinks' && record.userId) return String(record.userId);
       return '';
     },
     [resolveRecordUser]
@@ -997,10 +1289,11 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
         return targetUser?.isClaimed ? 'CLAIMED' : 'UNCLAIMED';
       }
       if (
-        colName === 'authorId' &&
-        (currentTable === 'itineraries' ||
-          currentTable === 'days' ||
-          currentTable === 'activities')
+        (colName === 'authorId' &&
+          (currentTable === 'itineraries' ||
+            currentTable === 'days' ||
+            currentTable === 'activities')) ||
+        (colName === 'userId' && currentTable === 'myLinks')
       ) {
         return resolveRecordUserKey(record, currentTable);
       }
@@ -1226,30 +1519,151 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
         }));
     };
 
+    const buildMyLinkFilterOptions = (): Option[] => {
+      const mlMap = new Map<
+        string,
+        { value: string; label: string; description?: string; keywords: string[]; count: number }
+      >();
+
+      const registerMyLink = (ml: Record<string, unknown> | undefined, fallbackId?: string) => {
+        const key = String(ml?.id ?? fallbackId ?? '').trim();
+        if (!key) return '';
+        const upperKey = key.toUpperCase();
+        if (!mlMap.has(upperKey)) {
+          const label = ml?.label ? String(ml.label) : key;
+          const provider = ml?.provider ? String(ml.provider) : undefined;
+          const owner = ml ? resolveRecordUser(ml, 'myLinks') : undefined;
+          const ownerLabel = owner?.name
+            ? String(owner.name)
+            : owner?.username
+              ? `@${String(owner.username).replace(/^@/, '')}`
+              : undefined;
+          const desc = [provider, ownerLabel, key].filter(Boolean).join(' · ') || undefined;
+          mlMap.set(upperKey, {
+            value: key,
+            label,
+            description: desc,
+            keywords: [label, provider ?? '', ownerLabel ?? '', key].filter(Boolean),
+            count: 0
+          });
+        }
+        return upperKey;
+      };
+
+      for (const ml of tables.myLinks ?? []) {
+        registerMyLink(ml, String(ml.id ?? ''));
+      }
+
+      for (const rec of records) {
+        const mlId = String(rec.myLinkId ?? '').trim();
+        if (!mlId) continue;
+        const rel =
+          rec._related && typeof rec._related === 'object'
+            ? (rec._related as Record<string, unknown>)
+            : undefined;
+        const relMl =
+          rel?.myLink && typeof rel.myLink === 'object'
+            ? (rel.myLink as Record<string, unknown>)
+            : myLinkByIdMap.get(mlId);
+        const upperKey = registerMyLink(relMl, mlId);
+        if (upperKey) {
+          const existing = mlMap.get(upperKey);
+          if (existing) existing.count += 1;
+        }
+      }
+
+      return Array.from(mlMap.values())
+        .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, 'id-ID'))
+        .map((item) => ({
+          value: item.value,
+          label: item.label,
+          description: item.description,
+          keywords: item.keywords,
+          count: item.count,
+          icon: Icons.link
+        }));
+    };
+
+    const idHeaderTitle = currentTable === 'myLinks' ? 'My Link Id' : 'ID';
+
     const dataCols: ColumnDef<Record<string, unknown>>[] = [
+      {
+        id: 'select',
+        size: 36,
+        enableSorting: false,
+        enableHiding: false,
+        enableColumnFilter: false,
+        header: ({ table: tbl }) => (
+          <div className='flex items-center justify-center'>
+            <Checkbox
+              checked={tbl.getIsAllPageRowsSelected()}
+              indeterminate={
+                tbl.getIsSomePageRowsSelected() && !tbl.getIsAllPageRowsSelected()
+              }
+              onCheckedChange={(checked) => tbl.toggleAllPageRowsSelected(Boolean(checked))}
+              aria-label='Pilih semua baris di halaman ini'
+            />
+          </div>
+        ),
+        cell: ({ row }) => (
+          <div className='flex items-center justify-center'>
+            <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(checked) => row.toggleSelected(Boolean(checked))}
+              aria-label='Pilih baris ini'
+            />
+          </div>
+        )
+      },
       {
         id: 'id',
         accessorFn: (row) => String(row.id ?? row.key ?? ''),
         enableColumnFilter: false,
         meta: {
-          label: 'ID'
+          label: idHeaderTitle
         },
         header: ({ column }: { column: Column<Record<string, unknown>, unknown> }) => (
-          <DataTableColumnHeader column={column} title='ID' />
+          <DataTableColumnHeader column={column} title={idHeaderTitle} />
         ),
-        cell: (info) => (
-          <span className='text-muted-foreground font-mono text-xs'>
-            {String(info.getValue() ?? '')}
-          </span>
-        )
+        cell: (info) => {
+          const idVal = String(info.getValue() ?? '');
+          if (currentTable === 'myLinks' && idVal) {
+            return (
+              <div className='flex items-center gap-1.5'>
+                <code className='bg-muted text-foreground rounded px-1.5 py-0.5 font-mono text-xs'>
+                  {idVal}
+                </code>
+                <Button
+                  type='button'
+                  variant='ghost'
+                  size='icon'
+                  className='h-6 w-6 shrink-0'
+                  title='Salin My Link Id'
+                  onClick={() => {
+                    navigator.clipboard.writeText(idVal).catch(() => {});
+                    toast.success('My Link Id berhasil disalin!');
+                  }}
+                >
+                  <Icons.copy className='size-3' />
+                </Button>
+              </div>
+            );
+          }
+          return (
+            <span className='text-muted-foreground font-mono text-xs'>
+              {idVal}
+            </span>
+          );
+        }
       },
       ...config.columns.map((colName): ColumnDef<Record<string, unknown>> => {
         const colLabel = formatColumnLabel(currentTable, colName);
         const isUserCol =
-          colName === 'authorId' &&
-          (currentTable === 'itineraries' ||
-            currentTable === 'days' ||
-            currentTable === 'activities');
+          (colName === 'authorId' &&
+            (currentTable === 'itineraries' ||
+              currentTable === 'days' ||
+              currentTable === 'activities')) ||
+          (colName === 'userId' && currentTable === 'myLinks');
 
         const isFilterable =
           isUserCol ||
@@ -1260,9 +1674,10 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
           (currentTable === 'itineraries' &&
             (colName === 'isPublished' || colName === 'destination')) ||
           (currentTable === 'days' && colName === 'itineraryId') ||
+          (currentTable === 'myLinks' && colName === 'provider') ||
           (currentTable === 'myLinkWhitelistDomains' && colName === 'isActive') ||
           (currentTable === 'activities' &&
-            (colName === 'category' || colName === 'itineraryDayId'));
+            (colName === 'category' || colName === 'itineraryDayId' || colName === 'myLinkId'));
 
         let filterOptions: Option[] | undefined;
         if (isUserCol) filterOptions = buildUserFilterOptions();
@@ -1282,17 +1697,24 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
           filterOptions = buildDestinationFilterOptions();
         if (currentTable === 'days' && colName === 'itineraryId')
           filterOptions = buildItineraryFilterOptions();
+        if (currentTable === 'myLinks' && colName === 'provider')
+          filterOptions = withOptionCounts(colName, MYLINK_PROVIDER_OPTIONS);
         if (currentTable === 'myLinkWhitelistDomains' && colName === 'isActive')
           filterOptions = withOptionCounts(colName, ACTIVE_DOMAIN_FILTER_OPTIONS);
         if (currentTable === 'activities' && colName === 'category')
           filterOptions = withOptionCounts(colName, ACTIVITY_CATEGORY_OPTIONS);
         if (currentTable === 'activities' && colName === 'itineraryDayId')
           filterOptions = buildDayFilterOptions();
+        if (currentTable === 'activities' && colName === 'myLinkId')
+          filterOptions = buildMyLinkFilterOptions();
 
         return {
           id: colName,
           accessorKey: colName,
           accessorFn: (row) => {
+            if (colName === 'usageCount' && currentTable === 'myLinks') {
+              return getActivitiesForMyLink(String(row.id ?? '')).length;
+            }
             if (isUserCol) {
               const u = resolveRecordUser(row, currentTable);
               return String(u?.name ?? u?.username ?? u?.email ?? row.authorId ?? '');
@@ -1519,6 +1941,134 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
               }
             }
 
+            if (colName === 'myLinkId' && currentTable === 'activities') {
+              if (!val) {
+                return <span className='text-muted-foreground text-xs'>—</span>;
+              }
+              const mlIdStr = String(val);
+              const mlObj =
+                rel?.myLink && typeof rel.myLink === 'object'
+                  ? (rel.myLink as Record<string, unknown>)
+                  : myLinkByIdMap.get(mlIdStr);
+              if (mlObj) {
+                return (
+                  <div className='flex flex-col gap-0.5'>
+                    <div className='flex items-center gap-1.5'>
+                      {Boolean(mlObj.provider) && (
+                        <Badge variant='outline' className='h-4 px-1 text-[10px] font-normal'>
+                          {String(mlObj.provider)}
+                        </Badge>
+                      )}
+                      <button
+                        type='button'
+                        className='hover:text-primary max-w-[180px] truncate text-left font-medium hover:underline'
+                        title='Cek semua Activity yang menggunakan MyLink ini'
+                        onClick={() => openMyLinkUsageManager(mlIdStr, 'linked')}
+                      >
+                        {String(mlObj.label ?? mlIdStr)}
+                      </button>
+                    </div>
+                    <div className='flex items-center gap-1'>
+                      <code className='text-muted-foreground font-mono text-[11px]'>
+                        {mlIdStr}
+                      </code>
+                      <button
+                        type='button'
+                        className='text-muted-foreground hover:text-foreground inline-flex items-center'
+                        title='Salin My Link Id'
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigator.clipboard.writeText(mlIdStr).catch(() => {});
+                          toast.success('My Link Id berhasil disalin!');
+                        }}
+                      >
+                        <Icons.copy className='size-3' />
+                      </button>
+                    </div>
+                  </div>
+                );
+              }
+              return (
+                <div className='flex items-center gap-1'>
+                  <code className='bg-muted text-muted-foreground rounded px-1.5 py-0.5 font-mono text-xs'>
+                    {mlIdStr}
+                  </code>
+                  <button
+                    type='button'
+                    className='text-muted-foreground hover:text-foreground inline-flex items-center'
+                    title='Salin My Link Id'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigator.clipboard.writeText(mlIdStr).catch(() => {});
+                      toast.success('My Link Id berhasil disalin!');
+                    }}
+                  >
+                    <Icons.copy className='size-3' />
+                  </button>
+                </div>
+              );
+            }
+
+            if (colName === 'usageCount' && currentTable === 'myLinks') {
+              const myLinkIdStr = String(record.id ?? '');
+              const usedActivities = getActivitiesForMyLink(myLinkIdStr);
+              const count = usedActivities.length;
+              return (
+                <div className='flex flex-col items-start gap-1'>
+                  <div className='flex items-center gap-1.5'>
+                    <Button
+                      type='button'
+                      variant={count > 0 ? 'secondary' : 'outline'}
+                      size='sm'
+                      className='h-7 gap-1.5 px-2.5 text-xs'
+                      onClick={() =>
+                        openMyLinkUsageManager(myLinkIdStr, count > 0 ? 'linked' : 'add')
+                      }
+                    >
+                      <Icons.kanban className='size-3.5' />
+                      <span>{count} Activity</span>
+                      <span className='text-muted-foreground text-[10px]'>
+                        ({count > 0 ? 'Cek & Kelola' : '+ Pasang'})
+                      </span>
+                    </Button>
+                  </div>
+                  {count > 0 && (
+                    <span className='text-muted-foreground max-w-[220px] truncate text-[11px]'>
+                      {usedActivities
+                        .slice(0, 2)
+                        .map((a) => String(a.title ?? a.id ?? ''))
+                        .join(', ')}
+                      {count > 2 ? ` +${count - 2} lainnya` : ''}
+                    </span>
+                  )}
+                </div>
+              );
+            }
+
+            if (colName === 'provider' && currentTable === 'myLinks') {
+              return (
+                <Badge variant='outline'>
+                  <Icons.link className='size-3' />
+                  {formatCell(val)}
+                </Badge>
+              );
+            }
+
+            if (colName === 'actualUrl' && currentTable === 'myLinks' && val) {
+              const urlStr = String(val);
+              return (
+                <a
+                  href={urlStr}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-primary inline-flex max-w-[240px] items-center gap-1 truncate text-xs hover:underline'
+                >
+                  <span className='truncate'>{urlStr}</span>
+                  <Icons.externalLink className='size-3 shrink-0' />
+                </a>
+              );
+            }
+
             if (colName === 'status' && currentTable === 'accountClaims') {
               const statusStr = String(val).toUpperCase();
               if (statusStr === 'APPROVED') {
@@ -1655,6 +2205,66 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                   <Icons.edit className='mr-2 h-4 w-4' />
                   Update
                 </DropdownMenuItem>
+                {currentTable === 'myLinks' && (
+                  <>
+                    <DropdownMenuItem
+                      onClick={() => openMyLinkUsageManager(id, 'linked')}
+                    >
+                      <Icons.kanban className='mr-2 h-4 w-4' />
+                      Cek & Kelola Activity ({getActivitiesForMyLink(id).length})
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => openMyLinkUsageManager(id, 'add')}
+                    >
+                      <Icons.add className='mr-2 h-4 w-4' />
+                      Pasang ke Activity
+                    </DropdownMenuItem>
+                  </>
+                )}
+                {currentTable === 'activities' && Boolean(record.myLinkId) && (
+                  <>
+                    <DropdownMenuItem
+                      onClick={() =>
+                        openMyLinkUsageManager(String(record.myLinkId ?? ''), 'linked')
+                      }
+                    >
+                      <Icons.kanban className='mr-2 h-4 w-4' />
+                      Cek Penggunaan MyLink Ini
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      disabled={busy}
+                      onClick={() =>
+                        void executeBulkAction(
+                          {
+                            action: 'bulkSetActivitiesMyLink',
+                            activityIds: [id],
+                            myLinkId: null
+                          },
+                          'MyLink berhasil dilepas dari Activity ini.',
+                          ['activities', 'myLinks']
+                        )
+                      }
+                    >
+                      <Icons.close className='mr-2 h-4 w-4' />
+                      Lepas MyLink
+                    </DropdownMenuItem>
+                  </>
+                )}
+                {(currentTable === 'myLinks' ||
+                  (currentTable === 'activities' && Boolean(record.myLinkId))) && (
+                  <DropdownMenuItem
+                    onClick={() => {
+                      const targetMyLinkId =
+                        currentTable === 'myLinks' ? id : String(record.myLinkId ?? '');
+                      if (!targetMyLinkId) return;
+                      navigator.clipboard.writeText(targetMyLinkId).catch(() => {});
+                      toast.success('My Link Id berhasil disalin!');
+                    }}
+                  >
+                    <Icons.copy className='mr-2 h-4 w-4' />
+                    Salin My Link Id
+                  </DropdownMenuItem>
+                )}
                 {currentTable === 'users' && !record.isClaimed && (
                   <DropdownMenuItem onClick={() => setImpersonateUserId(id)}>
                     <Icons.login className='mr-2 h-4 w-4' />
@@ -1737,8 +2347,13 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     config.columns,
     records,
     tables.users,
+    tables.myLinks,
     itineraryByIdMap,
     dayByIdMap,
+    myLinkByIdMap,
+    getActivitiesForMyLink,
+    openMyLinkUsageManager,
+    executeBulkAction,
     resolveRecordUser,
     resolveRecordUserKey,
     busy,
@@ -1746,12 +2361,13 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     openEditSheet
   ]);
 
-// Auto-suggestions for search input in Itineraries, Itinerary Days, and Activities
+// Auto-suggestions for search input in Itineraries, Itinerary Days, Activities, and MyLinks
 const searchSuggestions = useMemo<SearchSuggestion[]>(() => {
   if (
     currentTable !== 'itineraries' &&
     currentTable !== 'days' &&
-    currentTable !== 'activities'
+    currentTable !== 'activities' &&
+    currentTable !== 'myLinks'
   ) {
     return [];
   }
@@ -1869,23 +2485,56 @@ const searchSuggestions = useMemo<SearchSuggestion[]>(() => {
           category: 'Lokasi'
         });
       }
+      if (rec.myLinkId) {
+        const mlId = String(rec.myLinkId);
+        const ml = myLinkByIdMap.get(mlId);
+        addSuggestion({
+          label: ml?.label ? String(ml.label) : mlId,
+          value: mlId,
+          sublabel: ml?.provider ? `${String(ml.provider)} · ${mlId}` : mlId,
+          category: 'My Link Id'
+        });
+      }
+    }
+  } else if (currentTable === 'myLinks') {
+    for (const rec of records) {
+      if (rec.label) {
+        addSuggestion({
+          label: String(rec.label),
+          value: String(rec.label),
+          sublabel: rec.provider ? String(rec.provider) : undefined,
+          category: 'Label MyLink'
+        });
+      }
+      if (rec.id) {
+        addSuggestion({
+          label: String(rec.id),
+          value: String(rec.id),
+          sublabel: rec.label ? String(rec.label) : undefined,
+          category: 'My Link Id'
+        });
+      }
     }
   }
 
   return items;
-}, [currentTable, records, tables.users, resolveRecordUser, itineraryByIdMap]);
+}, [currentTable, records, tables.users, resolveRecordUser, itineraryByIdMap, myLinkByIdMap]);
 
 const table = useReactTable({
   data: records,
   columns,
+  getRowId: (row, index) => String(row.id ?? row.key ?? index),
+  enableRowSelection: true,
   state: {
     sorting,
     columnFilters,
     columnVisibility,
+    rowSelection,
     globalFilter,
     pagination,
     columnPinning: { right: ['actions'] }
   },
+  onRowSelectionChange: setRowSelection,
   onSortingChange: setSorting,
   onColumnFiltersChange: (updater) => {
     setColumnFilters(updater);
@@ -1960,6 +2609,15 @@ const table = useReactTable({
           : undefined;
       if (dayItineraryObj?.title && String(dayItineraryObj.title).toLowerCase().includes(q))
         return true;
+
+      const myLinkObj =
+        rel.myLink && typeof rel.myLink === 'object'
+          ? (rel.myLink as Record<string, unknown>)
+          : record.myLinkId
+            ? myLinkByIdMap.get(String(record.myLinkId))
+            : undefined;
+      if (myLinkObj?.label && String(myLinkObj.label).toLowerCase().includes(q)) return true;
+      if (myLinkObj?.provider && String(myLinkObj.provider).toLowerCase().includes(q)) return true;
     }
 
     return false;
@@ -1976,13 +2634,14 @@ function handleExportCSV() {
     const rowValues = headers.map((col) => {
       let val: unknown = col === 'id' ? (record.id ?? record.key ?? '') : record[col];
       if (
-        col === 'authorId' &&
-        (currentTable === 'itineraries' ||
-          currentTable === 'days' ||
-          currentTable === 'activities')
+        (col === 'authorId' &&
+          (currentTable === 'itineraries' ||
+            currentTable === 'days' ||
+            currentTable === 'activities')) ||
+        (col === 'userId' && currentTable === 'myLinks')
       ) {
         const u = resolveRecordUser(record, currentTable);
-        val = u?.name ?? u?.username ?? u?.email ?? record.authorId ?? '';
+        val = u?.name ?? u?.username ?? u?.email ?? record[col] ?? '';
       }
       if (val === null || val === undefined) {
         return '';
@@ -2370,6 +3029,10 @@ return (
                 <Icons.download className='size-4' />
                 Export CSV
               </Button>
+              <Button variant='secondary' size='sm' onClick={openBulkCreateSheet}>
+                <Icons.add className='size-4' />
+                Bulk Add
+              </Button>
               <Button size='sm' onClick={openCreateSheet}>
                 <Icons.add className='size-4' />
                 Add New
@@ -2377,7 +3040,148 @@ return (
             </div>
           }
         >
-          <DataTable key={currentTable} table={table} ariaLabel={`Tabel ${config.label}`}>
+          <DataTable
+            key={currentTable}
+            table={table}
+            ariaLabel={`Tabel ${config.label}`}
+            actionBar={(() => {
+              const selectedRows = table.getFilteredSelectedRowModel().rows;
+              const selectedIds = selectedRows
+                .map((r) => String(r.original.id ?? r.original.key ?? ''))
+                .filter(Boolean);
+              if (selectedIds.length === 0) return null;
+
+              return (
+                <div className='bg-card/95 supports-backdrop-filter:bg-card/85 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3 shadow-md backdrop-blur-xs'>
+                  <div className='flex items-center gap-2'>
+                    <Badge variant='default'>{selectedIds.length} baris dipilih</Badge>
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='sm'
+                      onClick={() => setRowSelection({})}
+                      disabled={busy}
+                    >
+                      Batal Pilih
+                    </Button>
+                  </div>
+                  <div className='flex flex-wrap items-center gap-2'>
+                    {currentTable === 'activities' && (
+                      <>
+                        <Button
+                          type='button'
+                          variant='outline'
+                          size='sm'
+                          disabled={busy}
+                          onClick={() => {
+                            setBulkSelectedMyLinkId('__none__');
+                            setBulkSetMyLinkModalOpen(true);
+                          }}
+                        >
+                          <Icons.link className='size-4' />
+                          Pasang / Ubah MyLink
+                        </Button>
+                        <Button
+                          type='button'
+                          variant='outline'
+                          size='sm'
+                          disabled={busy}
+                          onClick={async () => {
+                            const ok = await executeBulkAction(
+                              {
+                                action: 'bulkSetActivitiesMyLink',
+                                activityIds: selectedIds,
+                                myLinkId: null
+                              },
+                              `MyLink dilepas dari ${selectedIds.length} Activity.`,
+                              ['activities', 'myLinks']
+                            );
+                            if (ok) setRowSelection({});
+                          }}
+                        >
+                          <Icons.close className='size-4' />
+                          Lepas MyLink
+                        </Button>
+                        <Button
+                          type='button'
+                          variant='outline'
+                          size='sm'
+                          disabled={busy}
+                          onClick={() => {
+                            setBulkEditCategory('__keep__');
+                            setBulkEditModalOpen(true);
+                          }}
+                        >
+                          <Icons.edit className='size-4' />
+                          Bulk Edit Kategori
+                        </Button>
+                      </>
+                    )}
+                    {currentTable === 'myLinks' && (
+                      <>
+                        {selectedIds.length === 1 && (
+                          <Button
+                            type='button'
+                            variant='secondary'
+                            size='sm'
+                            disabled={busy}
+                            onClick={() => openMyLinkUsageManager(selectedIds[0], 'linked')}
+                          >
+                            <Icons.kanban className='size-4' />
+                            Cek & Kelola Activity
+                          </Button>
+                        )}
+                        <Button
+                          type='button'
+                          variant='outline'
+                          size='sm'
+                          disabled={busy}
+                          onClick={async () => {
+                            const ok = await executeBulkAction(
+                              {
+                                action: 'bulkUnlinkMyLinksFromActivities',
+                                myLinkIds: selectedIds
+                              },
+                              `Semua Activity yang memakai ${selectedIds.length} MyLink terpilih telah dilepas.`,
+                              ['myLinks', 'activities']
+                            );
+                            if (ok) setRowSelection({});
+                          }}
+                        >
+                          <Icons.close className='size-4' />
+                          Lepas dari Semua Activity
+                        </Button>
+                        <Button
+                          type='button'
+                          variant='outline'
+                          size='sm'
+                          disabled={busy}
+                          onClick={() => {
+                            setBulkEditProvider('__keep__');
+                            setBulkEditUserId('__keep__');
+                            setBulkEditModalOpen(true);
+                          }}
+                        >
+                          <Icons.edit className='size-4' />
+                          Bulk Edit Provider / Owner
+                        </Button>
+                      </>
+                    )}
+                    <Button
+                      type='button'
+                      variant='destructive'
+                      size='sm'
+                      disabled={busy}
+                      onClick={() => setBulkDeleteConfirmOpen(true)}
+                    >
+                      <Icons.trash className='size-4' />
+                      Hapus Terpilih ({selectedIds.length})
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          >
             <DataTableToolbar
               table={table}
               globalFilter={globalFilter}
@@ -2385,8 +3189,9 @@ return (
               searchPlaceholder={
                 currentTable === 'itineraries' ||
                   currentTable === 'days' ||
-                  currentTable === 'activities'
-                  ? `Cari nama user atau ${config.label.toLowerCase()}...`
+                  currentTable === 'activities' ||
+                  currentTable === 'myLinks'
+                  ? `Cari nama user, My Link Id, atau ${config.label.toLowerCase()}...`
                   : `Search ${config.label.toLowerCase()}...`
               }
               suggestions={searchSuggestions}
@@ -2412,14 +3217,20 @@ return (
 
         <Tabs
           value={editorTab}
-          onValueChange={(val) => setEditorTab(val as 'form' | 'json')}
+          onValueChange={(val) => setEditorTab(val as 'form' | 'json' | 'bulk')}
           className='flex min-h-0 flex-1 flex-col overflow-hidden'
         >
           <TabsList className='w-full shrink-0'>
             <TabsTrigger value='form' className='flex-1'>
               <Icons.forms className='size-4' />
-              Form Editor
+              Form (Satu)
             </TabsTrigger>
+            {editorMode === 'create' && (
+              <TabsTrigger value='bulk' className='flex-1'>
+                <Icons.add className='size-4' />
+                Bulk Add
+              </TabsTrigger>
+            )}
             <TabsTrigger value='json' className='flex-1'>
               <Icons.fileCode className='size-4' />
               JSON Editor
@@ -2450,9 +3261,194 @@ return (
                       </Alert>
                     ) : (
                       <div className='grid grid-cols-1 gap-4'>
+                        {currentTable === 'myLinks' && editorMode === 'edit' && editingId && (
+                          <div className='space-y-2 rounded-lg border p-3'>
+                            <div className='flex items-center justify-between gap-2'>
+                              <Label>My Link Id & Penggunaan Activity</Label>
+                              <Button
+                                type='button'
+                                variant='secondary'
+                                size='sm'
+                                className='h-7 text-xs'
+                                onClick={() => {
+                                  setSheetOpen(false);
+                                  openMyLinkUsageManager(editingId, 'linked');
+                                }}
+                              >
+                                <Icons.kanban className='size-3.5' />
+                                Cek & Kelola Activity ({getActivitiesForMyLink(editingId).length})
+                              </Button>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                              <Input
+                                type='text'
+                                value={editingId}
+                                readOnly
+                                className='font-mono text-xs'
+                              />
+                              <Button
+                                type='button'
+                                variant='outline'
+                                size='icon'
+                                title='Salin My Link Id'
+                                onClick={() => {
+                                  navigator.clipboard.writeText(editingId).catch(() => {});
+                                  toast.success('My Link Id berhasil disalin!');
+                                }}
+                              >
+                                <Icons.copy className='size-4' />
+                              </Button>
+                            </div>
+                          </div>
+                        )}
                         {formFields.map((key) => {
                           const value = parsedDraft[key];
                           const labelText = formatLabel(key);
+
+                          if (currentTable === 'activities' && key === 'myLinkId') {
+                            const currentMyLinkId =
+                              value !== null && value !== undefined && String(value) !== ''
+                                ? String(value)
+                                : '__none__';
+                            const myLinkSelectItems = [
+                              { value: '__none__', label: '-- Tanpa MyLink (Kosong) --' },
+                              ...(tables.myLinks ?? []).map((ml) => {
+                                const mlId = String(ml.id ?? '');
+                                const mlLabel = String(ml.label ?? mlId);
+                                const mlProvider = ml.provider ? `[${String(ml.provider)}] ` : '';
+                                const owner = resolveRecordUser(ml, 'myLinks');
+                                const ownerName = owner?.username
+                                  ? ` · @${String(owner.username).replace(/^@/, '')}`
+                                  : owner?.name
+                                    ? ` · ${String(owner.name)}`
+                                    : '';
+                                return {
+                                  value: mlId,
+                                  label: `${mlProvider}${mlLabel}${ownerName} (${mlId})`
+                                };
+                              })
+                            ];
+
+                            return (
+                              <div key={key} className='space-y-2'>
+                                <Label htmlFor={`form-field-${key}`}>My Link Id</Label>
+                                <Select
+                                  items={myLinkSelectItems}
+                                  value={
+                                    myLinkSelectItems.some((item) => item.value === currentMyLinkId)
+                                      ? currentMyLinkId
+                                      : '__none__'
+                                  }
+                                  onValueChange={(val) => {
+                                    updateDraftField(
+                                      key,
+                                      !val || val === '__none__' ? null : val
+                                    );
+                                  }}
+                                >
+                                  <SelectTrigger id={`form-field-${key}-select`} className='w-full'>
+                                    <SelectValue placeholder='Pilih dari daftar MyLink...' />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {myLinkSelectItems.map((opt) => (
+                                      <SelectItem key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <Input
+                                  id={`form-field-${key}`}
+                                  type='text'
+                                  placeholder='Atau masukkan My Link Id secara langsung (kosongkan jika tanpa link)'
+                                  className='font-mono text-xs'
+                                  value={
+                                    value !== null && value !== undefined ? String(value) : ''
+                                  }
+                                  onChange={(e) =>
+                                    updateDraftField(
+                                      key,
+                                      e.target.value.trim() === '' ? null : e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+                            );
+                          }
+
+                          if (currentTable === 'myLinks' && key === 'provider') {
+                            return (
+                              <div key={key} className='space-y-2'>
+                                <Label htmlFor={`form-field-${key}`}>Provider</Label>
+                                <Select
+                                  items={MYLINK_PROVIDER_OPTIONS}
+                                  value={String(value || 'Custom')}
+                                  onValueChange={(val) => {
+                                    if (val) updateDraftField(key, val);
+                                  }}
+                                >
+                                  <SelectTrigger id={`form-field-${key}`} className='w-full'>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {MYLINK_PROVIDER_OPTIONS.map((opt) => (
+                                      <SelectItem key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            );
+                          }
+
+                          if (currentTable === 'myLinks' && key === 'userId') {
+                            const userSelectItems = tables.users.map((u) => {
+                              const uId = String(u.id ?? '');
+                              const uName = u.name ? String(u.name) : '';
+                              const uHandle = u.username
+                                ? `@${String(u.username).replace(/^@/, '')}`
+                                : String(u.email ?? '');
+                              return {
+                                value: uId,
+                                label: `${uName ? `${uName} (${uHandle})` : uHandle} — ${uId}`
+                              };
+                            });
+
+                            return (
+                              <div key={key} className='space-y-2'>
+                                <Label htmlFor={`form-field-${key}`}>User (Pemilik MyLink)</Label>
+                                <Select
+                                  items={userSelectItems}
+                                  value={String(value ?? '')}
+                                  onValueChange={(val) => {
+                                    if (val) updateDraftField(key, val);
+                                  }}
+                                >
+                                  <SelectTrigger id={`form-field-${key}-select`} className='w-full'>
+                                    <SelectValue placeholder='Pilih pengguna...' />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {userSelectItems.map((opt) => (
+                                      <SelectItem key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <Input
+                                  id={`form-field-${key}`}
+                                  type='text'
+                                  placeholder='User ID'
+                                  className='font-mono text-xs'
+                                  value={
+                                    value !== null && value !== undefined ? String(value) : ''
+                                  }
+                                  onChange={(e) => updateDraftField(key, e.target.value)}
+                                />
+                              </div>
+                            );
+                          }
 
                           if (
                             currentTable === 'users' &&
@@ -2677,6 +3673,380 @@ return (
                     )}
                   </TabsContent>
 
+                  <TabsContent value='bulk' className='flex-none space-y-4 pb-4'>
+                    {currentTable === 'myLinks' ? (
+                      <div className='space-y-4'>
+                        <div className='space-y-2'>
+                          <Label>User (Pemilik untuk Semua Baris MyLink)</Label>
+                          {(() => {
+                            const userSelectItems = tables.users.map((u) => {
+                              const uId = String(u.id ?? '');
+                              const uName = u.name ? String(u.name) : '';
+                              const uHandle = u.username
+                                ? `@${String(u.username).replace(/^@/, '')}`
+                                : String(u.email ?? '');
+                              return {
+                                value: uId,
+                                label: `${uName ? `${uName} (${uHandle})` : uHandle} — ${uId}`
+                              };
+                            });
+                            return (
+                              <Select
+                                items={userSelectItems}
+                                value={bulkMyLinkUserId}
+                                onValueChange={(val) => {
+                                  if (val) setBulkMyLinkUserId(val);
+                                }}
+                              >
+                                <SelectTrigger className='w-full'>
+                                  <SelectValue placeholder='Pilih pengguna pemilik MyLink...' />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {userSelectItems.map((opt) => (
+                                    <SelectItem key={opt.value} value={opt.value}>
+                                      {opt.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            );
+                          })()}
+                          <Input
+                            type='text'
+                            placeholder='Atau masukkan User ID secara langsung...'
+                            className='font-mono text-xs'
+                            value={bulkMyLinkUserId}
+                            onChange={(e) => setBulkMyLinkUserId(e.target.value)}
+                          />
+                        </div>
+
+                        <div className='space-y-2 rounded-lg border p-3'>
+                          <div className='flex items-center justify-between'>
+                            <Label className='text-xs'>
+                              Impor Cepat dari Teks (Format per baris: <code>Label | URL | Provider</code>)
+                            </Label>
+                            <Button
+                              type='button'
+                              variant='secondary'
+                              size='sm'
+                              className='h-7 text-xs'
+                              onClick={() => {
+                                const lines = bulkPasteText
+                                  .split('\n')
+                                  .map((l) => l.trim())
+                                  .filter(Boolean);
+                                if (lines.length === 0) {
+                                  toast.error('Tempelkan minimal 1 baris teks terlebih dahulu.');
+                                  return;
+                                }
+                                const parsedRows = lines.map((line) => {
+                                  const parts = line.includes('|')
+                                    ? line.split('|').map((p) => p.trim())
+                                    : line.split('\t').map((p) => p.trim());
+                                  return {
+                                    label: parts[0] || 'Link',
+                                    actualUrl: parts[1] || parts[0] || '',
+                                    provider: parts[2] || 'Klook'
+                                  };
+                                });
+                                setBulkMyLinkRows(parsedRows);
+                                toast.success(`${parsedRows.length} baris berhasil diimpor ke daftar.`);
+                              }}
+                            >
+                              Impor ke Baris
+                            </Button>
+                          </div>
+                          <Textarea
+                            rows={3}
+                            className='font-mono text-xs'
+                            placeholder={`Tiket USJ Express | https://www.klook.com/id/... | Klook\nJR Pass 7 Hari | https://www.traveloka.com/... | Traveloka`}
+                            value={bulkPasteText}
+                            onChange={(e) => setBulkPasteText(e.target.value)}
+                          />
+                        </div>
+
+                        <div className='space-y-2'>
+                          <div className='flex items-center justify-between'>
+                            <Label>Daftar Baris MyLink ({bulkMyLinkRows.length})</Label>
+                            <Button
+                              type='button'
+                              variant='outline'
+                              size='sm'
+                              className='h-7 text-xs'
+                              onClick={() =>
+                                setBulkMyLinkRows((prev) => [
+                                  ...prev,
+                                  { label: '', actualUrl: '', provider: 'Klook' }
+                                ])
+                              }
+                            >
+                              <Icons.add className='size-3.5' />
+                              Tambah Baris
+                            </Button>
+                          </div>
+                          <div className='space-y-2'>
+                            {bulkMyLinkRows.map((row, idx) => (
+                              <div
+                                key={idx}
+                                className='bg-muted/30 grid grid-cols-1 gap-2 rounded-lg border p-2.5 sm:grid-cols-12'
+                              >
+                                <div className='sm:col-span-4'>
+                                  <Input
+                                    placeholder='Label (mis: Tiket USJ)'
+                                    value={row.label}
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      setBulkMyLinkRows((prev) =>
+                                        prev.map((r, i) => (i === idx ? { ...r, label: val } : r))
+                                      );
+                                    }}
+                                  />
+                                </div>
+                                <div className='sm:col-span-5'>
+                                  <Input
+                                    placeholder='https://...'
+                                    value={row.actualUrl}
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      setBulkMyLinkRows((prev) =>
+                                        prev.map((r, i) =>
+                                          i === idx ? { ...r, actualUrl: val } : r
+                                        )
+                                      );
+                                    }}
+                                  />
+                                </div>
+                                <div className='flex items-center gap-1 sm:col-span-3'>
+                                  <Select
+                                    items={MYLINK_PROVIDER_OPTIONS}
+                                    value={row.provider}
+                                    onValueChange={(val) => {
+                                      if (!val) return;
+                                      setBulkMyLinkRows((prev) =>
+                                        prev.map((r, i) =>
+                                          i === idx ? { ...r, provider: val } : r
+                                        )
+                                      );
+                                    }}
+                                  >
+                                    <SelectTrigger className='w-full'>
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {MYLINK_PROVIDER_OPTIONS.map((opt) => (
+                                        <SelectItem key={opt.value} value={opt.value}>
+                                          {opt.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Button
+                                    type='button'
+                                    variant='ghost'
+                                    size='icon'
+                                    className='h-8 w-8 shrink-0'
+                                    disabled={bulkMyLinkRows.length <= 1}
+                                    onClick={() =>
+                                      setBulkMyLinkRows((prev) =>
+                                        prev.filter((_, i) => i !== idx)
+                                      )
+                                    }
+                                  >
+                                    <Icons.trash className='size-3.5' />
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ) : currentTable === 'activities' ? (
+                      <div className='space-y-4'>
+                        <div className='space-y-2'>
+                          <Label>Itinerary Day (Tujuan untuk Semua Activity)</Label>
+                          {(() => {
+                            const daySelectItems = tables.days.map((d) => {
+                              const dId = String(d.id ?? '');
+                              const dTitle = String(d.title ?? `Day ${d.dayNumber ?? ''}`);
+                              const itObj = d.itineraryId
+                                ? itineraryByIdMap.get(String(d.itineraryId))
+                                : undefined;
+                              const itTitle = itObj?.title ? `${String(itObj.title)} — ` : '';
+                              return {
+                                value: dId,
+                                label: `${itTitle}${dTitle} (${dId})`
+                              };
+                            });
+                            return (
+                              <Select
+                                items={daySelectItems}
+                                value={bulkActivityDayId}
+                                onValueChange={(val) => {
+                                  if (val) setBulkActivityDayId(val);
+                                }}
+                              >
+                                <SelectTrigger className='w-full'>
+                                  <SelectValue placeholder='Pilih Itinerary Day...' />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {daySelectItems.map((opt) => (
+                                    <SelectItem key={opt.value} value={opt.value}>
+                                      {opt.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            );
+                          })()}
+                          <Input
+                            type='text'
+                            placeholder='Atau masukkan Itinerary Day ID secara langsung...'
+                            className='font-mono text-xs'
+                            value={bulkActivityDayId}
+                            onChange={(e) => setBulkActivityDayId(e.target.value)}
+                          />
+                        </div>
+
+                        <div className='space-y-2'>
+                          <Label>Pasang MyLink ke Semua Activity Ini (Opsional)</Label>
+                          {(() => {
+                            const myLinkSelectItems = [
+                              { value: '__none__', label: '-- Tanpa MyLink (Kosong) --' },
+                              ...(tables.myLinks ?? []).map((ml) => ({
+                                value: String(ml.id ?? ''),
+                                label: `[${String(ml.provider ?? 'Custom')}] ${String(ml.label ?? ml.id)} (${String(ml.id)})`
+                              }))
+                            ];
+                            return (
+                              <Select
+                                items={myLinkSelectItems}
+                                value={bulkActivityMyLinkId}
+                                onValueChange={(val) => {
+                                  if (val) setBulkActivityMyLinkId(val);
+                                }}
+                              >
+                                <SelectTrigger className='w-full'>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {myLinkSelectItems.map((opt) => (
+                                    <SelectItem key={opt.value} value={opt.value}>
+                                      {opt.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            );
+                          })()}
+                        </div>
+
+                        <div className='space-y-2'>
+                          <div className='flex items-center justify-between'>
+                            <Label>Daftar Baris Activity ({bulkActivityRows.length})</Label>
+                            <Button
+                              type='button'
+                              variant='outline'
+                              size='sm'
+                              className='h-7 text-xs'
+                              onClick={() =>
+                                setBulkActivityRows((prev) => [
+                                  ...prev,
+                                  {
+                                    time: '14:00',
+                                    title: '',
+                                    locationName: '',
+                                    category: 'wisata',
+                                    estimatedCost: 0
+                                  }
+                                ])
+                              }
+                            >
+                              <Icons.add className='size-3.5' />
+                              Tambah Baris
+                            </Button>
+                          </div>
+                          <div className='space-y-2'>
+                            {bulkActivityRows.map((row, idx) => (
+                              <div
+                                key={idx}
+                                className='bg-muted/30 space-y-2 rounded-lg border p-2.5'
+                              >
+                                <div className='grid grid-cols-1 gap-2 sm:grid-cols-12'>
+                                  <div className='sm:col-span-3'>
+                                    <Input
+                                      placeholder='09:00'
+                                      value={row.time}
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        setBulkActivityRows((prev) =>
+                                          prev.map((r, i) =>
+                                            i === idx ? { ...r, time: val } : r
+                                          )
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                  <div className='sm:col-span-5'>
+                                    <Input
+                                      placeholder='Judul Activity'
+                                      value={row.title}
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        setBulkActivityRows((prev) =>
+                                          prev.map((r, i) =>
+                                            i === idx ? { ...r, title: val } : r
+                                          )
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                  <div className='flex items-center gap-1 sm:col-span-4'>
+                                    <Input
+                                      placeholder='Nama Lokasi'
+                                      value={row.locationName}
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        setBulkActivityRows((prev) =>
+                                          prev.map((r, i) =>
+                                            i === idx ? { ...r, locationName: val } : r
+                                          )
+                                        );
+                                      }}
+                                    />
+                                    <Button
+                                      type='button'
+                                      variant='ghost'
+                                      size='icon'
+                                      className='h-8 w-8 shrink-0'
+                                      disabled={bulkActivityRows.length <= 1}
+                                      onClick={() =>
+                                        setBulkActivityRows((prev) =>
+                                          prev.filter((_, i) => i !== idx)
+                                        )
+                                      }
+                                    >
+                                      <Icons.trash className='size-3.5' />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className='space-y-3'>
+                        <Label>JSON Array untuk Bulk Create ({config.label})</Label>
+                        <Textarea
+                          className='min-h-[340px] font-mono text-xs leading-relaxed'
+                          value={bulkJsonDraft}
+                          onChange={(e) => setBulkJsonDraft(e.target.value)}
+                          spellCheck={false}
+                        />
+                      </div>
+                    )}
+                  </TabsContent>
+
                   <TabsContent value='json' className='flex-none space-y-4 pb-4'>
                     {parseError && (
                       <Alert variant='destructive'>
@@ -2730,9 +4100,8 @@ return (
                 <Icons.info />
                 <AlertTitle>Tips Editor</AlertTitle>
                 <AlertDescription className='text-xs'>
-                  Anda dapat beralih antara Form Editor dan JSON Editor kapan saja. Field dengan
-                  prefix <code>_</code> hanya untuk tampilan relasi dan otomatis diabaikan saat
-                  menyimpan.
+                  Anda dapat menambahkan data satu-per-satu melalui <b>Form (Satu)</b> atau sekaligus
+                  banyak melalui tab <b>Bulk Add</b>.
                 </AlertDescription>
               </Alert>
             )}
@@ -2748,10 +4117,17 @@ return (
           >
             Reset Template
           </Button>
-          <Button type='button' onClick={handleSave} isLoading={busy}>
-            <Icons.check className='size-4' />
-            {editorMode === 'create' ? 'Create Record' : 'Update Record'}
-          </Button>
+          {editorMode === 'create' && editorTab === 'bulk' ? (
+            <Button type='button' onClick={handleBulkCreate} isLoading={busy}>
+              <Icons.check className='size-4' />
+              Simpan Bulk {config.label}
+            </Button>
+          ) : (
+            <Button type='button' onClick={handleSave} isLoading={busy}>
+              <Icons.check className='size-4' />
+              {editorMode === 'create' ? 'Create Record' : 'Update Record'}
+            </Button>
+          )}
         </SheetFooter>
       </SheetContent>
     </Sheet>
@@ -2857,6 +4233,1012 @@ return (
         </Button>
       </div>
     </Modal>
+
+    {/* Bulk Delete Confirmation Modal */}
+    <AlertModal
+      isOpen={bulkDeleteConfirmOpen}
+      onClose={() => setBulkDeleteConfirmOpen(false)}
+      loading={busy}
+      onConfirm={async () => {
+        const selectedIds = table
+          .getFilteredSelectedRowModel()
+          .rows.map((r) => String(r.original.id ?? r.original.key ?? ''))
+          .filter(Boolean);
+        if (selectedIds.length === 0) {
+          setBulkDeleteConfirmOpen(false);
+          return;
+        }
+        const refreshList: AdminTable[] =
+          currentTable === 'myLinks' || currentTable === 'activities'
+            ? ['myLinks', 'activities']
+            : [currentTable];
+        const ok = await executeBulkAction(
+          { action: 'bulkDelete', table: currentTable, ids: selectedIds },
+          `${selectedIds.length} record ${config.label} berhasil dihapus.`,
+          refreshList
+        );
+        if (ok) {
+          setRowSelection({});
+          setBulkDeleteConfirmOpen(false);
+        }
+      }}
+    />
+
+    {/* Bulk Set / Change MyLink Modal for Selected Activities */}
+    <Modal
+      title='Pasang / Ubah MyLink secara Bulk'
+      description={`Pilih MyLink yang ingin dipasang ke ${table.getFilteredSelectedRowModel().rows.length} Activity terpilih.`}
+      isOpen={bulkSetMyLinkModalOpen}
+      onClose={() => setBulkSetMyLinkModalOpen(false)}
+    >
+      <div className='space-y-4 pt-2'>
+        <div className='space-y-2'>
+          <Label>Pilih MyLink</Label>
+          {(() => {
+            const myLinkSelectItems = [
+              { value: '__none__', label: '-- Lepas MyLink (Kosongkan) --' },
+              ...(tables.myLinks ?? []).map((ml) => {
+                const mlId = String(ml.id ?? '');
+                const mlLabel = String(ml.label ?? mlId);
+                const mlProvider = ml.provider ? `[${String(ml.provider)}] ` : '';
+                return {
+                  value: mlId,
+                  label: `${mlProvider}${mlLabel} (${mlId})`
+                };
+              })
+            ];
+            return (
+              <Select
+                items={myLinkSelectItems}
+                value={bulkSelectedMyLinkId}
+                onValueChange={(val) => {
+                  if (val) setBulkSelectedMyLinkId(val);
+                }}
+              >
+                <SelectTrigger className='w-full'>
+                  <SelectValue placeholder='Pilih MyLink...' />
+                </SelectTrigger>
+                <SelectContent>
+                  {myLinkSelectItems.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            );
+          })()}
+        </div>
+        <div className='flex justify-end gap-2 pt-2'>
+          <Button
+            variant='outline'
+            onClick={() => setBulkSetMyLinkModalOpen(false)}
+            disabled={busy}
+          >
+            Batal
+          </Button>
+          <Button
+            isLoading={busy}
+            onClick={async () => {
+              const selectedIds = table
+                .getFilteredSelectedRowModel()
+                .rows.map((r) => String(r.original.id ?? ''))
+                .filter(Boolean);
+              if (selectedIds.length === 0) return;
+              const targetMyLink =
+                bulkSelectedMyLinkId === '__none__' ? null : bulkSelectedMyLinkId;
+              const ok = await executeBulkAction(
+                {
+                  action: 'bulkSetActivitiesMyLink',
+                  activityIds: selectedIds,
+                  myLinkId: targetMyLink
+                },
+                targetMyLink
+                  ? `MyLink berhasil dipasang ke ${selectedIds.length} Activity.`
+                  : `MyLink berhasil dilepas dari ${selectedIds.length} Activity.`,
+                ['activities', 'myLinks']
+              );
+              if (ok) {
+                setRowSelection({});
+                setBulkSetMyLinkModalOpen(false);
+              }
+            }}
+          >
+            <Icons.check className='size-4' />
+            Terapkan ke {table.getFilteredSelectedRowModel().rows.length} Activity
+          </Button>
+        </div>
+      </div>
+    </Modal>
+
+    {/* Bulk Edit Modal for MyLinks / Activities */}
+    <Modal
+      title={`Bulk Edit ${config.label}`}
+      description={`Perbarui field sekaligus untuk ${table.getFilteredSelectedRowModel().rows.length} baris terpilih.`}
+      isOpen={bulkEditModalOpen}
+      onClose={() => setBulkEditModalOpen(false)}
+    >
+      <div className='space-y-4 pt-2'>
+        {currentTable === 'myLinks' && (
+          <>
+            <div className='space-y-2'>
+              <Label>Ubah Provider</Label>
+              <Select
+                items={[
+                  { value: '__keep__', label: '-- Jangan Ubah Provider --' },
+                  ...MYLINK_PROVIDER_OPTIONS
+                ]}
+                value={bulkEditProvider}
+                onValueChange={(val) => {
+                  if (val) setBulkEditProvider(val);
+                }}
+              >
+                <SelectTrigger className='w-full'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='__keep__'>-- Jangan Ubah Provider --</SelectItem>
+                  {MYLINK_PROVIDER_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className='space-y-2'>
+              <Label>Ubah Pemilik (User)</Label>
+              {(() => {
+                const userOpts = [
+                  { value: '__keep__', label: '-- Jangan Ubah User --' },
+                  ...tables.users.map((u) => ({
+                    value: String(u.id ?? ''),
+                    label: `${String(u.name ?? u.username ?? u.email ?? u.id)} (${String(u.id)})`
+                  }))
+                ];
+                return (
+                  <Select
+                    items={userOpts}
+                    value={bulkEditUserId}
+                    onValueChange={(val) => {
+                      if (val) setBulkEditUserId(val);
+                    }}
+                  >
+                    <SelectTrigger className='w-full'>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {userOpts.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                );
+              })()}
+            </div>
+          </>
+        )}
+
+        {currentTable === 'activities' && (
+          <div className='space-y-2'>
+            <Label>Ubah Kategori Activity</Label>
+            <Select
+              items={[
+                { value: '__keep__', label: '-- Jangan Ubah Kategori --' },
+                ...ACTIVITY_CATEGORY_OPTIONS
+              ]}
+              value={bulkEditCategory}
+              onValueChange={(val) => {
+                if (val) setBulkEditCategory(val);
+              }}
+            >
+              <SelectTrigger className='w-full'>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='__keep__'>-- Jangan Ubah Kategori --</SelectItem>
+                {ACTIVITY_CATEGORY_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        <div className='flex justify-end gap-2 pt-2'>
+          <Button variant='outline' onClick={() => setBulkEditModalOpen(false)} disabled={busy}>
+            Batal
+          </Button>
+          <Button
+            isLoading={busy}
+            onClick={async () => {
+              const selectedIds = table
+                .getFilteredSelectedRowModel()
+                .rows.map((r) => String(r.original.id ?? ''))
+                .filter(Boolean);
+              if (selectedIds.length === 0) return;
+
+              const patchData: Record<string, unknown> = {};
+              if (currentTable === 'myLinks') {
+                if (bulkEditProvider !== '__keep__') patchData.provider = bulkEditProvider;
+                if (bulkEditUserId !== '__keep__') patchData.userId = bulkEditUserId;
+              } else if (currentTable === 'activities') {
+                if (bulkEditCategory !== '__keep__') patchData.category = bulkEditCategory;
+              }
+
+              if (Object.keys(patchData).length === 0) {
+                toast.error('Pilih minimal 1 field yang ingin diubah.');
+                return;
+              }
+
+              const ok = await executeBulkAction(
+                {
+                  action: 'bulkUpdate',
+                  table: currentTable,
+                  ids: selectedIds,
+                  data: patchData
+                },
+                `${selectedIds.length} record ${config.label} berhasil diperbarui.`,
+                currentTable === 'myLinks' || currentTable === 'activities'
+                  ? ['myLinks', 'activities']
+                  : [currentTable]
+              );
+              if (ok) {
+                setRowSelection({});
+                setBulkEditModalOpen(false);
+              }
+            }}
+          >
+            <Icons.check className='size-4' />
+            Simpan Perubahan Bulk
+          </Button>
+        </div>
+      </div>
+    </Modal>
+
+    {/* MyLink Activity Usage Manager Sheet (Cek, Edit, Hapus/Lepas, & Pasang Satu-Satu atau Bulk) */}
+    <Sheet
+      open={Boolean(managingMyLinkId)}
+      onOpenChange={(open) => {
+        if (!open) setManagingMyLinkId(null);
+      }}
+    >
+      <SheetContent className='flex h-full max-h-dvh flex-col overflow-hidden sm:max-w-2xl'>
+        {(() => {
+          const activeMyLinkId = managingMyLinkId ?? '';
+          const mlRecord = myLinkByIdMap.get(activeMyLinkId);
+          const mlOwner = mlRecord ? resolveRecordUser(mlRecord, 'myLinks') : undefined;
+          const allLinkedActivities = getActivitiesForMyLink(activeMyLinkId);
+
+          const resolveActivityContext = (act: Record<string, unknown>) => {
+            const rel =
+              act._related && typeof act._related === 'object'
+                ? (act._related as Record<string, unknown>)
+                : undefined;
+            const dayObj =
+              rel?.day && typeof rel.day === 'object'
+                ? (rel.day as Record<string, unknown>)
+                : act.itineraryDayId
+                  ? dayByIdMap.get(String(act.itineraryDayId))
+                  : undefined;
+            const itObj =
+              dayObj?.itinerary && typeof dayObj.itinerary === 'object'
+                ? (dayObj.itinerary as Record<string, unknown>)
+                : dayObj?.itineraryId
+                  ? itineraryByIdMap.get(String(dayObj.itineraryId))
+                  : undefined;
+            const authorObj = resolveRecordUser(act, 'activities');
+            return {
+              dayTitle: dayObj?.title
+                ? String(dayObj.title)
+                : dayObj?.dayNumber
+                  ? `Day ${String(dayObj.dayNumber)}`
+                  : String(act.itineraryDayId ?? '—'),
+              itineraryId: itObj?.id ? String(itObj.id) : dayObj?.itineraryId ? String(dayObj.itineraryId) : '',
+              itineraryTitle: itObj?.title ? String(itObj.title) : '—',
+              authorLabel: authorObj?.name
+                ? String(authorObj.name)
+                : authorObj?.username
+                  ? `@${String(authorObj.username).replace(/^@/, '')}`
+                  : authorObj?.email
+                    ? String(authorObj.email)
+                    : '—'
+            };
+          };
+
+          const filteredLinkedActivities = allLinkedActivities.filter((act) => {
+            const q = linkedSearch.toLowerCase().trim();
+            if (!q) return true;
+            const ctx = resolveActivityContext(act);
+            return (
+              String(act.title ?? '').toLowerCase().includes(q) ||
+              String(act.locationName ?? '').toLowerCase().includes(q) ||
+              String(act.id ?? '').toLowerCase().includes(q) ||
+              ctx.dayTitle.toLowerCase().includes(q) ||
+              ctx.itineraryTitle.toLowerCase().includes(q) ||
+              ctx.authorLabel.toLowerCase().includes(q)
+            );
+          });
+
+          const candidateActivities = (tables.activities ?? []).filter((act) => {
+            const actId = String(act.id ?? '');
+            if (!actId) return false;
+            if (String(act.myLinkId ?? '') === activeMyLinkId) return false;
+            if (addActivityOnlyUnlinked && Boolean(act.myLinkId)) return false;
+
+            const ctx = resolveActivityContext(act);
+            if (
+              addActivityItineraryFilter !== '__all__' &&
+              ctx.itineraryId !== addActivityItineraryFilter
+            ) {
+              return false;
+            }
+
+            const q = addActivitySearch.toLowerCase().trim();
+            if (!q) return true;
+            return (
+              String(act.title ?? '').toLowerCase().includes(q) ||
+              String(act.locationName ?? '').toLowerCase().includes(q) ||
+              actId.toLowerCase().includes(q) ||
+              ctx.dayTitle.toLowerCase().includes(q) ||
+              ctx.itineraryTitle.toLowerCase().includes(q) ||
+              ctx.authorLabel.toLowerCase().includes(q)
+            );
+          });
+
+          const otherMyLinkOptions = [
+            { value: '__none__', label: '-- Pilih MyLink Tujuan --' },
+            ...(tables.myLinks ?? [])
+              .filter((m) => String(m.id ?? '') !== activeMyLinkId)
+              .map((m) => ({
+                value: String(m.id ?? ''),
+                label: `[${String(m.provider ?? 'Custom')}] ${String(m.label ?? m.id)} (${String(m.id)})`
+              }))
+          ];
+
+          const itineraryFilterOptions = [
+            { value: '__all__', label: 'Semua Itinerary' },
+            ...tables.itineraries.map((it) => ({
+              value: String(it.id ?? ''),
+              label: `${String(it.title ?? it.id)} (${String(it.destination ?? '')})`
+            }))
+          ];
+
+          return (
+            <>
+              <SheetHeader className='shrink-0 space-y-2 border-b pb-3'>
+                <div className='flex items-start justify-between gap-2 pr-6'>
+                  <div>
+                    <SheetTitle className='flex items-center gap-2 text-base'>
+                      <Icons.link className='size-4' />
+                      <span>
+                        {mlRecord?.label ? String(mlRecord.label) : 'Kelola Penggunaan MyLink'}
+                      </span>
+                      {Boolean(mlRecord?.provider) && (
+                        <Badge variant='outline'>{String(mlRecord?.provider)}</Badge>
+                      )}
+                    </SheetTitle>
+                    <SheetDescription className='mt-1 text-xs'>
+                      Cek dipakai di Activity mana saja, lepas/hapus, edit, atau pasang ke Activity
+                      baru secara satu-per-satu maupun bulk.
+                    </SheetDescription>
+                  </div>
+                </div>
+
+                <div className='bg-muted/40 flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs'>
+                  <div className='flex flex-wrap items-center gap-2'>
+                    <span className='text-muted-foreground'>My Link Id:</span>
+                    <code className='bg-background rounded border px-1.5 py-0.5 font-mono text-xs'>
+                      {activeMyLinkId}
+                    </code>
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='icon'
+                      className='h-6 w-6'
+                      title='Salin My Link Id'
+                      onClick={() => {
+                        navigator.clipboard.writeText(activeMyLinkId).catch(() => {});
+                        toast.success('My Link Id berhasil disalin!');
+                      }}
+                    >
+                      <Icons.copy className='size-3' />
+                    </Button>
+                    {mlOwner && (
+                      <span className='text-muted-foreground'>
+                        · Owner:{' '}
+                        <b className='text-foreground'>
+                          {String(mlOwner.name ?? mlOwner.username ?? mlOwner.email ?? '')}
+                        </b>
+                      </span>
+                    )}
+                  </div>
+                  <div className='flex items-center gap-1.5'>
+                    {Boolean(mlRecord?.actualUrl) && (
+                      <a
+                        href={String(mlRecord?.actualUrl)}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-primary inline-flex items-center gap-1 hover:underline'
+                      >
+                        <span>Buka URL</span>
+                        <Icons.externalLink className='size-3' />
+                      </a>
+                    )}
+                    {mlRecord && (
+                      <Button
+                        type='button'
+                        variant='outline'
+                        size='sm'
+                        className='h-7 text-xs'
+                        onClick={() => {
+                          setManagingMyLinkId(null);
+                          setCurrentTable('myLinks');
+                          setActiveView('myLinks');
+                          openEditSheet(activeMyLinkId, mlRecord);
+                        }}
+                      >
+                        <Icons.edit className='size-3' />
+                        Edit MyLink
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </SheetHeader>
+
+              <Tabs
+                value={usageTab}
+                onValueChange={(val) => setUsageTab(val as 'linked' | 'add')}
+                className='mt-2 flex min-h-0 flex-1 flex-col overflow-hidden'
+              >
+                <TabsList className='w-full shrink-0'>
+                  <TabsTrigger value='linked' className='flex-1'>
+                    <Icons.kanban className='size-4' />
+                    Digunakan di Activity ({allLinkedActivities.length})
+                  </TabsTrigger>
+                  <TabsTrigger value='add' className='flex-1'>
+                    <Icons.add className='size-4' />
+                    Pasang ke Activity (Satu / Bulk)
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* TAB 1: LINKED ACTIVITIES */}
+                <TabsContent
+                  value='linked'
+                  className='mt-3 flex min-h-0 flex-1 flex-col space-y-3 overflow-hidden'
+                >
+                  <div className='flex shrink-0 flex-wrap items-center justify-between gap-2'>
+                    <Input
+                      placeholder='Cari judul activity, lokasi, itinerary, atau user...'
+                      value={linkedSearch}
+                      onChange={(e) => setLinkedSearch(e.target.value)}
+                      className='h-8 flex-1 text-xs'
+                    />
+                    {allLinkedActivities.length > 0 && (
+                      <Button
+                        type='button'
+                        variant='outline'
+                        size='sm'
+                        className='h-8 text-xs'
+                        disabled={busy}
+                        onClick={async () => {
+                          const allIds = allLinkedActivities
+                            .map((a) => String(a.id ?? ''))
+                            .filter(Boolean);
+                          const ok = await executeBulkAction(
+                            {
+                              action: 'bulkSetActivitiesMyLink',
+                              activityIds: allIds,
+                              myLinkId: null
+                            },
+                            `MyLink berhasil dilepas dari semua (${allIds.length}) Activity.`,
+                            ['activities', 'myLinks']
+                          );
+                          if (ok) setSelectedLinkedActivityIds([]);
+                        }}
+                      >
+                        <Icons.close className='size-3.5' />
+                        Lepas Semua ({allLinkedActivities.length})
+                      </Button>
+                    )}
+                  </div>
+
+                  {filteredLinkedActivities.length > 0 && (
+                    <div className='bg-muted/30 flex shrink-0 flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs'>
+                      <label className='flex cursor-pointer items-center gap-2 font-medium'>
+                        <Checkbox
+                          checked={
+                            filteredLinkedActivities.length > 0 &&
+                            filteredLinkedActivities.every((a) =>
+                              selectedLinkedActivityIds.includes(String(a.id ?? ''))
+                            )
+                          }
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedLinkedActivityIds(
+                                filteredLinkedActivities
+                                  .map((a) => String(a.id ?? ''))
+                                  .filter(Boolean)
+                              );
+                            } else {
+                              setSelectedLinkedActivityIds([]);
+                            }
+                          }}
+                        />
+                        <span>
+                          Pilih Semua ({selectedLinkedActivityIds.length}/
+                          {filteredLinkedActivities.length} terpilih)
+                        </span>
+                      </label>
+
+                      {selectedLinkedActivityIds.length > 0 && (
+                        <div className='flex flex-wrap items-center gap-1.5'>
+                          <Button
+                            type='button'
+                            variant='secondary'
+                            size='sm'
+                            className='h-7 text-xs'
+                            disabled={busy}
+                            onClick={async () => {
+                              const ok = await executeBulkAction(
+                                {
+                                  action: 'bulkSetActivitiesMyLink',
+                                  activityIds: selectedLinkedActivityIds,
+                                  myLinkId: null
+                                },
+                                `MyLink dilepas dari ${selectedLinkedActivityIds.length} Activity terpilih.`,
+                                ['activities', 'myLinks']
+                              );
+                              if (ok) setSelectedLinkedActivityIds([]);
+                            }}
+                          >
+                            <Icons.close className='size-3.5' />
+                            Lepas Link ({selectedLinkedActivityIds.length})
+                          </Button>
+                          <Button
+                            type='button'
+                            variant='destructive'
+                            size='sm'
+                            className='h-7 text-xs'
+                            disabled={busy}
+                            onClick={async () => {
+                              const ok = await executeBulkAction(
+                                {
+                                  action: 'bulkDelete',
+                                  table: 'activities',
+                                  ids: selectedLinkedActivityIds
+                                },
+                                `${selectedLinkedActivityIds.length} Activity berhasil dihapus permanen.`,
+                                ['activities', 'myLinks']
+                              );
+                              if (ok) setSelectedLinkedActivityIds([]);
+                            }}
+                          >
+                            <Icons.trash className='size-3.5' />
+                            Hapus Activity ({selectedLinkedActivityIds.length})
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {selectedLinkedActivityIds.length > 0 && otherMyLinkOptions.length > 1 && (
+                    <div className='bg-muted/20 flex shrink-0 flex-wrap items-center gap-2 rounded-lg border p-2.5 text-xs'>
+                      <span className='font-medium'>
+                        Bulk Edit / Pindahkan {selectedLinkedActivityIds.length} Activity ke:
+                      </span>
+                      <div className='min-w-[200px] flex-1'>
+                        <Select
+                          items={otherMyLinkOptions}
+                          value={reassignTargetMyLinkId}
+                          onValueChange={(val) => {
+                            if (val) setReassignTargetMyLinkId(val);
+                          }}
+                        >
+                          <SelectTrigger className='h-8 w-full text-xs'>
+                            <SelectValue placeholder='Pilih MyLink tujuan...' />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {otherMyLinkOptions.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <Button
+                        type='button'
+                        size='sm'
+                        className='h-8 text-xs'
+                        disabled={busy || reassignTargetMyLinkId === '__none__'}
+                        onClick={async () => {
+                          if (!reassignTargetMyLinkId || reassignTargetMyLinkId === '__none__')
+                            return;
+                          const ok = await executeBulkAction(
+                            {
+                              action: 'bulkSetActivitiesMyLink',
+                              activityIds: selectedLinkedActivityIds,
+                              myLinkId: reassignTargetMyLinkId
+                            },
+                            `${selectedLinkedActivityIds.length} Activity berhasil dipindahkan ke MyLink baru.`,
+                            ['activities', 'myLinks']
+                          );
+                          if (ok) {
+                            setSelectedLinkedActivityIds([]);
+                            setReassignTargetMyLinkId('__none__');
+                          }
+                        }}
+                      >
+                        <Icons.check className='size-3.5' />
+                        Pindahkan
+                      </Button>
+                    </div>
+                  )}
+
+                  <div className='-mr-2 min-h-0 flex-1 space-y-2 overflow-y-auto pr-2 pb-4'>
+                    {filteredLinkedActivities.length === 0 ? (
+                      <div className='text-muted-foreground flex flex-col items-center justify-center rounded-lg border border-dashed py-10 text-center text-xs'>
+                        <Icons.kanban className='mb-2 size-8 opacity-40' />
+                        <p className='font-medium'>
+                          {allLinkedActivities.length === 0
+                            ? 'MyLink ini belum digunakan di Activity mana pun.'
+                            : 'Tidak ada Activity yang cocok dengan pencarian.'}
+                        </p>
+                        {allLinkedActivities.length === 0 && (
+                          <Button
+                            type='button'
+                            variant='secondary'
+                            size='sm'
+                            className='mt-3 h-7 text-xs'
+                            onClick={() => setUsageTab('add')}
+                          >
+                            <Icons.add className='size-3.5' />
+                            Pasang ke Activity Sekarang
+                          </Button>
+                        )}
+                      </div>
+                    ) : (
+                      filteredLinkedActivities.map((act) => {
+                        const actId = String(act.id ?? '');
+                        const isChecked = selectedLinkedActivityIds.includes(actId);
+                        const ctx = resolveActivityContext(act);
+
+                        return (
+                          <div
+                            key={actId}
+                            className={cn(
+                              'flex flex-col justify-between gap-2.5 rounded-lg border p-3 transition-colors sm:flex-row sm:items-center',
+                              isChecked && 'border-primary/50 bg-primary/5'
+                            )}
+                          >
+                            <div className='flex items-start gap-2.5'>
+                              <Checkbox
+                                checked={isChecked}
+                                onCheckedChange={(checked) => {
+                                  setSelectedLinkedActivityIds((prev) =>
+                                    checked
+                                      ? [...prev, actId]
+                                      : prev.filter((item) => item !== actId)
+                                  );
+                                }}
+                                className='mt-0.5'
+                              />
+                              <div className='space-y-1'>
+                                <div className='flex flex-wrap items-center gap-1.5'>
+                                  {Boolean(act.time) && (
+                                    <Badge variant='outline' className='font-mono text-[10px]'>
+                                      {String(act.time)}
+                                    </Badge>
+                                  )}
+                                  <span className='text-sm font-medium'>
+                                    {String(act.title ?? actId)}
+                                  </span>
+                                  {Boolean(act.category) && (
+                                    <Badge variant='secondary' className='text-[10px]'>
+                                      {String(act.category)}
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className='text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs'>
+                                  {Boolean(act.locationName) && (
+                                    <span>📍 {String(act.locationName)}</span>
+                                  )}
+                                  <span>· {ctx.dayTitle}</span>
+                                  <span>
+                                    · Itinerary: <b className='text-foreground'>{ctx.itineraryTitle}</b>
+                                  </span>
+                                  <span>· User: {ctx.authorLabel}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className='flex shrink-0 flex-wrap items-center gap-1.5 pl-6 sm:pl-0'>
+                              <Button
+                                type='button'
+                                variant='outline'
+                                size='sm'
+                                className='h-7 px-2 text-xs'
+                                disabled={busy}
+                                onClick={() => {
+                                  const fullActivity =
+                                    (tables.activities ?? []).find(
+                                      (a) => String(a.id ?? '') === actId
+                                    ) ?? act;
+                                  setManagingMyLinkId(null);
+                                  setCurrentTable('activities');
+                                  setActiveView('activities');
+                                  openEditSheet(actId, fullActivity);
+                                }}
+                              >
+                                <Icons.edit className='size-3' />
+                                Edit
+                              </Button>
+                              <Button
+                                type='button'
+                                variant='secondary'
+                                size='sm'
+                                className='h-7 px-2 text-xs'
+                                disabled={busy}
+                                onClick={async () => {
+                                  const ok = await executeBulkAction(
+                                    {
+                                      action: 'bulkSetActivitiesMyLink',
+                                      activityIds: [actId],
+                                      myLinkId: null
+                                    },
+                                    'MyLink berhasil dilepas dari Activity.',
+                                    ['activities', 'myLinks']
+                                  );
+                                  if (ok) {
+                                    setSelectedLinkedActivityIds((prev) =>
+                                      prev.filter((id) => id !== actId)
+                                    );
+                                  }
+                                }}
+                              >
+                                <Icons.close className='size-3' />
+                                Lepas Link
+                              </Button>
+                              <Button
+                                type='button'
+                                variant='destructive'
+                                size='sm'
+                                className='h-7 px-2 text-xs'
+                                disabled={busy}
+                                title='Hapus Activity ini secara permanen'
+                                onClick={async () => {
+                                  const ok = await executeBulkAction(
+                                    {
+                                      action: 'bulkDelete',
+                                      table: 'activities',
+                                      ids: [actId]
+                                    },
+                                    'Activity berhasil dihapus.',
+                                    ['activities', 'myLinks']
+                                  );
+                                  if (ok) {
+                                    setSelectedLinkedActivityIds((prev) =>
+                                      prev.filter((id) => id !== actId)
+                                    );
+                                  }
+                                }}
+                              >
+                                <Icons.trash className='size-3' />
+                              </Button>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </TabsContent>
+
+                {/* TAB 2: ADD / ATTACH TO ACTIVITIES (SINGLE OR BULK) */}
+                <TabsContent
+                  value='add'
+                  className='mt-3 flex min-h-0 flex-1 flex-col space-y-3 overflow-hidden'
+                >
+                  <div className='grid shrink-0 grid-cols-1 gap-2 sm:grid-cols-2'>
+                    <Input
+                      placeholder='Cari activity, lokasi, hari, atau user...'
+                      value={addActivitySearch}
+                      onChange={(e) => setAddActivitySearch(e.target.value)}
+                      className='h-8 text-xs'
+                    />
+                    <Select
+                      items={itineraryFilterOptions}
+                      value={addActivityItineraryFilter}
+                      onValueChange={(val) => {
+                        if (val) setAddActivityItineraryFilter(val);
+                      }}
+                    >
+                      <SelectTrigger className='h-8 w-full text-xs'>
+                        <SelectValue placeholder='Filter Itinerary...' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {itineraryFilterOptions.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className='bg-muted/30 flex shrink-0 flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs'>
+                    <div className='flex flex-wrap items-center gap-4'>
+                      <label className='flex cursor-pointer items-center gap-2 font-medium'>
+                        <Checkbox
+                          checked={
+                            candidateActivities.length > 0 &&
+                            candidateActivities.every((a) =>
+                              selectedCandidateActivityIds.includes(String(a.id ?? ''))
+                            )
+                          }
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedCandidateActivityIds(
+                                candidateActivities
+                                  .map((a) => String(a.id ?? ''))
+                                  .filter(Boolean)
+                              );
+                            } else {
+                              setSelectedCandidateActivityIds([]);
+                            }
+                          }}
+                        />
+                        <span>
+                          Pilih Semua ({selectedCandidateActivityIds.length}/
+                          {candidateActivities.length})
+                        </span>
+                      </label>
+
+                      <label className='text-muted-foreground flex cursor-pointer items-center gap-2'>
+                        <Checkbox
+                          checked={addActivityOnlyUnlinked}
+                          onCheckedChange={(checked) =>
+                            setAddActivityOnlyUnlinked(Boolean(checked))
+                          }
+                        />
+                        <span>Hanya yang belum punya MyLink</span>
+                      </label>
+                    </div>
+
+                    {selectedCandidateActivityIds.length > 0 && (
+                      <Button
+                        type='button'
+                        size='sm'
+                        className='h-7 text-xs'
+                        disabled={busy}
+                        onClick={async () => {
+                          const ok = await executeBulkAction(
+                            {
+                              action: 'bulkSetActivitiesMyLink',
+                              activityIds: selectedCandidateActivityIds,
+                              myLinkId: activeMyLinkId
+                            },
+                            `MyLink berhasil dipasang ke ${selectedCandidateActivityIds.length} Activity terpilih.`,
+                            ['activities', 'myLinks']
+                          );
+                          if (ok) {
+                            setSelectedCandidateActivityIds([]);
+                            setUsageTab('linked');
+                          }
+                        }}
+                      >
+                        <Icons.add className='size-3.5' />
+                        Pasang ke {selectedCandidateActivityIds.length} Activity Terpilih
+                      </Button>
+                    )}
+                  </div>
+
+                  <div className='-mr-2 min-h-0 flex-1 space-y-2 overflow-y-auto pr-2 pb-4'>
+                    {candidateActivities.length === 0 ? (
+                      <div className='text-muted-foreground flex flex-col items-center justify-center rounded-lg border border-dashed py-10 text-center text-xs'>
+                        <p>Tidak ada Activity kandidat yang cocok dengan filter.</p>
+                      </div>
+                    ) : (
+                      candidateActivities.slice(0, 100).map((act) => {
+                        const actId = String(act.id ?? '');
+                        const isChecked = selectedCandidateActivityIds.includes(actId);
+                        const ctx = resolveActivityContext(act);
+                        const existingMlId = act.myLinkId ? String(act.myLinkId) : null;
+                        const existingMl = existingMlId ? myLinkByIdMap.get(existingMlId) : null;
+
+                        return (
+                          <div
+                            key={actId}
+                            className={cn(
+                              'flex flex-col justify-between gap-2.5 rounded-lg border p-3 transition-colors sm:flex-row sm:items-center',
+                              isChecked && 'border-primary/50 bg-primary/5'
+                            )}
+                          >
+                            <div className='flex items-start gap-2.5'>
+                              <Checkbox
+                                checked={isChecked}
+                                onCheckedChange={(checked) => {
+                                  setSelectedCandidateActivityIds((prev) =>
+                                    checked
+                                      ? [...prev, actId]
+                                      : prev.filter((item) => item !== actId)
+                                  );
+                                }}
+                                className='mt-0.5'
+                              />
+                              <div className='space-y-1'>
+                                <div className='flex flex-wrap items-center gap-1.5'>
+                                  {Boolean(act.time) && (
+                                    <Badge variant='outline' className='font-mono text-[10px]'>
+                                      {String(act.time)}
+                                    </Badge>
+                                  )}
+                                  <span className='text-sm font-medium'>
+                                    {String(act.title ?? actId)}
+                                  </span>
+                                  {existingMlId && (
+                                    <Badge variant='outline' className='text-[10px]'>
+                                      Saat ini: {String(existingMl?.label ?? existingMlId)}
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className='text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs'>
+                                  {Boolean(act.locationName) && (
+                                    <span>📍 {String(act.locationName)}</span>
+                                  )}
+                                  <span>· {ctx.dayTitle}</span>
+                                  <span>
+                                    · Itinerary: <b className='text-foreground'>{ctx.itineraryTitle}</b>
+                                  </span>
+                                  <span>· User: {ctx.authorLabel}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className='flex shrink-0 items-center gap-1.5 pl-6 sm:pl-0'>
+                              <Button
+                                type='button'
+                                variant='outline'
+                                size='sm'
+                                className='h-7 px-2.5 text-xs'
+                                disabled={busy}
+                                onClick={async () => {
+                                  const ok = await executeBulkAction(
+                                    {
+                                      action: 'bulkSetActivitiesMyLink',
+                                      activityIds: [actId],
+                                      myLinkId: activeMyLinkId
+                                    },
+                                    `MyLink berhasil dipasang ke Activity "${String(act.title ?? actId)}".`,
+                                    ['activities', 'myLinks']
+                                  );
+                                  if (ok) {
+                                    setSelectedCandidateActivityIds((prev) =>
+                                      prev.filter((id) => id !== actId)
+                                    );
+                                  }
+                                }}
+                              >
+                                <Icons.add className='size-3.5' />
+                                Pasang
+                              </Button>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </>
+          );
+        })()}
+      </SheetContent>
+    </Sheet>
   </SidebarProvider >
 );
 }

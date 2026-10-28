@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { sendClaimApprovedEmail, sendClaimRejectedEmail, getBaseUrl } from "@/lib/email";
+import { detectProvider } from "@/lib/mylink-validator";
 
 export const adminTables = [
   "users",
@@ -9,6 +10,7 @@ export const adminTables = [
   "itineraries",
   "days",
   "activities",
+  "myLinks",
   "saves",
   "likes",
   "sessions",
@@ -257,8 +259,76 @@ async function fetchActivities() {
           },
         },
       },
+      myLink: {
+        select: {
+          id: true,
+          label: true,
+          provider: true,
+          actualUrl: true,
+          userId: true,
+        },
+      },
     },
-    take: 200,
+    take: 500,
+  });
+}
+
+async function fetchMyLinks() {
+  return prisma.myLink.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          name: true,
+        },
+      },
+      activities: {
+        select: {
+          id: true,
+          title: true,
+          time: true,
+          locationName: true,
+          category: true,
+          estimatedCost: true,
+          itineraryDayId: true,
+          day: {
+            select: {
+              id: true,
+              dayNumber: true,
+              title: true,
+              itineraryId: true,
+              itinerary: {
+                select: {
+                  id: true,
+                  title: true,
+                  destination: true,
+                  authorId: true,
+                  author: {
+                    select: {
+                      id: true,
+                      email: true,
+                      username: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          activities: true,
+        },
+      },
+    },
+    take: 500,
   });
 }
 
@@ -336,6 +406,7 @@ export async function getAdminSnapshot(): Promise<AdminSnapshot> {
     itineraries,
     days,
     activities,
+    myLinks,
     saves,
     likes,
     sessions,
@@ -347,6 +418,7 @@ export async function getAdminSnapshot(): Promise<AdminSnapshot> {
     fetchItineraries(),
     fetchDays(),
     fetchActivities(),
+    fetchMyLinks(),
     fetchSaves(),
     fetchLikes(),
     fetchSessions(),
@@ -387,11 +459,22 @@ export async function getAdminSnapshot(): Promise<AdminSnapshot> {
         },
       }),
     ),
-    activities: activities.map((record) =>
+    activities: activities.map(({ day, myLink, ...record }) =>
       serializeRecord({
         ...record,
         _related: {
-          day: record.day,
+          day,
+          myLink,
+        },
+      }),
+    ),
+    myLinks: myLinks.map(({ user, activities: linkedActivities, _count, ...record }) =>
+      serializeRecord({
+        ...record,
+        _related: {
+          user,
+          activities: linkedActivities,
+          counts: _count,
         },
       }),
     ),
@@ -525,9 +608,23 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           description: readString(data.description),
           estimatedCost: readInt(data.estimatedCost, 0),
           category: readString(data.category, "Activity"),
+          myLinkId: readOptionalString(data.myLinkId),
           orderIndex: readInt(data.orderIndex, 0),
         },
       });
+    case "myLinks": {
+      const actualUrl = readString(data.actualUrl);
+      const provider = readString(data.provider) || detectProvider(actualUrl);
+      return prisma.myLink.create({
+        data: {
+          id: readOptionalString(data.id) ?? undefined,
+          userId: readString(data.userId),
+          label: readString(data.label),
+          provider,
+          actualUrl,
+        },
+      });
+    }
     case "saves":
       return prisma.savedItinerary.create({
         data: {
@@ -669,9 +766,23 @@ export async function updateAdminRecord(
           description: readString(data.description),
           estimatedCost: readInt(data.estimatedCost, 0),
           category: readString(data.category, "Activity"),
+          myLinkId: readOptionalString(data.myLinkId),
           orderIndex: readInt(data.orderIndex, 0),
         },
       });
+    case "myLinks": {
+      const actualUrl = readString(data.actualUrl);
+      const provider = readString(data.provider) || detectProvider(actualUrl);
+      return prisma.myLink.update({
+        where: { id },
+        data: {
+          userId: readString(data.userId),
+          label: readString(data.label),
+          provider,
+          actualUrl,
+        },
+      });
+    }
     case "saves":
       return prisma.savedItinerary.update({
         where: { id },
@@ -731,6 +842,8 @@ export async function deleteAdminRecord(table: AdminTable, id: string) {
       return prisma.itineraryDay.delete({ where: { id } });
     case "activities":
       return prisma.activity.delete({ where: { id } });
+    case "myLinks":
+      return prisma.myLink.delete({ where: { id } });
     case "saves":
       return prisma.savedItinerary.delete({ where: { id } });
     case "likes":
@@ -742,6 +855,126 @@ export async function deleteAdminRecord(table: AdminTable, id: string) {
     case "appSettings":
       return prisma.appSetting.delete({ where: { key: id } });
   }
+}
+
+export async function bulkDeleteAdminRecords(table: AdminTable, ids: string[]) {
+  if (!ids.length) return { count: 0 };
+
+  switch (table) {
+    case "users":
+      return prisma.user.deleteMany({ where: { id: { in: ids } } });
+    case "accountClaims":
+      return prisma.accountClaim.deleteMany({ where: { id: { in: ids } } });
+    case "itineraries":
+      return prisma.itinerary.deleteMany({ where: { id: { in: ids } } });
+    case "days":
+      return prisma.itineraryDay.deleteMany({ where: { id: { in: ids } } });
+    case "activities":
+      return prisma.activity.deleteMany({ where: { id: { in: ids } } });
+    case "myLinks":
+      return prisma.myLink.deleteMany({ where: { id: { in: ids } } });
+    case "saves":
+      return prisma.savedItinerary.deleteMany({ where: { id: { in: ids } } });
+    case "likes":
+      return prisma.like.deleteMany({ where: { id: { in: ids } } });
+    case "sessions":
+      return prisma.session.deleteMany({ where: { id: { in: ids } } });
+    case "myLinkWhitelistDomains":
+      return prisma.myLinkWhitelistDomain.deleteMany({ where: { id: { in: ids } } });
+    case "appSettings":
+      return prisma.appSetting.deleteMany({ where: { key: { in: ids } } });
+  }
+}
+
+export async function bulkCreateAdminRecords(
+  table: AdminTable,
+  items: Record<string, unknown>[],
+) {
+  const created = [];
+  for (const item of items) {
+    const res = await createAdminRecord(table, item);
+    created.push(res);
+  }
+  return { count: created.length, records: created };
+}
+
+export async function bulkUpdateAdminRecords(
+  table: AdminTable,
+  ids: string[],
+  patch: Record<string, unknown>,
+) {
+  if (!ids.length) return { count: 0 };
+
+  if (table === "activities") {
+    const data: Record<string, unknown> = {};
+    if ("myLinkId" in patch) {
+      data.myLinkId = readOptionalString(patch.myLinkId);
+    }
+    if ("category" in patch && patch.category) {
+      data.category = readString(patch.category);
+    }
+    if ("itineraryDayId" in patch && patch.itineraryDayId) {
+      data.itineraryDayId = readString(patch.itineraryDayId);
+    }
+    return prisma.activity.updateMany({
+      where: { id: { in: ids } },
+      data,
+    });
+  }
+
+  if (table === "myLinks") {
+    const data: Record<string, unknown> = {};
+    if ("provider" in patch && patch.provider) {
+      data.provider = readString(patch.provider);
+    }
+    if ("userId" in patch && patch.userId) {
+      data.userId = readString(patch.userId);
+    }
+    if ("label" in patch && patch.label) {
+      data.label = readString(patch.label);
+    }
+    if ("actualUrl" in patch && patch.actualUrl) {
+      const actualUrl = readString(patch.actualUrl);
+      data.actualUrl = actualUrl;
+      if (!data.provider) {
+        data.provider = detectProvider(actualUrl);
+      }
+    }
+    return prisma.myLink.updateMany({
+      where: { id: { in: ids } },
+      data,
+    });
+  }
+
+  let updatedCount = 0;
+  for (const id of ids) {
+    const existingList = await listAdminRecords(table);
+    const existing = existingList.find((r) => String(r.id ?? r.key ?? "") === id);
+    if (existing) {
+      await updateAdminRecord(table, id, { ...existing, ...patch });
+      updatedCount += 1;
+    }
+  }
+  return { count: updatedCount };
+}
+
+export async function bulkSetActivitiesMyLink(
+  activityIds: string[],
+  myLinkId: string | null,
+) {
+  if (!activityIds.length) return { count: 0 };
+  return prisma.activity.updateMany({
+    where: { id: { in: activityIds } },
+    data: { myLinkId: myLinkId || null },
+  });
+}
+
+export async function bulkUnlinkMyLinksFromActivities(myLinkIds: string[]) {
+  if (!myLinkIds.length) return { count: 0 };
+  return prisma.activity.updateMany({
+    where: { myLinkId: { in: myLinkIds } },
+    data: { myLinkId: null },
+  });
 }
 
 export async function approveAccountClaim(claimId: string, adminNotes?: string) {
