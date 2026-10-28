@@ -18,6 +18,30 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
+      <head>
+        <script
+          {...({
+            nowprocket: "",
+            "seraph-accel-crit": "1",
+          } as Record<string, string>)}
+          data-noptimize="1"
+          data-cfasync="false"
+          data-wpfc-render="false"
+          data-no-defer="1"
+          data-cmp-ab="2"
+          dangerouslySetInnerHTML={{
+            __html: `
+  (function () {
+      var script = document.createElement("script");
+      script.async = 1;
+      script.setAttribute("data-cmp-ab","2");
+      script.src = 'https://emrldtp.com/NTkyNDIy.js?t=592422';
+      document.head.appendChild(script);
+  })();
+`,
+          }}
+        />
+      </head>
       <body>
         <ImpersonationBanner />
         {children}
