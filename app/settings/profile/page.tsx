@@ -6,7 +6,12 @@ import { SubscriptionStatus } from "@/components/subscription-status";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProfileSettingsPage() {
+export default async function ProfileSettingsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ error?: string }>;
+}) {
+  const { error } = (await searchParams) ?? {};
   const user = await getCurrentUser();
 
   if (!user) {
@@ -74,6 +79,20 @@ export default async function ProfileSettingsPage() {
             <p>Perbarui identitas traveler dan foto avatar kamu.</p>
           </div>
         </div>
+        {error && (
+          <div style={{
+            padding: "10px 14px",
+            background: "#fef2f2",
+            color: "#b91c1c",
+            border: "1px solid #fecaca",
+            borderRadius: "10px",
+            marginBottom: "16px",
+            fontSize: "13px",
+            fontWeight: 500,
+          }}>
+            {error}
+          </div>
+        )}
         <form className="stack-form" action="/api/profile" method="post" encType="multipart/form-data">
           <label>
             Avatar upload
@@ -95,7 +114,41 @@ export default async function ProfileSettingsPage() {
             Bio
             <textarea name="bio" rows={4} defaultValue={user.bio ?? ""} />
           </label>
-          <button className="primary-button wide" type="submit">
+          <div style={{ marginTop: "12px", paddingTop: "14px", borderTop: "1px solid var(--line)" }}>
+            <div style={{ marginBottom: "12px" }}>
+              <span style={{ fontSize: "14px", fontWeight: 700, color: "var(--text)" }}>Media Sosial</span>
+              <p style={{ fontSize: "12px", color: "var(--muted)", margin: "4px 0 0 0" }}>
+                Hubungkan akun media sosial kamu agar muncul di profil dan dapat dikunjungi traveler lain.
+              </p>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <label>
+                Instagram
+                <input
+                  name="instagram"
+                  placeholder="@username atau https://instagram.com/..."
+                  defaultValue={user.instagram ?? ""}
+                />
+              </label>
+              <label>
+                TikTok
+                <input
+                  name="tiktok"
+                  placeholder="@username atau https://tiktok.com/@..."
+                  defaultValue={user.tiktok ?? ""}
+                />
+              </label>
+              <label>
+                YouTube
+                <input
+                  name="youtube"
+                  placeholder="@channel atau https://youtube.com/@..."
+                  defaultValue={user.youtube ?? ""}
+                />
+              </label>
+            </div>
+          </div>
+          <button className="primary-button wide" type="submit" style={{ marginTop: "16px" }}>
             Simpan Profil
           </button>
         </form>

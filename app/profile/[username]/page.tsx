@@ -4,6 +4,7 @@ import { getCurrentUser, isAdminUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatRupiah } from "@/lib/format";
 import { ProfileAnalytics, TrackedLink } from "@/components/tracked-link";
+import { UserSocialLinks } from "@/components/user-social-links";
 
 export const dynamic = "force-dynamic";
 
@@ -97,6 +98,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
               <strong>{trips.length}</strong> dibuat
             </span> 
           </div>
+
+          <UserSocialLinks user={user} />
 
           {!user.isClaimed && !isOwnProfile && (
             <div style={{

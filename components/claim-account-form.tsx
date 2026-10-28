@@ -12,6 +12,9 @@ type Props = {
     city: string | null;
     bio: string | null;
     isClaimed: boolean;
+    youtube?: string | null;
+    instagram?: string | null;
+    tiktok?: string | null;
   } | null;
   initialUsername?: string;
 };
@@ -20,7 +23,9 @@ export function ClaimAccountForm({ targetUser, initialUsername = "" }: Props) {
   const [username, setUsername] = useState(initialUsername || targetUser?.username || "");
   const [claimantName, setClaimantName] = useState("");
   const [claimantEmail, setClaimantEmail] = useState("");
-  const [socialHandle, setSocialHandle] = useState(targetUser?.username ? `@${targetUser.username}` : "");
+  const [socialHandle, setSocialHandle] = useState(
+    targetUser?.instagram || targetUser?.tiktok || targetUser?.youtube || (targetUser?.username ? `@${targetUser.username}` : "")
+  );
   const [proofNotes, setProofNotes] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");

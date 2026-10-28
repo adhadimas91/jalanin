@@ -21,6 +21,9 @@ model User {
   avatarUrl    String?
   bio          String?
   city         String?
+  youtube      String?
+  instagram    String?
+  tiktok       String?
   role         UserRole         @default(USER)
   isPro        Boolean          @default(false)
   proExpiresAt DateTime?

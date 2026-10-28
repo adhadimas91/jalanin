@@ -139,8 +139,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_admin_page",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "page.tsx"
     },
     {
@@ -150,8 +150,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_admin_page_adminpage",
-      "community": 2,
-      "community_name": "Admin Panel & Console Operations",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "adminpage()"
     },
     {
@@ -249,8 +249,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_ai_extract_youtube_route",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "route.ts"
     },
     {
@@ -260,8 +260,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_admin_ai_extract_youtube_route_post",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "post()"
     },
     {
@@ -271,8 +271,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_claims_id_route",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "route.ts"
     },
     {
@@ -282,8 +282,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_admin_claims_id_route_post",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "post()"
     },
     {
@@ -293,8 +293,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_exit_route",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "route.ts"
     },
     {
@@ -304,8 +304,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_exit_route_get",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "get()"
     },
     {
@@ -315,8 +315,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_exit_route_post",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "post()"
     },
     {
@@ -326,8 +326,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_route",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "route.ts"
     },
     {
@@ -337,8 +337,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "app_api_admin_impersonate_route_post",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "post()"
     },
     {
@@ -381,8 +381,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_login_route",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -392,8 +392,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_login_route_post",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -436,8 +436,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_register_route",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -447,8 +447,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_register_route_usernamefromemail",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "usernamefromemail()"
     },
     {
@@ -458,8 +458,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_api_auth_register_route_post",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -469,8 +469,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_reset_password_route",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -480,8 +480,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "app_api_auth_reset_password_route_hashtoken",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "hashtoken()"
     },
     {
@@ -491,8 +491,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "app_api_auth_reset_password_route_post",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -502,8 +502,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_setup_password_route",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -513,8 +513,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_setup_password_route_post",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "post()"
     },
     {
@@ -546,8 +546,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_health_route",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "route.ts"
     },
     {
@@ -557,8 +557,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_health_route_envstatus",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "envstatus()"
     },
     {
@@ -568,8 +568,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "app_api_health_route_get",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "get()"
     },
     {
@@ -601,8 +601,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_itineraries_id_like_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "route.ts"
     },
     {
@@ -612,8 +612,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_itineraries_id_like_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "post()"
     },
     {
@@ -623,8 +623,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "app_api_itineraries_id_like_route_delete",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "delete()"
     },
     {
@@ -667,8 +667,8 @@
       "source_location": "L171",
       "_origin": "ast",
       "id": "app_api_itineraries_id_route_patch",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "patch()"
     },
     {
@@ -678,8 +678,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_itineraries_id_save_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "route.ts"
     },
     {
@@ -689,8 +689,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_itineraries_id_save_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "post()"
     },
     {
@@ -700,8 +700,8 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "app_api_itineraries_id_save_route_delete",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "delete()"
     },
     {
@@ -843,8 +843,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_mylink_whitelist_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "route.ts"
     },
     {
@@ -854,8 +854,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_mylink_whitelist_route_get",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "get()"
     },
     {
@@ -865,8 +865,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "app_api_mylink_whitelist_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "post()"
     },
     {
@@ -936,10 +936,21 @@
       "norm_label": "get()"
     },
     {
+      "label": "respondError()",
+      "file_type": "code",
+      "source_file": "app/api/profile/route.ts",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "app_api_profile_route_responderror",
+      "community": 12,
+      "community_name": "Budget Fields",
+      "norm_label": "responderror()"
+    },
+    {
       "label": "POST()",
       "file_type": "code",
       "source_file": "app/api/profile/route.ts",
-      "source_location": "L35",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "app_api_profile_route_post",
       "community": 12,
@@ -953,8 +964,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_subscription_route",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "route.ts"
     },
     {
@@ -964,8 +975,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_subscription_route_post",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "post()"
     },
     {
@@ -1041,8 +1052,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_create_page",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "page.tsx"
     },
     {
@@ -1052,8 +1063,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_create_page_createpage",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "createpage()"
     },
     {
@@ -1104,7 +1115,7 @@
       "label": "generateMetadata()",
       "file_type": "code",
       "source_file": "app/itinerary/[id]/page.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "app_itinerary_id_page_generatemetadata",
       "community": 1,
@@ -1115,7 +1126,7 @@
       "label": "ItineraryDetailPage()",
       "file_type": "code",
       "source_file": "app/itinerary/[id]/page.tsx",
-      "source_location": "L60",
+      "source_location": "L61",
       "_origin": "ast",
       "id": "app_itinerary_id_page_itinerarydetailpage",
       "community": 4,
@@ -1129,8 +1140,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_layout",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 5,
+      "community_name": "Client-Side Prototype Logic",
       "norm_label": "layout.tsx"
     },
     {
@@ -1140,8 +1151,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_layout_metadata",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 5,
+      "community_name": "Client-Side Prototype Logic",
       "norm_label": "metadata"
     },
     {
@@ -1151,8 +1162,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_layout_rootlayout",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 5,
+      "community_name": "Client-Side Prototype Logic",
       "norm_label": "rootlayout()"
     },
     {
@@ -1258,11 +1269,11 @@
       "label": "ProfilePage()",
       "file_type": "code",
       "source_file": "app/profile/[username]/page.tsx",
-      "source_location": "L10",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "app_profile_username_page_profilepage",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "profilepage()"
     },
     {
@@ -1360,8 +1371,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_saved_page",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "page.tsx"
     },
     {
@@ -1371,8 +1382,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "app_saved_page_savedpage",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 4,
+      "community_name": "Community 4",
       "norm_label": "savedpage()"
     },
     {
@@ -1742,7 +1753,7 @@
       "label": "stripMeta()",
       "file_type": "code",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L172",
+      "source_location": "L175",
       "_origin": "ast",
       "id": "components_admin_console_stripmeta",
       "community": 2,
@@ -1753,7 +1764,7 @@
       "label": "formatCell()",
       "file_type": "code",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L176",
+      "source_location": "L179",
       "_origin": "ast",
       "id": "components_admin_console_formatcell",
       "community": 2,
@@ -1764,7 +1775,7 @@
       "label": "AdminConsole()",
       "file_type": "code",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L192",
+      "source_location": "L195",
       "_origin": "ast",
       "id": "components_admin_console_adminconsole",
       "community": 2,
@@ -1778,8 +1789,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ai_youtube_importer",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "ai-youtube-importer.tsx"
     },
     {
@@ -1789,8 +1800,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_ai_youtube_importer_aiyoutubeimporterprops",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "aiyoutubeimporterprops"
     },
     {
@@ -1800,8 +1811,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "components_ai_youtube_importer_aiyoutubeimporter",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "aiyoutubeimporter()"
     },
     {
@@ -1888,8 +1899,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_create_itinerary_form",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "create-itinerary-form.tsx"
     },
     {
@@ -1899,8 +1910,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_create_itinerary_form_createitineraryformprops",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "createitineraryformprops"
     },
     {
@@ -1910,8 +1921,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "components_create_itinerary_form_createitineraryform",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "createitineraryform()"
     },
     {
@@ -1954,8 +1965,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_impersonation_banner",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "impersonation-banner.tsx"
     },
     {
@@ -1965,8 +1976,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_impersonation_banner_impersonationbanner",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "impersonationbanner()"
     },
     {
@@ -2251,8 +2262,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_jalanin_app",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "jalanin-app.tsx"
     },
     {
@@ -2262,8 +2273,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninuser",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "jalaninuser"
     },
     {
@@ -2273,8 +2284,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninactivity",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "jalaninactivity"
     },
     {
@@ -2284,8 +2295,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninday",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "jalaninday"
     },
     {
@@ -2306,8 +2317,8 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "components_jalanin_app_props",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "props"
     },
     {
@@ -2317,8 +2328,8 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "components_jalanin_app_filters",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "filters"
     },
     {
@@ -2328,8 +2339,8 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "components_jalanin_app_activitydraft",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "activitydraft"
     },
     {
@@ -2339,8 +2350,8 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "components_jalanin_app_daydraft",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "daydraft"
     },
     {
@@ -2350,8 +2361,8 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "components_jalanin_app_locationresult",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "locationresult"
     },
     {
@@ -2361,8 +2372,8 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "components_jalanin_app_defaultmapcenter",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "defaultmapcenter"
     },
     {
@@ -2372,8 +2383,8 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "components_jalanin_app_createblankactivity",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "createblankactivity()"
     },
     {
@@ -2383,8 +2394,8 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "components_jalanin_app_createblankday",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "createblankday()"
     },
     {
@@ -2394,8 +2405,8 @@
       "source_location": "L145",
       "_origin": "ast",
       "id": "components_jalanin_app_fromactivity",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "fromactivity()"
     },
     {
@@ -2405,8 +2416,8 @@
       "source_location": "L162",
       "_origin": "ast",
       "id": "components_jalanin_app_fromday",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "fromday()"
     },
     {
@@ -2416,8 +2427,8 @@
       "source_location": "L169",
       "_origin": "ast",
       "id": "components_jalanin_app_draftkey",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "draftkey()"
     },
     {
@@ -2427,8 +2438,8 @@
       "source_location": "L173",
       "_origin": "ast",
       "id": "components_jalanin_app_createlocationquerymap",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "createlocationquerymap()"
     },
     {
@@ -2438,8 +2449,8 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "components_jalanin_app_activitypoints",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "activitypoints()"
     },
     {
@@ -2460,8 +2471,8 @@
       "source_location": "L248",
       "_origin": "ast",
       "id": "components_jalanin_app_jalaninapp",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "jalaninapp()"
     },
     {
@@ -2795,14 +2806,69 @@
       "norm_label": "profileanalytics()"
     },
     {
+      "label": "user-social-links.tsx",
+      "file_type": "code",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "components_user_social_links",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "user-social-links.tsx"
+    },
+    {
+      "label": "SocialIcon()",
+      "file_type": "code",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "components_user_social_links_socialicon",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "socialicon()"
+    },
+    {
+      "label": "platformStyles",
+      "file_type": "code",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "components_user_social_links_platformstyles",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "platformstyles"
+    },
+    {
+      "label": "UserSocialLinksProps",
+      "file_type": "code",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L86",
+      "_origin": "ast",
+      "id": "components_user_social_links_usersociallinksprops",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "usersociallinksprops"
+    },
+    {
+      "label": "UserSocialLinks()",
+      "file_type": "code",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L97",
+      "_origin": "ast",
+      "id": "components_user_social_links_usersociallinks",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "usersociallinks()"
+    },
+    {
       "label": "activity-types.ts",
       "file_type": "code",
       "source_file": "lib/activity-types.ts",
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_activity_types",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "activity-types.ts"
     },
     {
@@ -2812,8 +2878,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_activity_types_activity_types",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "activity_types"
     },
     {
@@ -2823,8 +2889,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_activity_types_activitytype",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "activitytype"
     },
     {
@@ -2834,8 +2900,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "lib_activity_types_isknownactivitytype",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "isknownactivitytype()"
     },
     {
@@ -2856,8 +2922,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "lib_activity_types_normalizeactivitytype",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "normalizeactivitytype()"
     },
     {
@@ -2867,8 +2933,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "lib_activity_types_activity_type_colors",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "activity_type_colors"
     },
     {
@@ -2878,8 +2944,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "lib_activity_types_activitycost",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "activitycost"
     },
     {
@@ -2889,8 +2955,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "lib_activity_types_tripday",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "tripday"
     },
     {
@@ -2900,8 +2966,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "lib_activity_types_tripinsightline",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "tripinsightline"
     },
     {
@@ -2911,8 +2977,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "lib_activity_types_computetripinsights",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "computetripinsights()"
     },
     {
@@ -3238,7 +3304,7 @@
       "label": "updateAdminRecord()",
       "file_type": "code",
       "source_file": "lib/admin.ts",
-      "source_location": "L547",
+      "source_location": "L550",
       "_origin": "ast",
       "id": "lib_admin_updateadminrecord",
       "community": 2,
@@ -3249,7 +3315,7 @@
       "label": "deleteAdminRecord()",
       "file_type": "code",
       "source_file": "lib/admin.ts",
-      "source_location": "L688",
+      "source_location": "L694",
       "_origin": "ast",
       "id": "lib_admin_deleteadminrecord",
       "community": 2,
@@ -3260,22 +3326,22 @@
       "label": "approveAccountClaim()",
       "file_type": "code",
       "source_file": "lib/admin.ts",
-      "source_location": "L713",
+      "source_location": "L719",
       "_origin": "ast",
       "id": "lib_admin_approveaccountclaim",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "approveaccountclaim()"
     },
     {
       "label": "rejectAccountClaim()",
       "file_type": "code",
       "source_file": "lib/admin.ts",
-      "source_location": "L755",
+      "source_location": "L761",
       "_origin": "ast",
       "id": "lib_admin_rejectaccountclaim",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 41,
+      "community_name": "email.ts",
       "norm_label": "rejectaccountclaim()"
     },
     {
@@ -3307,8 +3373,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_auth",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "auth.ts"
     },
     {
@@ -3318,8 +3384,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "lib_auth_adminemails",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "adminemails()"
     },
     {
@@ -3329,8 +3395,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "lib_auth_hashtoken",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "hashtoken()"
     },
     {
@@ -3340,8 +3406,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "lib_auth_createsession",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "createsession()"
     },
     {
@@ -3362,8 +3428,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "lib_auth_getimpersonatoruser",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "getimpersonatoruser()"
     },
     {
@@ -3373,8 +3439,8 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "lib_auth_startimpersonation",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "startimpersonation()"
     },
     {
@@ -3384,8 +3450,8 @@
       "source_location": "L146",
       "_origin": "ast",
       "id": "lib_auth_stopimpersonation",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "stopimpersonation()"
     },
     {
@@ -3395,8 +3461,8 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "lib_auth_getcurrentuser",
-      "community": 12,
-      "community_name": "Budget Fields",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "getcurrentuser()"
     },
     {
@@ -3406,8 +3472,8 @@
       "source_location": "L230",
       "_origin": "ast",
       "id": "lib_auth_isadminuser",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "isadminuser()"
     },
     {
@@ -3417,8 +3483,8 @@
       "source_location": "L238",
       "_origin": "ast",
       "id": "lib_auth_requirecurrentuser",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "requirecurrentuser()"
     },
     {
@@ -3428,8 +3494,8 @@
       "source_location": "L250",
       "_origin": "ast",
       "id": "lib_auth_requireadminuser",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 1,
+      "community_name": "API Routes & User Sessions",
       "norm_label": "requireadminuser()"
     },
     {
@@ -3439,8 +3505,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_blob_storage",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "blob-storage.ts"
     },
     {
@@ -3450,8 +3516,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_blob_storage_allowedimagetypes",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "allowedimagetypes"
     },
     {
@@ -3461,8 +3527,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "lib_blob_storage_getblobstoragestatus",
-      "community": 1,
-      "community_name": "API Routes & User Sessions",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "getblobstoragestatus()"
     },
     {
@@ -3626,8 +3692,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "lib_format_formatcompact",
-      "community": 4,
-      "community_name": "Community 4",
+      "community": 0,
+      "community_name": "Interactive UI Components",
       "norm_label": "formatcompact()"
     },
     {
@@ -4033,8 +4099,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_password",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "password.ts"
     },
     {
@@ -4044,8 +4110,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_password_scrypt",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "scrypt"
     },
     {
@@ -4055,8 +4121,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "lib_password_hashpassword",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "hashpassword()"
     },
     {
@@ -4066,8 +4132,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "lib_password_verifypassword",
-      "community": 44,
-      "community_name": "Icon",
+      "community": 12,
+      "community_name": "Budget Fields",
       "norm_label": "verifypassword()"
     },
     {
@@ -4159,6 +4225,61 @@
       "norm_label": "serializeitinerary()"
     },
     {
+      "label": "social.ts",
+      "file_type": "code",
+      "source_file": "lib/social.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "lib_social",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "social.ts"
+    },
+    {
+      "label": "SocialPlatform",
+      "file_type": "code",
+      "source_file": "lib/social.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "lib_social_socialplatform",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "socialplatform"
+    },
+    {
+      "label": "FormattedSocialLink",
+      "file_type": "code",
+      "source_file": "lib/social.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "lib_social_formattedsociallink",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "formattedsociallink"
+    },
+    {
+      "label": "formatSocialLink()",
+      "file_type": "code",
+      "source_file": "lib/social.ts",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "lib_social_formatsociallink",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "formatsociallink()"
+    },
+    {
+      "label": "getUserSocialLinks()",
+      "file_type": "code",
+      "source_file": "lib/social.ts",
+      "source_location": "L106",
+      "_origin": "ast",
+      "id": "lib_social_getusersociallinks",
+      "community": 4,
+      "community_name": "Community 4",
+      "norm_label": "getusersociallinks()"
+    },
+    {
       "label": "time.ts",
       "file_type": "code",
       "source_file": "lib/time.ts",
@@ -4220,8 +4341,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_youtube_ai",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "youtube-ai.ts"
     },
     {
@@ -4231,8 +4352,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "lib_youtube_ai_extractedactivity",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "extractedactivity"
     },
     {
@@ -4242,8 +4363,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "lib_youtube_ai_extractedday",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "extractedday"
     },
     {
@@ -4253,8 +4374,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "lib_youtube_ai_aiitineraryresult",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "aiitineraryresult"
     },
     {
@@ -4264,8 +4385,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "lib_youtube_ai_extractyoutubevideoid",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "extractyoutubevideoid()"
     },
     {
@@ -4275,8 +4396,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "lib_youtube_ai_fetchyoutubemetadata",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "fetchyoutubemetadata()"
     },
     {
@@ -4286,8 +4407,8 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "lib_youtube_ai_callgeminiapi",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "callgeminiapi()"
     },
     {
@@ -4297,8 +4418,8 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "lib_youtube_ai_extractitineraryfromyoutube",
-      "community": 45,
-      "community_name": "isAdminUser",
+      "community": 8,
+      "community_name": "Google Maps URL Parser",
       "norm_label": "extractitineraryfromyoutube()"
     },
     {
@@ -6640,9 +6761,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 1,
       "norm_label": "default_activity_type",
-      "community_name": "Admin Panel & Console Operations",
+      "community_name": "API Routes & User Sessions",
       "id": "lib_activity_types_default_activity_type"
     },
     {
@@ -10199,7 +10320,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/profile/route.ts",
-      "source_location": "L35",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_profile_route",
@@ -10226,6 +10347,17 @@
       "_origin": "ast",
       "source": "app_api_profile_route",
       "target": "app_api_profile_route_readusername",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/profile/route.ts",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_profile_route",
+      "target": "app_api_profile_route_responderror",
       "confidence_score": 1.0
     },
     {
@@ -10305,7 +10437,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/api/profile/route.ts",
-      "source_location": "L86",
+      "source_location": "L103",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_profile_route_post",
@@ -10317,7 +10449,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/api/profile/route.ts",
-      "source_location": "L43",
+      "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_profile_route_post",
@@ -10340,9 +10472,21 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
+      "source_file": "app/api/profile/route.ts",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_profile_route_post",
+      "target": "app_api_profile_route_responderror",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/profile/route.ts",
-      "source_location": "L36",
+      "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_profile_route_post",
@@ -10354,7 +10498,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/profile/route.ts",
-      "source_location": "L69",
+      "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_profile_route_post",
@@ -10777,7 +10921,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/itinerary/[id]/page.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_itinerary_id_page",
@@ -10788,7 +10932,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/itinerary/[id]/page.tsx",
-      "source_location": "L60",
+      "source_location": "L61",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_itinerary_id_page",
@@ -10932,6 +11076,30 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/itinerary/[id]/page.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_itinerary_id_page",
+      "target": "components_user_social_links",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/itinerary/[id]/page.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_itinerary_id_page",
+      "target": "components_user_social_links_usersociallinks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/itinerary/[id]/page.tsx",
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
@@ -11041,7 +11209,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/itinerary/[id]/page.tsx",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_itinerary_id_page_generatemetadata",
@@ -11053,7 +11221,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/itinerary/[id]/page.tsx",
-      "source_location": "L62",
+      "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_itinerary_id_page_itinerarydetailpage",
@@ -11065,7 +11233,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/itinerary/[id]/page.tsx",
-      "source_location": "L68",
+      "source_location": "L69",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_itinerary_id_page_itinerarydetailpage",
@@ -11077,7 +11245,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/itinerary/[id]/page.tsx",
-      "source_location": "L146",
+      "source_location": "L147",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_itinerary_id_page_itinerarydetailpage",
@@ -11089,7 +11257,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/itinerary/[id]/page.tsx",
-      "source_location": "L62",
+      "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_itinerary_id_page_itinerarydetailpage",
@@ -11101,7 +11269,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/itinerary/[id]/page.tsx",
-      "source_location": "L74",
+      "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_itinerary_id_page_itinerarydetailpage",
@@ -11495,7 +11663,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/profile/[username]/page.tsx",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_profile_username_page",
@@ -11536,6 +11704,30 @@
       "_origin": "ast",
       "source": "app_profile_username_page",
       "target": "components_tracked_link_trackedlink",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/profile/[username]/page.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_profile_username_page",
+      "target": "components_user_social_links",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/profile/[username]/page.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_profile_username_page",
+      "target": "components_user_social_links_usersociallinks",
       "confidence_score": 1.0
     },
     {
@@ -11628,7 +11820,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/profile/[username]/page.tsx",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_profile_username_page_profilepage",
@@ -11640,7 +11832,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/profile/[username]/page.tsx",
-      "source_location": "L138",
+      "source_location": "L141",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_profile_username_page_profilepage",
@@ -11652,7 +11844,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/profile/[username]/page.tsx",
-      "source_location": "L240",
+      "source_location": "L243",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_profile_username_page_profilepage",
@@ -12341,7 +12533,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/settings/profile/page.tsx",
-      "source_location": "L10",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_settings_profile_page_profilesettingspage",
@@ -12386,7 +12578,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L192",
+      "source_location": "L195",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_admin_console",
@@ -12397,7 +12589,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L176",
+      "source_location": "L179",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_admin_console",
@@ -12419,7 +12611,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L172",
+      "source_location": "L175",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_admin_console",
@@ -12558,7 +12750,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L927",
+      "source_location": "L930",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_admin_console_adminconsole",
@@ -12570,7 +12762,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/admin-console.tsx",
-      "source_location": "L559",
+      "source_location": "L562",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_admin_console_adminconsole",
@@ -12603,7 +12795,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/admin-console.tsx",
-      "source_location": "L644",
+      "source_location": "L647",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_admin_console_adminconsole",
@@ -15399,6 +15591,146 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_user_social_links",
+      "target": "components_user_social_links_platformstyles",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_user_social_links",
+      "target": "components_user_social_links_socialicon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L97",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_user_social_links",
+      "target": "components_user_social_links_usersociallinks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L86",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_user_social_links",
+      "target": "components_user_social_links_usersociallinksprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_user_social_links",
+      "target": "lib_analytics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_user_social_links",
+      "target": "lib_analytics_trackevent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_user_social_links",
+      "target": "lib_social",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_user_social_links",
+      "target": "lib_social_formattedsociallink",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_user_social_links",
+      "target": "lib_social_getusersociallinks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_user_social_links",
+      "target": "lib_social_socialplatform",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L105",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_user_social_links_usersociallinks",
+      "target": "lib_analytics_trackevent"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components/user-social-links.tsx",
+      "source_location": "L98",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_user_social_links_usersociallinks",
+      "target": "lib_social_getusersociallinks"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "lib/activity-types.ts",
       "source_location": "L34",
       "weight": 1.0,
@@ -15602,7 +15934,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L713",
+      "source_location": "L719",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin",
@@ -15624,7 +15956,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L688",
+      "source_location": "L694",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin",
@@ -15855,7 +16187,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L755",
+      "source_location": "L761",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin",
@@ -15899,7 +16231,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L547",
+      "source_location": "L550",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin",
@@ -16043,7 +16375,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L552",
+      "source_location": "L555",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_updateadminrecord",
@@ -16067,7 +16399,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L556",
+      "source_location": "L559",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_updateadminrecord",
@@ -16091,7 +16423,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L564",
+      "source_location": "L567",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_updateadminrecord",
@@ -16103,58 +16435,58 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
+      "source_location": "L436",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_admin_createadminrecord",
+      "target": "lib_admin_readint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/admin.ts",
+      "source_location": "L580",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_admin_updateadminrecord",
+      "target": "lib_admin_readint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/admin.ts",
+      "source_location": "L492",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_admin_createadminrecord",
+      "target": "lib_admin_readoptionalnumber",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/admin.ts",
+      "source_location": "L636",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_admin_updateadminrecord",
+      "target": "lib_admin_readoptionalnumber",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/admin.ts",
       "source_location": "L433",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_createadminrecord",
-      "target": "lib_admin_readint",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "lib/admin.ts",
-      "source_location": "L574",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "lib_admin_updateadminrecord",
-      "target": "lib_admin_readint",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "lib/admin.ts",
-      "source_location": "L489",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "lib_admin_createadminrecord",
-      "target": "lib_admin_readoptionalnumber",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "lib/admin.ts",
-      "source_location": "L630",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "lib_admin_updateadminrecord",
-      "target": "lib_admin_readoptionalnumber",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "lib/admin.ts",
-      "source_location": "L430",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "lib_admin_createadminrecord",
       "target": "lib_admin_readboolean",
       "confidence_score": 1.0
     },
@@ -16163,7 +16495,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L571",
+      "source_location": "L577",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_updateadminrecord",
@@ -16175,7 +16507,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L506",
+      "source_location": "L509",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_createadminrecord",
@@ -16187,7 +16519,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L647",
+      "source_location": "L653",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_updateadminrecord",
@@ -16199,7 +16531,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L431",
+      "source_location": "L434",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_createadminrecord",
@@ -16211,7 +16543,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L572",
+      "source_location": "L578",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_updateadminrecord",
@@ -16223,7 +16555,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L429",
+      "source_location": "L432",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_createadminrecord",
@@ -16235,7 +16567,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L570",
+      "source_location": "L576",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_updateadminrecord",
@@ -16247,7 +16579,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L448",
+      "source_location": "L451",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_createadminrecord",
@@ -16259,7 +16591,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/admin.ts",
-      "source_location": "L589",
+      "source_location": "L595",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_updateadminrecord",
@@ -16404,7 +16736,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/admin.ts",
-      "source_location": "L558",
+      "source_location": "L561",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_updateadminrecord",
@@ -16416,7 +16748,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/admin.ts",
-      "source_location": "L737",
+      "source_location": "L743",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_approveaccountclaim",
@@ -16428,7 +16760,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/admin.ts",
-      "source_location": "L740",
+      "source_location": "L746",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_approveaccountclaim",
@@ -16440,7 +16772,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/admin.ts",
-      "source_location": "L773",
+      "source_location": "L779",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_admin_rejectaccountclaim",
@@ -18077,6 +18409,62 @@
       "_origin": "ast",
       "source": "lib_serialize_serializeitinerary",
       "target": "lib_serialize_serializeuser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/social.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_social",
+      "target": "lib_social_formatsociallink",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/social.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_social",
+      "target": "lib_social_formattedsociallink",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/social.ts",
+      "source_location": "L106",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_social",
+      "target": "lib_social_getusersociallinks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/social.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_social",
+      "target": "lib_social_socialplatform",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/social.ts",
+      "source_location": "L113",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_social_getusersociallinks",
+      "target": "lib_social_formatsociallink",
       "confidence_score": 1.0
     },
     {
@@ -20829,5 +21217,5 @@
       "source_file": "tasks/task-1-grid-layout.md"
     }
   ],
-  "built_at_commit": "7e6fb707a8d64d6123689eb0b6c080e5d2c0a20d"
+  "built_at_commit": "5182a4788e1121c548fc720086a016e94a2292a6"
 }

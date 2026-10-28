@@ -24,6 +24,9 @@ export default async function ClaimPage({
         city: true,
         bio: true,
         isClaimed: true,
+        youtube: true,
+        instagram: true,
+        tiktok: true,
       },
     });
   }

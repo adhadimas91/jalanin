@@ -23,6 +23,9 @@ export default async function ClaimUsernamePage({
       city: true,
       bio: true,
       isClaimed: true,
+      youtube: true,
+      instagram: true,
+      tiktok: true,
     },
   });
 

@@ -9,6 +9,7 @@ import { getCurrentUser, isAdminUser } from "@/lib/auth";
 import { getItineraryById } from "@/lib/itineraries";
 import { formatRupiah } from "@/lib/format";
 import { serializeItinerary } from "@/lib/serialize";
+import { UserSocialLinks } from "@/components/user-social-links";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 
@@ -170,6 +171,7 @@ export default async function ItineraryDetailPage({ params }: { params: Promise<
             <strong>Catatan:</strong> {itinerary.notes}
           </div>
         )}
+        <UserSocialLinks user={itinerary.author} />
       </section>
       <ItineraryInteractiveView itinerary={serializedItinerary} />
     </main>

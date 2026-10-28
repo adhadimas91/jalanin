@@ -33,7 +33,7 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
   users: {
     label: "Users",
     description: "Kelola akun, profil, password hash, dan role admin.",
-    columns: ["email", "username", "name", "role", "isPro", "isClaimed", "proExpiresAt", "maxPrivate", "maxPublic", "maxSaved", "maxMyLink", "city", "createdAt"],
+    columns: ["email", "username", "name", "role", "isPro", "isClaimed", "instagram", "tiktok", "youtube", "city", "createdAt"],
     template: {
       email: "new-user@example.com",
       username: "newuser",
@@ -42,6 +42,9 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       avatarUrl: "",
       bio: "",
       city: "Jakarta",
+      youtube: "",
+      instagram: "",
+      tiktok: "",
       role: "USER",
       isPro: false,
       proExpiresAt: null,
