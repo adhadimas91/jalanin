@@ -1257,14 +1257,12 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
             (colName === 'role' || colName === 'isPro' || colName === 'isClaimed')) ||
           (currentTable === 'accountClaims' &&
             (colName === 'status' || colName === 'userId')) ||
-          (currentTable === 'itineraries' && colName === 'isPublished') ||
           (currentTable === 'itineraries' &&
             (colName === 'isPublished' || colName === 'destination')) ||
           (currentTable === 'days' && colName === 'itineraryId') ||
           (currentTable === 'myLinkWhitelistDomains' && colName === 'isActive') ||
-          (currentTable === 'activities' && colName === 'category');
-        (currentTable === 'activities' &&
-          (colName === 'category' || colName === 'itineraryDayId'));
+          (currentTable === 'activities' &&
+            (colName === 'category' || colName === 'itineraryDayId'));
 
         let filterOptions: Option[] | undefined;
         if (isUserCol) filterOptions = buildUserFilterOptions();
@@ -1402,14 +1400,12 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
             }
 
             if (colName === 'title' && currentTable === 'itineraries') {
-              const author = rel?.author as Record<string, unknown> | undefined;
               const author = resolveRecordUser(record, 'itineraries');
               const authorSub = author?.username
-                ? `@${String(author.username)}`
-                  ? `@${String(author.username).replace(/^@/, '')}`
-                  : author?.email
-                    ? String(author.email)
-                    : null;
+                ? `@${String(author.username).replace(/^@/, '')}`
+                : author?.email
+                  ? String(author.email)
+                  : null;
               return (
                 <div className='flex flex-col'>
                   <span className='max-w-[220px] truncate font-medium'>{formatCell(val)}</span>
@@ -1473,172 +1469,160 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
               );
             }
 
-            if (colName === 'itineraryId' && rel?.itinerary && typeof rel.itinerary === 'object') {
-              const it = rel.itinerary as Record<string, unknown>;
-              return (
-                <div className='flex flex-col'>
-                  <span className='max-w-[200px] truncate font-medium'>
-                    {String(it.title ?? val ?? '—')}
-                  </span>
-                  <span className='text-muted-foreground font-mono text-[11px]'>
-                    {String(val ?? '').slice(0, 10)}
-                  </span>
-                </div>
-              );
-              if (colName === 'itineraryId') {
-                const it =
-                  rel?.itinerary && typeof rel.itinerary === 'object'
-                    ? (rel.itinerary as Record<string, unknown>)
-                    : val
-                      ? itineraryByIdMap.get(String(val))
-                      : undefined;
-                if (it) {
-                  return (
-                    <div className='flex flex-col'>
-                      <span className='max-w-[200px] truncate font-medium'>
-                        {String(it.title ?? val ?? '—')}
-                      </span>
-                      <span className='text-muted-foreground font-mono text-[11px]'>
-                        {String(val ?? '').slice(0, 10)}
-                      </span>
-                    </div>
-                  );
-                }
-              }
-
-              if (colName === 'itineraryDayId') {
-                const dayObj =
-                  rel?.day && typeof rel.day === 'object'
-                    ? (rel.day as Record<string, unknown>)
-                    : val
-                      ? dayByIdMap.get(String(val))
-                      : undefined;
-                if (dayObj) {
-                  const itObj =
-                    dayObj.itinerary && typeof dayObj.itinerary === 'object'
-                      ? (dayObj.itinerary as Record<string, unknown>)
-                      : dayObj.itineraryId
-                        ? itineraryByIdMap.get(String(dayObj.itineraryId))
-                        : undefined;
-                  return (
-                    <div className='flex flex-col'>
-                      <span className='max-w-[200px] truncate font-medium'>
-                        {String(dayObj.title ?? val ?? '—')}
-                      </span>
-                      <span className='text-muted-foreground max-w-[200px] truncate text-xs'>
-                        {itObj?.title
-                          ? String(itObj.title)
-                          : String(val ?? '').slice(0, 10)}
-                      </span>
-                    </div>
-                  );
-                }
-              }
-
-              if (colName === 'status' && currentTable === 'accountClaims') {
-                const statusStr = String(val).toUpperCase();
-                if (statusStr === 'APPROVED') {
-                  return (
-                    <Badge variant='default' className='bg-emerald-600 text-white hover:bg-emerald-600'>
-                      <Icons.circleCheck className='size-3' />
-                      Disetujui
-                    </Badge>
-                  );
-                }
-                if (statusStr === 'REJECTED') {
-                  return (
-                    <Badge variant='destructive'>
-                      <Icons.circleX className='size-3' />
-                      Ditolak
-                    </Badge>
-                  );
-                }
+            if (colName === 'itineraryId') {
+              const it =
+                rel?.itinerary && typeof rel.itinerary === 'object'
+                  ? (rel.itinerary as Record<string, unknown>)
+                  : val
+                    ? itineraryByIdMap.get(String(val))
+                    : undefined;
+              if (it) {
                 return (
-                  <Badge variant='secondary' className='border-amber-500/30 bg-amber-500/15 text-amber-700 dark:text-amber-300'>
-                    <Icons.clock className='size-3' />
-                    Menunggu Review
-                  </Badge>
+                  <div className='flex flex-col'>
+                    <span className='max-w-[200px] truncate font-medium'>
+                      {String(it.title ?? val ?? '—')}
+                    </span>
+                    <span className='text-muted-foreground font-mono text-[11px]'>
+                      {String(val ?? '').slice(0, 10)}
+                    </span>
+                  </div>
                 );
               }
-
-              if (colName === 'role' && currentTable === 'users') {
-                const roleStr = String(val ?? 'USER').toUpperCase();
-                return (
-                  <Badge variant={roleStr === 'ADMIN' ? 'default' : 'outline'}>
-                    {roleStr === 'ADMIN' && <Icons.shieldCheck className='size-3' />}
-                    {roleStr}
-                  </Badge>
-                );
-              }
-
-              if (colName === 'isPro' && currentTable === 'users') {
-                const isPro = Boolean(val);
-                return isPro ? (
-                  <Badge variant='default' className='gap-1'>
-                    <Icons.pro className='size-3' />
-                    PRO
-                  </Badge>
-                ) : (
-                  <Badge variant='outline'>FREE</Badge>
-                );
-              }
-
-              if (colName === 'isClaimed' && currentTable === 'users') {
-                const isClaimed = Boolean(val);
-                return isClaimed ? (
-                  <Badge variant='secondary'>
-                    <Icons.circleCheck className='size-3' />
-                    Aktif
-                  </Badge>
-                ) : (
-                  <Badge
-                    variant='outline'
-                    className='border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300'
-                  >
-                    Kurasi (Unclaimed)
-                  </Badge>
-                );
-              }
-
-              if (
-                (colName === 'isPublished' && currentTable === 'itineraries') ||
-                (colName === 'isActive' && currentTable === 'myLinkWhitelistDomains')
-              ) {
-                const active = Boolean(val);
-                return (
-                  <Badge variant={active ? 'default' : 'secondary'}>
-                    {active ? 'Aktif' : 'Nonaktif'}
-                  </Badge>
-                );
-              }
-
-              if (colName === 'token' && val) {
-                return (
-                  <code className='bg-muted text-muted-foreground rounded px-1.5 py-0.5 font-mono text-xs'>
-                    {String(val).slice(0, 10)}...
-                  </code>
-                );
-              }
-
-              if (colName === 'estimatedBudget' || colName === 'estimatedCost') {
-                const num = Number(val);
-                if (Number.isFinite(num)) {
-                  return <span className='tabular-nums'>Rp {num.toLocaleString('id-ID')}</span>;
-                }
-              }
-
-              if (colName.endsWith('At')) {
-                return (
-                  <span className='text-muted-foreground text-xs tabular-nums'>
-                    {formatShortDate(val)}
-                  </span>
-                );
-              }
-
-              return <span className='block max-w-[220px] truncate'>{formatCell(val)}</span>;
             }
-          };
-        }),
+
+            if (colName === 'itineraryDayId') {
+              const dayObj =
+                rel?.day && typeof rel.day === 'object'
+                  ? (rel.day as Record<string, unknown>)
+                  : val
+                    ? dayByIdMap.get(String(val))
+                    : undefined;
+              if (dayObj) {
+                const itObj =
+                  dayObj.itinerary && typeof dayObj.itinerary === 'object'
+                    ? (dayObj.itinerary as Record<string, unknown>)
+                    : dayObj.itineraryId
+                      ? itineraryByIdMap.get(String(dayObj.itineraryId))
+                      : undefined;
+                return (
+                  <div className='flex flex-col'>
+                    <span className='max-w-[200px] truncate font-medium'>
+                      {String(dayObj.title ?? val ?? '—')}
+                    </span>
+                    <span className='text-muted-foreground max-w-[200px] truncate text-xs'>
+                      {itObj?.title
+                        ? String(itObj.title)
+                        : String(val ?? '').slice(0, 10)}
+                    </span>
+                  </div>
+                );
+              }
+            }
+
+            if (colName === 'status' && currentTable === 'accountClaims') {
+              const statusStr = String(val).toUpperCase();
+              if (statusStr === 'APPROVED') {
+                return (
+                  <Badge variant='default' className='bg-emerald-600 text-white hover:bg-emerald-600'>
+                    <Icons.circleCheck className='size-3' />
+                    Disetujui
+                  </Badge>
+                );
+              }
+              if (statusStr === 'REJECTED') {
+                return (
+                  <Badge variant='destructive'>
+                    <Icons.circleX className='size-3' />
+                    Ditolak
+                  </Badge>
+                );
+              }
+              return (
+                <Badge variant='secondary' className='border-amber-500/30 bg-amber-500/15 text-amber-700 dark:text-amber-300'>
+                  <Icons.clock className='size-3' />
+                  Menunggu Review
+                </Badge>
+              );
+            }
+
+            if (colName === 'role' && currentTable === 'users') {
+              const roleStr = String(val ?? 'USER').toUpperCase();
+              return (
+                <Badge variant={roleStr === 'ADMIN' ? 'default' : 'outline'}>
+                  {roleStr === 'ADMIN' && <Icons.shieldCheck className='size-3' />}
+                  {roleStr}
+                </Badge>
+              );
+            }
+
+            if (colName === 'isPro' && currentTable === 'users') {
+              const isPro = Boolean(val);
+              return isPro ? (
+                <Badge variant='default' className='gap-1'>
+                  <Icons.pro className='size-3' />
+                  PRO
+                </Badge>
+              ) : (
+                <Badge variant='outline'>FREE</Badge>
+              );
+            }
+
+            if (colName === 'isClaimed' && currentTable === 'users') {
+              const isClaimed = Boolean(val);
+              return isClaimed ? (
+                <Badge variant='secondary'>
+                  <Icons.circleCheck className='size-3' />
+                  Aktif
+                </Badge>
+              ) : (
+                <Badge
+                  variant='outline'
+                  className='border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300'
+                >
+                  Kurasi (Unclaimed)
+                </Badge>
+              );
+            }
+
+            if (
+              (colName === 'isPublished' && currentTable === 'itineraries') ||
+              (colName === 'isActive' && currentTable === 'myLinkWhitelistDomains')
+            ) {
+              const active = Boolean(val);
+              return (
+                <Badge variant={active ? 'default' : 'secondary'}>
+                  {active ? 'Aktif' : 'Nonaktif'}
+                </Badge>
+              );
+            }
+
+            if (colName === 'token' && val) {
+              return (
+                <code className='bg-muted text-muted-foreground rounded px-1.5 py-0.5 font-mono text-xs'>
+                  {String(val).slice(0, 10)}...
+                </code>
+              );
+            }
+
+            if (colName === 'estimatedBudget' || colName === 'estimatedCost') {
+              const num = Number(val);
+              if (Number.isFinite(num)) {
+                return <span className='tabular-nums'>Rp {num.toLocaleString('id-ID')}</span>;
+              }
+            }
+
+            if (colName.endsWith('At')) {
+              return (
+                <span className='text-muted-foreground text-xs tabular-nums'>
+                  {formatShortDate(val)}
+                </span>
+              );
+            }
+
+            return <span className='block max-w-[220px] truncate'>{formatCell(val)}</span>;
+          }
+        };
+      }),
       {
         id: 'actions',
         size: 48,
@@ -1748,20 +1732,19 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     ];
 
     return dataCols;
-  }, [currentTable, config.columns, records, busy, handleSubscriptionChange, openEditSheet]);
-}, [
-  currentTable,
-  config.columns,
-  records,
-  tables.users,
-  itineraryByIdMap,
-  dayByIdMap,
-  resolveRecordUser,
-  resolveRecordUserKey,
-  busy,
-  handleSubscriptionChange,
-  openEditSheet
-]);
+  }, [
+    currentTable,
+    config.columns,
+    records,
+    tables.users,
+    itineraryByIdMap,
+    dayByIdMap,
+    resolveRecordUser,
+    resolveRecordUserKey,
+    busy,
+    handleSubscriptionChange,
+    openEditSheet
+  ]);
 
 // Auto-suggestions for search input in Itineraries, Itinerary Days, and Activities
 const searchSuggestions = useMemo<SearchSuggestion[]>(() => {
@@ -1966,11 +1949,6 @@ const table = useReactTable({
         (rel.author as Record<string, unknown>)?.name;
       if (userName && String(userName).toLowerCase().includes(q)) return true;
 
-      const itineraryTitle = (rel.itinerary as Record<string, unknown>)?.title;
-      if (itineraryTitle && String(itineraryTitle).toLowerCase().includes(q)) return true;
-
-      const dayTitle = (rel.day as Record<string, unknown>)?.title;
-      if (dayTitle && String(dayTitle).toLowerCase().includes(q)) return true;
       const dayObj =
         rel.day && typeof rel.day === 'object'
           ? (rel.day as Record<string, unknown>)
@@ -1996,7 +1974,6 @@ function handleExportCSV() {
   exportRows.forEach((row) => {
     const record = row.original;
     const rowValues = headers.map((col) => {
-      const val = col === 'id' ? (record.id ?? record.key ?? '') : record[col];
       let val: unknown = col === 'id' ? (record.id ?? record.key ?? '') : record[col];
       if (
         col === 'authorId' &&
@@ -2405,7 +2382,6 @@ return (
               table={table}
               globalFilter={globalFilter}
               onGlobalFilterChange={setGlobalFilter}
-              searchPlaceholder={`Search ${config.label.toLowerCase()}...`}
               searchPlaceholder={
                 currentTable === 'itineraries' ||
                   currentTable === 'days' ||
