@@ -2013,18 +2013,16 @@ const columns = useMemo<ColumnDef<Record<string, unknown>>[]>(() => {
             return (
               <div className='flex flex-col'>
                 <span className='font-medium'>{formatCell(val)}</span>
-                <span className='text-muted-foreground text-xs'>
-                  {formatCell(record.email)}
-                  <span
-                    className={cn(
-                      'text-xs',
-                      isUnclaimedPlaceholderEmail(emailVal)
-                        ? 'text-amber-600 dark:text-amber-400 font-normal italic'
-                        : 'text-muted-foreground'
-                    )}
-                  >
-                    {emailDisplay}
-                  </span>
+                <span
+                  className={cn(
+                    'text-xs',
+                    isUnclaimedPlaceholderEmail(emailVal)
+                      ? 'text-amber-600 dark:text-amber-400 font-normal italic'
+                      : 'text-muted-foreground'
+                  )}
+                >
+                  {emailDisplay}
+                </span>
               </div>
             );
           }
