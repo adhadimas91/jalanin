@@ -44,10 +44,83 @@ function serializeRecord<T extends object>(record: T): AdminRecord {
   return serializeValue(record) as AdminRecord;
 }
 
+export class AdminValidationError extends Error {
+  status = 400;
+  constructor(message: string) {
+    super(message);
+    this.name = "AdminValidationError";
+  }
+}
+
+export function formatAdminError(error: unknown): { message: string; status: number } {
+  if (error instanceof AdminValidationError) {
+    return { message: error.message, status: error.status };
+  }
+
+  if (error && typeof error === "object" && "code" in error) {
+    const prismaErr = error as {
+      code?: string;
+      meta?: Record<string, unknown>;
+      message?: string;
+    };
+
+    if (prismaErr.code === "P2002") {
+      const rawTarget = prismaErr.meta?.target;
+      const target = Array.isArray(rawTarget)
+        ? rawTarget.join(", ")
+        : typeof rawTarget === "string"
+          ? rawTarget
+          : "";
+      return {
+        message: `Data duplikat: nilai pada field unik${target ? ` (${target})` : ""} sudah digunakan.`,
+        status: 409,
+      };
+    }
+
+    if (prismaErr.code === "P2003") {
+      const rawField = prismaErr.meta?.field_name ?? prismaErr.meta?.constraint;
+      const field = typeof rawField === "string" ? rawField : "";
+      return {
+        message: `ID relasi tidak ditemukan atau tidak valid${field ? ` (${field})` : ""}. Pastikan ID referensi benar.`,
+        status: 400,
+      };
+    }
+
+    if (prismaErr.code === "P2025") {
+      return {
+        message: "Record tidak ditemukan di database.",
+        status: 404,
+      };
+    }
+  }
+
+  return {
+    message:
+      error instanceof Error && error.message.trim()
+        ? error.message
+        : "Terjadi kesalahan pada server saat memproses data admin.",
+    status: 500,
+  };
+}
+
 function stripMeta(input: Record<string, unknown>) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    throw new AdminValidationError("Data record harus berupa objek JSON yang valid.");
+  }
+
   return Object.fromEntries(
-    Object.entries(input).filter(([key]) => !key.startsWith("_")),
+    Object.entries(input).filter(
+      ([key, value]) => !key.startsWith("_") && (value === null || typeof value !== "object"),
+    ),
   );
+}
+
+function readRequiredString(value: unknown, fieldLabel: string) {
+  const str = typeof value === "string" ? value.trim() : "";
+  if (!str) {
+    throw new AdminValidationError(`Field "${fieldLabel}" wajib diisi.`);
+  }
+  return str;
 }
 
 function readString(value: unknown, fallback = "") {
@@ -399,6 +472,110 @@ async function fetchMyLinkWhitelistDomains() {
   });
 }
 
+function serializeUsers(users: Awaited<ReturnType<typeof fetchUsers>>) {
+  return users.map(({ _count, ...record }) =>
+    serializeRecord({
+      ...record,
+      _related: _count,
+    }),
+  );
+}
+
+function serializeAccountClaims(accountClaims: Awaited<ReturnType<typeof fetchAccountClaims>>) {
+  return accountClaims.map(({ user, ...record }) =>
+    serializeRecord({
+      ...record,
+      _related: {
+        user,
+      },
+    }),
+  );
+}
+
+function serializeItineraries(itineraries: Awaited<ReturnType<typeof fetchItineraries>>) {
+  return itineraries.map(({ author, _count, ...record }) =>
+    serializeRecord({
+      ...record,
+      _related: {
+        author,
+        counts: _count,
+      },
+    }),
+  );
+}
+
+function serializeDays(days: Awaited<ReturnType<typeof fetchDays>>) {
+  return days.map(({ itinerary, _count, ...record }) =>
+    serializeRecord({
+      ...record,
+      _related: {
+        itinerary,
+        counts: _count,
+      },
+    }),
+  );
+}
+
+function serializeActivities(activities: Awaited<ReturnType<typeof fetchActivities>>) {
+  return activities.map(({ day, myLink, ...record }) =>
+    serializeRecord({
+      ...record,
+      _related: {
+        day,
+        myLink,
+      },
+    }),
+  );
+}
+
+function serializeMyLinks(myLinks: Awaited<ReturnType<typeof fetchMyLinks>>) {
+  return myLinks.map(({ user, activities: linkedActivities, _count, ...record }) =>
+    serializeRecord({
+      ...record,
+      _related: {
+        user,
+        activities: linkedActivities,
+        counts: _count,
+      },
+    }),
+  );
+}
+
+function serializeSaves(saves: Awaited<ReturnType<typeof fetchSaves>>) {
+  return saves.map(({ user, itinerary, ...record }) =>
+    serializeRecord({
+      ...record,
+      _related: {
+        user,
+        itinerary,
+      },
+    }),
+  );
+}
+
+function serializeLikes(likes: Awaited<ReturnType<typeof fetchLikes>>) {
+  return likes.map(({ user, itinerary, ...record }) =>
+    serializeRecord({
+      ...record,
+      _related: {
+        user,
+        itinerary,
+      },
+    }),
+  );
+}
+
+function serializeSessions(sessions: Awaited<ReturnType<typeof fetchSessions>>) {
+  return sessions.map(({ user, ...record }) =>
+    serializeRecord({
+      ...record,
+      _related: {
+        user,
+      },
+    }),
+  );
+}
+
 export async function getAdminSnapshot(): Promise<AdminSnapshot> {
   const [
     users,
@@ -427,83 +604,15 @@ export async function getAdminSnapshot(): Promise<AdminSnapshot> {
   ]);
 
   return {
-    users: users.map((record) =>
-      serializeRecord({
-        ...record,
-        _related: record._count,
-      }),
-    ),
-    accountClaims: accountClaims.map((record) =>
-      serializeRecord({
-        ...record,
-        _related: {
-          user: record.user,
-        },
-      }),
-    ),
-    itineraries: itineraries.map((record) =>
-      serializeRecord({
-        ...record,
-        _related: {
-          author: record.author,
-          counts: record._count,
-        },
-      }),
-    ),
-    days: days.map((record) =>
-      serializeRecord({
-        ...record,
-        _related: {
-          itinerary: record.itinerary,
-          counts: record._count,
-        },
-      }),
-    ),
-    activities: activities.map(({ day, myLink, ...record }) =>
-      serializeRecord({
-        ...record,
-        _related: {
-          day,
-          myLink,
-        },
-      }),
-    ),
-    myLinks: myLinks.map(({ user, activities: linkedActivities, _count, ...record }) =>
-      serializeRecord({
-        ...record,
-        _related: {
-          user,
-          activities: linkedActivities,
-          counts: _count,
-        },
-      }),
-    ),
-    saves: saves.map((record) =>
-      serializeRecord({
-        ...record,
-        _related: {
-          user: record.user,
-          itinerary: record.itinerary,
-        },
-      }),
-    ),
-    likes: likes.map((record) =>
-      serializeRecord({
-        ...record,
-        _related: {
-          user: record.user,
-          itinerary: record.itinerary,
-        },
-      }),
-    ),
-    sessions: sessions.map((record) =>
-      serializeRecord({
-        ...record,
-        _related: {
-          user: record.user,
-        },
-      }),
-    ),
+    users: serializeUsers(users),
+    accountClaims: serializeAccountClaims(accountClaims),
+    itineraries: serializeItineraries(itineraries),
+    days: serializeDays(days),
+    activities: serializeActivities(activities),
+    myLinks: serializeMyLinks(myLinks),
+    saves: serializeSaves(saves),
+    likes: serializeLikes(likes),
+    sessions: serializeSessions(sessions),
     myLinkWhitelistDomains: myLinkWhitelistDomains.map((record) =>
       serializeRecord(record),
     ),
@@ -513,16 +622,41 @@ export async function getAdminSnapshot(): Promise<AdminSnapshot> {
   };
 }
 
-export async function listAdminRecords(table: AdminTable) {
-  const snapshot = await getAdminSnapshot();
-  return snapshot[table];
+export async function listAdminRecords(table: AdminTable): Promise<AdminRecord[]> {
+  switch (table) {
+    case "users":
+      return serializeUsers(await fetchUsers());
+    case "accountClaims":
+      return serializeAccountClaims(await fetchAccountClaims());
+    case "itineraries":
+      return serializeItineraries(await fetchItineraries());
+    case "days":
+      return serializeDays(await fetchDays());
+    case "activities":
+      return serializeActivities(await fetchActivities());
+    case "myLinks":
+      return serializeMyLinks(await fetchMyLinks());
+    case "saves":
+      return serializeSaves(await fetchSaves());
+    case "likes":
+      return serializeLikes(await fetchLikes());
+    case "sessions":
+      return serializeSessions(await fetchSessions());
+    case "myLinkWhitelistDomains":
+      return (await fetchMyLinkWhitelistDomains()).map((record) => serializeRecord(record));
+    case "appSettings":
+      return (await prisma.appSetting.findMany({ orderBy: { key: "asc" } })).map((record) =>
+        serializeRecord(record),
+      );
+  }
 }
 
 export async function createAdminRecord(table: AdminTable, rawData: Record<string, unknown>) {
   const data = stripMeta(rawData);
 
   switch (table) {
-    case "users":
+    case "users": {
+      const email = readRequiredString(data.email, "email");
       let passwordHash = readString(data.passwordHash);
       if (passwordHash && !passwordHash.includes(":")) {
         passwordHash = await hashPassword(passwordHash);
@@ -530,7 +664,7 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
       return prisma.user.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
-          email: readString(data.email),
+          email,
           username: readOptionalString(data.username) ?? null,
           passwordHash,
           name: readOptionalString(data.name) ?? null,
@@ -550,13 +684,14 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           maxMyLink: readInt(data.maxMyLink, 50),
         },
       });
+    }
     case "accountClaims":
       return prisma.accountClaim.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
-          userId: readString(data.userId),
-          claimantName: readString(data.claimantName),
-          claimantEmail: readString(data.claimantEmail),
+          userId: readRequiredString(data.userId, "userId"),
+          claimantName: readRequiredString(data.claimantName, "claimantName"),
+          claimantEmail: readRequiredString(data.claimantEmail, "claimantEmail"),
           socialHandle: readString(data.socialHandle),
           proofNotes: readString(data.proofNotes),
           status: readAccountClaimStatus(data.status),
@@ -569,8 +704,8 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
       return prisma.itinerary.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
-          title: readString(data.title),
-          destination: readString(data.destination),
+          title: readRequiredString(data.title, "title"),
+          destination: readRequiredString(data.destination, "destination"),
           description: readString(data.description),
           durationDays: readInt(data.durationDays, 1),
           estimatedBudget: readInt(data.estimatedBudget, 0),
@@ -579,25 +714,25 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           notes: readString(data.notes),
           isPublished: readBoolean(data.isPublished, true),
           originalItineraryId: readOptionalString(data.originalItineraryId) ?? undefined,
-          authorId: readString(data.authorId),
+          authorId: readRequiredString(data.authorId, "authorId"),
         },
       });
     case "days":
       return prisma.itineraryDay.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
-          itineraryId: readString(data.itineraryId),
+          itineraryId: readRequiredString(data.itineraryId, "itineraryId"),
           dayNumber: readInt(data.dayNumber, 1),
-          title: readString(data.title),
+          title: readRequiredString(data.title, "title"),
         },
       });
     case "activities":
       return prisma.activity.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
-          itineraryDayId: readString(data.itineraryDayId),
+          itineraryDayId: readRequiredString(data.itineraryDayId, "itineraryDayId"),
           time: readString(data.time),
-          title: readString(data.title),
+          title: readRequiredString(data.title, "title"),
           locationName: readString(data.locationName),
           formattedAddress: readString(data.formattedAddress),
           latitude: readOptionalNumber(data.latitude),
@@ -613,13 +748,13 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
         },
       });
     case "myLinks": {
-      const actualUrl = readString(data.actualUrl);
+      const actualUrl = readRequiredString(data.actualUrl, "actualUrl");
       const provider = readString(data.provider) || detectProvider(actualUrl);
       return prisma.myLink.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
-          userId: readString(data.userId),
-          label: readString(data.label),
+          userId: readRequiredString(data.userId, "userId"),
+          label: readRequiredString(data.label, "label"),
           provider,
           actualUrl,
         },
@@ -629,8 +764,8 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
       return prisma.savedItinerary.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
-          userId: readString(data.userId),
-          itineraryId: readString(data.itineraryId),
+          userId: readRequiredString(data.userId, "userId"),
+          itineraryId: readRequiredString(data.itineraryId, "itineraryId"),
           createdAt: readDate(data.createdAt, new Date()),
         },
       });
@@ -638,8 +773,8 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
       return prisma.like.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
-          userId: readString(data.userId),
-          itineraryId: readString(data.itineraryId),
+          userId: readRequiredString(data.userId, "userId"),
+          itineraryId: readRequiredString(data.itineraryId, "itineraryId"),
           createdAt: readDate(data.createdAt, new Date()),
         },
       });
@@ -647,8 +782,8 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
       return prisma.session.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
-          token: readString(data.token),
-          userId: readString(data.userId),
+          token: readRequiredString(data.token, "token"),
+          userId: readRequiredString(data.userId, "userId"),
           expiresAt: readDate(data.expiresAt, new Date()),
           createdAt: readDate(data.createdAt, new Date()),
         },
@@ -657,7 +792,7 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
       return prisma.myLinkWhitelistDomain.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
-          domainPattern: readString(data.domainPattern),
+          domainPattern: readRequiredString(data.domainPattern, "domainPattern"),
           isActive: readBoolean(data.isActive, true),
           description: readOptionalString(data.description) ?? undefined,
         },
@@ -665,7 +800,7 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
     case "appSettings":
       return prisma.appSetting.create({
         data: {
-          key: readString(data.key),
+          key: readRequiredString(data.key, "key"),
           value: readString(data.value),
         },
       });
@@ -677,10 +812,14 @@ export async function updateAdminRecord(
   id: string,
   rawData: Record<string, unknown>,
 ) {
+  if (!id || !id.trim()) {
+    throw new AdminValidationError("ID record yang akan diperbarui tidak valid.");
+  }
+
   const data = stripMeta(rawData);
 
   switch (table) {
-    case "users":
+    case "users": {
       let passwordHash = readString(data.passwordHash);
       if (passwordHash && !passwordHash.includes(":")) {
         passwordHash = await hashPassword(passwordHash);
@@ -688,98 +827,126 @@ export async function updateAdminRecord(
       return prisma.user.update({
         where: { id },
         data: {
-          email: readString(data.email),
-          username: readOptionalString(data.username) ?? null,
+          ...("email" in data ? { email: readRequiredString(data.email, "email") } : {}),
+          ...("username" in data ? { username: readOptionalString(data.username) ?? null } : {}),
           ...(passwordHash ? { passwordHash } : {}),
-          name: readOptionalString(data.name) ?? null,
-          avatarUrl: readOptionalString(data.avatarUrl) ?? null,
-          bio: readOptionalString(data.bio) ?? null,
-          city: readOptionalString(data.city) ?? null,
-          youtube: readOptionalString(data.youtube) ?? null,
-          instagram: readOptionalString(data.instagram) ?? null,
-          tiktok: readOptionalString(data.tiktok) ?? null,
-          role: readUserRole(data.role),
-          isPro: readBoolean(data.isPro, false),
-          proExpiresAt: readOptionalDate(data.proExpiresAt),
-          isClaimed: readBoolean(data.isClaimed, true),
-          maxPrivate: readInt(data.maxPrivate, 2),
-          maxPublic: readInt(data.maxPublic, 5),
-          maxSaved: readInt(data.maxSaved, 5),
-          maxMyLink: readInt(data.maxMyLink, 50),
+          ...("name" in data ? { name: readOptionalString(data.name) ?? null } : {}),
+          ...("avatarUrl" in data ? { avatarUrl: readOptionalString(data.avatarUrl) ?? null } : {}),
+          ...("bio" in data ? { bio: readOptionalString(data.bio) ?? null } : {}),
+          ...("city" in data ? { city: readOptionalString(data.city) ?? null } : {}),
+          ...("youtube" in data ? { youtube: readOptionalString(data.youtube) ?? null } : {}),
+          ...("instagram" in data ? { instagram: readOptionalString(data.instagram) ?? null } : {}),
+          ...("tiktok" in data ? { tiktok: readOptionalString(data.tiktok) ?? null } : {}),
+          ...("role" in data ? { role: readUserRole(data.role) } : {}),
+          ...("isPro" in data ? { isPro: readBoolean(data.isPro, false) } : {}),
+          ...("proExpiresAt" in data ? { proExpiresAt: readOptionalDate(data.proExpiresAt) } : {}),
+          ...("isClaimed" in data ? { isClaimed: readBoolean(data.isClaimed, true) } : {}),
+          ...("maxPrivate" in data ? { maxPrivate: readInt(data.maxPrivate, 2) } : {}),
+          ...("maxPublic" in data ? { maxPublic: readInt(data.maxPublic, 5) } : {}),
+          ...("maxSaved" in data ? { maxSaved: readInt(data.maxSaved, 5) } : {}),
+          ...("maxMyLink" in data ? { maxMyLink: readInt(data.maxMyLink, 50) } : {}),
         },
       });
+    }
     case "accountClaims":
       return prisma.accountClaim.update({
         where: { id },
         data: {
-          userId: readString(data.userId),
-          claimantName: readString(data.claimantName),
-          claimantEmail: readString(data.claimantEmail),
-          socialHandle: readString(data.socialHandle),
-          proofNotes: readString(data.proofNotes),
-          status: readAccountClaimStatus(data.status),
-          adminNotes: readOptionalString(data.adminNotes),
-          token: readOptionalString(data.token),
-          tokenExpiresAt: readOptionalDate(data.tokenExpiresAt),
+          ...("userId" in data ? { userId: readRequiredString(data.userId, "userId") } : {}),
+          ...("claimantName" in data
+            ? { claimantName: readRequiredString(data.claimantName, "claimantName") }
+            : {}),
+          ...("claimantEmail" in data
+            ? { claimantEmail: readRequiredString(data.claimantEmail, "claimantEmail") }
+            : {}),
+          ...("socialHandle" in data ? { socialHandle: readString(data.socialHandle) } : {}),
+          ...("proofNotes" in data ? { proofNotes: readString(data.proofNotes) } : {}),
+          ...("status" in data ? { status: readAccountClaimStatus(data.status) } : {}),
+          ...("adminNotes" in data ? { adminNotes: readOptionalString(data.adminNotes) } : {}),
+          ...("token" in data ? { token: readOptionalString(data.token) } : {}),
+          ...("tokenExpiresAt" in data
+            ? { tokenExpiresAt: readOptionalDate(data.tokenExpiresAt) }
+            : {}),
         },
       });
     case "itineraries":
       return prisma.itinerary.update({
         where: { id },
         data: {
-          title: readString(data.title),
-          destination: readString(data.destination),
-          description: readString(data.description),
-          durationDays: readInt(data.durationDays, 1),
-          estimatedBudget: readInt(data.estimatedBudget, 0),
-          travelStyle: readString(data.travelStyle, "Budget trip"),
-          coverImageUrl: readString(data.coverImageUrl, "/uploads/default-cover.svg"),
-          notes: readString(data.notes),
-          isPublished: readBoolean(data.isPublished, true),
-          originalItineraryId: readOptionalString(data.originalItineraryId) ?? undefined,
-          authorId: readString(data.authorId),
+          ...("title" in data ? { title: readRequiredString(data.title, "title") } : {}),
+          ...("destination" in data
+            ? { destination: readRequiredString(data.destination, "destination") }
+            : {}),
+          ...("description" in data ? { description: readString(data.description) } : {}),
+          ...("durationDays" in data ? { durationDays: readInt(data.durationDays, 1) } : {}),
+          ...("estimatedBudget" in data
+            ? { estimatedBudget: readInt(data.estimatedBudget, 0) }
+            : {}),
+          ...("travelStyle" in data
+            ? { travelStyle: readString(data.travelStyle, "Budget trip") }
+            : {}),
+          ...("coverImageUrl" in data
+            ? { coverImageUrl: readString(data.coverImageUrl, "/uploads/default-cover.svg") }
+            : {}),
+          ...("notes" in data ? { notes: readString(data.notes) } : {}),
+          ...("isPublished" in data ? { isPublished: readBoolean(data.isPublished, true) } : {}),
+          ...("originalItineraryId" in data
+            ? { originalItineraryId: readOptionalString(data.originalItineraryId) }
+            : {}),
+          ...("authorId" in data ? { authorId: readRequiredString(data.authorId, "authorId") } : {}),
         },
       });
     case "days":
       return prisma.itineraryDay.update({
         where: { id },
         data: {
-          itineraryId: readString(data.itineraryId),
-          dayNumber: readInt(data.dayNumber, 1),
-          title: readString(data.title),
+          ...("itineraryId" in data
+            ? { itineraryId: readRequiredString(data.itineraryId, "itineraryId") }
+            : {}),
+          ...("dayNumber" in data ? { dayNumber: readInt(data.dayNumber, 1) } : {}),
+          ...("title" in data ? { title: readRequiredString(data.title, "title") } : {}),
         },
       });
     case "activities":
       return prisma.activity.update({
         where: { id },
         data: {
-          itineraryDayId: readString(data.itineraryDayId),
-          time: readString(data.time),
-          title: readString(data.title),
-          locationName: readString(data.locationName),
-          formattedAddress: readString(data.formattedAddress),
-          latitude: readOptionalNumber(data.latitude),
-          longitude: readOptionalNumber(data.longitude),
-          mapProvider: readString(data.mapProvider),
-          mapPlaceId: readString(data.mapPlaceId),
-          customLocation: readBoolean(data.customLocation, false),
-          description: readString(data.description),
-          estimatedCost: readInt(data.estimatedCost, 0),
-          category: readString(data.category, "Activity"),
-          myLinkId: readOptionalString(data.myLinkId),
-          orderIndex: readInt(data.orderIndex, 0),
+          ...("itineraryDayId" in data
+            ? { itineraryDayId: readRequiredString(data.itineraryDayId, "itineraryDayId") }
+            : {}),
+          ...("time" in data ? { time: readString(data.time) } : {}),
+          ...("title" in data ? { title: readRequiredString(data.title, "title") } : {}),
+          ...("locationName" in data ? { locationName: readString(data.locationName) } : {}),
+          ...("formattedAddress" in data
+            ? { formattedAddress: readString(data.formattedAddress) }
+            : {}),
+          ...("latitude" in data ? { latitude: readOptionalNumber(data.latitude) } : {}),
+          ...("longitude" in data ? { longitude: readOptionalNumber(data.longitude) } : {}),
+          ...("mapProvider" in data ? { mapProvider: readString(data.mapProvider) } : {}),
+          ...("mapPlaceId" in data ? { mapPlaceId: readString(data.mapPlaceId) } : {}),
+          ...("customLocation" in data
+            ? { customLocation: readBoolean(data.customLocation, false) }
+            : {}),
+          ...("description" in data ? { description: readString(data.description) } : {}),
+          ...("estimatedCost" in data ? { estimatedCost: readInt(data.estimatedCost, 0) } : {}),
+          ...("category" in data ? { category: readString(data.category, "Activity") } : {}),
+          ...("myLinkId" in data ? { myLinkId: readOptionalString(data.myLinkId) } : {}),
+          ...("orderIndex" in data ? { orderIndex: readInt(data.orderIndex, 0) } : {}),
         },
       });
     case "myLinks": {
-      const actualUrl = readString(data.actualUrl);
-      const provider = readString(data.provider) || detectProvider(actualUrl);
+      const actualUrl =
+        "actualUrl" in data ? readRequiredString(data.actualUrl, "actualUrl") : undefined;
+      const rawProvider = "provider" in data ? readString(data.provider) : undefined;
+      const provider =
+        rawProvider || (actualUrl !== undefined ? detectProvider(actualUrl) : undefined);
       return prisma.myLink.update({
         where: { id },
         data: {
-          userId: readString(data.userId),
-          label: readString(data.label),
-          provider,
-          actualUrl,
+          ...("userId" in data ? { userId: readRequiredString(data.userId, "userId") } : {}),
+          ...("label" in data ? { label: readRequiredString(data.label, "label") } : {}),
+          ...(provider !== undefined ? { provider } : {}),
+          ...(actualUrl !== undefined ? { actualUrl } : {}),
         },
       });
     }
@@ -787,44 +954,50 @@ export async function updateAdminRecord(
       return prisma.savedItinerary.update({
         where: { id },
         data: {
-          userId: readString(data.userId),
-          itineraryId: readString(data.itineraryId),
-          createdAt: readDate(data.createdAt, new Date()),
+          ...("userId" in data ? { userId: readRequiredString(data.userId, "userId") } : {}),
+          ...("itineraryId" in data
+            ? { itineraryId: readRequiredString(data.itineraryId, "itineraryId") }
+            : {}),
+          ...("createdAt" in data ? { createdAt: readDate(data.createdAt, new Date()) } : {}),
         },
       });
     case "likes":
       return prisma.like.update({
         where: { id },
         data: {
-          userId: readString(data.userId),
-          itineraryId: readString(data.itineraryId),
-          createdAt: readDate(data.createdAt, new Date()),
+          ...("userId" in data ? { userId: readRequiredString(data.userId, "userId") } : {}),
+          ...("itineraryId" in data
+            ? { itineraryId: readRequiredString(data.itineraryId, "itineraryId") }
+            : {}),
+          ...("createdAt" in data ? { createdAt: readDate(data.createdAt, new Date()) } : {}),
         },
       });
     case "sessions":
       return prisma.session.update({
         where: { id },
         data: {
-          token: readString(data.token),
-          userId: readString(data.userId),
-          expiresAt: readDate(data.expiresAt, new Date()),
-          createdAt: readDate(data.createdAt, new Date()),
+          ...("token" in data ? { token: readRequiredString(data.token, "token") } : {}),
+          ...("userId" in data ? { userId: readRequiredString(data.userId, "userId") } : {}),
+          ...("expiresAt" in data ? { expiresAt: readDate(data.expiresAt, new Date()) } : {}),
+          ...("createdAt" in data ? { createdAt: readDate(data.createdAt, new Date()) } : {}),
         },
       });
     case "myLinkWhitelistDomains":
       return prisma.myLinkWhitelistDomain.update({
         where: { id },
         data: {
-          domainPattern: readString(data.domainPattern),
-          isActive: readBoolean(data.isActive, true),
-          description: readOptionalString(data.description) ?? undefined,
+          ...("domainPattern" in data
+            ? { domainPattern: readRequiredString(data.domainPattern, "domainPattern") }
+            : {}),
+          ...("isActive" in data ? { isActive: readBoolean(data.isActive, true) } : {}),
+          ...("description" in data ? { description: readOptionalString(data.description) } : {}),
         },
       });
     case "appSettings":
       return prisma.appSetting.update({
         where: { key: id },
         data: {
-          value: readString(data.value),
+          ...("value" in data ? { value: readString(data.value) } : {}),
         },
       });
   }

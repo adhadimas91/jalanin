@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   adminTables,
   deleteAdminRecord,
+  formatAdminError,
   updateAdminRecord,
   type AdminTable,
 } from "@/lib/admin";
@@ -17,20 +18,26 @@ export async function PATCH(
 ) {
   const user = await getCurrentUser();
   if (!user) {
-    return new NextResponse("Unauthorized", { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!isAdminUser(user)) {
-    return new NextResponse("Forbidden", { status: 403 });
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const { table, id } = await params;
 
   if (!isAdminTable(table)) {
-    return new NextResponse("Unknown admin table.", { status: 404 });
+    return NextResponse.json({ error: "Unknown admin table." }, { status: 404 });
   }
 
-  const body = (await request.json()) as { data?: Record<string, unknown> };
-  const updated = await updateAdminRecord(table, id, body.data ?? {});
-  return NextResponse.json({ record: updated });
+  try {
+    const body = (await request.json()) as { data?: Record<string, unknown> };
+    const updated = await updateAdminRecord(table, id, body.data ?? {});
+    return NextResponse.json({ record: updated });
+  } catch (error) {
+    console.error(`Admin PATCH /api/admin/${table}/${id} error:`, error);
+    const { message, status } = formatAdminError(error);
+    return NextResponse.json({ error: message }, { status });
+  }
 }
 
 export async function DELETE(
@@ -39,17 +46,23 @@ export async function DELETE(
 ) {
   const user = await getCurrentUser();
   if (!user) {
-    return new NextResponse("Unauthorized", { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!isAdminUser(user)) {
-    return new NextResponse("Forbidden", { status: 403 });
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const { table, id } = await params;
 
   if (!isAdminTable(table)) {
-    return new NextResponse("Unknown admin table.", { status: 404 });
+    return NextResponse.json({ error: "Unknown admin table." }, { status: 404 });
   }
 
-  await deleteAdminRecord(table, id);
-  return NextResponse.json({ ok: true });
+  try {
+    await deleteAdminRecord(table, id);
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error(`Admin DELETE /api/admin/${table}/${id} error:`, error);
+    const { message, status } = formatAdminError(error);
+    return NextResponse.json({ error: message }, { status });
+  }
 }

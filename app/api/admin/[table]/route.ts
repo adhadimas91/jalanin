@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   adminTables,
   createAdminRecord,
+  formatAdminError,
   listAdminRecords,
   type AdminTable,
 } from "@/lib/admin";
@@ -17,19 +18,25 @@ export async function GET(
 ) {
   const user = await getCurrentUser();
   if (!user) {
-    return new NextResponse("Unauthorized", { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!isAdminUser(user)) {
-    return new NextResponse("Forbidden", { status: 403 });
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const { table } = await params;
 
   if (!isAdminTable(table)) {
-    return new NextResponse("Unknown admin table.", { status: 404 });
+    return NextResponse.json({ error: "Unknown admin table." }, { status: 404 });
   }
 
-  const records = await listAdminRecords(table);
-  return NextResponse.json({ records });
+  try {
+    const records = await listAdminRecords(table);
+    return NextResponse.json({ records });
+  } catch (error) {
+    console.error(`Admin GET /api/admin/${table} error:`, error);
+    const { message, status } = formatAdminError(error);
+    return NextResponse.json({ error: message }, { status });
+  }
 }
 
 export async function POST(
@@ -38,18 +45,24 @@ export async function POST(
 ) {
   const user = await getCurrentUser();
   if (!user) {
-    return new NextResponse("Unauthorized", { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!isAdminUser(user)) {
-    return new NextResponse("Forbidden", { status: 403 });
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const { table } = await params;
 
   if (!isAdminTable(table)) {
-    return new NextResponse("Unknown admin table.", { status: 404 });
+    return NextResponse.json({ error: "Unknown admin table." }, { status: 404 });
   }
 
-  const body = (await request.json()) as { data?: Record<string, unknown> };
-  const created = await createAdminRecord(table, body.data ?? {});
-  return NextResponse.json({ record: created });
+  try {
+    const body = (await request.json()) as { data?: Record<string, unknown> };
+    const created = await createAdminRecord(table, body.data ?? {});
+    return NextResponse.json({ record: created });
+  } catch (error) {
+    console.error(`Admin POST /api/admin/${table} error:`, error);
+    const { message, status } = formatAdminError(error);
+    return NextResponse.json({ error: message }, { status });
+  }
 }

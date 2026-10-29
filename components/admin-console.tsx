@@ -1640,7 +1640,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                   className='h-6 w-6 shrink-0'
                   title='Salin My Link Id'
                   onClick={() => {
-                    navigator.clipboard.writeText(idVal).catch(() => {});
+                    navigator.clipboard.writeText(idVal).catch(() => { });
                     toast.success('My Link Id berhasil disalin!');
                   }}
                 >
@@ -1978,7 +1978,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                         title='Salin My Link Id'
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigator.clipboard.writeText(mlIdStr).catch(() => {});
+                          navigator.clipboard.writeText(mlIdStr).catch(() => { });
                           toast.success('My Link Id berhasil disalin!');
                         }}
                       >
@@ -1999,7 +1999,7 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                     title='Salin My Link Id'
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigator.clipboard.writeText(mlIdStr).catch(() => {});
+                      navigator.clipboard.writeText(mlIdStr).catch(() => { });
                       toast.success('My Link Id berhasil disalin!');
                     }}
                   >
@@ -2252,19 +2252,19 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
                 )}
                 {(currentTable === 'myLinks' ||
                   (currentTable === 'activities' && Boolean(record.myLinkId))) && (
-                  <DropdownMenuItem
-                    onClick={() => {
-                      const targetMyLinkId =
-                        currentTable === 'myLinks' ? id : String(record.myLinkId ?? '');
-                      if (!targetMyLinkId) return;
-                      navigator.clipboard.writeText(targetMyLinkId).catch(() => {});
-                      toast.success('My Link Id berhasil disalin!');
-                    }}
-                  >
-                    <Icons.copy className='mr-2 h-4 w-4' />
-                    Salin My Link Id
-                  </DropdownMenuItem>
-                )}
+                    <DropdownMenuItem
+                      onClick={() => {
+                        const targetMyLinkId =
+                          currentTable === 'myLinks' ? id : String(record.myLinkId ?? '');
+                        if (!targetMyLinkId) return;
+                        navigator.clipboard.writeText(targetMyLinkId).catch(() => { });
+                        toast.success('My Link Id berhasil disalin!');
+                      }}
+                    >
+                      <Icons.copy className='mr-2 h-4 w-4' />
+                      Salin My Link Id
+                    </DropdownMenuItem>
+                  )}
                 {currentTable === 'users' && !record.isClaimed && (
                   <DropdownMenuItem onClick={() => setImpersonateUserId(id)}>
                     <Icons.login className='mr-2 h-4 w-4' />
@@ -2361,1475 +2361,1033 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     openEditSheet
   ]);
 
-// Auto-suggestions for search input in Itineraries, Itinerary Days, Activities, and MyLinks
-const searchSuggestions = useMemo<SearchSuggestion[]>(() => {
-  if (
-    currentTable !== 'itineraries' &&
-    currentTable !== 'days' &&
-    currentTable !== 'activities' &&
-    currentTable !== 'myLinks'
-  ) {
-    return [];
-  }
+  // Auto-suggestions for search input in Itineraries, Itinerary Days, Activities, and MyLinks
+  const searchSuggestions = useMemo<SearchSuggestion[]>(() => {
+    if (
+      currentTable !== 'itineraries' &&
+      currentTable !== 'days' &&
+      currentTable !== 'activities' &&
+      currentTable !== 'myLinks'
+    ) {
+      return [];
+    }
 
-  const items: SearchSuggestion[] = [];
-  const seen = new Set<string>();
-  const addSuggestion = (item: SearchSuggestion) => {
-    const k = `${item.category ?? ''}:${item.value.toLowerCase()}`;
-    if (!item.value.trim() || seen.has(k)) return;
-    seen.add(k);
-    items.push(item);
-  };
+    const items: SearchSuggestion[] = [];
+    const seen = new Set<string>();
+    const addSuggestion = (item: SearchSuggestion) => {
+      const k = `${item.category ?? ''}:${item.value.toLowerCase()}`;
+      if (!item.value.trim() || seen.has(k)) return;
+      seen.add(k);
+      items.push(item);
+    };
 
-  // 1. User suggestions (Nama User) from records & users table
-  for (const rec of records) {
-    const u = resolveRecordUser(rec, currentTable);
-    if (!u) continue;
-    const name = u.name ? String(u.name).trim() : '';
-    const username = u.username ? String(u.username).replace(/^@/, '').trim() : '';
-    const email = u.email ? String(u.email).trim() : '';
-    const primary = name || (username ? `@${username}` : email);
-    if (!primary) continue;
-    const sublabel =
-      name && username ? `@${username}` : name && email ? email : username ? email : undefined;
-    addSuggestion({
-      label: primary,
-      value: name || username || email,
-      sublabel,
-      category: 'Nama User'
-    });
-  }
-
-  for (const u of tables.users) {
-    const name = u.name ? String(u.name).trim() : '';
-    const username = u.username ? String(u.username).replace(/^@/, '').trim() : '';
-    const email = u.email ? String(u.email).trim() : '';
-    const primary = name || (username ? `@${username}` : email);
-    if (!primary) continue;
-    const sublabel =
-      name && username ? `@${username}` : name && email ? email : username ? email : undefined;
-    addSuggestion({
-      label: primary,
-      value: name || username || email,
-      sublabel,
-      category: 'Nama User'
-    });
-  }
-
-  // 2. Table-specific entity suggestions
-  if (currentTable === 'itineraries') {
+    // 1. User suggestions (Nama User) from records & users table
     for (const rec of records) {
-      if (rec.title) {
-        const u = resolveRecordUser(rec, 'itineraries');
-        const authorName = u?.name
-          ? String(u.name)
-          : u?.username
-            ? `@${String(u.username).replace(/^@/, '')}`
+      const u = resolveRecordUser(rec, currentTable);
+      if (!u) continue;
+      const name = u.name ? String(u.name).trim() : '';
+      const username = u.username ? String(u.username).replace(/^@/, '').trim() : '';
+      const email = u.email ? String(u.email).trim() : '';
+      const primary = name || (username ? `@${username}` : email);
+      if (!primary) continue;
+      const sublabel =
+        name && username ? `@${username}` : name && email ? email : username ? email : undefined;
+      addSuggestion({
+        label: primary,
+        value: name || username || email,
+        sublabel,
+        category: 'Nama User'
+      });
+    }
+
+    for (const u of tables.users) {
+      const name = u.name ? String(u.name).trim() : '';
+      const username = u.username ? String(u.username).replace(/^@/, '').trim() : '';
+      const email = u.email ? String(u.email).trim() : '';
+      const primary = name || (username ? `@${username}` : email);
+      if (!primary) continue;
+      const sublabel =
+        name && username ? `@${username}` : name && email ? email : username ? email : undefined;
+      addSuggestion({
+        label: primary,
+        value: name || username || email,
+        sublabel,
+        category: 'Nama User'
+      });
+    }
+
+    // 2. Table-specific entity suggestions
+    if (currentTable === 'itineraries') {
+      for (const rec of records) {
+        if (rec.title) {
+          const u = resolveRecordUser(rec, 'itineraries');
+          const authorName = u?.name
+            ? String(u.name)
+            : u?.username
+              ? `@${String(u.username).replace(/^@/, '')}`
+              : undefined;
+          addSuggestion({
+            label: String(rec.title),
+            value: String(rec.title),
+            sublabel: authorName,
+            category: 'Itinerary'
+          });
+        }
+        if (rec.destination) {
+          addSuggestion({
+            label: String(rec.destination),
+            value: String(rec.destination),
+            category: 'Destinasi'
+          });
+        }
+      }
+    } else if (currentTable === 'days') {
+      for (const rec of records) {
+        if (rec.title) {
+          addSuggestion({
+            label: String(rec.title),
+            value: String(rec.title),
+            category: 'Hari'
+          });
+        }
+        const rel =
+          rec._related && typeof rec._related === 'object'
+            ? (rec._related as Record<string, unknown>)
             : undefined;
-        addSuggestion({
-          label: String(rec.title),
-          value: String(rec.title),
-          sublabel: authorName,
-          category: 'Itinerary'
-        });
+        const it =
+          rel?.itinerary && typeof rel.itinerary === 'object'
+            ? (rel.itinerary as Record<string, unknown>)
+            : rec.itineraryId
+              ? itineraryByIdMap.get(String(rec.itineraryId))
+              : undefined;
+        if (it?.title) {
+          addSuggestion({
+            label: String(it.title),
+            value: String(it.title),
+            category: 'Itinerary'
+          });
+        }
       }
-      if (rec.destination) {
-        addSuggestion({
-          label: String(rec.destination),
-          value: String(rec.destination),
-          category: 'Destinasi'
-        });
+    } else if (currentTable === 'activities') {
+      for (const rec of records) {
+        if (rec.title) {
+          addSuggestion({
+            label: String(rec.title),
+            value: String(rec.title),
+            sublabel: rec.locationName ? String(rec.locationName) : undefined,
+            category: 'Aktivitas'
+          });
+        }
+        if (rec.locationName) {
+          addSuggestion({
+            label: String(rec.locationName),
+            value: String(rec.locationName),
+            category: 'Lokasi'
+          });
+        }
+        if (rec.myLinkId) {
+          const mlId = String(rec.myLinkId);
+          const ml = myLinkByIdMap.get(mlId);
+          addSuggestion({
+            label: ml?.label ? String(ml.label) : mlId,
+            value: mlId,
+            sublabel: ml?.provider ? `${String(ml.provider)} · ${mlId}` : mlId,
+            category: 'My Link Id'
+          });
+        }
+      }
+    } else if (currentTable === 'myLinks') {
+      for (const rec of records) {
+        if (rec.label) {
+          addSuggestion({
+            label: String(rec.label),
+            value: String(rec.label),
+            sublabel: rec.provider ? String(rec.provider) : undefined,
+            category: 'Label MyLink'
+          });
+        }
+        if (rec.id) {
+          addSuggestion({
+            label: String(rec.id),
+            value: String(rec.id),
+            sublabel: rec.label ? String(rec.label) : undefined,
+            category: 'My Link Id'
+          });
+        }
       }
     }
-  } else if (currentTable === 'days') {
-    for (const rec of records) {
-      if (rec.title) {
-        addSuggestion({
-          label: String(rec.title),
-          value: String(rec.title),
-          category: 'Hari'
-        });
+
+    return items;
+  }, [currentTable, records, tables.users, resolveRecordUser, itineraryByIdMap, myLinkByIdMap]);
+
+  const table = useReactTable({
+    data: records,
+    columns,
+    getRowId: (row, index) => String(row.id ?? row.key ?? index),
+    enableRowSelection: true,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      globalFilter,
+      pagination,
+      columnPinning: { right: ['actions'] }
+    },
+    onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: (updater) => {
+      setColumnFilters(updater);
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    },
+    onColumnVisibilityChange: setColumnVisibility,
+    onGlobalFilterChange: (val) => {
+      setGlobalFilter(val);
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    },
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    globalFilterFn: (row, _columnId, filterValue) => {
+      const q = String(filterValue).toLowerCase().trim();
+      if (!q) return true;
+
+      const record = row.original;
+
+      const baseMatch = Object.entries(record).some(([key, val]) => {
+        if (key.startsWith('_')) return false;
+        if (val === null || val === undefined) return false;
+        return String(val).toLowerCase().includes(q);
+      });
+
+      if (baseMatch) return true;
+
+      const resolvedUser = resolveRecordUser(record, currentTable);
+      if (resolvedUser) {
+        if (resolvedUser.name && String(resolvedUser.name).toLowerCase().includes(q)) return true;
+        if (resolvedUser.username && String(resolvedUser.username).toLowerCase().includes(q))
+          return true;
+        if (resolvedUser.email && String(resolvedUser.email).toLowerCase().includes(q)) return true;
       }
-      const rel =
-        rec._related && typeof rec._related === 'object'
-          ? (rec._related as Record<string, unknown>)
-          : undefined;
-      const it =
-        rel?.itinerary && typeof rel.itinerary === 'object'
-          ? (rel.itinerary as Record<string, unknown>)
-          : rec.itineraryId
-            ? itineraryByIdMap.get(String(rec.itineraryId))
+
+      if (record._related && typeof record._related === 'object') {
+        const rel = record._related as Record<string, unknown>;
+
+        const userEmail =
+          (rel.user as Record<string, unknown>)?.email ||
+          (rel.author as Record<string, unknown>)?.email;
+        if (userEmail && String(userEmail).toLowerCase().includes(q)) return true;
+        const itineraryObj =
+          rel.itinerary && typeof rel.itinerary === 'object'
+            ? (rel.itinerary as Record<string, unknown>)
             : undefined;
-      if (it?.title) {
-        addSuggestion({
-          label: String(it.title),
-          value: String(it.title),
-          category: 'Itinerary'
-        });
-      }
-    }
-  } else if (currentTable === 'activities') {
-    for (const rec of records) {
-      if (rec.title) {
-        addSuggestion({
-          label: String(rec.title),
-          value: String(rec.title),
-          sublabel: rec.locationName ? String(rec.locationName) : undefined,
-          category: 'Aktivitas'
-        });
-      }
-      if (rec.locationName) {
-        addSuggestion({
-          label: String(rec.locationName),
-          value: String(rec.locationName),
-          category: 'Lokasi'
-        });
-      }
-      if (rec.myLinkId) {
-        const mlId = String(rec.myLinkId);
-        const ml = myLinkByIdMap.get(mlId);
-        addSuggestion({
-          label: ml?.label ? String(ml.label) : mlId,
-          value: mlId,
-          sublabel: ml?.provider ? `${String(ml.provider)} · ${mlId}` : mlId,
-          category: 'My Link Id'
-        });
-      }
-    }
-  } else if (currentTable === 'myLinks') {
-    for (const rec of records) {
-      if (rec.label) {
-        addSuggestion({
-          label: String(rec.label),
-          value: String(rec.label),
-          sublabel: rec.provider ? String(rec.provider) : undefined,
-          category: 'Label MyLink'
-        });
-      }
-      if (rec.id) {
-        addSuggestion({
-          label: String(rec.id),
-          value: String(rec.id),
-          sublabel: rec.label ? String(rec.label) : undefined,
-          category: 'My Link Id'
-        });
-      }
-    }
-  }
+        if (itineraryObj?.title && String(itineraryObj.title).toLowerCase().includes(q))
+          return true;
 
-  return items;
-}, [currentTable, records, tables.users, resolveRecordUser, itineraryByIdMap, myLinkByIdMap]);
+        const username =
+          (rel.user as Record<string, unknown>)?.username ||
+          (rel.author as Record<string, unknown>)?.username;
+        if (username && String(username).toLowerCase().includes(q)) return true;
 
-const table = useReactTable({
-  data: records,
-  columns,
-  getRowId: (row, index) => String(row.id ?? row.key ?? index),
-  enableRowSelection: true,
-  state: {
-    sorting,
-    columnFilters,
-    columnVisibility,
-    rowSelection,
-    globalFilter,
-    pagination,
-    columnPinning: { right: ['actions'] }
-  },
-  onRowSelectionChange: setRowSelection,
-  onSortingChange: setSorting,
-  onColumnFiltersChange: (updater) => {
-    setColumnFilters(updater);
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-  },
-  onColumnVisibilityChange: setColumnVisibility,
-  onGlobalFilterChange: (val) => {
-    setGlobalFilter(val);
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-  },
-  onPaginationChange: setPagination,
-  getCoreRowModel: getCoreRowModel(),
-  getFilteredRowModel: getFilteredRowModel(),
-  getSortedRowModel: getSortedRowModel(),
-  getPaginationRowModel: getPaginationRowModel(),
-  getFacetedRowModel: getFacetedRowModel(),
-  getFacetedUniqueValues: getFacetedUniqueValues(),
-  globalFilterFn: (row, _columnId, filterValue) => {
-    const q = String(filterValue).toLowerCase().trim();
-    if (!q) return true;
+        const userName =
+          (rel.user as Record<string, unknown>)?.name ||
+          (rel.author as Record<string, unknown>)?.name;
+        if (userName && String(userName).toLowerCase().includes(q)) return true;
 
-    const record = row.original;
-
-    const baseMatch = Object.entries(record).some(([key, val]) => {
-      if (key.startsWith('_')) return false;
-      if (val === null || val === undefined) return false;
-      return String(val).toLowerCase().includes(q);
-    });
-
-    if (baseMatch) return true;
-
-    const resolvedUser = resolveRecordUser(record, currentTable);
-    if (resolvedUser) {
-      if (resolvedUser.name && String(resolvedUser.name).toLowerCase().includes(q)) return true;
-      if (resolvedUser.username && String(resolvedUser.username).toLowerCase().includes(q))
-        return true;
-      if (resolvedUser.email && String(resolvedUser.email).toLowerCase().includes(q)) return true;
-    }
-
-    if (record._related && typeof record._related === 'object') {
-      const rel = record._related as Record<string, unknown>;
-
-      const userEmail =
-        (rel.user as Record<string, unknown>)?.email ||
-        (rel.author as Record<string, unknown>)?.email;
-      if (userEmail && String(userEmail).toLowerCase().includes(q)) return true;
-      const itineraryObj =
-        rel.itinerary && typeof rel.itinerary === 'object'
-          ? (rel.itinerary as Record<string, unknown>)
-          : undefined;
-      if (itineraryObj?.title && String(itineraryObj.title).toLowerCase().includes(q))
-        return true;
-
-      const username =
-        (rel.user as Record<string, unknown>)?.username ||
-        (rel.author as Record<string, unknown>)?.username;
-      if (username && String(username).toLowerCase().includes(q)) return true;
-
-      const userName =
-        (rel.user as Record<string, unknown>)?.name ||
-        (rel.author as Record<string, unknown>)?.name;
-      if (userName && String(userName).toLowerCase().includes(q)) return true;
-
-      const dayObj =
-        rel.day && typeof rel.day === 'object'
-          ? (rel.day as Record<string, unknown>)
-          : undefined;
-      if (dayObj?.title && String(dayObj.title).toLowerCase().includes(q)) return true;
-      const dayItineraryObj =
-        dayObj?.itinerary && typeof dayObj.itinerary === 'object'
-          ? (dayObj.itinerary as Record<string, unknown>)
-          : undefined;
-      if (dayItineraryObj?.title && String(dayItineraryObj.title).toLowerCase().includes(q))
-        return true;
-
-      const myLinkObj =
-        rel.myLink && typeof rel.myLink === 'object'
-          ? (rel.myLink as Record<string, unknown>)
-          : record.myLinkId
-            ? myLinkByIdMap.get(String(record.myLinkId))
+        const dayObj =
+          rel.day && typeof rel.day === 'object'
+            ? (rel.day as Record<string, unknown>)
             : undefined;
-      if (myLinkObj?.label && String(myLinkObj.label).toLowerCase().includes(q)) return true;
-      if (myLinkObj?.provider && String(myLinkObj.provider).toLowerCase().includes(q)) return true;
+        if (dayObj?.title && String(dayObj.title).toLowerCase().includes(q)) return true;
+        const dayItineraryObj =
+          dayObj?.itinerary && typeof dayObj.itinerary === 'object'
+            ? (dayObj.itinerary as Record<string, unknown>)
+            : undefined;
+        if (dayItineraryObj?.title && String(dayItineraryObj.title).toLowerCase().includes(q))
+          return true;
+
+        const myLinkObj =
+          rel.myLink && typeof rel.myLink === 'object'
+            ? (rel.myLink as Record<string, unknown>)
+            : record.myLinkId
+              ? myLinkByIdMap.get(String(record.myLinkId))
+              : undefined;
+        if (myLinkObj?.label && String(myLinkObj.label).toLowerCase().includes(q)) return true;
+        if (myLinkObj?.provider && String(myLinkObj.provider).toLowerCase().includes(q)) return true;
+      }
+
+      return false;
     }
-
-    return false;
-  }
-});
-
-function handleExportCSV() {
-  const exportRows = table.getFilteredRowModel().rows;
-  const headers = ['id', ...config.columns];
-  const csvRows = [headers.join(',')];
-
-  exportRows.forEach((row) => {
-    const record = row.original;
-    const rowValues = headers.map((col) => {
-      let val: unknown = col === 'id' ? (record.id ?? record.key ?? '') : record[col];
-      if (
-        (col === 'authorId' &&
-          (currentTable === 'itineraries' ||
-            currentTable === 'days' ||
-            currentTable === 'activities')) ||
-        (col === 'userId' && currentTable === 'myLinks')
-      ) {
-        const u = resolveRecordUser(record, currentTable);
-        val = u?.name ?? u?.username ?? u?.email ?? record[col] ?? '';
-      }
-      if (val === null || val === undefined) {
-        return '';
-      }
-      let valStr = typeof val === 'object' ? JSON.stringify(val) : String(val);
-      valStr = valStr.replace(/"/g, '""');
-      if (
-        valStr.includes(',') ||
-        valStr.includes('"') ||
-        valStr.includes('\n') ||
-        valStr.includes('\r')
-      ) {
-        valStr = `"${valStr}"`;
-      }
-      return valStr;
-    });
-    csvRows.push(rowValues.join(','));
   });
 
-  const csvContent = '\uFEFF' + csvRows.join('\n');
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.setAttribute('href', url);
-  link.setAttribute(
-    'download',
-    `${currentTable}_export_${new Date().toISOString().slice(0, 10)}.csv`
-  );
-  link.style.visibility = 'hidden';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  toast.success(`Data ${config.label} berhasil diekspor ke CSV.`);
-}
+  function handleExportCSV() {
+    const exportRows = table.getFilteredRowModel().rows;
+    const headers = ['id', ...config.columns];
+    const csvRows = [headers.join(',')];
 
-const adminInitials = adminEmail.slice(0, 2).toUpperCase();
+    exportRows.forEach((row) => {
+      const record = row.original;
+      const rowValues = headers.map((col) => {
+        let val: unknown = col === 'id' ? (record.id ?? record.key ?? '') : record[col];
+        if (
+          (col === 'authorId' &&
+            (currentTable === 'itineraries' ||
+              currentTable === 'days' ||
+              currentTable === 'activities')) ||
+          (col === 'userId' && currentTable === 'myLinks')
+        ) {
+          const u = resolveRecordUser(record, currentTable);
+          val = u?.name ?? u?.username ?? u?.email ?? record[col] ?? '';
+        }
+        if (val === null || val === undefined) {
+          return '';
+        }
+        let valStr = typeof val === 'object' ? JSON.stringify(val) : String(val);
+        valStr = valStr.replace(/"/g, '""');
+        if (
+          valStr.includes(',') ||
+          valStr.includes('"') ||
+          valStr.includes('\n') ||
+          valStr.includes('\r')
+        ) {
+          valStr = `"${valStr}"`;
+        }
+        return valStr;
+      });
+      csvRows.push(rowValues.join(','));
+    });
 
-return (
-  <SidebarProvider defaultOpen>
-    {/* Left Navigation Sidebar (next-shadcn AppSidebar pattern) */}
-    <Sidebar collapsible='icon'>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size='lg' onClick={() => selectTable('users')}>
-              <div className='bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
-                <Icons.logo className='size-4' />
-              </div>
-              <div className='grid flex-1 text-left text-sm leading-tight'>
-                <span className='truncate font-semibold'>Jalanin Admin</span>
-                <span className='text-muted-foreground truncate text-xs'>Backoffice Console</span>
-              </div>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
+    const csvContent = '\uFEFF' + csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute(
+      'download',
+      `${currentTable}_export_${new Date().toISOString().slice(0, 10)}.csv`
+    );
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success(`Data ${config.label} berhasil diekspor ke CSV.`);
+  }
 
-      <SidebarContent className='overflow-x-hidden'>
-        <SidebarGroup className='py-0'>
-          <SidebarGroupLabel>Overview</SidebarGroupLabel>
+  const adminInitials = adminEmail.slice(0, 2).toUpperCase();
+
+  return (
+    <SidebarProvider defaultOpen>
+      {/* Left Navigation Sidebar (next-shadcn AppSidebar pattern) */}
+      <Sidebar collapsible='icon'>
+        <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton
-                tooltip='Dashboard'
-                isActive={activeView === 'overview'}
-                onClick={() => setActiveView('overview')}
-              >
-                <Icons.dashboard />
-                <span>Dashboard</span>
+              <SidebarMenuButton size='lg' onClick={() => selectTable('users')}>
+                <div className='bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
+                  <Icons.logo className='size-4' />
+                </div>
+                <div className='grid flex-1 text-left text-sm leading-tight'>
+                  <span className='truncate font-semibold'>Jalanin Admin</span>
+                  <span className='text-muted-foreground truncate text-xs'>Backoffice Console</span>
+                </div>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-        </SidebarGroup>
+        </SidebarHeader>
 
-        {SIDEBAR_GROUPS.map((group) => (
-          <SidebarGroup key={group.label} className='py-0'>
-            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+        <SidebarContent className='overflow-x-hidden'>
+          <SidebarGroup className='py-0'>
+            <SidebarGroupLabel>Overview</SidebarGroupLabel>
             <SidebarMenu>
-              {group.tables.map((tableId) => {
-                const itemConfig = tableConfigs[tableId];
-                const ItemIcon = itemConfig.icon;
-                const count = tables[tableId].length;
-                const isActive = activeView === tableId;
-
-                return (
-                  <SidebarMenuItem key={tableId}>
-                    <SidebarMenuButton
-                      tooltip={itemConfig.label}
-                      isActive={isActive}
-                      onClick={() => selectTable(tableId)}
-                    >
-                      <ItemIcon />
-                      <span>{itemConfig.label}</span>
-                    </SidebarMenuButton>
-                    <SidebarMenuBadge>{count}</SidebarMenuBadge>
-                  </SidebarMenuItem>
-                );
-              })}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  tooltip='Dashboard'
+                  isActive={activeView === 'overview'}
+                  onClick={() => setActiveView('overview')}
+                >
+                  <Icons.dashboard />
+                  <span>Dashboard</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
-        ))}
-      </SidebarContent>
 
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <SidebarMenuButton
-                    size='lg'
-                    className='data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground'
-                  />
-                }
-              >
-                <Avatar className='h-8 w-8 rounded-lg'>
-                  <AvatarFallback className='rounded-lg text-xs font-semibold'>
-                    {adminInitials}
-                  </AvatarFallback>
-                </Avatar>
-                <div className='grid flex-1 text-left text-sm leading-tight'>
-                  <span className='truncate font-semibold'>Administrator</span>
-                  <span className='text-muted-foreground truncate text-xs'>{adminEmail}</span>
-                </div>
-                <Icons.chevronsDown className='ml-auto size-4' />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className='w-(--anchor-width) min-w-56 rounded-lg'
-                side='bottom'
-                align='end'
-                sideOffset={4}
-              >
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel className='p-0 font-normal'>
-                    <div className='flex items-center gap-2 px-2 py-1.5 text-left text-sm'>
-                      <Avatar className='h-8 w-8 rounded-lg'>
-                        <AvatarFallback className='rounded-lg text-xs font-semibold'>
-                          {adminInitials}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className='grid flex-1 text-left text-sm leading-tight'>
-                        <span className='truncate font-semibold'>Administrator</span>
-                        <span className='text-muted-foreground truncate text-xs'>
-                          {adminEmail}
-                        </span>
-                      </div>
-                    </div>
-                  </DropdownMenuLabel>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem render={<Link href='/' />}>
-                    <Icons.home className='mr-2 size-4' />
-                    Kembali ke Aplikasi
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <form action='/api/auth/logout' method='post'>
-                  <DropdownMenuItem
-                    variant='destructive'
-                    render={<button type='submit' className='w-full text-left' />}
-                  >
-                    <Icons.logout className='mr-2 size-4' />
-                    Logout
-                  </DropdownMenuItem>
-                </form>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+          {SIDEBAR_GROUPS.map((group) => (
+            <SidebarGroup key={group.label} className='py-0'>
+              <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+              <SidebarMenu>
+                {group.tables.map((tableId) => {
+                  const itemConfig = tableConfigs[tableId];
+                  const ItemIcon = itemConfig.icon;
+                  const count = tables[tableId].length;
+                  const isActive = activeView === tableId;
 
-    {/* Main Content Area (next-shadcn SidebarInset + Header + PageContainer) */}
-    <SidebarInset>
-      <header className='bg-background/60 sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between gap-2 backdrop-blur-md md:h-14'>
-        <div className='flex items-center gap-2 px-4'>
-          <SidebarTrigger className='-ml-1' />
-          <Separator orientation='vertical' className='mr-2 data-[orientation=vertical]:h-4' />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className='hidden md:block'>
-                <BreadcrumbLink
-                  render={<button type='button' onClick={() => setActiveView('overview')} />}
+                  return (
+                    <SidebarMenuItem key={tableId}>
+                      <SidebarMenuButton
+                        tooltip={itemConfig.label}
+                        isActive={isActive}
+                        onClick={() => selectTable(tableId)}
+                      >
+                        <ItemIcon />
+                        <span>{itemConfig.label}</span>
+                      </SidebarMenuButton>
+                      <SidebarMenuBadge>{count}</SidebarMenuBadge>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroup>
+          ))}
+        </SidebarContent>
+
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <SidebarMenuButton
+                      size='lg'
+                      className='data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground'
+                    />
+                  }
                 >
-                  Dashboard
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className='hidden md:block'>
-                <Icons.slash />
-              </BreadcrumbSeparator>
-              {activeView === 'overview' ? (
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Overview</BreadcrumbPage>
-                </BreadcrumbItem>
-              ) : (
-                <>
-                  <BreadcrumbItem className='hidden lg:block'>
-                    <span className='text-muted-foreground'>{config.group}</span>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className='hidden lg:block'>
-                    <Icons.slash />
-                  </BreadcrumbSeparator>
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>{config.label}</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </>
-              )}
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+                  <Avatar className='h-8 w-8 rounded-lg'>
+                    <AvatarFallback className='rounded-lg text-xs font-semibold'>
+                      {adminInitials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className='grid flex-1 text-left text-sm leading-tight'>
+                    <span className='truncate font-semibold'>Administrator</span>
+                    <span className='text-muted-foreground truncate text-xs'>{adminEmail}</span>
+                  </div>
+                  <Icons.chevronsDown className='ml-auto size-4' />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className='w-(--anchor-width) min-w-56 rounded-lg'
+                  side='bottom'
+                  align='end'
+                  sideOffset={4}
+                >
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel className='p-0 font-normal'>
+                      <div className='flex items-center gap-2 px-2 py-1.5 text-left text-sm'>
+                        <Avatar className='h-8 w-8 rounded-lg'>
+                          <AvatarFallback className='rounded-lg text-xs font-semibold'>
+                            {adminInitials}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className='grid flex-1 text-left text-sm leading-tight'>
+                          <span className='truncate font-semibold'>Administrator</span>
+                          <span className='text-muted-foreground truncate text-xs'>
+                            {adminEmail}
+                          </span>
+                        </div>
+                      </div>
+                    </DropdownMenuLabel>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem render={<Link href='/' />}>
+                      <Icons.home className='mr-2 size-4' />
+                      Kembali ke Aplikasi
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <form action='/api/auth/logout' method='post'>
+                    <DropdownMenuItem
+                      variant='destructive'
+                      render={<button type='submit' className='w-full text-left' />}
+                    >
+                      <Icons.logout className='mr-2 size-4' />
+                      Logout
+                    </DropdownMenuItem>
+                  </form>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
 
-        <div className='flex items-center gap-2 px-4'>
-          <Button
-            variant='outline'
-            size='sm'
-            isLoading={busy}
-            onClick={() =>
-              refreshTable(currentTable)
-                .then(() => toast.success(`Tabel ${config.label} berhasil diperbarui.`))
-                .catch((err) =>
-                  toast.error(err instanceof Error ? err.message : 'Gagal memuat ulang tabel.')
-                )
+      {/* Main Content Area (next-shadcn SidebarInset + Header + PageContainer) */}
+      <SidebarInset>
+        <header className='bg-background/60 sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between gap-2 backdrop-blur-md md:h-14'>
+          <div className='flex items-center gap-2 px-4'>
+            <SidebarTrigger className='-ml-1' />
+            <Separator orientation='vertical' className='mr-2 data-[orientation=vertical]:h-4' />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className='hidden md:block'>
+                  <BreadcrumbLink
+                    render={<button type='button' onClick={() => setActiveView('overview')} />}
+                  >
+                    Dashboard
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className='hidden md:block'>
+                  <Icons.slash />
+                </BreadcrumbSeparator>
+                {activeView === 'overview' ? (
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>Overview</BreadcrumbPage>
+                  </BreadcrumbItem>
+                ) : (
+                  <>
+                    <BreadcrumbItem className='hidden lg:block'>
+                      <span className='text-muted-foreground'>{config.group}</span>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className='hidden lg:block'>
+                      <Icons.slash />
+                    </BreadcrumbSeparator>
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{config.label}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </>
+                )}
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+
+          <div className='flex items-center gap-2 px-4'>
+            <Button
+              variant='outline'
+              size='sm'
+              isLoading={busy}
+              onClick={() =>
+                refreshTable(currentTable)
+                  .then(() => toast.success(`Tabel ${config.label} berhasil diperbarui.`))
+                  .catch((err) =>
+                    toast.error(err instanceof Error ? err.message : 'Gagal memuat ulang tabel.')
+                  )
+              }
+            >
+              <Icons.refresh className='size-4' />
+              <span className='hidden sm:inline'>Refresh</span>
+            </Button>
+            <Button variant='outline' size='sm' nativeButton={false} render={<Link href='/' />}>
+              <Icons.externalLink className='size-4' />
+              <span className='hidden sm:inline'>Ke Aplikasi</span>
+            </Button>
+            <ThemeModeToggle />
+            <div className='hidden sm:block'>
+              <ThemeSelector />
+            </div>
+          </div>
+        </header>
+
+        {activeView === 'overview' ? (
+          <PageContainer
+            pageTitle='Overview'
+            pageDescription='Ringkasan statistik dan akses cepat ke seluruh tabel database Jalanin.'
+          >
+            <div className='flex flex-1 flex-col space-y-6'>
+              {/* KPI Overview Cards (next-shadcn overview pattern) */}
+              <div className='*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs sm:grid-cols-2 lg:grid-cols-4'>
+                <Card
+                  className='@container/card cursor-pointer transition-all hover:shadow-md'
+                  onClick={() => selectTable('users')}
+                >
+                  <CardHeader>
+                    <CardDescription>Total Users</CardDescription>
+                    <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
+                      {tables.users.length}
+                    </CardTitle>
+                    <CardAction>
+                      <Badge variant='outline'>
+                        <Icons.pro className='size-3' />
+                        {kpiStats.proUsersCount} PRO
+                      </Badge>
+                    </CardAction>
+                  </CardHeader>
+                  <CardFooter className='flex-col items-start gap-1 text-xs'>
+                    <div className='flex items-center gap-1.5 font-medium'>
+                      {kpiStats.unclaimedUsersCount} akun kurasi (unclaimed)
+                    </div>
+                    <div className='text-muted-foreground'>Klik untuk kelola pengguna</div>
+                  </CardFooter>
+                </Card>
+
+                <Card
+                  className='@container/card cursor-pointer transition-all hover:shadow-md'
+                  onClick={() => selectTable('accountClaims')}
+                >
+                  <CardHeader>
+                    <CardDescription>Klaim Akun</CardDescription>
+                    <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
+                      {tables.accountClaims.length}
+                    </CardTitle>
+                    <CardAction>
+                      <Badge variant={kpiStats.pendingClaimsCount > 0 ? 'default' : 'outline'}>
+                        <Icons.clock className='size-3' />
+                        {kpiStats.pendingClaimsCount} Pending
+                      </Badge>
+                    </CardAction>
+                  </CardHeader>
+                  <CardFooter className='flex-col items-start gap-1 text-xs'>
+                    <div className='flex items-center gap-1.5 font-medium'>
+                      Verifikasi kreator & influencer
+                    </div>
+                    <div className='text-muted-foreground'>Approve & kirim link setup password</div>
+                  </CardFooter>
+                </Card>
+
+                <Card
+                  className='@container/card cursor-pointer transition-all hover:shadow-md'
+                  onClick={() => selectTable('itineraries')}
+                >
+                  <CardHeader>
+                    <CardDescription>Itineraries</CardDescription>
+                    <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
+                      {tables.itineraries.length}
+                    </CardTitle>
+                    <CardAction>
+                      <Badge variant='outline'>
+                        <Icons.route className='size-3' />
+                        {kpiStats.publishedItinerariesCount} Public
+                      </Badge>
+                    </CardAction>
+                  </CardHeader>
+                  <CardFooter className='flex-col items-start gap-1 text-xs'>
+                    <div className='flex items-center gap-1.5 font-medium'>
+                      {tables.days.length} hari · {tables.activities.length} aktivitas
+                    </div>
+                    <div className='text-muted-foreground'>Klik untuk kelola daftar perjalanan</div>
+                  </CardFooter>
+                </Card>
+
+                <Card
+                  className='@container/card cursor-pointer transition-all hover:shadow-md'
+                  onClick={() => selectTable('myLinkWhitelistDomains')}
+                >
+                  <CardHeader>
+                    <CardDescription>Interaksi & Konfigurasi</CardDescription>
+                    <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
+                      {tables.saves.length + tables.likes.length}
+                    </CardTitle>
+                    <CardAction>
+                      <Badge variant='outline'>
+                        <Icons.world className='size-3' />
+                        {tables.myLinkWhitelistDomains.length} Domain
+                      </Badge>
+                    </CardAction>
+                  </CardHeader>
+                  <CardFooter className='flex-col items-start gap-1 text-xs'>
+                    <div className='flex items-center gap-1.5 font-medium'>
+                      {tables.saves.length} disimpan · {tables.likes.length} disukai
+                    </div>
+                    <div className='text-muted-foreground'>
+                      {tables.appSettings.length} kunci konfigurasi aktif
+                    </div>
+                  </CardFooter>
+                </Card>
+              </div>
+
+              {/* All Tables Directory Grid */}
+              <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+                {(Object.keys(tableConfigs) as AdminTable[]).map((tableId) => {
+                  const itemConfig = tableConfigs[tableId];
+                  const ItemIcon = itemConfig.icon;
+                  return (
+                    <Card
+                      key={tableId}
+                      className='cursor-pointer transition-all hover:shadow-md'
+                      onClick={() => selectTable(tableId)}
+                    >
+                      <CardHeader>
+                        <CardDescription className='flex items-center gap-2'>
+                          <ItemIcon className='size-4' />
+                          {itemConfig.group}
+                        </CardDescription>
+                        <CardTitle className='text-lg font-semibold'>{itemConfig.label}</CardTitle>
+                        <CardAction>
+                          <Badge variant='secondary'>{tables[tableId].length} records</Badge>
+                        </CardAction>
+                      </CardHeader>
+                      <CardFooter className='text-muted-foreground text-xs'>
+                        {itemConfig.description}
+                      </CardFooter>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          </PageContainer>
+        ) : (
+          <PageContainer
+            pageTitle={config.label}
+            pageDescription={config.description}
+            pageHeaderAction={
+              <div className='flex items-center gap-2'>
+                <Button variant='outline' size='sm' onClick={handleExportCSV}>
+                  <Icons.download className='size-4' />
+                  Export CSV
+                </Button>
+                <Button variant='secondary' size='sm' onClick={openBulkCreateSheet}>
+                  <Icons.add className='size-4' />
+                  Bulk Add
+                </Button>
+                <Button size='sm' onClick={openCreateSheet}>
+                  <Icons.add className='size-4' />
+                  Add New
+                </Button>
+              </div>
             }
           >
-            <Icons.refresh className='size-4' />
-            <span className='hidden sm:inline'>Refresh</span>
-          </Button>
-          <Button variant='outline' size='sm' nativeButton={false} render={<Link href='/' />}>
-            <Icons.externalLink className='size-4' />
-            <span className='hidden sm:inline'>Ke Aplikasi</span>
-          </Button>
-          <ThemeModeToggle />
-          <div className='hidden sm:block'>
-            <ThemeSelector />
-          </div>
-        </div>
-      </header>
+            <DataTable
+              key={currentTable}
+              table={table}
+              ariaLabel={`Tabel ${config.label}`}
+              actionBar={(() => {
+                const selectedRows = table.getFilteredSelectedRowModel().rows;
+                const selectedIds = selectedRows
+                  .map((r) => String(r.original.id ?? r.original.key ?? ''))
+                  .filter(Boolean);
+                if (selectedIds.length === 0) return null;
 
-      {activeView === 'overview' ? (
-        <PageContainer
-          pageTitle='Overview'
-          pageDescription='Ringkasan statistik dan akses cepat ke seluruh tabel database Jalanin.'
-        >
-          <div className='flex flex-1 flex-col space-y-6'>
-            {/* KPI Overview Cards (next-shadcn overview pattern) */}
-            <div className='*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs sm:grid-cols-2 lg:grid-cols-4'>
-              <Card
-                className='@container/card cursor-pointer transition-all hover:shadow-md'
-                onClick={() => selectTable('users')}
-              >
-                <CardHeader>
-                  <CardDescription>Total Users</CardDescription>
-                  <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
-                    {tables.users.length}
-                  </CardTitle>
-                  <CardAction>
-                    <Badge variant='outline'>
-                      <Icons.pro className='size-3' />
-                      {kpiStats.proUsersCount} PRO
-                    </Badge>
-                  </CardAction>
-                </CardHeader>
-                <CardFooter className='flex-col items-start gap-1 text-xs'>
-                  <div className='flex items-center gap-1.5 font-medium'>
-                    {kpiStats.unclaimedUsersCount} akun kurasi (unclaimed)
-                  </div>
-                  <div className='text-muted-foreground'>Klik untuk kelola pengguna</div>
-                </CardFooter>
-              </Card>
-
-              <Card
-                className='@container/card cursor-pointer transition-all hover:shadow-md'
-                onClick={() => selectTable('accountClaims')}
-              >
-                <CardHeader>
-                  <CardDescription>Klaim Akun</CardDescription>
-                  <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
-                    {tables.accountClaims.length}
-                  </CardTitle>
-                  <CardAction>
-                    <Badge variant={kpiStats.pendingClaimsCount > 0 ? 'default' : 'outline'}>
-                      <Icons.clock className='size-3' />
-                      {kpiStats.pendingClaimsCount} Pending
-                    </Badge>
-                  </CardAction>
-                </CardHeader>
-                <CardFooter className='flex-col items-start gap-1 text-xs'>
-                  <div className='flex items-center gap-1.5 font-medium'>
-                    Verifikasi kreator & influencer
-                  </div>
-                  <div className='text-muted-foreground'>Approve & kirim link setup password</div>
-                </CardFooter>
-              </Card>
-
-              <Card
-                className='@container/card cursor-pointer transition-all hover:shadow-md'
-                onClick={() => selectTable('itineraries')}
-              >
-                <CardHeader>
-                  <CardDescription>Itineraries</CardDescription>
-                  <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
-                    {tables.itineraries.length}
-                  </CardTitle>
-                  <CardAction>
-                    <Badge variant='outline'>
-                      <Icons.route className='size-3' />
-                      {kpiStats.publishedItinerariesCount} Public
-                    </Badge>
-                  </CardAction>
-                </CardHeader>
-                <CardFooter className='flex-col items-start gap-1 text-xs'>
-                  <div className='flex items-center gap-1.5 font-medium'>
-                    {tables.days.length} hari · {tables.activities.length} aktivitas
-                  </div>
-                  <div className='text-muted-foreground'>Klik untuk kelola daftar perjalanan</div>
-                </CardFooter>
-              </Card>
-
-              <Card
-                className='@container/card cursor-pointer transition-all hover:shadow-md'
-                onClick={() => selectTable('myLinkWhitelistDomains')}
-              >
-                <CardHeader>
-                  <CardDescription>Interaksi & Konfigurasi</CardDescription>
-                  <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>
-                    {tables.saves.length + tables.likes.length}
-                  </CardTitle>
-                  <CardAction>
-                    <Badge variant='outline'>
-                      <Icons.world className='size-3' />
-                      {tables.myLinkWhitelistDomains.length} Domain
-                    </Badge>
-                  </CardAction>
-                </CardHeader>
-                <CardFooter className='flex-col items-start gap-1 text-xs'>
-                  <div className='flex items-center gap-1.5 font-medium'>
-                    {tables.saves.length} disimpan · {tables.likes.length} disukai
-                  </div>
-                  <div className='text-muted-foreground'>
-                    {tables.appSettings.length} kunci konfigurasi aktif
-                  </div>
-                </CardFooter>
-              </Card>
-            </div>
-
-            {/* All Tables Directory Grid */}
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-              {(Object.keys(tableConfigs) as AdminTable[]).map((tableId) => {
-                const itemConfig = tableConfigs[tableId];
-                const ItemIcon = itemConfig.icon;
                 return (
-                  <Card
-                    key={tableId}
-                    className='cursor-pointer transition-all hover:shadow-md'
-                    onClick={() => selectTable(tableId)}
-                  >
-                    <CardHeader>
-                      <CardDescription className='flex items-center gap-2'>
-                        <ItemIcon className='size-4' />
-                        {itemConfig.group}
-                      </CardDescription>
-                      <CardTitle className='text-lg font-semibold'>{itemConfig.label}</CardTitle>
-                      <CardAction>
-                        <Badge variant='secondary'>{tables[tableId].length} records</Badge>
-                      </CardAction>
-                    </CardHeader>
-                    <CardFooter className='text-muted-foreground text-xs'>
-                      {itemConfig.description}
-                    </CardFooter>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
-        </PageContainer>
-      ) : (
-        <PageContainer
-          pageTitle={config.label}
-          pageDescription={config.description}
-          pageHeaderAction={
-            <div className='flex items-center gap-2'>
-              <Button variant='outline' size='sm' onClick={handleExportCSV}>
-                <Icons.download className='size-4' />
-                Export CSV
-              </Button>
-              <Button variant='secondary' size='sm' onClick={openBulkCreateSheet}>
-                <Icons.add className='size-4' />
-                Bulk Add
-              </Button>
-              <Button size='sm' onClick={openCreateSheet}>
-                <Icons.add className='size-4' />
-                Add New
-              </Button>
-            </div>
-          }
-        >
-          <DataTable
-            key={currentTable}
-            table={table}
-            ariaLabel={`Tabel ${config.label}`}
-            actionBar={(() => {
-              const selectedRows = table.getFilteredSelectedRowModel().rows;
-              const selectedIds = selectedRows
-                .map((r) => String(r.original.id ?? r.original.key ?? ''))
-                .filter(Boolean);
-              if (selectedIds.length === 0) return null;
-
-              return (
-                <div className='bg-card/95 supports-backdrop-filter:bg-card/85 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3 shadow-md backdrop-blur-xs'>
-                  <div className='flex items-center gap-2'>
-                    <Badge variant='default'>{selectedIds.length} baris dipilih</Badge>
-                    <Button
-                      type='button'
-                      variant='ghost'
-                      size='sm'
-                      onClick={() => setRowSelection({})}
-                      disabled={busy}
-                    >
-                      Batal Pilih
-                    </Button>
-                  </div>
-                  <div className='flex flex-wrap items-center gap-2'>
-                    {currentTable === 'activities' && (
-                      <>
-                        <Button
-                          type='button'
-                          variant='outline'
-                          size='sm'
-                          disabled={busy}
-                          onClick={() => {
-                            setBulkSelectedMyLinkId('__none__');
-                            setBulkSetMyLinkModalOpen(true);
-                          }}
-                        >
-                          <Icons.link className='size-4' />
-                          Pasang / Ubah MyLink
-                        </Button>
-                        <Button
-                          type='button'
-                          variant='outline'
-                          size='sm'
-                          disabled={busy}
-                          onClick={async () => {
-                            const ok = await executeBulkAction(
-                              {
-                                action: 'bulkSetActivitiesMyLink',
-                                activityIds: selectedIds,
-                                myLinkId: null
-                              },
-                              `MyLink dilepas dari ${selectedIds.length} Activity.`,
-                              ['activities', 'myLinks']
-                            );
-                            if (ok) setRowSelection({});
-                          }}
-                        >
-                          <Icons.close className='size-4' />
-                          Lepas MyLink
-                        </Button>
-                        <Button
-                          type='button'
-                          variant='outline'
-                          size='sm'
-                          disabled={busy}
-                          onClick={() => {
-                            setBulkEditCategory('__keep__');
-                            setBulkEditModalOpen(true);
-                          }}
-                        >
-                          <Icons.edit className='size-4' />
-                          Bulk Edit Kategori
-                        </Button>
-                      </>
-                    )}
-                    {currentTable === 'myLinks' && (
-                      <>
-                        {selectedIds.length === 1 && (
+                  <div className='bg-card/95 supports-backdrop-filter:bg-card/85 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3 shadow-md backdrop-blur-xs'>
+                    <div className='flex items-center gap-2'>
+                      <Badge variant='default'>{selectedIds.length} baris dipilih</Badge>
+                      <Button
+                        type='button'
+                        variant='ghost'
+                        size='sm'
+                        onClick={() => setRowSelection({})}
+                        disabled={busy}
+                      >
+                        Batal Pilih
+                      </Button>
+                    </div>
+                    <div className='flex flex-wrap items-center gap-2'>
+                      {currentTable === 'activities' && (
+                        <>
                           <Button
                             type='button'
-                            variant='secondary'
+                            variant='outline'
                             size='sm'
                             disabled={busy}
-                            onClick={() => openMyLinkUsageManager(selectedIds[0], 'linked')}
+                            onClick={() => {
+                              setBulkSelectedMyLinkId('__none__');
+                              setBulkSetMyLinkModalOpen(true);
+                            }}
                           >
-                            <Icons.kanban className='size-4' />
-                            Cek & Kelola Activity
+                            <Icons.link className='size-4' />
+                            Pasang / Ubah MyLink
                           </Button>
-                        )}
-                        <Button
-                          type='button'
-                          variant='outline'
-                          size='sm'
-                          disabled={busy}
-                          onClick={async () => {
-                            const ok = await executeBulkAction(
-                              {
-                                action: 'bulkUnlinkMyLinksFromActivities',
-                                myLinkIds: selectedIds
-                              },
-                              `Semua Activity yang memakai ${selectedIds.length} MyLink terpilih telah dilepas.`,
-                              ['myLinks', 'activities']
-                            );
-                            if (ok) setRowSelection({});
-                          }}
-                        >
-                          <Icons.close className='size-4' />
-                          Lepas dari Semua Activity
-                        </Button>
-                        <Button
-                          type='button'
-                          variant='outline'
-                          size='sm'
-                          disabled={busy}
-                          onClick={() => {
-                            setBulkEditProvider('__keep__');
-                            setBulkEditUserId('__keep__');
-                            setBulkEditModalOpen(true);
-                          }}
-                        >
-                          <Icons.edit className='size-4' />
-                          Bulk Edit Provider / Owner
-                        </Button>
-                      </>
-                    )}
-                    <Button
-                      type='button'
-                      variant='destructive'
-                      size='sm'
-                      disabled={busy}
-                      onClick={() => setBulkDeleteConfirmOpen(true)}
-                    >
-                      <Icons.trash className='size-4' />
-                      Hapus Terpilih ({selectedIds.length})
-                    </Button>
-                  </div>
-                </div>
-              );
-            })()}
-          >
-            <DataTableToolbar
-              table={table}
-              globalFilter={globalFilter}
-              onGlobalFilterChange={setGlobalFilter}
-              searchPlaceholder={
-                currentTable === 'itineraries' ||
-                  currentTable === 'days' ||
-                  currentTable === 'activities' ||
-                  currentTable === 'myLinks'
-                  ? `Cari nama user, My Link Id, atau ${config.label.toLowerCase()}...`
-                  : `Search ${config.label.toLowerCase()}...`
-              }
-              suggestions={searchSuggestions}
-            />
-          </DataTable>
-        </PageContainer>
-      )}
-    </SidebarInset>
-
-    {/* Record Create / Edit Sheet (next-shadcn user-form-sheet pattern) */}
-    <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-      <SheetContent className='flex h-full max-h-dvh flex-col overflow-hidden sm:max-w-xl'>
-        <SheetHeader className='shrink-0'>
-          <SheetTitle>
-            {editorMode === 'create' ? `Buat ${config.label}` : `Edit ${config.label}`}
-          </SheetTitle>
-          <SheetDescription>
-            {editorMode === 'create'
-              ? `Isi detail form atau JSON di bawah untuk menambahkan record baru ke tabel ${config.label}.`
-              : `Perbarui field record ID: ${editingId} pada tabel ${config.label}.`}
-          </SheetDescription>
-        </SheetHeader>
-
-        <Tabs
-          value={editorTab}
-          onValueChange={(val) => setEditorTab(val as 'form' | 'json' | 'bulk')}
-          className='flex min-h-0 flex-1 flex-col overflow-hidden'
-        >
-          <TabsList className='w-full shrink-0'>
-            <TabsTrigger value='form' className='flex-1'>
-              <Icons.forms className='size-4' />
-              Form (Satu)
-            </TabsTrigger>
-            {editorMode === 'create' && (
-              <TabsTrigger value='bulk' className='flex-1'>
-                <Icons.add className='size-4' />
-                Bulk Add
-              </TabsTrigger>
-            )}
-            <TabsTrigger value='json' className='flex-1'>
-              <Icons.fileCode className='size-4' />
-              JSON Editor
-            </TabsTrigger>
-          </TabsList>
-
-          <div className='mt-3 -mr-2 min-h-0 flex-1 overflow-y-auto pr-2'>
-            {(() => {
-              let parsedDraft: Record<string, unknown> = {};
-              let parseError = '';
-              try {
-                parsedDraft = JSON.parse(draft);
-              } catch (err) {
-                parseError = err instanceof Error ? err.message : 'Invalid JSON';
-              }
-              const formFields = Object.keys(parsedDraft).filter((key) => !key.startsWith('_'));
-
-              return (
-                <>
-                  <TabsContent value='form' className='flex-none space-y-4 pb-4'>
-                    {parseError ? (
-                      <Alert variant='destructive'>
-                        <Icons.alertCircle />
-                        <AlertTitle>Format JSON Tidak Valid</AlertTitle>
-                        <AlertDescription>
-                          {parseError}. Silakan perbaiki di tab JSON Editor terlebih dahulu.
-                        </AlertDescription>
-                      </Alert>
-                    ) : (
-                      <div className='grid grid-cols-1 gap-4'>
-                        {currentTable === 'myLinks' && editorMode === 'edit' && editingId && (
-                          <div className='space-y-2 rounded-lg border p-3'>
-                            <div className='flex items-center justify-between gap-2'>
-                              <Label>My Link Id & Penggunaan Activity</Label>
-                              <Button
-                                type='button'
-                                variant='secondary'
-                                size='sm'
-                                className='h-7 text-xs'
-                                onClick={() => {
-                                  setSheetOpen(false);
-                                  openMyLinkUsageManager(editingId, 'linked');
-                                }}
-                              >
-                                <Icons.kanban className='size-3.5' />
-                                Cek & Kelola Activity ({getActivitiesForMyLink(editingId).length})
-                              </Button>
-                            </div>
-                            <div className='flex items-center gap-2'>
-                              <Input
-                                type='text'
-                                value={editingId}
-                                readOnly
-                                className='font-mono text-xs'
-                              />
-                              <Button
-                                type='button'
-                                variant='outline'
-                                size='icon'
-                                title='Salin My Link Id'
-                                onClick={() => {
-                                  navigator.clipboard.writeText(editingId).catch(() => {});
-                                  toast.success('My Link Id berhasil disalin!');
-                                }}
-                              >
-                                <Icons.copy className='size-4' />
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                        {formFields.map((key) => {
-                          const value = parsedDraft[key];
-                          const labelText = formatLabel(key);
-
-                          if (currentTable === 'activities' && key === 'myLinkId') {
-                            const currentMyLinkId =
-                              value !== null && value !== undefined && String(value) !== ''
-                                ? String(value)
-                                : '__none__';
-                            const myLinkSelectItems = [
-                              { value: '__none__', label: '-- Tanpa MyLink (Kosong) --' },
-                              ...(tables.myLinks ?? []).map((ml) => {
-                                const mlId = String(ml.id ?? '');
-                                const mlLabel = String(ml.label ?? mlId);
-                                const mlProvider = ml.provider ? `[${String(ml.provider)}] ` : '';
-                                const owner = resolveRecordUser(ml, 'myLinks');
-                                const ownerName = owner?.username
-                                  ? ` · @${String(owner.username).replace(/^@/, '')}`
-                                  : owner?.name
-                                    ? ` · ${String(owner.name)}`
-                                    : '';
-                                return {
-                                  value: mlId,
-                                  label: `${mlProvider}${mlLabel}${ownerName} (${mlId})`
-                                };
-                              })
-                            ];
-
-                            return (
-                              <div key={key} className='space-y-2'>
-                                <Label htmlFor={`form-field-${key}`}>My Link Id</Label>
-                                <Select
-                                  items={myLinkSelectItems}
-                                  value={
-                                    myLinkSelectItems.some((item) => item.value === currentMyLinkId)
-                                      ? currentMyLinkId
-                                      : '__none__'
-                                  }
-                                  onValueChange={(val) => {
-                                    updateDraftField(
-                                      key,
-                                      !val || val === '__none__' ? null : val
-                                    );
-                                  }}
-                                >
-                                  <SelectTrigger id={`form-field-${key}-select`} className='w-full'>
-                                    <SelectValue placeholder='Pilih dari daftar MyLink...' />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {myLinkSelectItems.map((opt) => (
-                                      <SelectItem key={opt.value} value={opt.value}>
-                                        {opt.label}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <Input
-                                  id={`form-field-${key}`}
-                                  type='text'
-                                  placeholder='Atau masukkan My Link Id secara langsung (kosongkan jika tanpa link)'
-                                  className='font-mono text-xs'
-                                  value={
-                                    value !== null && value !== undefined ? String(value) : ''
-                                  }
-                                  onChange={(e) =>
-                                    updateDraftField(
-                                      key,
-                                      e.target.value.trim() === '' ? null : e.target.value
-                                    )
-                                  }
-                                />
-                              </div>
-                            );
-                          }
-
-                          if (currentTable === 'myLinks' && key === 'provider') {
-                            return (
-                              <div key={key} className='space-y-2'>
-                                <Label htmlFor={`form-field-${key}`}>Provider</Label>
-                                <Select
-                                  items={MYLINK_PROVIDER_OPTIONS}
-                                  value={String(value || 'Custom')}
-                                  onValueChange={(val) => {
-                                    if (val) updateDraftField(key, val);
-                                  }}
-                                >
-                                  <SelectTrigger id={`form-field-${key}`} className='w-full'>
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {MYLINK_PROVIDER_OPTIONS.map((opt) => (
-                                      <SelectItem key={opt.value} value={opt.value}>
-                                        {opt.label}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            );
-                          }
-
-                          if (currentTable === 'myLinks' && key === 'userId') {
-                            const userSelectItems = tables.users.map((u) => {
-                              const uId = String(u.id ?? '');
-                              const uName = u.name ? String(u.name) : '';
-                              const uHandle = u.username
-                                ? `@${String(u.username).replace(/^@/, '')}`
-                                : String(u.email ?? '');
-                              return {
-                                value: uId,
-                                label: `${uName ? `${uName} (${uHandle})` : uHandle} — ${uId}`
-                              };
-                            });
-
-                            return (
-                              <div key={key} className='space-y-2'>
-                                <Label htmlFor={`form-field-${key}`}>User (Pemilik MyLink)</Label>
-                                <Select
-                                  items={userSelectItems}
-                                  value={String(value ?? '')}
-                                  onValueChange={(val) => {
-                                    if (val) updateDraftField(key, val);
-                                  }}
-                                >
-                                  <SelectTrigger id={`form-field-${key}-select`} className='w-full'>
-                                    <SelectValue placeholder='Pilih pengguna...' />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {userSelectItems.map((opt) => (
-                                      <SelectItem key={opt.value} value={opt.value}>
-                                        {opt.label}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <Input
-                                  id={`form-field-${key}`}
-                                  type='text'
-                                  placeholder='User ID'
-                                  className='font-mono text-xs'
-                                  value={
-                                    value !== null && value !== undefined ? String(value) : ''
-                                  }
-                                  onChange={(e) => updateDraftField(key, e.target.value)}
-                                />
-                              </div>
-                            );
-                          }
-
-                          if (
-                            currentTable === 'users' &&
-                            (key === 'isPro' || key === 'proExpiresAt')
-                          ) {
-                            if (key === 'proExpiresAt') return null;
-
-                            const isProVal = Boolean(parsedDraft.isPro);
-                            const expiresAtVal = parsedDraft.proExpiresAt as
-                              | string
-                              | null
-                              | undefined;
-                            const currentPlan = getSubscriptionOption(expiresAtVal, isProVal);
-
-                            return (
-                              <div key='plan-selector' className='space-y-2'>
-                                <Label htmlFor='form-field-plan'>Subscription Plan</Label>
-                                <Select
-                                  items={SUBSCRIPTION_PLAN_OPTIONS}
-                                  value={currentPlan}
-                                  onValueChange={(val) => {
-                                    if (!val) return;
-                                    let isPro = false;
-                                    let proExpiresAt: string | null = null;
-                                    let limits = {
-                                      maxPrivate: 2,
-                                      maxPublic: 5,
-                                      maxSaved: 5,
-                                      maxMyLink: 50
-                                    };
-
-                                    if (val !== 'free') {
-                                      isPro = true;
-                                      limits = {
-                                        maxPrivate: 100,
-                                        maxPublic: 100,
-                                        maxSaved: 100,
-                                        maxMyLink: 100
-                                      };
-
-                                      const now = new Date();
-                                      if (val === 'pro_1m') {
-                                        now.setMonth(now.getMonth() + 1);
-                                        proExpiresAt = now.toISOString();
-                                      } else if (val === 'pro_3m') {
-                                        now.setMonth(now.getMonth() + 3);
-                                        proExpiresAt = now.toISOString();
-                                      } else if (val === 'pro_6m') {
-                                        now.setMonth(now.getMonth() + 6);
-                                        proExpiresAt = now.toISOString();
-                                      } else if (val === 'pro_1y') {
-                                        now.setFullYear(now.getFullYear() + 1);
-                                        proExpiresAt = now.toISOString();
-                                      }
-                                    }
-
-                                    try {
-                                      const parsed = JSON.parse(draft) as Record<
-                                        string,
-                                        unknown
-                                      >;
-                                      parsed.isPro = isPro;
-                                      parsed.proExpiresAt = proExpiresAt;
-                                      parsed.maxPrivate = limits.maxPrivate;
-                                      parsed.maxPublic = limits.maxPublic;
-                                      parsed.maxSaved = limits.maxSaved;
-                                      parsed.maxMyLink = limits.maxMyLink;
-                                      setDraft(JSON.stringify(parsed, null, 2));
-                                    } catch {
-                                      // ignore
-                                    }
-                                  }}
-                                >
-                                  <SelectTrigger id='form-field-plan' className='w-full'>
-                                    <SelectValue placeholder='Pilih plan' />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {SUBSCRIPTION_PLAN_OPTIONS.map((opt) => (
-                                      <SelectItem key={opt.value} value={opt.value}>
-                                        {opt.label}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            );
-                          }
-
-                          if (typeof value === 'boolean') {
-                            return (
-                              <div
-                                key={key}
-                                className='flex items-center justify-between rounded-lg border p-3 shadow-2xs'
-                              >
-                                <Label htmlFor={`form-field-${key}`} className='cursor-pointer'>
-                                  {labelText}
-                                </Label>
-                                <Switch
-                                  id={`form-field-${key}`}
-                                  checked={value}
-                                  onCheckedChange={(checked) => updateDraftField(key, checked)}
-                                />
-                              </div>
-                            );
-                          }
-
-                          return (
-                            <div key={key} className='space-y-2'>
-                              <Label htmlFor={`form-field-${key}`}>{labelText}</Label>
-                              {currentTable === 'appSettings' &&
-                                key === 'key' &&
-                                editorMode === 'edit' ? (
-                                <Input
-                                  id={`form-field-${key}`}
-                                  type='text'
-                                  value={
-                                    value !== null && value !== undefined ? String(value) : ''
-                                  }
-                                  disabled
-                                />
-                              ) : key === 'role' ? (
-                                <Select
-                                  items={[
-                                    { value: 'USER', label: 'USER' },
-                                    { value: 'ADMIN', label: 'ADMIN' }
-                                  ]}
-                                  value={String(value ?? 'USER')}
-                                  onValueChange={(val) => {
-                                    if (val) updateDraftField(key, val);
-                                  }}
-                                >
-                                  <SelectTrigger id={`form-field-${key}`} className='w-full'>
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value='USER'>USER</SelectItem>
-                                    <SelectItem value='ADMIN'>ADMIN</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              ) : key === 'status' && currentTable === 'accountClaims' ? (
-                                <Select
-                                  items={[
-                                    { value: 'PENDING', label: 'PENDING (Menunggu Review)' },
-                                    { value: 'APPROVED', label: 'APPROVED (Disetujui)' },
-                                    { value: 'REJECTED', label: 'REJECTED (Ditolak)' }
-                                  ]}
-                                  value={String(value ?? 'PENDING')}
-                                  onValueChange={(val) => {
-                                    if (val) updateDraftField(key, val);
-                                  }}
-                                >
-                                  <SelectTrigger id={`form-field-${key}`} className='w-full'>
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value='PENDING'>
-                                      PENDING (Menunggu Review)
-                                    </SelectItem>
-                                    <SelectItem value='APPROVED'>
-                                      APPROVED (Disetujui)
-                                    </SelectItem>
-                                    <SelectItem value='REJECTED'>REJECTED (Ditolak)</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              ) : key === 'bio' ||
-                                key === 'description' ||
-                                key === 'notes' ||
-                                key === 'proofNotes' ||
-                                key === 'adminNotes' ? (
-                                <Textarea
-                                  id={`form-field-${key}`}
-                                  value={String(value ?? '')}
-                                  onChange={(e) => updateDraftField(key, e.target.value)}
-                                  rows={3}
-                                />
-                              ) : key.endsWith('At') ? (
-                                <Input
-                                  id={`form-field-${key}`}
-                                  type='datetime-local'
-                                  value={
-                                    value
-                                      ? new Date(String(value)).toISOString().slice(0, 16)
-                                      : ''
-                                  }
-                                  onChange={(e) =>
-                                    updateDraftField(
-                                      key,
-                                      e.target.value
-                                        ? new Date(e.target.value).toISOString()
-                                        : null
-                                    )
-                                  }
-                                />
-                              ) : typeof value === 'number' ? (
-                                <Input
-                                  id={`form-field-${key}`}
-                                  type='number'
-                                  value={
-                                    value !== null && value !== undefined ? String(value) : ''
-                                  }
-                                  onChange={(e) =>
-                                    updateDraftField(
-                                      key,
-                                      e.target.value === '' ? null : Number(e.target.value)
-                                    )
-                                  }
-                                />
-                              ) : (
-                                <Input
-                                  id={`form-field-${key}`}
-                                  type='text'
-                                  value={
-                                    value !== null && value !== undefined ? String(value) : ''
-                                  }
-                                  onChange={(e) => updateDraftField(key, e.target.value)}
-                                />
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </TabsContent>
-
-                  <TabsContent value='bulk' className='flex-none space-y-4 pb-4'>
-                    {currentTable === 'myLinks' ? (
-                      <div className='space-y-4'>
-                        <div className='space-y-2'>
-                          <Label>User (Pemilik untuk Semua Baris MyLink)</Label>
-                          {(() => {
-                            const userSelectItems = tables.users.map((u) => {
-                              const uId = String(u.id ?? '');
-                              const uName = u.name ? String(u.name) : '';
-                              const uHandle = u.username
-                                ? `@${String(u.username).replace(/^@/, '')}`
-                                : String(u.email ?? '');
-                              return {
-                                value: uId,
-                                label: `${uName ? `${uName} (${uHandle})` : uHandle} — ${uId}`
-                              };
-                            });
-                            return (
-                              <Select
-                                items={userSelectItems}
-                                value={bulkMyLinkUserId}
-                                onValueChange={(val) => {
-                                  if (val) setBulkMyLinkUserId(val);
-                                }}
-                              >
-                                <SelectTrigger className='w-full'>
-                                  <SelectValue placeholder='Pilih pengguna pemilik MyLink...' />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {userSelectItems.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value}>
-                                      {opt.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            );
-                          })()}
-                          <Input
-                            type='text'
-                            placeholder='Atau masukkan User ID secara langsung...'
-                            className='font-mono text-xs'
-                            value={bulkMyLinkUserId}
-                            onChange={(e) => setBulkMyLinkUserId(e.target.value)}
-                          />
-                        </div>
-
-                        <div className='space-y-2 rounded-lg border p-3'>
-                          <div className='flex items-center justify-between'>
-                            <Label className='text-xs'>
-                              Impor Cepat dari Teks (Format per baris: <code>Label | URL | Provider</code>)
-                            </Label>
+                          <Button
+                            type='button'
+                            variant='outline'
+                            size='sm'
+                            disabled={busy}
+                            onClick={async () => {
+                              const ok = await executeBulkAction(
+                                {
+                                  action: 'bulkSetActivitiesMyLink',
+                                  activityIds: selectedIds,
+                                  myLinkId: null
+                                },
+                                `MyLink dilepas dari ${selectedIds.length} Activity.`,
+                                ['activities', 'myLinks']
+                              );
+                              if (ok) setRowSelection({});
+                            }}
+                          >
+                            <Icons.close className='size-4' />
+                            Lepas MyLink
+                          </Button>
+                          <Button
+                            type='button'
+                            variant='outline'
+                            size='sm'
+                            disabled={busy}
+                            onClick={() => {
+                              setBulkEditCategory('__keep__');
+                              setBulkEditModalOpen(true);
+                            }}
+                          >
+                            <Icons.edit className='size-4' />
+                            Bulk Edit Kategori
+                          </Button>
+                        </>
+                      )}
+                      {currentTable === 'myLinks' && (
+                        <>
+                          {selectedIds.length === 1 && (
                             <Button
                               type='button'
                               variant='secondary'
                               size='sm'
-                              className='h-7 text-xs'
-                              onClick={() => {
-                                const lines = bulkPasteText
-                                  .split('\n')
-                                  .map((l) => l.trim())
-                                  .filter(Boolean);
-                                if (lines.length === 0) {
-                                  toast.error('Tempelkan minimal 1 baris teks terlebih dahulu.');
-                                  return;
-                                }
-                                const parsedRows = lines.map((line) => {
-                                  const parts = line.includes('|')
-                                    ? line.split('|').map((p) => p.trim())
-                                    : line.split('\t').map((p) => p.trim());
-                                  return {
-                                    label: parts[0] || 'Link',
-                                    actualUrl: parts[1] || parts[0] || '',
-                                    provider: parts[2] || 'Klook'
-                                  };
-                                });
-                                setBulkMyLinkRows(parsedRows);
-                                toast.success(`${parsedRows.length} baris berhasil diimpor ke daftar.`);
-                              }}
+                              disabled={busy}
+                              onClick={() => openMyLinkUsageManager(selectedIds[0], 'linked')}
                             >
-                              Impor ke Baris
+                              <Icons.kanban className='size-4' />
+                              Cek & Kelola Activity
                             </Button>
-                          </div>
-                          <Textarea
-                            rows={3}
-                            className='font-mono text-xs'
-                            placeholder={`Tiket USJ Express | https://www.klook.com/id/... | Klook\nJR Pass 7 Hari | https://www.traveloka.com/... | Traveloka`}
-                            value={bulkPasteText}
-                            onChange={(e) => setBulkPasteText(e.target.value)}
-                          />
-                        </div>
+                          )}
+                          <Button
+                            type='button'
+                            variant='outline'
+                            size='sm'
+                            disabled={busy}
+                            onClick={async () => {
+                              const ok = await executeBulkAction(
+                                {
+                                  action: 'bulkUnlinkMyLinksFromActivities',
+                                  myLinkIds: selectedIds
+                                },
+                                `Semua Activity yang memakai ${selectedIds.length} MyLink terpilih telah dilepas.`,
+                                ['myLinks', 'activities']
+                              );
+                              if (ok) setRowSelection({});
+                            }}
+                          >
+                            <Icons.close className='size-4' />
+                            Lepas dari Semua Activity
+                          </Button>
+                          <Button
+                            type='button'
+                            variant='outline'
+                            size='sm'
+                            disabled={busy}
+                            onClick={() => {
+                              setBulkEditProvider('__keep__');
+                              setBulkEditUserId('__keep__');
+                              setBulkEditModalOpen(true);
+                            }}
+                          >
+                            <Icons.edit className='size-4' />
+                            Bulk Edit Provider / Owner
+                          </Button>
+                        </>
+                      )}
+                      <Button
+                        type='button'
+                        variant='destructive'
+                        size='sm'
+                        disabled={busy}
+                        onClick={() => setBulkDeleteConfirmOpen(true)}
+                      >
+                        <Icons.trash className='size-4' />
+                        Hapus Terpilih ({selectedIds.length})
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })()}
+            >
+              <DataTableToolbar
+                table={table}
+                globalFilter={globalFilter}
+                onGlobalFilterChange={setGlobalFilter}
+                searchPlaceholder={
+                  currentTable === 'itineraries' ||
+                    currentTable === 'days' ||
+                    currentTable === 'activities' ||
+                    currentTable === 'myLinks'
+                    ? `Cari nama user, My Link Id, atau ${config.label.toLowerCase()}...`
+                    : `Search ${config.label.toLowerCase()}...`
+                }
+                suggestions={searchSuggestions}
+              />
+            </DataTable>
+          </PageContainer>
+        )}
+      </SidebarInset>
 
-                        <div className='space-y-2'>
-                          <div className='flex items-center justify-between'>
-                            <Label>Daftar Baris MyLink ({bulkMyLinkRows.length})</Label>
-                            <Button
-                              type='button'
-                              variant='outline'
-                              size='sm'
-                              className='h-7 text-xs'
-                              onClick={() =>
-                                setBulkMyLinkRows((prev) => [
-                                  ...prev,
-                                  { label: '', actualUrl: '', provider: 'Klook' }
-                                ])
-                              }
-                            >
-                              <Icons.add className='size-3.5' />
-                              Tambah Baris
-                            </Button>
-                          </div>
-                          <div className='space-y-2'>
-                            {bulkMyLinkRows.map((row, idx) => (
-                              <div
-                                key={idx}
-                                className='bg-muted/30 grid grid-cols-1 gap-2 rounded-lg border p-2.5 sm:grid-cols-12'
-                              >
-                                <div className='sm:col-span-4'>
-                                  <Input
-                                    placeholder='Label (mis: Tiket USJ)'
-                                    value={row.label}
-                                    onChange={(e) => {
-                                      const val = e.target.value;
-                                      setBulkMyLinkRows((prev) =>
-                                        prev.map((r, i) => (i === idx ? { ...r, label: val } : r))
-                                      );
-                                    }}
-                                  />
-                                </div>
-                                <div className='sm:col-span-5'>
-                                  <Input
-                                    placeholder='https://...'
-                                    value={row.actualUrl}
-                                    onChange={(e) => {
-                                      const val = e.target.value;
-                                      setBulkMyLinkRows((prev) =>
-                                        prev.map((r, i) =>
-                                          i === idx ? { ...r, actualUrl: val } : r
-                                        )
-                                      );
-                                    }}
-                                  />
-                                </div>
-                                <div className='flex items-center gap-1 sm:col-span-3'>
+      {/* Record Create / Edit Sheet (next-shadcn user-form-sheet pattern) */}
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        <SheetContent className='flex h-full max-h-dvh flex-col overflow-hidden sm:max-w-xl'>
+          <SheetHeader className='shrink-0'>
+            <SheetTitle>
+              {editorMode === 'create' ? `Buat ${config.label}` : `Edit ${config.label}`}
+            </SheetTitle>
+            <SheetDescription>
+              {editorMode === 'create'
+                ? `Isi detail form atau JSON di bawah untuk menambahkan record baru ke tabel ${config.label}.`
+                : `Perbarui field record ID: ${editingId} pada tabel ${config.label}.`}
+            </SheetDescription>
+          </SheetHeader>
+
+          <Tabs
+            value={editorTab}
+            onValueChange={(val) => setEditorTab(val as 'form' | 'json' | 'bulk')}
+            className='flex min-h-0 flex-1 flex-col overflow-hidden'
+          >
+            <TabsList className='w-full shrink-0'>
+              <TabsTrigger value='form' className='flex-1'>
+                <Icons.forms className='size-4' />
+                Form (Satu)
+              </TabsTrigger>
+              {editorMode === 'create' && (
+                <TabsTrigger value='bulk' className='flex-1'>
+                  <Icons.add className='size-4' />
+                  Bulk Add
+                </TabsTrigger>
+              )}
+              <TabsTrigger value='json' className='flex-1'>
+                <Icons.fileCode className='size-4' />
+                JSON Editor
+              </TabsTrigger>
+            </TabsList>
+
+            <div className='mt-3 -mr-2 min-h-0 flex-1 overflow-y-auto pr-2'>
+              {(() => {
+                let parsedDraft: Record<string, unknown> = {};
+                let parseError = '';
+                try {
+                  parsedDraft = JSON.parse(draft);
+                } catch (err) {
+                  parseError = err instanceof Error ? err.message : 'Invalid JSON';
+                }
+                const formFields = Object.keys(parsedDraft).filter((key) => !key.startsWith('_'));
+
+                return (
+                  <>
+                    <TabsContent value='form' className='flex-none space-y-4 pb-4'>
+                      {parseError ? (
+                        <Alert variant='destructive'>
+                          <Icons.alertCircle />
+                          <AlertTitle>Format JSON Tidak Valid</AlertTitle>
+                          <AlertDescription>
+                            {parseError}. Silakan perbaiki di tab JSON Editor terlebih dahulu.
+                          </AlertDescription>
+                        </Alert>
+                      ) : (
+                        <div className='grid grid-cols-1 gap-4'>
+                          {currentTable === 'myLinks' && editorMode === 'edit' && editingId && (
+                            <div className='space-y-2 rounded-lg border p-3'>
+                              <div className='flex items-center justify-between gap-2'>
+                                <Label>My Link Id & Penggunaan Activity</Label>
+                                <Button
+                                  type='button'
+                                  variant='secondary'
+                                  size='sm'
+                                  className='h-7 text-xs'
+                                  onClick={() => {
+                                    setSheetOpen(false);
+                                    openMyLinkUsageManager(editingId, 'linked');
+                                  }}
+                                >
+                                  <Icons.kanban className='size-3.5' />
+                                  Cek & Kelola Activity ({getActivitiesForMyLink(editingId).length})
+                                </Button>
+                              </div>
+                              <div className='flex items-center gap-2'>
+                                <Input
+                                  type='text'
+                                  value={editingId}
+                                  readOnly
+                                  className='font-mono text-xs'
+                                />
+                                <Button
+                                  type='button'
+                                  variant='outline'
+                                  size='icon'
+                                  title='Salin My Link Id'
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(editingId).catch(() => { });
+                                    toast.success('My Link Id berhasil disalin!');
+                                  }}
+                                >
+                                  <Icons.copy className='size-4' />
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                          {formFields.map((key) => {
+                            const value = parsedDraft[key];
+                            const labelText = formatLabel(key);
+
+                            if (currentTable === 'activities' && key === 'myLinkId') {
+                              const currentMyLinkId =
+                                value !== null && value !== undefined && String(value) !== ''
+                                  ? String(value)
+                                  : '__none__';
+                              const myLinkSelectItems = [
+                                { value: '__none__', label: '-- Tanpa MyLink (Kosong) --' },
+                                ...(tables.myLinks ?? []).map((ml) => {
+                                  const mlId = String(ml.id ?? '');
+                                  const mlLabel = String(ml.label ?? mlId);
+                                  const mlProvider = ml.provider ? `[${String(ml.provider)}] ` : '';
+                                  const owner = resolveRecordUser(ml, 'myLinks');
+                                  const ownerName = owner?.username
+                                    ? ` · @${String(owner.username).replace(/^@/, '')}`
+                                    : owner?.name
+                                      ? ` · ${String(owner.name)}`
+                                      : '';
+                                  return {
+                                    value: mlId,
+                                    label: `${mlProvider}${mlLabel}${ownerName} (${mlId})`
+                                  };
+                                })
+                              ];
+
+                              return (
+                                <div key={key} className='space-y-2'>
+                                  <Label htmlFor={`form-field-${key}`}>My Link Id</Label>
                                   <Select
-                                    items={MYLINK_PROVIDER_OPTIONS}
-                                    value={row.provider}
+                                    items={myLinkSelectItems}
+                                    value={
+                                      myLinkSelectItems.some((item) => item.value === currentMyLinkId)
+                                        ? currentMyLinkId
+                                        : '__none__'
+                                    }
                                     onValueChange={(val) => {
-                                      if (!val) return;
-                                      setBulkMyLinkRows((prev) =>
-                                        prev.map((r, i) =>
-                                          i === idx ? { ...r, provider: val } : r
-                                        )
+                                      updateDraftField(
+                                        key,
+                                        !val || val === '__none__' ? null : val
                                       );
                                     }}
                                   >
-                                    <SelectTrigger className='w-full'>
+                                    <SelectTrigger id={`form-field-${key}-select`} className='w-full'>
+                                      <SelectValue placeholder='Pilih dari daftar MyLink...' />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {myLinkSelectItems.map((opt) => (
+                                        <SelectItem key={opt.value} value={opt.value}>
+                                          {opt.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Input
+                                    id={`form-field-${key}`}
+                                    type='text'
+                                    placeholder='Atau masukkan My Link Id secara langsung (kosongkan jika tanpa link)'
+                                    className='font-mono text-xs'
+                                    value={
+                                      value !== null && value !== undefined ? String(value) : ''
+                                    }
+                                    onChange={(e) =>
+                                      updateDraftField(
+                                        key,
+                                        e.target.value.trim() === '' ? null : e.target.value
+                                      )
+                                    }
+                                  />
+                                </div>
+                              );
+                            }
+
+                            if (currentTable === 'myLinks' && key === 'provider') {
+                              return (
+                                <div key={key} className='space-y-2'>
+                                  <Label htmlFor={`form-field-${key}`}>Provider</Label>
+                                  <Select
+                                    items={MYLINK_PROVIDER_OPTIONS}
+                                    value={String(value || 'Custom')}
+                                    onValueChange={(val) => {
+                                      if (val) updateDraftField(key, val);
+                                    }}
+                                  >
+                                    <SelectTrigger id={`form-field-${key}`} className='w-full'>
                                       <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -3840,187 +3398,456 @@ return (
                                       ))}
                                     </SelectContent>
                                   </Select>
-                                  <Button
-                                    type='button'
-                                    variant='ghost'
-                                    size='icon'
-                                    className='h-8 w-8 shrink-0'
-                                    disabled={bulkMyLinkRows.length <= 1}
-                                    onClick={() =>
-                                      setBulkMyLinkRows((prev) =>
-                                        prev.filter((_, i) => i !== idx)
+                                </div>
+                              );
+                            }
+
+                            if (currentTable === 'myLinks' && key === 'userId') {
+                              const userSelectItems = tables.users.map((u) => {
+                                const uId = String(u.id ?? '');
+                                const uName = u.name ? String(u.name) : '';
+                                const uHandle = u.username
+                                  ? `@${String(u.username).replace(/^@/, '')}`
+                                  : String(u.email ?? '');
+                                return {
+                                  value: uId,
+                                  label: `${uName ? `${uName} (${uHandle})` : uHandle} — ${uId}`
+                                };
+                              });
+
+                              return (
+                                <div key={key} className='space-y-2'>
+                                  <Label htmlFor={`form-field-${key}`}>User (Pemilik MyLink)</Label>
+                                  <Select
+                                    items={userSelectItems}
+                                    value={String(value ?? '')}
+                                    onValueChange={(val) => {
+                                      if (val) updateDraftField(key, val);
+                                    }}
+                                  >
+                                    <SelectTrigger id={`form-field-${key}-select`} className='w-full'>
+                                      <SelectValue placeholder='Pilih pengguna...' />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {userSelectItems.map((opt) => (
+                                        <SelectItem key={opt.value} value={opt.value}>
+                                          {opt.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Input
+                                    id={`form-field-${key}`}
+                                    type='text'
+                                    placeholder='User ID'
+                                    className='font-mono text-xs'
+                                    value={
+                                      value !== null && value !== undefined ? String(value) : ''
+                                    }
+                                    onChange={(e) => updateDraftField(key, e.target.value)}
+                                  />
+                                </div>
+                              );
+                            }
+
+                            if (
+                              currentTable === 'users' &&
+                              (key === 'isPro' || key === 'proExpiresAt')
+                            ) {
+                              if (key === 'proExpiresAt') return null;
+
+                              const isProVal = Boolean(parsedDraft.isPro);
+                              const expiresAtVal = parsedDraft.proExpiresAt as
+                                | string
+                                | null
+                                | undefined;
+                              const currentPlan = getSubscriptionOption(expiresAtVal, isProVal);
+
+                              return (
+                                <div key='plan-selector' className='space-y-2'>
+                                  <Label htmlFor='form-field-plan'>Subscription Plan</Label>
+                                  <Select
+                                    items={SUBSCRIPTION_PLAN_OPTIONS}
+                                    value={currentPlan}
+                                    onValueChange={(val) => {
+                                      if (!val) return;
+                                      let isPro = false;
+                                      let proExpiresAt: string | null = null;
+                                      let limits = {
+                                        maxPrivate: 2,
+                                        maxPublic: 5,
+                                        maxSaved: 5,
+                                        maxMyLink: 50
+                                      };
+
+                                      if (val !== 'free') {
+                                        isPro = true;
+                                        limits = {
+                                          maxPrivate: 100,
+                                          maxPublic: 100,
+                                          maxSaved: 100,
+                                          maxMyLink: 100
+                                        };
+
+                                        const now = new Date();
+                                        if (val === 'pro_1m') {
+                                          now.setMonth(now.getMonth() + 1);
+                                          proExpiresAt = now.toISOString();
+                                        } else if (val === 'pro_3m') {
+                                          now.setMonth(now.getMonth() + 3);
+                                          proExpiresAt = now.toISOString();
+                                        } else if (val === 'pro_6m') {
+                                          now.setMonth(now.getMonth() + 6);
+                                          proExpiresAt = now.toISOString();
+                                        } else if (val === 'pro_1y') {
+                                          now.setFullYear(now.getFullYear() + 1);
+                                          proExpiresAt = now.toISOString();
+                                        }
+                                      }
+
+                                      try {
+                                        const parsed = JSON.parse(draft) as Record<
+                                          string,
+                                          unknown
+                                        >;
+                                        parsed.isPro = isPro;
+                                        parsed.proExpiresAt = proExpiresAt;
+                                        parsed.maxPrivate = limits.maxPrivate;
+                                        parsed.maxPublic = limits.maxPublic;
+                                        parsed.maxSaved = limits.maxSaved;
+                                        parsed.maxMyLink = limits.maxMyLink;
+                                        setDraft(JSON.stringify(parsed, null, 2));
+                                      } catch {
+                                        // ignore
+                                      }
+                                    }}
+                                  >
+                                    <SelectTrigger id='form-field-plan' className='w-full'>
+                                      <SelectValue placeholder='Pilih plan' />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {SUBSCRIPTION_PLAN_OPTIONS.map((opt) => (
+                                        <SelectItem key={opt.value} value={opt.value}>
+                                          {opt.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              );
+                            }
+
+                            if (typeof value === 'boolean') {
+                              return (
+                                <div
+                                  key={key}
+                                  className='flex items-center justify-between rounded-lg border p-3 shadow-2xs'
+                                >
+                                  <Label htmlFor={`form-field-${key}`} className='cursor-pointer'>
+                                    {labelText}
+                                  </Label>
+                                  <Switch
+                                    id={`form-field-${key}`}
+                                    checked={value}
+                                    onCheckedChange={(checked) => updateDraftField(key, checked)}
+                                  />
+                                </div>
+                              );
+                            }
+
+                            return (
+                              <div key={key} className='space-y-2'>
+                                <Label htmlFor={`form-field-${key}`}>{labelText}</Label>
+                                {currentTable === 'appSettings' &&
+                                  key === 'key' &&
+                                  editorMode === 'edit' ? (
+                                  <Input
+                                    id={`form-field-${key}`}
+                                    type='text'
+                                    value={
+                                      value !== null && value !== undefined ? String(value) : ''
+                                    }
+                                    disabled
+                                  />
+                                ) : key === 'role' ? (
+                                  <Select
+                                    items={[
+                                      { value: 'USER', label: 'USER' },
+                                      { value: 'ADMIN', label: 'ADMIN' }
+                                    ]}
+                                    value={String(value ?? 'USER')}
+                                    onValueChange={(val) => {
+                                      if (val) updateDraftField(key, val);
+                                    }}
+                                  >
+                                    <SelectTrigger id={`form-field-${key}`} className='w-full'>
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value='USER'>USER</SelectItem>
+                                      <SelectItem value='ADMIN'>ADMIN</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                ) : key === 'status' && currentTable === 'accountClaims' ? (
+                                  <Select
+                                    items={[
+                                      { value: 'PENDING', label: 'PENDING (Menunggu Review)' },
+                                      { value: 'APPROVED', label: 'APPROVED (Disetujui)' },
+                                      { value: 'REJECTED', label: 'REJECTED (Ditolak)' }
+                                    ]}
+                                    value={String(value ?? 'PENDING')}
+                                    onValueChange={(val) => {
+                                      if (val) updateDraftField(key, val);
+                                    }}
+                                  >
+                                    <SelectTrigger id={`form-field-${key}`} className='w-full'>
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value='PENDING'>
+                                        PENDING (Menunggu Review)
+                                      </SelectItem>
+                                      <SelectItem value='APPROVED'>
+                                        APPROVED (Disetujui)
+                                      </SelectItem>
+                                      <SelectItem value='REJECTED'>REJECTED (Ditolak)</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                ) : key === 'bio' ||
+                                  key === 'description' ||
+                                  key === 'notes' ||
+                                  key === 'proofNotes' ||
+                                  key === 'adminNotes' ? (
+                                  <Textarea
+                                    id={`form-field-${key}`}
+                                    value={String(value ?? '')}
+                                    onChange={(e) => updateDraftField(key, e.target.value)}
+                                    rows={3}
+                                  />
+                                ) : key.endsWith('At') ? (
+                                  <Input
+                                    id={`form-field-${key}`}
+                                    type='datetime-local'
+                                    value={
+                                      value
+                                        ? new Date(String(value)).toISOString().slice(0, 16)
+                                        : ''
+                                    }
+                                    onChange={(e) =>
+                                      updateDraftField(
+                                        key,
+                                        e.target.value
+                                          ? new Date(e.target.value).toISOString()
+                                          : null
                                       )
                                     }
-                                  >
-                                    <Icons.trash className='size-3.5' />
-                                  </Button>
-                                </div>
+                                  />
+                                ) : typeof value === 'number' ? (
+                                  <Input
+                                    id={`form-field-${key}`}
+                                    type='number'
+                                    value={
+                                      value !== null && value !== undefined ? String(value) : ''
+                                    }
+                                    onChange={(e) =>
+                                      updateDraftField(
+                                        key,
+                                        e.target.value === '' ? null : Number(e.target.value)
+                                      )
+                                    }
+                                  />
+                                ) : (
+                                  <Input
+                                    id={`form-field-${key}`}
+                                    type='text'
+                                    value={
+                                      value !== null && value !== undefined ? String(value) : ''
+                                    }
+                                    onChange={(e) => updateDraftField(key, e.target.value)}
+                                  />
+                                )}
                               </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ) : currentTable === 'activities' ? (
-                      <div className='space-y-4'>
-                        <div className='space-y-2'>
-                          <Label>Itinerary Day (Tujuan untuk Semua Activity)</Label>
-                          {(() => {
-                            const daySelectItems = tables.days.map((d) => {
-                              const dId = String(d.id ?? '');
-                              const dTitle = String(d.title ?? `Day ${d.dayNumber ?? ''}`);
-                              const itObj = d.itineraryId
-                                ? itineraryByIdMap.get(String(d.itineraryId))
-                                : undefined;
-                              const itTitle = itObj?.title ? `${String(itObj.title)} — ` : '';
-                              return {
-                                value: dId,
-                                label: `${itTitle}${dTitle} (${dId})`
-                              };
-                            });
-                            return (
-                              <Select
-                                items={daySelectItems}
-                                value={bulkActivityDayId}
-                                onValueChange={(val) => {
-                                  if (val) setBulkActivityDayId(val);
-                                }}
-                              >
-                                <SelectTrigger className='w-full'>
-                                  <SelectValue placeholder='Pilih Itinerary Day...' />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {daySelectItems.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value}>
-                                      {opt.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
                             );
-                          })()}
-                          <Input
-                            type='text'
-                            placeholder='Atau masukkan Itinerary Day ID secara langsung...'
-                            className='font-mono text-xs'
-                            value={bulkActivityDayId}
-                            onChange={(e) => setBulkActivityDayId(e.target.value)}
-                          />
+                          })}
                         </div>
+                      )}
+                    </TabsContent>
 
-                        <div className='space-y-2'>
-                          <Label>Pasang MyLink ke Semua Activity Ini (Opsional)</Label>
-                          {(() => {
-                            const myLinkSelectItems = [
-                              { value: '__none__', label: '-- Tanpa MyLink (Kosong) --' },
-                              ...(tables.myLinks ?? []).map((ml) => ({
-                                value: String(ml.id ?? ''),
-                                label: `[${String(ml.provider ?? 'Custom')}] ${String(ml.label ?? ml.id)} (${String(ml.id)})`
-                              }))
-                            ];
-                            return (
-                              <Select
-                                items={myLinkSelectItems}
-                                value={bulkActivityMyLinkId}
-                                onValueChange={(val) => {
-                                  if (val) setBulkActivityMyLinkId(val);
-                                }}
-                              >
-                                <SelectTrigger className='w-full'>
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {myLinkSelectItems.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value}>
-                                      {opt.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            );
-                          })()}
-                        </div>
-
-                        <div className='space-y-2'>
-                          <div className='flex items-center justify-between'>
-                            <Label>Daftar Baris Activity ({bulkActivityRows.length})</Label>
-                            <Button
-                              type='button'
-                              variant='outline'
-                              size='sm'
-                              className='h-7 text-xs'
-                              onClick={() =>
-                                setBulkActivityRows((prev) => [
-                                  ...prev,
-                                  {
-                                    time: '14:00',
-                                    title: '',
-                                    locationName: '',
-                                    category: 'wisata',
-                                    estimatedCost: 0
-                                  }
-                                ])
-                              }
-                            >
-                              <Icons.add className='size-3.5' />
-                              Tambah Baris
-                            </Button>
-                          </div>
+                    <TabsContent value='bulk' className='flex-none space-y-4 pb-4'>
+                      {currentTable === 'myLinks' ? (
+                        <div className='space-y-4'>
                           <div className='space-y-2'>
-                            {bulkActivityRows.map((row, idx) => (
-                              <div
-                                key={idx}
-                                className='bg-muted/30 space-y-2 rounded-lg border p-2.5'
+                            <Label>User (Pemilik untuk Semua Baris MyLink)</Label>
+                            {(() => {
+                              const userSelectItems = tables.users.map((u) => {
+                                const uId = String(u.id ?? '');
+                                const uName = u.name ? String(u.name) : '';
+                                const uHandle = u.username
+                                  ? `@${String(u.username).replace(/^@/, '')}`
+                                  : String(u.email ?? '');
+                                return {
+                                  value: uId,
+                                  label: `${uName ? `${uName} (${uHandle})` : uHandle} — ${uId}`
+                                };
+                              });
+                              return (
+                                <Select
+                                  items={userSelectItems}
+                                  value={bulkMyLinkUserId}
+                                  onValueChange={(val) => {
+                                    if (val) setBulkMyLinkUserId(val);
+                                  }}
+                                >
+                                  <SelectTrigger className='w-full'>
+                                    <SelectValue placeholder='Pilih pengguna pemilik MyLink...' />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {userSelectItems.map((opt) => (
+                                      <SelectItem key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              );
+                            })()}
+                            <Input
+                              type='text'
+                              placeholder='Atau masukkan User ID secara langsung...'
+                              className='font-mono text-xs'
+                              value={bulkMyLinkUserId}
+                              onChange={(e) => setBulkMyLinkUserId(e.target.value)}
+                            />
+                          </div>
+
+                          <div className='space-y-2 rounded-lg border p-3'>
+                            <div className='flex items-center justify-between'>
+                              <Label className='text-xs'>
+                                Impor Cepat dari Teks (Format per baris: <code>Label | URL | Provider</code>)
+                              </Label>
+                              <Button
+                                type='button'
+                                variant='secondary'
+                                size='sm'
+                                className='h-7 text-xs'
+                                onClick={() => {
+                                  const lines = bulkPasteText
+                                    .split('\n')
+                                    .map((l) => l.trim())
+                                    .filter(Boolean);
+                                  if (lines.length === 0) {
+                                    toast.error('Tempelkan minimal 1 baris teks terlebih dahulu.');
+                                    return;
+                                  }
+                                  const parsedRows = lines.map((line) => {
+                                    const parts = line.includes('|')
+                                      ? line.split('|').map((p) => p.trim())
+                                      : line.split('\t').map((p) => p.trim());
+                                    return {
+                                      label: parts[0] || 'Link',
+                                      actualUrl: parts[1] || parts[0] || '',
+                                      provider: parts[2] || 'Klook'
+                                    };
+                                  });
+                                  setBulkMyLinkRows(parsedRows);
+                                  toast.success(`${parsedRows.length} baris berhasil diimpor ke daftar.`);
+                                }}
                               >
-                                <div className='grid grid-cols-1 gap-2 sm:grid-cols-12'>
-                                  <div className='sm:col-span-3'>
+                                Impor ke Baris
+                              </Button>
+                            </div>
+                            <Textarea
+                              rows={3}
+                              className='font-mono text-xs'
+                              placeholder={`Tiket USJ Express | https://www.klook.com/id/... | Klook\nJR Pass 7 Hari | https://www.traveloka.com/... | Traveloka`}
+                              value={bulkPasteText}
+                              onChange={(e) => setBulkPasteText(e.target.value)}
+                            />
+                          </div>
+
+                          <div className='space-y-2'>
+                            <div className='flex items-center justify-between'>
+                              <Label>Daftar Baris MyLink ({bulkMyLinkRows.length})</Label>
+                              <Button
+                                type='button'
+                                variant='outline'
+                                size='sm'
+                                className='h-7 text-xs'
+                                onClick={() =>
+                                  setBulkMyLinkRows((prev) => [
+                                    ...prev,
+                                    { label: '', actualUrl: '', provider: 'Klook' }
+                                  ])
+                                }
+                              >
+                                <Icons.add className='size-3.5' />
+                                Tambah Baris
+                              </Button>
+                            </div>
+                            <div className='space-y-2'>
+                              {bulkMyLinkRows.map((row, idx) => (
+                                <div
+                                  key={idx}
+                                  className='bg-muted/30 grid grid-cols-1 gap-2 rounded-lg border p-2.5 sm:grid-cols-12'
+                                >
+                                  <div className='sm:col-span-4'>
                                     <Input
-                                      placeholder='09:00'
-                                      value={row.time}
+                                      placeholder='Label (mis: Tiket USJ)'
+                                      value={row.label}
                                       onChange={(e) => {
                                         const val = e.target.value;
-                                        setBulkActivityRows((prev) =>
-                                          prev.map((r, i) =>
-                                            i === idx ? { ...r, time: val } : r
-                                          )
+                                        setBulkMyLinkRows((prev) =>
+                                          prev.map((r, i) => (i === idx ? { ...r, label: val } : r))
                                         );
                                       }}
                                     />
                                   </div>
                                   <div className='sm:col-span-5'>
                                     <Input
-                                      placeholder='Judul Activity'
-                                      value={row.title}
+                                      placeholder='https://...'
+                                      value={row.actualUrl}
                                       onChange={(e) => {
                                         const val = e.target.value;
-                                        setBulkActivityRows((prev) =>
+                                        setBulkMyLinkRows((prev) =>
                                           prev.map((r, i) =>
-                                            i === idx ? { ...r, title: val } : r
+                                            i === idx ? { ...r, actualUrl: val } : r
                                           )
                                         );
                                       }}
                                     />
                                   </div>
-                                  <div className='flex items-center gap-1 sm:col-span-4'>
-                                    <Input
-                                      placeholder='Nama Lokasi'
-                                      value={row.locationName}
-                                      onChange={(e) => {
-                                        const val = e.target.value;
-                                        setBulkActivityRows((prev) =>
+                                  <div className='flex items-center gap-1 sm:col-span-3'>
+                                    <Select
+                                      items={MYLINK_PROVIDER_OPTIONS}
+                                      value={row.provider}
+                                      onValueChange={(val) => {
+                                        if (!val) return;
+                                        setBulkMyLinkRows((prev) =>
                                           prev.map((r, i) =>
-                                            i === idx ? { ...r, locationName: val } : r
+                                            i === idx ? { ...r, provider: val } : r
                                           )
                                         );
                                       }}
-                                    />
+                                    >
+                                      <SelectTrigger className='w-full'>
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {MYLINK_PROVIDER_OPTIONS.map((opt) => (
+                                          <SelectItem key={opt.value} value={opt.value}>
+                                            {opt.label}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
                                     <Button
                                       type='button'
                                       variant='ghost'
                                       size='icon'
                                       className='h-8 w-8 shrink-0'
-                                      disabled={bulkActivityRows.length <= 1}
+                                      disabled={bulkMyLinkRows.length <= 1}
                                       onClick={() =>
-                                        setBulkActivityRows((prev) =>
+                                        setBulkMyLinkRows((prev) =>
                                           prev.filter((_, i) => i !== idx)
                                         )
                                       }
@@ -4029,1216 +3856,1389 @@ return (
                                     </Button>
                                   </div>
                                 </div>
-                              </div>
-                            ))}
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div className='space-y-3'>
-                        <Label>JSON Array untuk Bulk Create ({config.label})</Label>
-                        <Textarea
-                          className='min-h-[340px] font-mono text-xs leading-relaxed'
-                          value={bulkJsonDraft}
-                          onChange={(e) => setBulkJsonDraft(e.target.value)}
-                          spellCheck={false}
-                        />
-                      </div>
-                    )}
-                  </TabsContent>
-
-                  <TabsContent value='json' className='flex-none space-y-4 pb-4'>
-                    {parseError && (
-                      <Alert variant='destructive'>
-                        <Icons.alertCircle />
-                        <AlertTitle>Format JSON Tidak Valid</AlertTitle>
-                        <AlertDescription>{parseError}</AlertDescription>
-                      </Alert>
-                    )}
-                    <Textarea
-                      className='min-h-[360px] font-mono text-xs leading-relaxed'
-                      value={draft}
-                      onChange={(event) => setDraft(event.target.value)}
-                      spellCheck={false}
-                    />
-                  </TabsContent>
-                </>
-              );
-            })()}
-
-            {currentTable === 'appSettings' ? (
-              <Alert className='mt-2 mb-4'>
-                <Icons.info />
-                <AlertTitle>Panduan Kunci App Settings</AlertTitle>
-                <AlertDescription>
-                  <ul className='mt-1 list-disc space-y-1 pl-4 text-xs'>
-                    <li>
-                      <code>whatsapp_number</code>: Nomor WhatsApp Admin (contoh:{' '}
-                      <code>088293681133</code>)
-                    </li>
-                    <li>
-                      <code>price_1m / 3m / 6m / 1y</code>: Harga Plan (contoh:{' '}
-                      <code>Rp 29.900</code>)
-                    </li>
-                    <li>
-                      <code>rate_1m / 3m / 6m / 1y</code>: Keterangan biaya (contoh:{' '}
-                      <code>/bulan</code>, <code>Rp 26.633/bln</code>)
-                    </li>
-                    <li>
-                      <code>promo_1m / 3m / 6m / 1y</code>: Badge Promo/Hemat (contoh:{' '}
-                      <code>11% Hemat</code>)
-                    </li>
-                    <li>
-                      <code>email_whitelist</code>: Whitelist domain email pendaftaran (contoh:{' '}
-                      <code>gmail.com,outlook.com,yahoo.com,icloud.com</code>)
-                    </li>
-                  </ul>
-                </AlertDescription>
-              </Alert>
-            ) : (
-              <Alert className='mt-2 mb-4'>
-                <Icons.info />
-                <AlertTitle>Tips Editor</AlertTitle>
-                <AlertDescription className='text-xs'>
-                  Anda dapat menambahkan data satu-per-satu melalui <b>Form (Satu)</b> atau sekaligus
-                  banyak melalui tab <b>Bulk Add</b>.
-                </AlertDescription>
-              </Alert>
-            )}
-          </div>
-        </Tabs>
-
-        <SheetFooter className='shrink-0 flex-row justify-end gap-2 border-t pt-4'>
-          <Button
-            type='button'
-            variant='outline'
-            onClick={() => resetDraft(currentTable)}
-            disabled={busy}
-          >
-            Reset Template
-          </Button>
-          {editorMode === 'create' && editorTab === 'bulk' ? (
-            <Button type='button' onClick={handleBulkCreate} isLoading={busy}>
-              <Icons.check className='size-4' />
-              Simpan Bulk {config.label}
-            </Button>
-          ) : (
-            <Button type='button' onClick={handleSave} isLoading={busy}>
-              <Icons.check className='size-4' />
-              {editorMode === 'create' ? 'Create Record' : 'Update Record'}
-            </Button>
-          )}
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
-
-    {/* Delete Confirmation AlertModal (next-shadcn pattern) */}
-    <AlertModal
-      isOpen={Boolean(deleteTargetId)}
-      onClose={() => setDeleteTargetId(null)}
-      onConfirm={confirmDelete}
-      loading={busy}
-    />
-
-    {/* Approve Claim Modal */}
-    <Modal
-      title='Setujui Klaim Akun'
-      description='Setujui permohonan klaim akun ini dan kirimkan email tautan setup password ke pemohon?'
-      isOpen={Boolean(approveClaimId)}
-      onClose={() => setApproveClaimId(null)}
-    >
-      <div className='flex w-full items-center justify-end gap-2 pt-6'>
-        <Button variant='outline' onClick={() => setApproveClaimId(null)} disabled={busy}>
-          Batal
-        </Button>
-        <Button onClick={confirmApproveClaim} isLoading={busy}>
-          <Icons.check className='size-4' />
-          Setujui & Kirim Email
-        </Button>
-      </div>
-    </Modal>
-
-    {/* Setup URL Result Modal */}
-    <Modal
-      title='Klaim Disetujui!'
-      description='Email notifikasi telah dikirim ke pemohon. Tautan setup password juga telah disalin ke clipboard.'
-      isOpen={Boolean(approvedSetupUrl)}
-      onClose={() => setApprovedSetupUrl(null)}
-    >
-      <div className='space-y-4 pt-2'>
-        <div className='flex items-center gap-2'>
-          <Input readOnly value={approvedSetupUrl ?? ''} className='font-mono text-xs' />
-          <Button
-            variant='outline'
-            size='icon'
-            onClick={() => {
-              if (approvedSetupUrl) {
-                navigator.clipboard.writeText(approvedSetupUrl).catch(() => { });
-                toast.success('Tautan disalin ke clipboard!');
-              }
-            }}
-          >
-            <Icons.copy className='size-4' />
-          </Button>
-        </div>
-        <div className='flex justify-end'>
-          <Button onClick={() => setApprovedSetupUrl(null)}>Selesai</Button>
-        </div>
-      </div>
-    </Modal>
-
-    {/* Reject Claim Modal */}
-    <Modal
-      title='Tolak Klaim Akun'
-      description='Masukkan alasan penolakan klaim (opsional) yang akan dikirimkan ke email pemohon.'
-      isOpen={Boolean(rejectClaimId)}
-      onClose={() => setRejectClaimId(null)}
-    >
-      <div className='space-y-4 pt-2'>
-        <div className='space-y-2'>
-          <Label htmlFor='reject-reason-input'>Alasan Penolakan</Label>
-          <Textarea
-            id='reject-reason-input'
-            placeholder='Contoh: Bukti kepemilikan akun sosial media belum sesuai...'
-            value={rejectReason}
-            onChange={(e) => setRejectReason(e.target.value)}
-            rows={3}
-          />
-        </div>
-        <div className='flex justify-end gap-2'>
-          <Button variant='outline' onClick={() => setRejectClaimId(null)} disabled={busy}>
-            Batal
-          </Button>
-          <Button variant='destructive' onClick={confirmRejectClaim} isLoading={busy}>
-            Tolak Klaim
-          </Button>
-        </div>
-      </div>
-    </Modal>
-
-    {/* Impersonate Confirmation Modal */}
-    <Modal
-      title='Masuk Sebagai Akun Kurasi'
-      description='Anda akan masuk sebagai akun kurasi ini untuk membuat atau mengedit itinerary. Anda dapat kembali ke Admin Console kapan saja melalui banner di bagian atas halaman.'
-      isOpen={Boolean(impersonateUserId)}
-      onClose={() => setImpersonateUserId(null)}
-    >
-      <div className='flex justify-end gap-2 pt-6'>
-        <Button variant='outline' onClick={() => setImpersonateUserId(null)} disabled={busy}>
-          Batal
-        </Button>
-        <Button onClick={confirmImpersonate} isLoading={busy}>
-          <Icons.login className='size-4' />
-          Masuk & Buat Itinerary
-        </Button>
-      </div>
-    </Modal>
-
-    {/* Bulk Delete Confirmation Modal */}
-    <AlertModal
-      isOpen={bulkDeleteConfirmOpen}
-      onClose={() => setBulkDeleteConfirmOpen(false)}
-      loading={busy}
-      onConfirm={async () => {
-        const selectedIds = table
-          .getFilteredSelectedRowModel()
-          .rows.map((r) => String(r.original.id ?? r.original.key ?? ''))
-          .filter(Boolean);
-        if (selectedIds.length === 0) {
-          setBulkDeleteConfirmOpen(false);
-          return;
-        }
-        const refreshList: AdminTable[] =
-          currentTable === 'myLinks' || currentTable === 'activities'
-            ? ['myLinks', 'activities']
-            : [currentTable];
-        const ok = await executeBulkAction(
-          { action: 'bulkDelete', table: currentTable, ids: selectedIds },
-          `${selectedIds.length} record ${config.label} berhasil dihapus.`,
-          refreshList
-        );
-        if (ok) {
-          setRowSelection({});
-          setBulkDeleteConfirmOpen(false);
-        }
-      }}
-    />
-
-    {/* Bulk Set / Change MyLink Modal for Selected Activities */}
-    <Modal
-      title='Pasang / Ubah MyLink secara Bulk'
-      description={`Pilih MyLink yang ingin dipasang ke ${table.getFilteredSelectedRowModel().rows.length} Activity terpilih.`}
-      isOpen={bulkSetMyLinkModalOpen}
-      onClose={() => setBulkSetMyLinkModalOpen(false)}
-    >
-      <div className='space-y-4 pt-2'>
-        <div className='space-y-2'>
-          <Label>Pilih MyLink</Label>
-          {(() => {
-            const myLinkSelectItems = [
-              { value: '__none__', label: '-- Lepas MyLink (Kosongkan) --' },
-              ...(tables.myLinks ?? []).map((ml) => {
-                const mlId = String(ml.id ?? '');
-                const mlLabel = String(ml.label ?? mlId);
-                const mlProvider = ml.provider ? `[${String(ml.provider)}] ` : '';
-                return {
-                  value: mlId,
-                  label: `${mlProvider}${mlLabel} (${mlId})`
-                };
-              })
-            ];
-            return (
-              <Select
-                items={myLinkSelectItems}
-                value={bulkSelectedMyLinkId}
-                onValueChange={(val) => {
-                  if (val) setBulkSelectedMyLinkId(val);
-                }}
-              >
-                <SelectTrigger className='w-full'>
-                  <SelectValue placeholder='Pilih MyLink...' />
-                </SelectTrigger>
-                <SelectContent>
-                  {myLinkSelectItems.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            );
-          })()}
-        </div>
-        <div className='flex justify-end gap-2 pt-2'>
-          <Button
-            variant='outline'
-            onClick={() => setBulkSetMyLinkModalOpen(false)}
-            disabled={busy}
-          >
-            Batal
-          </Button>
-          <Button
-            isLoading={busy}
-            onClick={async () => {
-              const selectedIds = table
-                .getFilteredSelectedRowModel()
-                .rows.map((r) => String(r.original.id ?? ''))
-                .filter(Boolean);
-              if (selectedIds.length === 0) return;
-              const targetMyLink =
-                bulkSelectedMyLinkId === '__none__' ? null : bulkSelectedMyLinkId;
-              const ok = await executeBulkAction(
-                {
-                  action: 'bulkSetActivitiesMyLink',
-                  activityIds: selectedIds,
-                  myLinkId: targetMyLink
-                },
-                targetMyLink
-                  ? `MyLink berhasil dipasang ke ${selectedIds.length} Activity.`
-                  : `MyLink berhasil dilepas dari ${selectedIds.length} Activity.`,
-                ['activities', 'myLinks']
-              );
-              if (ok) {
-                setRowSelection({});
-                setBulkSetMyLinkModalOpen(false);
-              }
-            }}
-          >
-            <Icons.check className='size-4' />
-            Terapkan ke {table.getFilteredSelectedRowModel().rows.length} Activity
-          </Button>
-        </div>
-      </div>
-    </Modal>
-
-    {/* Bulk Edit Modal for MyLinks / Activities */}
-    <Modal
-      title={`Bulk Edit ${config.label}`}
-      description={`Perbarui field sekaligus untuk ${table.getFilteredSelectedRowModel().rows.length} baris terpilih.`}
-      isOpen={bulkEditModalOpen}
-      onClose={() => setBulkEditModalOpen(false)}
-    >
-      <div className='space-y-4 pt-2'>
-        {currentTable === 'myLinks' && (
-          <>
-            <div className='space-y-2'>
-              <Label>Ubah Provider</Label>
-              <Select
-                items={[
-                  { value: '__keep__', label: '-- Jangan Ubah Provider --' },
-                  ...MYLINK_PROVIDER_OPTIONS
-                ]}
-                value={bulkEditProvider}
-                onValueChange={(val) => {
-                  if (val) setBulkEditProvider(val);
-                }}
-              >
-                <SelectTrigger className='w-full'>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='__keep__'>-- Jangan Ubah Provider --</SelectItem>
-                  {MYLINK_PROVIDER_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className='space-y-2'>
-              <Label>Ubah Pemilik (User)</Label>
-              {(() => {
-                const userOpts = [
-                  { value: '__keep__', label: '-- Jangan Ubah User --' },
-                  ...tables.users.map((u) => ({
-                    value: String(u.id ?? ''),
-                    label: `${String(u.name ?? u.username ?? u.email ?? u.id)} (${String(u.id)})`
-                  }))
-                ];
-                return (
-                  <Select
-                    items={userOpts}
-                    value={bulkEditUserId}
-                    onValueChange={(val) => {
-                      if (val) setBulkEditUserId(val);
-                    }}
-                  >
-                    <SelectTrigger className='w-full'>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {userOpts.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                );
-              })()}
-            </div>
-          </>
-        )}
-
-        {currentTable === 'activities' && (
-          <div className='space-y-2'>
-            <Label>Ubah Kategori Activity</Label>
-            <Select
-              items={[
-                { value: '__keep__', label: '-- Jangan Ubah Kategori --' },
-                ...ACTIVITY_CATEGORY_OPTIONS
-              ]}
-              value={bulkEditCategory}
-              onValueChange={(val) => {
-                if (val) setBulkEditCategory(val);
-              }}
-            >
-              <SelectTrigger className='w-full'>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='__keep__'>-- Jangan Ubah Kategori --</SelectItem>
-                {ACTIVITY_CATEGORY_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-
-        <div className='flex justify-end gap-2 pt-2'>
-          <Button variant='outline' onClick={() => setBulkEditModalOpen(false)} disabled={busy}>
-            Batal
-          </Button>
-          <Button
-            isLoading={busy}
-            onClick={async () => {
-              const selectedIds = table
-                .getFilteredSelectedRowModel()
-                .rows.map((r) => String(r.original.id ?? ''))
-                .filter(Boolean);
-              if (selectedIds.length === 0) return;
-
-              const patchData: Record<string, unknown> = {};
-              if (currentTable === 'myLinks') {
-                if (bulkEditProvider !== '__keep__') patchData.provider = bulkEditProvider;
-                if (bulkEditUserId !== '__keep__') patchData.userId = bulkEditUserId;
-              } else if (currentTable === 'activities') {
-                if (bulkEditCategory !== '__keep__') patchData.category = bulkEditCategory;
-              }
-
-              if (Object.keys(patchData).length === 0) {
-                toast.error('Pilih minimal 1 field yang ingin diubah.');
-                return;
-              }
-
-              const ok = await executeBulkAction(
-                {
-                  action: 'bulkUpdate',
-                  table: currentTable,
-                  ids: selectedIds,
-                  data: patchData
-                },
-                `${selectedIds.length} record ${config.label} berhasil diperbarui.`,
-                currentTable === 'myLinks' || currentTable === 'activities'
-                  ? ['myLinks', 'activities']
-                  : [currentTable]
-              );
-              if (ok) {
-                setRowSelection({});
-                setBulkEditModalOpen(false);
-              }
-            }}
-          >
-            <Icons.check className='size-4' />
-            Simpan Perubahan Bulk
-          </Button>
-        </div>
-      </div>
-    </Modal>
-
-    {/* MyLink Activity Usage Manager Sheet (Cek, Edit, Hapus/Lepas, & Pasang Satu-Satu atau Bulk) */}
-    <Sheet
-      open={Boolean(managingMyLinkId)}
-      onOpenChange={(open) => {
-        if (!open) setManagingMyLinkId(null);
-      }}
-    >
-      <SheetContent className='flex h-full max-h-dvh flex-col overflow-hidden sm:max-w-2xl'>
-        {(() => {
-          const activeMyLinkId = managingMyLinkId ?? '';
-          const mlRecord = myLinkByIdMap.get(activeMyLinkId);
-          const mlOwner = mlRecord ? resolveRecordUser(mlRecord, 'myLinks') : undefined;
-          const allLinkedActivities = getActivitiesForMyLink(activeMyLinkId);
-
-          const resolveActivityContext = (act: Record<string, unknown>) => {
-            const rel =
-              act._related && typeof act._related === 'object'
-                ? (act._related as Record<string, unknown>)
-                : undefined;
-            const dayObj =
-              rel?.day && typeof rel.day === 'object'
-                ? (rel.day as Record<string, unknown>)
-                : act.itineraryDayId
-                  ? dayByIdMap.get(String(act.itineraryDayId))
-                  : undefined;
-            const itObj =
-              dayObj?.itinerary && typeof dayObj.itinerary === 'object'
-                ? (dayObj.itinerary as Record<string, unknown>)
-                : dayObj?.itineraryId
-                  ? itineraryByIdMap.get(String(dayObj.itineraryId))
-                  : undefined;
-            const authorObj = resolveRecordUser(act, 'activities');
-            return {
-              dayTitle: dayObj?.title
-                ? String(dayObj.title)
-                : dayObj?.dayNumber
-                  ? `Day ${String(dayObj.dayNumber)}`
-                  : String(act.itineraryDayId ?? '—'),
-              itineraryId: itObj?.id ? String(itObj.id) : dayObj?.itineraryId ? String(dayObj.itineraryId) : '',
-              itineraryTitle: itObj?.title ? String(itObj.title) : '—',
-              authorLabel: authorObj?.name
-                ? String(authorObj.name)
-                : authorObj?.username
-                  ? `@${String(authorObj.username).replace(/^@/, '')}`
-                  : authorObj?.email
-                    ? String(authorObj.email)
-                    : '—'
-            };
-          };
-
-          const filteredLinkedActivities = allLinkedActivities.filter((act) => {
-            const q = linkedSearch.toLowerCase().trim();
-            if (!q) return true;
-            const ctx = resolveActivityContext(act);
-            return (
-              String(act.title ?? '').toLowerCase().includes(q) ||
-              String(act.locationName ?? '').toLowerCase().includes(q) ||
-              String(act.id ?? '').toLowerCase().includes(q) ||
-              ctx.dayTitle.toLowerCase().includes(q) ||
-              ctx.itineraryTitle.toLowerCase().includes(q) ||
-              ctx.authorLabel.toLowerCase().includes(q)
-            );
-          });
-
-          const candidateActivities = (tables.activities ?? []).filter((act) => {
-            const actId = String(act.id ?? '');
-            if (!actId) return false;
-            if (String(act.myLinkId ?? '') === activeMyLinkId) return false;
-            if (addActivityOnlyUnlinked && Boolean(act.myLinkId)) return false;
-
-            const ctx = resolveActivityContext(act);
-            if (
-              addActivityItineraryFilter !== '__all__' &&
-              ctx.itineraryId !== addActivityItineraryFilter
-            ) {
-              return false;
-            }
-
-            const q = addActivitySearch.toLowerCase().trim();
-            if (!q) return true;
-            return (
-              String(act.title ?? '').toLowerCase().includes(q) ||
-              String(act.locationName ?? '').toLowerCase().includes(q) ||
-              actId.toLowerCase().includes(q) ||
-              ctx.dayTitle.toLowerCase().includes(q) ||
-              ctx.itineraryTitle.toLowerCase().includes(q) ||
-              ctx.authorLabel.toLowerCase().includes(q)
-            );
-          });
-
-          const otherMyLinkOptions = [
-            { value: '__none__', label: '-- Pilih MyLink Tujuan --' },
-            ...(tables.myLinks ?? [])
-              .filter((m) => String(m.id ?? '') !== activeMyLinkId)
-              .map((m) => ({
-                value: String(m.id ?? ''),
-                label: `[${String(m.provider ?? 'Custom')}] ${String(m.label ?? m.id)} (${String(m.id)})`
-              }))
-          ];
-
-          const itineraryFilterOptions = [
-            { value: '__all__', label: 'Semua Itinerary' },
-            ...tables.itineraries.map((it) => ({
-              value: String(it.id ?? ''),
-              label: `${String(it.title ?? it.id)} (${String(it.destination ?? '')})`
-            }))
-          ];
-
-          return (
-            <>
-              <SheetHeader className='shrink-0 space-y-2 border-b pb-3'>
-                <div className='flex items-start justify-between gap-2 pr-6'>
-                  <div>
-                    <SheetTitle className='flex items-center gap-2 text-base'>
-                      <Icons.link className='size-4' />
-                      <span>
-                        {mlRecord?.label ? String(mlRecord.label) : 'Kelola Penggunaan MyLink'}
-                      </span>
-                      {Boolean(mlRecord?.provider) && (
-                        <Badge variant='outline'>{String(mlRecord?.provider)}</Badge>
-                      )}
-                    </SheetTitle>
-                    <SheetDescription className='mt-1 text-xs'>
-                      Cek dipakai di Activity mana saja, lepas/hapus, edit, atau pasang ke Activity
-                      baru secara satu-per-satu maupun bulk.
-                    </SheetDescription>
-                  </div>
-                </div>
-
-                <div className='bg-muted/40 flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs'>
-                  <div className='flex flex-wrap items-center gap-2'>
-                    <span className='text-muted-foreground'>My Link Id:</span>
-                    <code className='bg-background rounded border px-1.5 py-0.5 font-mono text-xs'>
-                      {activeMyLinkId}
-                    </code>
-                    <Button
-                      type='button'
-                      variant='ghost'
-                      size='icon'
-                      className='h-6 w-6'
-                      title='Salin My Link Id'
-                      onClick={() => {
-                        navigator.clipboard.writeText(activeMyLinkId).catch(() => {});
-                        toast.success('My Link Id berhasil disalin!');
-                      }}
-                    >
-                      <Icons.copy className='size-3' />
-                    </Button>
-                    {mlOwner && (
-                      <span className='text-muted-foreground'>
-                        · Owner:{' '}
-                        <b className='text-foreground'>
-                          {String(mlOwner.name ?? mlOwner.username ?? mlOwner.email ?? '')}
-                        </b>
-                      </span>
-                    )}
-                  </div>
-                  <div className='flex items-center gap-1.5'>
-                    {Boolean(mlRecord?.actualUrl) && (
-                      <a
-                        href={String(mlRecord?.actualUrl)}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        className='text-primary inline-flex items-center gap-1 hover:underline'
-                      >
-                        <span>Buka URL</span>
-                        <Icons.externalLink className='size-3' />
-                      </a>
-                    )}
-                    {mlRecord && (
-                      <Button
-                        type='button'
-                        variant='outline'
-                        size='sm'
-                        className='h-7 text-xs'
-                        onClick={() => {
-                          setManagingMyLinkId(null);
-                          setCurrentTable('myLinks');
-                          setActiveView('myLinks');
-                          openEditSheet(activeMyLinkId, mlRecord);
-                        }}
-                      >
-                        <Icons.edit className='size-3' />
-                        Edit MyLink
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </SheetHeader>
-
-              <Tabs
-                value={usageTab}
-                onValueChange={(val) => setUsageTab(val as 'linked' | 'add')}
-                className='mt-2 flex min-h-0 flex-1 flex-col overflow-hidden'
-              >
-                <TabsList className='w-full shrink-0'>
-                  <TabsTrigger value='linked' className='flex-1'>
-                    <Icons.kanban className='size-4' />
-                    Digunakan di Activity ({allLinkedActivities.length})
-                  </TabsTrigger>
-                  <TabsTrigger value='add' className='flex-1'>
-                    <Icons.add className='size-4' />
-                    Pasang ke Activity (Satu / Bulk)
-                  </TabsTrigger>
-                </TabsList>
-
-                {/* TAB 1: LINKED ACTIVITIES */}
-                <TabsContent
-                  value='linked'
-                  className='mt-3 flex min-h-0 flex-1 flex-col space-y-3 overflow-hidden'
-                >
-                  <div className='flex shrink-0 flex-wrap items-center justify-between gap-2'>
-                    <Input
-                      placeholder='Cari judul activity, lokasi, itinerary, atau user...'
-                      value={linkedSearch}
-                      onChange={(e) => setLinkedSearch(e.target.value)}
-                      className='h-8 flex-1 text-xs'
-                    />
-                    {allLinkedActivities.length > 0 && (
-                      <Button
-                        type='button'
-                        variant='outline'
-                        size='sm'
-                        className='h-8 text-xs'
-                        disabled={busy}
-                        onClick={async () => {
-                          const allIds = allLinkedActivities
-                            .map((a) => String(a.id ?? ''))
-                            .filter(Boolean);
-                          const ok = await executeBulkAction(
-                            {
-                              action: 'bulkSetActivitiesMyLink',
-                              activityIds: allIds,
-                              myLinkId: null
-                            },
-                            `MyLink berhasil dilepas dari semua (${allIds.length}) Activity.`,
-                            ['activities', 'myLinks']
-                          );
-                          if (ok) setSelectedLinkedActivityIds([]);
-                        }}
-                      >
-                        <Icons.close className='size-3.5' />
-                        Lepas Semua ({allLinkedActivities.length})
-                      </Button>
-                    )}
-                  </div>
-
-                  {filteredLinkedActivities.length > 0 && (
-                    <div className='bg-muted/30 flex shrink-0 flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs'>
-                      <label className='flex cursor-pointer items-center gap-2 font-medium'>
-                        <Checkbox
-                          checked={
-                            filteredLinkedActivities.length > 0 &&
-                            filteredLinkedActivities.every((a) =>
-                              selectedLinkedActivityIds.includes(String(a.id ?? ''))
-                            )
-                          }
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedLinkedActivityIds(
-                                filteredLinkedActivities
-                                  .map((a) => String(a.id ?? ''))
-                                  .filter(Boolean)
+                      ) : currentTable === 'activities' ? (
+                        <div className='space-y-4'>
+                          <div className='space-y-2'>
+                            <Label>Itinerary Day (Tujuan untuk Semua Activity)</Label>
+                            {(() => {
+                              const daySelectItems = tables.days.map((d) => {
+                                const dId = String(d.id ?? '');
+                                const dTitle = String(d.title ?? `Day ${d.dayNumber ?? ''}`);
+                                const itObj = d.itineraryId
+                                  ? itineraryByIdMap.get(String(d.itineraryId))
+                                  : undefined;
+                                const itTitle = itObj?.title ? `${String(itObj.title)} — ` : '';
+                                return {
+                                  value: dId,
+                                  label: `${itTitle}${dTitle} (${dId})`
+                                };
+                              });
+                              return (
+                                <Select
+                                  items={daySelectItems}
+                                  value={bulkActivityDayId}
+                                  onValueChange={(val) => {
+                                    if (val) setBulkActivityDayId(val);
+                                  }}
+                                >
+                                  <SelectTrigger className='w-full'>
+                                    <SelectValue placeholder='Pilih Itinerary Day...' />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {daySelectItems.map((opt) => (
+                                      <SelectItem key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
                               );
-                            } else {
-                              setSelectedLinkedActivityIds([]);
-                            }
-                          }}
-                        />
-                        <span>
-                          Pilih Semua ({selectedLinkedActivityIds.length}/
-                          {filteredLinkedActivities.length} terpilih)
-                        </span>
-                      </label>
+                            })()}
+                            <Input
+                              type='text'
+                              placeholder='Atau masukkan Itinerary Day ID secara langsung...'
+                              className='font-mono text-xs'
+                              value={bulkActivityDayId}
+                              onChange={(e) => setBulkActivityDayId(e.target.value)}
+                            />
+                          </div>
 
-                      {selectedLinkedActivityIds.length > 0 && (
-                        <div className='flex flex-wrap items-center gap-1.5'>
-                          <Button
-                            type='button'
-                            variant='secondary'
-                            size='sm'
-                            className='h-7 text-xs'
-                            disabled={busy}
-                            onClick={async () => {
-                              const ok = await executeBulkAction(
-                                {
-                                  action: 'bulkSetActivitiesMyLink',
-                                  activityIds: selectedLinkedActivityIds,
-                                  myLinkId: null
-                                },
-                                `MyLink dilepas dari ${selectedLinkedActivityIds.length} Activity terpilih.`,
-                                ['activities', 'myLinks']
+                          <div className='space-y-2'>
+                            <Label>Pasang MyLink ke Semua Activity Ini (Opsional)</Label>
+                            {(() => {
+                              const myLinkSelectItems = [
+                                { value: '__none__', label: '-- Tanpa MyLink (Kosong) --' },
+                                ...(tables.myLinks ?? []).map((ml) => ({
+                                  value: String(ml.id ?? ''),
+                                  label: `[${String(ml.provider ?? 'Custom')}] ${String(ml.label ?? ml.id)} (${String(ml.id)})`
+                                }))
+                              ];
+                              return (
+                                <Select
+                                  items={myLinkSelectItems}
+                                  value={bulkActivityMyLinkId}
+                                  onValueChange={(val) => {
+                                    if (val) setBulkActivityMyLinkId(val);
+                                  }}
+                                >
+                                  <SelectTrigger className='w-full'>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {myLinkSelectItems.map((opt) => (
+                                      <SelectItem key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
                               );
-                              if (ok) setSelectedLinkedActivityIds([]);
-                            }}
-                          >
-                            <Icons.close className='size-3.5' />
-                            Lepas Link ({selectedLinkedActivityIds.length})
-                          </Button>
-                          <Button
-                            type='button'
-                            variant='destructive'
-                            size='sm'
-                            className='h-7 text-xs'
-                            disabled={busy}
-                            onClick={async () => {
-                              const ok = await executeBulkAction(
-                                {
-                                  action: 'bulkDelete',
-                                  table: 'activities',
-                                  ids: selectedLinkedActivityIds
-                                },
-                                `${selectedLinkedActivityIds.length} Activity berhasil dihapus permanen.`,
-                                ['activities', 'myLinks']
-                              );
-                              if (ok) setSelectedLinkedActivityIds([]);
-                            }}
-                          >
-                            <Icons.trash className='size-3.5' />
-                            Hapus Activity ({selectedLinkedActivityIds.length})
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                            })()}
+                          </div>
 
-                  {selectedLinkedActivityIds.length > 0 && otherMyLinkOptions.length > 1 && (
-                    <div className='bg-muted/20 flex shrink-0 flex-wrap items-center gap-2 rounded-lg border p-2.5 text-xs'>
-                      <span className='font-medium'>
-                        Bulk Edit / Pindahkan {selectedLinkedActivityIds.length} Activity ke:
-                      </span>
-                      <div className='min-w-[200px] flex-1'>
-                        <Select
-                          items={otherMyLinkOptions}
-                          value={reassignTargetMyLinkId}
-                          onValueChange={(val) => {
-                            if (val) setReassignTargetMyLinkId(val);
-                          }}
-                        >
-                          <SelectTrigger className='h-8 w-full text-xs'>
-                            <SelectValue placeholder='Pilih MyLink tujuan...' />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {otherMyLinkOptions.map((opt) => (
-                              <SelectItem key={opt.value} value={opt.value}>
-                                {opt.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <Button
-                        type='button'
-                        size='sm'
-                        className='h-8 text-xs'
-                        disabled={busy || reassignTargetMyLinkId === '__none__'}
-                        onClick={async () => {
-                          if (!reassignTargetMyLinkId || reassignTargetMyLinkId === '__none__')
-                            return;
-                          const ok = await executeBulkAction(
-                            {
-                              action: 'bulkSetActivitiesMyLink',
-                              activityIds: selectedLinkedActivityIds,
-                              myLinkId: reassignTargetMyLinkId
-                            },
-                            `${selectedLinkedActivityIds.length} Activity berhasil dipindahkan ke MyLink baru.`,
-                            ['activities', 'myLinks']
-                          );
-                          if (ok) {
-                            setSelectedLinkedActivityIds([]);
-                            setReassignTargetMyLinkId('__none__');
-                          }
-                        }}
-                      >
-                        <Icons.check className='size-3.5' />
-                        Pindahkan
-                      </Button>
-                    </div>
-                  )}
-
-                  <div className='-mr-2 min-h-0 flex-1 space-y-2 overflow-y-auto pr-2 pb-4'>
-                    {filteredLinkedActivities.length === 0 ? (
-                      <div className='text-muted-foreground flex flex-col items-center justify-center rounded-lg border border-dashed py-10 text-center text-xs'>
-                        <Icons.kanban className='mb-2 size-8 opacity-40' />
-                        <p className='font-medium'>
-                          {allLinkedActivities.length === 0
-                            ? 'MyLink ini belum digunakan di Activity mana pun.'
-                            : 'Tidak ada Activity yang cocok dengan pencarian.'}
-                        </p>
-                        {allLinkedActivities.length === 0 && (
-                          <Button
-                            type='button'
-                            variant='secondary'
-                            size='sm'
-                            className='mt-3 h-7 text-xs'
-                            onClick={() => setUsageTab('add')}
-                          >
-                            <Icons.add className='size-3.5' />
-                            Pasang ke Activity Sekarang
-                          </Button>
-                        )}
-                      </div>
-                    ) : (
-                      filteredLinkedActivities.map((act) => {
-                        const actId = String(act.id ?? '');
-                        const isChecked = selectedLinkedActivityIds.includes(actId);
-                        const ctx = resolveActivityContext(act);
-
-                        return (
-                          <div
-                            key={actId}
-                            className={cn(
-                              'flex flex-col justify-between gap-2.5 rounded-lg border p-3 transition-colors sm:flex-row sm:items-center',
-                              isChecked && 'border-primary/50 bg-primary/5'
-                            )}
-                          >
-                            <div className='flex items-start gap-2.5'>
-                              <Checkbox
-                                checked={isChecked}
-                                onCheckedChange={(checked) => {
-                                  setSelectedLinkedActivityIds((prev) =>
-                                    checked
-                                      ? [...prev, actId]
-                                      : prev.filter((item) => item !== actId)
-                                  );
-                                }}
-                                className='mt-0.5'
-                              />
-                              <div className='space-y-1'>
-                                <div className='flex flex-wrap items-center gap-1.5'>
-                                  {Boolean(act.time) && (
-                                    <Badge variant='outline' className='font-mono text-[10px]'>
-                                      {String(act.time)}
-                                    </Badge>
-                                  )}
-                                  <span className='text-sm font-medium'>
-                                    {String(act.title ?? actId)}
-                                  </span>
-                                  {Boolean(act.category) && (
-                                    <Badge variant='secondary' className='text-[10px]'>
-                                      {String(act.category)}
-                                    </Badge>
-                                  )}
-                                </div>
-                                <div className='text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs'>
-                                  {Boolean(act.locationName) && (
-                                    <span>📍 {String(act.locationName)}</span>
-                                  )}
-                                  <span>· {ctx.dayTitle}</span>
-                                  <span>
-                                    · Itinerary: <b className='text-foreground'>{ctx.itineraryTitle}</b>
-                                  </span>
-                                  <span>· User: {ctx.authorLabel}</span>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className='flex shrink-0 flex-wrap items-center gap-1.5 pl-6 sm:pl-0'>
+                          <div className='space-y-2'>
+                            <div className='flex items-center justify-between'>
+                              <Label>Daftar Baris Activity ({bulkActivityRows.length})</Label>
                               <Button
                                 type='button'
                                 variant='outline'
                                 size='sm'
-                                className='h-7 px-2 text-xs'
-                                disabled={busy}
-                                onClick={() => {
-                                  const fullActivity =
-                                    (tables.activities ?? []).find(
-                                      (a) => String(a.id ?? '') === actId
-                                    ) ?? act;
-                                  setManagingMyLinkId(null);
-                                  setCurrentTable('activities');
-                                  setActiveView('activities');
-                                  openEditSheet(actId, fullActivity);
-                                }}
-                              >
-                                <Icons.edit className='size-3' />
-                                Edit
-                              </Button>
-                              <Button
-                                type='button'
-                                variant='secondary'
-                                size='sm'
-                                className='h-7 px-2 text-xs'
-                                disabled={busy}
-                                onClick={async () => {
-                                  const ok = await executeBulkAction(
+                                className='h-7 text-xs'
+                                onClick={() =>
+                                  setBulkActivityRows((prev) => [
+                                    ...prev,
                                     {
-                                      action: 'bulkSetActivitiesMyLink',
-                                      activityIds: [actId],
-                                      myLinkId: null
-                                    },
-                                    'MyLink berhasil dilepas dari Activity.',
-                                    ['activities', 'myLinks']
-                                  );
-                                  if (ok) {
-                                    setSelectedLinkedActivityIds((prev) =>
-                                      prev.filter((id) => id !== actId)
-                                    );
-                                  }
-                                }}
+                                      time: '14:00',
+                                      title: '',
+                                      locationName: '',
+                                      category: 'wisata',
+                                      estimatedCost: 0
+                                    }
+                                  ])
+                                }
                               >
-                                <Icons.close className='size-3' />
-                                Lepas Link
-                              </Button>
-                              <Button
-                                type='button'
-                                variant='destructive'
-                                size='sm'
-                                className='h-7 px-2 text-xs'
-                                disabled={busy}
-                                title='Hapus Activity ini secara permanen'
-                                onClick={async () => {
-                                  const ok = await executeBulkAction(
-                                    {
-                                      action: 'bulkDelete',
-                                      table: 'activities',
-                                      ids: [actId]
-                                    },
-                                    'Activity berhasil dihapus.',
-                                    ['activities', 'myLinks']
-                                  );
-                                  if (ok) {
-                                    setSelectedLinkedActivityIds((prev) =>
-                                      prev.filter((id) => id !== actId)
-                                    );
-                                  }
-                                }}
-                              >
-                                <Icons.trash className='size-3' />
+                                <Icons.add className='size-3.5' />
+                                Tambah Baris
                               </Button>
                             </div>
+                            <div className='space-y-2'>
+                              {bulkActivityRows.map((row, idx) => (
+                                <div
+                                  key={idx}
+                                  className='bg-muted/30 space-y-2 rounded-lg border p-2.5'
+                                >
+                                  <div className='grid grid-cols-1 gap-2 sm:grid-cols-12'>
+                                    <div className='sm:col-span-3'>
+                                      <Input
+                                        placeholder='09:00'
+                                        value={row.time}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          setBulkActivityRows((prev) =>
+                                            prev.map((r, i) =>
+                                              i === idx ? { ...r, time: val } : r
+                                            )
+                                          );
+                                        }}
+                                      />
+                                    </div>
+                                    <div className='sm:col-span-5'>
+                                      <Input
+                                        placeholder='Judul Activity'
+                                        value={row.title}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          setBulkActivityRows((prev) =>
+                                            prev.map((r, i) =>
+                                              i === idx ? { ...r, title: val } : r
+                                            )
+                                          );
+                                        }}
+                                      />
+                                    </div>
+                                    <div className='flex items-center gap-1 sm:col-span-4'>
+                                      <Input
+                                        placeholder='Nama Lokasi'
+                                        value={row.locationName}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          setBulkActivityRows((prev) =>
+                                            prev.map((r, i) =>
+                                              i === idx ? { ...r, locationName: val } : r
+                                            )
+                                          );
+                                        }}
+                                      />
+                                      <Button
+                                        type='button'
+                                        variant='ghost'
+                                        size='icon'
+                                        className='h-8 w-8 shrink-0'
+                                        disabled={bulkActivityRows.length <= 1}
+                                        onClick={() =>
+                                          setBulkActivityRows((prev) =>
+                                            prev.filter((_, i) => i !== idx)
+                                          )
+                                        }
+                                      >
+                                        <Icons.trash className='size-3.5' />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                        );
-                      })
-                    )}
-                  </div>
-                </TabsContent>
+                        </div>
+                      ) : (
+                        <div className='space-y-3'>
+                          <Label>JSON Array untuk Bulk Create ({config.label})</Label>
+                          <Textarea
+                            className='min-h-[340px] font-mono text-xs leading-relaxed'
+                            value={bulkJsonDraft}
+                            onChange={(e) => setBulkJsonDraft(e.target.value)}
+                            spellCheck={false}
+                          />
+                        </div>
+                      )}
+                    </TabsContent>
 
-                {/* TAB 2: ADD / ATTACH TO ACTIVITIES (SINGLE OR BULK) */}
-                <TabsContent
-                  value='add'
-                  className='mt-3 flex min-h-0 flex-1 flex-col space-y-3 overflow-hidden'
+                    <TabsContent value='json' className='flex-none space-y-4 pb-4'>
+                      {parseError && (
+                        <Alert variant='destructive'>
+                          <Icons.alertCircle />
+                          <AlertTitle>Format JSON Tidak Valid</AlertTitle>
+                          <AlertDescription>{parseError}</AlertDescription>
+                        </Alert>
+                      )}
+                      <Textarea
+                        className='min-h-[360px] font-mono text-xs leading-relaxed'
+                        value={draft}
+                        onChange={(event) => setDraft(event.target.value)}
+                        spellCheck={false}
+                      />
+                    </TabsContent>
+                  </>
+                );
+              })()}
+
+              {currentTable === 'appSettings' ? (
+                <Alert className='mt-2 mb-4'>
+                  <Icons.info />
+                  <AlertTitle>Panduan Kunci App Settings</AlertTitle>
+                  <AlertDescription>
+                    <ul className='mt-1 list-disc space-y-1 pl-4 text-xs'>
+                      <li>
+                        <code>whatsapp_number</code>: Nomor WhatsApp Admin (contoh:{' '}
+                        <code>088293681133</code>)
+                      </li>
+                      <li>
+                        <code>price_1m / 3m / 6m / 1y</code>: Harga Plan (contoh:{' '}
+                        <code>Rp 29.900</code>)
+                      </li>
+                      <li>
+                        <code>rate_1m / 3m / 6m / 1y</code>: Keterangan biaya (contoh:{' '}
+                        <code>/bulan</code>, <code>Rp 26.633/bln</code>)
+                      </li>
+                      <li>
+                        <code>promo_1m / 3m / 6m / 1y</code>: Badge Promo/Hemat (contoh:{' '}
+                        <code>11% Hemat</code>)
+                      </li>
+                      <li>
+                        <code>email_whitelist</code>: Whitelist domain email pendaftaran (contoh:{' '}
+                        <code>gmail.com,outlook.com,yahoo.com,icloud.com</code>)
+                      </li>
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+              ) : (
+                <Alert className='mt-2 mb-4'>
+                  <Icons.info />
+                  <AlertTitle>Tips Editor</AlertTitle>
+                  <AlertDescription className='text-xs'>
+                    Anda dapat menambahkan data satu-per-satu melalui <b>Form (Satu)</b> atau sekaligus
+                    banyak melalui tab <b>Bulk Add</b>.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+          </Tabs>
+
+          <SheetFooter className='shrink-0 flex-row justify-end gap-2 border-t pt-4'>
+            <Button
+              type='button'
+              variant='outline'
+              onClick={() => resetDraft(currentTable)}
+              disabled={busy}
+            >
+              Reset Template
+            </Button>
+            {editorMode === 'create' && editorTab === 'bulk' ? (
+              <Button type='button' onClick={handleBulkCreate} isLoading={busy}>
+                <Icons.check className='size-4' />
+                Simpan Bulk {config.label}
+              </Button>
+            ) : (
+              <Button type='button' onClick={handleSave} isLoading={busy}>
+                <Icons.check className='size-4' />
+                {editorMode === 'create' ? 'Create Record' : 'Update Record'}
+              </Button>
+            )}
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+
+      {/* Delete Confirmation AlertModal (next-shadcn pattern) */}
+      <AlertModal
+        isOpen={Boolean(deleteTargetId)}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={confirmDelete}
+        loading={busy}
+      />
+
+      {/* Approve Claim Modal */}
+      <Modal
+        title='Setujui Klaim Akun'
+        description='Setujui permohonan klaim akun ini dan kirimkan email tautan setup password ke pemohon?'
+        isOpen={Boolean(approveClaimId)}
+        onClose={() => setApproveClaimId(null)}
+      >
+        <div className='flex w-full items-center justify-end gap-2 pt-6'>
+          <Button variant='outline' onClick={() => setApproveClaimId(null)} disabled={busy}>
+            Batal
+          </Button>
+          <Button onClick={confirmApproveClaim} isLoading={busy}>
+            <Icons.check className='size-4' />
+            Setujui & Kirim Email
+          </Button>
+        </div>
+      </Modal>
+
+      {/* Setup URL Result Modal */}
+      <Modal
+        title='Klaim Disetujui!'
+        description='Email notifikasi telah dikirim ke pemohon. Tautan setup password juga telah disalin ke clipboard.'
+        isOpen={Boolean(approvedSetupUrl)}
+        onClose={() => setApprovedSetupUrl(null)}
+      >
+        <div className='space-y-4 pt-2'>
+          <div className='flex items-center gap-2'>
+            <Input readOnly value={approvedSetupUrl ?? ''} className='font-mono text-xs' />
+            <Button
+              variant='outline'
+              size='icon'
+              onClick={() => {
+                if (approvedSetupUrl) {
+                  navigator.clipboard.writeText(approvedSetupUrl).catch(() => { });
+                  toast.success('Tautan disalin ke clipboard!');
+                }
+              }}
+            >
+              <Icons.copy className='size-4' />
+            </Button>
+          </div>
+          <div className='flex justify-end'>
+            <Button onClick={() => setApprovedSetupUrl(null)}>Selesai</Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Reject Claim Modal */}
+      <Modal
+        title='Tolak Klaim Akun'
+        description='Masukkan alasan penolakan klaim (opsional) yang akan dikirimkan ke email pemohon.'
+        isOpen={Boolean(rejectClaimId)}
+        onClose={() => setRejectClaimId(null)}
+      >
+        <div className='space-y-4 pt-2'>
+          <div className='space-y-2'>
+            <Label htmlFor='reject-reason-input'>Alasan Penolakan</Label>
+            <Textarea
+              id='reject-reason-input'
+              placeholder='Contoh: Bukti kepemilikan akun sosial media belum sesuai...'
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              rows={3}
+            />
+          </div>
+          <div className='flex justify-end gap-2'>
+            <Button variant='outline' onClick={() => setRejectClaimId(null)} disabled={busy}>
+              Batal
+            </Button>
+            <Button variant='destructive' onClick={confirmRejectClaim} isLoading={busy}>
+              Tolak Klaim
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Impersonate Confirmation Modal */}
+      <Modal
+        title='Masuk Sebagai Akun Kurasi'
+        description='Anda akan masuk sebagai akun kurasi ini untuk membuat atau mengedit itinerary. Anda dapat kembali ke Admin Console kapan saja melalui banner di bagian atas halaman.'
+        isOpen={Boolean(impersonateUserId)}
+        onClose={() => setImpersonateUserId(null)}
+      >
+        <div className='flex justify-end gap-2 pt-6'>
+          <Button variant='outline' onClick={() => setImpersonateUserId(null)} disabled={busy}>
+            Batal
+          </Button>
+          <Button onClick={confirmImpersonate} isLoading={busy}>
+            <Icons.login className='size-4' />
+            Masuk & Buat Itinerary
+          </Button>
+        </div>
+      </Modal>
+
+      {/* Bulk Delete Confirmation Modal */}
+      <AlertModal
+        isOpen={bulkDeleteConfirmOpen}
+        onClose={() => setBulkDeleteConfirmOpen(false)}
+        loading={busy}
+        onConfirm={async () => {
+          const selectedIds = table
+            .getFilteredSelectedRowModel()
+            .rows.map((r) => String(r.original.id ?? r.original.key ?? ''))
+            .filter(Boolean);
+          if (selectedIds.length === 0) {
+            setBulkDeleteConfirmOpen(false);
+            return;
+          }
+          const refreshList: AdminTable[] =
+            currentTable === 'myLinks' || currentTable === 'activities'
+              ? ['myLinks', 'activities']
+              : [currentTable];
+          const ok = await executeBulkAction(
+            { action: 'bulkDelete', table: currentTable, ids: selectedIds },
+            `${selectedIds.length} record ${config.label} berhasil dihapus.`,
+            refreshList
+          );
+          if (ok) {
+            setRowSelection({});
+            setBulkDeleteConfirmOpen(false);
+          }
+        }}
+      />
+
+      {/* Bulk Set / Change MyLink Modal for Selected Activities */}
+      <Modal
+        title='Pasang / Ubah MyLink secara Bulk'
+        description={`Pilih MyLink yang ingin dipasang ke ${table.getFilteredSelectedRowModel().rows.length} Activity terpilih.`}
+        isOpen={bulkSetMyLinkModalOpen}
+        onClose={() => setBulkSetMyLinkModalOpen(false)}
+      >
+        <div className='space-y-4 pt-2'>
+          <div className='space-y-2'>
+            <Label>Pilih MyLink</Label>
+            {(() => {
+              const myLinkSelectItems = [
+                { value: '__none__', label: '-- Lepas MyLink (Kosongkan) --' },
+                ...(tables.myLinks ?? []).map((ml) => {
+                  const mlId = String(ml.id ?? '');
+                  const mlLabel = String(ml.label ?? mlId);
+                  const mlProvider = ml.provider ? `[${String(ml.provider)}] ` : '';
+                  return {
+                    value: mlId,
+                    label: `${mlProvider}${mlLabel} (${mlId})`
+                  };
+                })
+              ];
+              return (
+                <Select
+                  items={myLinkSelectItems}
+                  value={bulkSelectedMyLinkId}
+                  onValueChange={(val) => {
+                    if (val) setBulkSelectedMyLinkId(val);
+                  }}
                 >
-                  <div className='grid shrink-0 grid-cols-1 gap-2 sm:grid-cols-2'>
-                    <Input
-                      placeholder='Cari activity, lokasi, hari, atau user...'
-                      value={addActivitySearch}
-                      onChange={(e) => setAddActivitySearch(e.target.value)}
-                      className='h-8 text-xs'
-                    />
+                  <SelectTrigger className='w-full'>
+                    <SelectValue placeholder='Pilih MyLink...' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {myLinkSelectItems.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              );
+            })()}
+          </div>
+          <div className='flex justify-end gap-2 pt-2'>
+            <Button
+              variant='outline'
+              onClick={() => setBulkSetMyLinkModalOpen(false)}
+              disabled={busy}
+            >
+              Batal
+            </Button>
+            <Button
+              isLoading={busy}
+              onClick={async () => {
+                const selectedIds = table
+                  .getFilteredSelectedRowModel()
+                  .rows.map((r) => String(r.original.id ?? ''))
+                  .filter(Boolean);
+                if (selectedIds.length === 0) return;
+                const targetMyLink =
+                  bulkSelectedMyLinkId === '__none__' ? null : bulkSelectedMyLinkId;
+                const ok = await executeBulkAction(
+                  {
+                    action: 'bulkSetActivitiesMyLink',
+                    activityIds: selectedIds,
+                    myLinkId: targetMyLink
+                  },
+                  targetMyLink
+                    ? `MyLink berhasil dipasang ke ${selectedIds.length} Activity.`
+                    : `MyLink berhasil dilepas dari ${selectedIds.length} Activity.`,
+                  ['activities', 'myLinks']
+                );
+                if (ok) {
+                  setRowSelection({});
+                  setBulkSetMyLinkModalOpen(false);
+                }
+              }}
+            >
+              <Icons.check className='size-4' />
+              Terapkan ke {table.getFilteredSelectedRowModel().rows.length} Activity
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Bulk Edit Modal for MyLinks / Activities */}
+      <Modal
+        title={`Bulk Edit ${config.label}`}
+        description={`Perbarui field sekaligus untuk ${table.getFilteredSelectedRowModel().rows.length} baris terpilih.`}
+        isOpen={bulkEditModalOpen}
+        onClose={() => setBulkEditModalOpen(false)}
+      >
+        <div className='space-y-4 pt-2'>
+          {currentTable === 'myLinks' && (
+            <>
+              <div className='space-y-2'>
+                <Label>Ubah Provider</Label>
+                <Select
+                  items={[
+                    { value: '__keep__', label: '-- Jangan Ubah Provider --' },
+                    ...MYLINK_PROVIDER_OPTIONS
+                  ]}
+                  value={bulkEditProvider}
+                  onValueChange={(val) => {
+                    if (val) setBulkEditProvider(val);
+                  }}
+                >
+                  <SelectTrigger className='w-full'>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='__keep__'>-- Jangan Ubah Provider --</SelectItem>
+                    {MYLINK_PROVIDER_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className='space-y-2'>
+                <Label>Ubah Pemilik (User)</Label>
+                {(() => {
+                  const userOpts = [
+                    { value: '__keep__', label: '-- Jangan Ubah User --' },
+                    ...tables.users.map((u) => ({
+                      value: String(u.id ?? ''),
+                      label: `${String(u.name ?? u.username ?? u.email ?? u.id)} (${String(u.id)})`
+                    }))
+                  ];
+                  return (
                     <Select
-                      items={itineraryFilterOptions}
-                      value={addActivityItineraryFilter}
+                      items={userOpts}
+                      value={bulkEditUserId}
                       onValueChange={(val) => {
-                        if (val) setAddActivityItineraryFilter(val);
+                        if (val) setBulkEditUserId(val);
                       }}
                     >
-                      <SelectTrigger className='h-8 w-full text-xs'>
-                        <SelectValue placeholder='Filter Itinerary...' />
+                      <SelectTrigger className='w-full'>
+                        <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {itineraryFilterOptions.map((opt) => (
+                        {userOpts.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
                             {opt.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                  );
+                })()}
+              </div>
+            </>
+          )}
+
+          {currentTable === 'activities' && (
+            <div className='space-y-2'>
+              <Label>Ubah Kategori Activity</Label>
+              <Select
+                items={[
+                  { value: '__keep__', label: '-- Jangan Ubah Kategori --' },
+                  ...ACTIVITY_CATEGORY_OPTIONS
+                ]}
+                value={bulkEditCategory}
+                onValueChange={(val) => {
+                  if (val) setBulkEditCategory(val);
+                }}
+              >
+                <SelectTrigger className='w-full'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='__keep__'>-- Jangan Ubah Kategori --</SelectItem>
+                  {ACTIVITY_CATEGORY_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          <div className='flex justify-end gap-2 pt-2'>
+            <Button variant='outline' onClick={() => setBulkEditModalOpen(false)} disabled={busy}>
+              Batal
+            </Button>
+            <Button
+              isLoading={busy}
+              onClick={async () => {
+                const selectedIds = table
+                  .getFilteredSelectedRowModel()
+                  .rows.map((r) => String(r.original.id ?? ''))
+                  .filter(Boolean);
+                if (selectedIds.length === 0) return;
+
+                const patchData: Record<string, unknown> = {};
+                if (currentTable === 'myLinks') {
+                  if (bulkEditProvider !== '__keep__') patchData.provider = bulkEditProvider;
+                  if (bulkEditUserId !== '__keep__') patchData.userId = bulkEditUserId;
+                } else if (currentTable === 'activities') {
+                  if (bulkEditCategory !== '__keep__') patchData.category = bulkEditCategory;
+                }
+
+                if (Object.keys(patchData).length === 0) {
+                  toast.error('Pilih minimal 1 field yang ingin diubah.');
+                  return;
+                }
+
+                const ok = await executeBulkAction(
+                  {
+                    action: 'bulkUpdate',
+                    table: currentTable,
+                    ids: selectedIds,
+                    data: patchData
+                  },
+                  `${selectedIds.length} record ${config.label} berhasil diperbarui.`,
+                  currentTable === 'myLinks' || currentTable === 'activities'
+                    ? ['myLinks', 'activities']
+                    : [currentTable]
+                );
+                if (ok) {
+                  setRowSelection({});
+                  setBulkEditModalOpen(false);
+                }
+              }}
+            >
+              <Icons.check className='size-4' />
+              Simpan Perubahan Bulk
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* MyLink Activity Usage Manager Sheet (Cek, Edit, Hapus/Lepas, & Pasang Satu-Satu atau Bulk) */}
+      <Sheet
+        open={Boolean(managingMyLinkId)}
+        onOpenChange={(open) => {
+          if (!open) setManagingMyLinkId(null);
+        }}
+      >
+        <SheetContent className='flex h-full max-h-dvh flex-col overflow-hidden sm:max-w-2xl'>
+          {(() => {
+            const activeMyLinkId = managingMyLinkId ?? '';
+            const mlRecord = myLinkByIdMap.get(activeMyLinkId);
+            const mlOwner = mlRecord ? resolveRecordUser(mlRecord, 'myLinks') : undefined;
+            const allLinkedActivities = getActivitiesForMyLink(activeMyLinkId);
+
+            const resolveActivityContext = (act: Record<string, unknown>) => {
+              const rel =
+                act._related && typeof act._related === 'object'
+                  ? (act._related as Record<string, unknown>)
+                  : undefined;
+              const dayObj =
+                rel?.day && typeof rel.day === 'object'
+                  ? (rel.day as Record<string, unknown>)
+                  : act.itineraryDayId
+                    ? dayByIdMap.get(String(act.itineraryDayId))
+                    : undefined;
+              const itObj =
+                dayObj?.itinerary && typeof dayObj.itinerary === 'object'
+                  ? (dayObj.itinerary as Record<string, unknown>)
+                  : dayObj?.itineraryId
+                    ? itineraryByIdMap.get(String(dayObj.itineraryId))
+                    : undefined;
+              const authorObj = resolveRecordUser(act, 'activities');
+              return {
+                dayTitle: dayObj?.title
+                  ? String(dayObj.title)
+                  : dayObj?.dayNumber
+                    ? `Day ${String(dayObj.dayNumber)}`
+                    : String(act.itineraryDayId ?? '—'),
+                itineraryId: itObj?.id ? String(itObj.id) : dayObj?.itineraryId ? String(dayObj.itineraryId) : '',
+                itineraryTitle: itObj?.title ? String(itObj.title) : '—',
+                authorLabel: authorObj?.name
+                  ? String(authorObj.name)
+                  : authorObj?.username
+                    ? `@${String(authorObj.username).replace(/^@/, '')}`
+                    : authorObj?.email
+                      ? String(authorObj.email)
+                      : '—'
+              };
+            };
+
+            const filteredLinkedActivities = allLinkedActivities.filter((act) => {
+              const q = linkedSearch.toLowerCase().trim();
+              if (!q) return true;
+              const ctx = resolveActivityContext(act);
+              return (
+                String(act.title ?? '').toLowerCase().includes(q) ||
+                String(act.locationName ?? '').toLowerCase().includes(q) ||
+                String(act.id ?? '').toLowerCase().includes(q) ||
+                ctx.dayTitle.toLowerCase().includes(q) ||
+                ctx.itineraryTitle.toLowerCase().includes(q) ||
+                ctx.authorLabel.toLowerCase().includes(q)
+              );
+            });
+
+            const candidateActivities = (tables.activities ?? []).filter((act) => {
+              const actId = String(act.id ?? '');
+              if (!actId) return false;
+              if (String(act.myLinkId ?? '') === activeMyLinkId) return false;
+              if (addActivityOnlyUnlinked && Boolean(act.myLinkId)) return false;
+
+              const ctx = resolveActivityContext(act);
+              if (
+                addActivityItineraryFilter !== '__all__' &&
+                ctx.itineraryId !== addActivityItineraryFilter
+              ) {
+                return false;
+              }
+
+              const q = addActivitySearch.toLowerCase().trim();
+              if (!q) return true;
+              return (
+                String(act.title ?? '').toLowerCase().includes(q) ||
+                String(act.locationName ?? '').toLowerCase().includes(q) ||
+                actId.toLowerCase().includes(q) ||
+                ctx.dayTitle.toLowerCase().includes(q) ||
+                ctx.itineraryTitle.toLowerCase().includes(q) ||
+                ctx.authorLabel.toLowerCase().includes(q)
+              );
+            });
+
+            const otherMyLinkOptions = [
+              { value: '__none__', label: '-- Pilih MyLink Tujuan --' },
+              ...(tables.myLinks ?? [])
+                .filter((m) => String(m.id ?? '') !== activeMyLinkId)
+                .map((m) => ({
+                  value: String(m.id ?? ''),
+                  label: `[${String(m.provider ?? 'Custom')}] ${String(m.label ?? m.id)} (${String(m.id)})`
+                }))
+            ];
+
+            const itineraryFilterOptions = [
+              { value: '__all__', label: 'Semua Itinerary' },
+              ...tables.itineraries.map((it) => ({
+                value: String(it.id ?? ''),
+                label: `${String(it.title ?? it.id)} (${String(it.destination ?? '')})`
+              }))
+            ];
+
+            return (
+              <>
+                <SheetHeader className='shrink-0 space-y-2 border-b pb-3'>
+                  <div className='flex items-start justify-between gap-2 pr-6'>
+                    <div>
+                      <SheetTitle className='flex items-center gap-2 text-base'>
+                        <Icons.link className='size-4' />
+                        <span>
+                          {mlRecord?.label ? String(mlRecord.label) : 'Kelola Penggunaan MyLink'}
+                        </span>
+                        {Boolean(mlRecord?.provider) && (
+                          <Badge variant='outline'>{String(mlRecord?.provider)}</Badge>
+                        )}
+                      </SheetTitle>
+                      <SheetDescription className='mt-1 text-xs'>
+                        Cek dipakai di Activity mana saja, lepas/hapus, edit, atau pasang ke Activity
+                        baru secara satu-per-satu maupun bulk.
+                      </SheetDescription>
+                    </div>
                   </div>
 
-                  <div className='bg-muted/30 flex shrink-0 flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs'>
-                    <div className='flex flex-wrap items-center gap-4'>
-                      <label className='flex cursor-pointer items-center gap-2 font-medium'>
-                        <Checkbox
-                          checked={
-                            candidateActivities.length > 0 &&
-                            candidateActivities.every((a) =>
-                              selectedCandidateActivityIds.includes(String(a.id ?? ''))
-                            )
-                          }
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedCandidateActivityIds(
-                                candidateActivities
-                                  .map((a) => String(a.id ?? ''))
-                                  .filter(Boolean)
-                              );
-                            } else {
-                              setSelectedCandidateActivityIds([]);
-                            }
-                          }}
-                        />
-                        <span>
-                          Pilih Semua ({selectedCandidateActivityIds.length}/
-                          {candidateActivities.length})
-                        </span>
-                      </label>
-
-                      <label className='text-muted-foreground flex cursor-pointer items-center gap-2'>
-                        <Checkbox
-                          checked={addActivityOnlyUnlinked}
-                          onCheckedChange={(checked) =>
-                            setAddActivityOnlyUnlinked(Boolean(checked))
-                          }
-                        />
-                        <span>Hanya yang belum punya MyLink</span>
-                      </label>
-                    </div>
-
-                    {selectedCandidateActivityIds.length > 0 && (
+                  <div className='bg-muted/40 flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs'>
+                    <div className='flex flex-wrap items-center gap-2'>
+                      <span className='text-muted-foreground'>My Link Id:</span>
+                      <code className='bg-background rounded border px-1.5 py-0.5 font-mono text-xs'>
+                        {activeMyLinkId}
+                      </code>
                       <Button
                         type='button'
-                        size='sm'
-                        className='h-7 text-xs'
-                        disabled={busy}
-                        onClick={async () => {
-                          const ok = await executeBulkAction(
-                            {
-                              action: 'bulkSetActivitiesMyLink',
-                              activityIds: selectedCandidateActivityIds,
-                              myLinkId: activeMyLinkId
-                            },
-                            `MyLink berhasil dipasang ke ${selectedCandidateActivityIds.length} Activity terpilih.`,
-                            ['activities', 'myLinks']
-                          );
-                          if (ok) {
-                            setSelectedCandidateActivityIds([]);
-                            setUsageTab('linked');
-                          }
+                        variant='ghost'
+                        size='icon'
+                        className='h-6 w-6'
+                        title='Salin My Link Id'
+                        onClick={() => {
+                          navigator.clipboard.writeText(activeMyLinkId).catch(() => { });
+                          toast.success('My Link Id berhasil disalin!');
                         }}
                       >
-                        <Icons.add className='size-3.5' />
-                        Pasang ke {selectedCandidateActivityIds.length} Activity Terpilih
+                        <Icons.copy className='size-3' />
                       </Button>
-                    )}
+                      {mlOwner && (
+                        <span className='text-muted-foreground'>
+                          · Owner:{' '}
+                          <b className='text-foreground'>
+                            {String(mlOwner.name ?? mlOwner.username ?? mlOwner.email ?? '')}
+                          </b>
+                        </span>
+                      )}
+                    </div>
+                    <div className='flex items-center gap-1.5'>
+                      {Boolean(mlRecord?.actualUrl) && (
+                        <a
+                          href={String(mlRecord?.actualUrl)}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='text-primary inline-flex items-center gap-1 hover:underline'
+                        >
+                          <span>Buka URL</span>
+                          <Icons.externalLink className='size-3' />
+                        </a>
+                      )}
+                      {mlRecord && (
+                        <Button
+                          type='button'
+                          variant='outline'
+                          size='sm'
+                          className='h-7 text-xs'
+                          onClick={() => {
+                            setManagingMyLinkId(null);
+                            setCurrentTable('myLinks');
+                            setActiveView('myLinks');
+                            openEditSheet(activeMyLinkId, mlRecord);
+                          }}
+                        >
+                          <Icons.edit className='size-3' />
+                          Edit MyLink
+                        </Button>
+                      )}
+                    </div>
                   </div>
+                </SheetHeader>
 
-                  <div className='-mr-2 min-h-0 flex-1 space-y-2 overflow-y-auto pr-2 pb-4'>
-                    {candidateActivities.length === 0 ? (
-                      <div className='text-muted-foreground flex flex-col items-center justify-center rounded-lg border border-dashed py-10 text-center text-xs'>
-                        <p>Tidak ada Activity kandidat yang cocok dengan filter.</p>
+                <Tabs
+                  value={usageTab}
+                  onValueChange={(val) => setUsageTab(val as 'linked' | 'add')}
+                  className='mt-2 flex min-h-0 flex-1 flex-col overflow-hidden'
+                >
+                  <TabsList className='w-full shrink-0'>
+                    <TabsTrigger value='linked' className='flex-1'>
+                      <Icons.kanban className='size-4' />
+                      Digunakan di Activity ({allLinkedActivities.length})
+                    </TabsTrigger>
+                    <TabsTrigger value='add' className='flex-1'>
+                      <Icons.add className='size-4' />
+                      Pasang ke Activity (Satu / Bulk)
+                    </TabsTrigger>
+                  </TabsList>
+
+                  {/* TAB 1: LINKED ACTIVITIES */}
+                  <TabsContent
+                    value='linked'
+                    className='mt-3 flex min-h-0 flex-1 flex-col space-y-3 overflow-hidden'
+                  >
+                    <div className='flex shrink-0 flex-wrap items-center justify-between gap-2'>
+                      <Input
+                        placeholder='Cari judul activity, lokasi, itinerary, atau user...'
+                        value={linkedSearch}
+                        onChange={(e) => setLinkedSearch(e.target.value)}
+                        className='h-8 flex-1 text-xs'
+                      />
+                      {allLinkedActivities.length > 0 && (
+                        <Button
+                          type='button'
+                          variant='outline'
+                          size='sm'
+                          className='h-8 text-xs'
+                          disabled={busy}
+                          onClick={async () => {
+                            const allIds = allLinkedActivities
+                              .map((a) => String(a.id ?? ''))
+                              .filter(Boolean);
+                            const ok = await executeBulkAction(
+                              {
+                                action: 'bulkSetActivitiesMyLink',
+                                activityIds: allIds,
+                                myLinkId: null
+                              },
+                              `MyLink berhasil dilepas dari semua (${allIds.length}) Activity.`,
+                              ['activities', 'myLinks']
+                            );
+                            if (ok) setSelectedLinkedActivityIds([]);
+                          }}
+                        >
+                          <Icons.close className='size-3.5' />
+                          Lepas Semua ({allLinkedActivities.length})
+                        </Button>
+                      )}
+                    </div>
+
+                    {filteredLinkedActivities.length > 0 && (
+                      <div className='bg-muted/30 flex shrink-0 flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs'>
+                        <label className='flex cursor-pointer items-center gap-2 font-medium'>
+                          <Checkbox
+                            checked={
+                              filteredLinkedActivities.length > 0 &&
+                              filteredLinkedActivities.every((a) =>
+                                selectedLinkedActivityIds.includes(String(a.id ?? ''))
+                              )
+                            }
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedLinkedActivityIds(
+                                  filteredLinkedActivities
+                                    .map((a) => String(a.id ?? ''))
+                                    .filter(Boolean)
+                                );
+                              } else {
+                                setSelectedLinkedActivityIds([]);
+                              }
+                            }}
+                          />
+                          <span>
+                            Pilih Semua ({selectedLinkedActivityIds.length}/
+                            {filteredLinkedActivities.length} terpilih)
+                          </span>
+                        </label>
+
+                        {selectedLinkedActivityIds.length > 0 && (
+                          <div className='flex flex-wrap items-center gap-1.5'>
+                            <Button
+                              type='button'
+                              variant='secondary'
+                              size='sm'
+                              className='h-7 text-xs'
+                              disabled={busy}
+                              onClick={async () => {
+                                const ok = await executeBulkAction(
+                                  {
+                                    action: 'bulkSetActivitiesMyLink',
+                                    activityIds: selectedLinkedActivityIds,
+                                    myLinkId: null
+                                  },
+                                  `MyLink dilepas dari ${selectedLinkedActivityIds.length} Activity terpilih.`,
+                                  ['activities', 'myLinks']
+                                );
+                                if (ok) setSelectedLinkedActivityIds([]);
+                              }}
+                            >
+                              <Icons.close className='size-3.5' />
+                              Lepas Link ({selectedLinkedActivityIds.length})
+                            </Button>
+                            <Button
+                              type='button'
+                              variant='destructive'
+                              size='sm'
+                              className='h-7 text-xs'
+                              disabled={busy}
+                              onClick={async () => {
+                                const ok = await executeBulkAction(
+                                  {
+                                    action: 'bulkDelete',
+                                    table: 'activities',
+                                    ids: selectedLinkedActivityIds
+                                  },
+                                  `${selectedLinkedActivityIds.length} Activity berhasil dihapus permanen.`,
+                                  ['activities', 'myLinks']
+                                );
+                                if (ok) setSelectedLinkedActivityIds([]);
+                              }}
+                            >
+                              <Icons.trash className='size-3.5' />
+                              Hapus Activity ({selectedLinkedActivityIds.length})
+                            </Button>
+                          </div>
+                        )}
                       </div>
-                    ) : (
-                      candidateActivities.slice(0, 100).map((act) => {
-                        const actId = String(act.id ?? '');
-                        const isChecked = selectedCandidateActivityIds.includes(actId);
-                        const ctx = resolveActivityContext(act);
-                        const existingMlId = act.myLinkId ? String(act.myLinkId) : null;
-                        const existingMl = existingMlId ? myLinkByIdMap.get(existingMlId) : null;
+                    )}
 
-                        return (
-                          <div
-                            key={actId}
-                            className={cn(
-                              'flex flex-col justify-between gap-2.5 rounded-lg border p-3 transition-colors sm:flex-row sm:items-center',
-                              isChecked && 'border-primary/50 bg-primary/5'
-                            )}
+                    {selectedLinkedActivityIds.length > 0 && otherMyLinkOptions.length > 1 && (
+                      <div className='bg-muted/20 flex shrink-0 flex-wrap items-center gap-2 rounded-lg border p-2.5 text-xs'>
+                        <span className='font-medium'>
+                          Bulk Edit / Pindahkan {selectedLinkedActivityIds.length} Activity ke:
+                        </span>
+                        <div className='min-w-[200px] flex-1'>
+                          <Select
+                            items={otherMyLinkOptions}
+                            value={reassignTargetMyLinkId}
+                            onValueChange={(val) => {
+                              if (val) setReassignTargetMyLinkId(val);
+                            }}
                           >
-                            <div className='flex items-start gap-2.5'>
-                              <Checkbox
-                                checked={isChecked}
-                                onCheckedChange={(checked) => {
-                                  setSelectedCandidateActivityIds((prev) =>
-                                    checked
-                                      ? [...prev, actId]
-                                      : prev.filter((item) => item !== actId)
-                                  );
-                                }}
-                                className='mt-0.5'
-                              />
-                              <div className='space-y-1'>
-                                <div className='flex flex-wrap items-center gap-1.5'>
-                                  {Boolean(act.time) && (
-                                    <Badge variant='outline' className='font-mono text-[10px]'>
-                                      {String(act.time)}
-                                    </Badge>
-                                  )}
-                                  <span className='text-sm font-medium'>
-                                    {String(act.title ?? actId)}
-                                  </span>
-                                  {existingMlId && (
-                                    <Badge variant='outline' className='text-[10px]'>
-                                      Saat ini: {String(existingMl?.label ?? existingMlId)}
-                                    </Badge>
-                                  )}
-                                </div>
-                                <div className='text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs'>
-                                  {Boolean(act.locationName) && (
-                                    <span>📍 {String(act.locationName)}</span>
-                                  )}
-                                  <span>· {ctx.dayTitle}</span>
-                                  <span>
-                                    · Itinerary: <b className='text-foreground'>{ctx.itineraryTitle}</b>
-                                  </span>
-                                  <span>· User: {ctx.authorLabel}</span>
+                            <SelectTrigger className='h-8 w-full text-xs'>
+                              <SelectValue placeholder='Pilih MyLink tujuan...' />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {otherMyLinkOptions.map((opt) => (
+                                <SelectItem key={opt.value} value={opt.value}>
+                                  {opt.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <Button
+                          type='button'
+                          size='sm'
+                          className='h-8 text-xs'
+                          disabled={busy || reassignTargetMyLinkId === '__none__'}
+                          onClick={async () => {
+                            if (!reassignTargetMyLinkId || reassignTargetMyLinkId === '__none__')
+                              return;
+                            const ok = await executeBulkAction(
+                              {
+                                action: 'bulkSetActivitiesMyLink',
+                                activityIds: selectedLinkedActivityIds,
+                                myLinkId: reassignTargetMyLinkId
+                              },
+                              `${selectedLinkedActivityIds.length} Activity berhasil dipindahkan ke MyLink baru.`,
+                              ['activities', 'myLinks']
+                            );
+                            if (ok) {
+                              setSelectedLinkedActivityIds([]);
+                              setReassignTargetMyLinkId('__none__');
+                            }
+                          }}
+                        >
+                          <Icons.check className='size-3.5' />
+                          Pindahkan
+                        </Button>
+                      </div>
+                    )}
+
+                    <div className='-mr-2 min-h-0 flex-1 space-y-2 overflow-y-auto pr-2 pb-4'>
+                      {filteredLinkedActivities.length === 0 ? (
+                        <div className='text-muted-foreground flex flex-col items-center justify-center rounded-lg border border-dashed py-10 text-center text-xs'>
+                          <Icons.kanban className='mb-2 size-8 opacity-40' />
+                          <p className='font-medium'>
+                            {allLinkedActivities.length === 0
+                              ? 'MyLink ini belum digunakan di Activity mana pun.'
+                              : 'Tidak ada Activity yang cocok dengan pencarian.'}
+                          </p>
+                          {allLinkedActivities.length === 0 && (
+                            <Button
+                              type='button'
+                              variant='secondary'
+                              size='sm'
+                              className='mt-3 h-7 text-xs'
+                              onClick={() => setUsageTab('add')}
+                            >
+                              <Icons.add className='size-3.5' />
+                              Pasang ke Activity Sekarang
+                            </Button>
+                          )}
+                        </div>
+                      ) : (
+                        filteredLinkedActivities.map((act) => {
+                          const actId = String(act.id ?? '');
+                          const isChecked = selectedLinkedActivityIds.includes(actId);
+                          const ctx = resolveActivityContext(act);
+
+                          return (
+                            <div
+                              key={actId}
+                              className={cn(
+                                'flex flex-col justify-between gap-2.5 rounded-lg border p-3 transition-colors sm:flex-row sm:items-center',
+                                isChecked && 'border-primary/50 bg-primary/5'
+                              )}
+                            >
+                              <div className='flex items-start gap-2.5'>
+                                <Checkbox
+                                  checked={isChecked}
+                                  onCheckedChange={(checked) => {
+                                    setSelectedLinkedActivityIds((prev) =>
+                                      checked
+                                        ? [...prev, actId]
+                                        : prev.filter((item) => item !== actId)
+                                    );
+                                  }}
+                                  className='mt-0.5'
+                                />
+                                <div className='space-y-1'>
+                                  <div className='flex flex-wrap items-center gap-1.5'>
+                                    {Boolean(act.time) && (
+                                      <Badge variant='outline' className='font-mono text-[10px]'>
+                                        {String(act.time)}
+                                      </Badge>
+                                    )}
+                                    <span className='text-sm font-medium'>
+                                      {String(act.title ?? actId)}
+                                    </span>
+                                    {Boolean(act.category) && (
+                                      <Badge variant='secondary' className='text-[10px]'>
+                                        {String(act.category)}
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <div className='text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs'>
+                                    {Boolean(act.locationName) && (
+                                      <span>📍 {String(act.locationName)}</span>
+                                    )}
+                                    <span>· {ctx.dayTitle}</span>
+                                    <span>
+                                      · Itinerary: <b className='text-foreground'>{ctx.itineraryTitle}</b>
+                                    </span>
+                                    <span>· User: {ctx.authorLabel}</span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
 
-                            <div className='flex shrink-0 items-center gap-1.5 pl-6 sm:pl-0'>
-                              <Button
-                                type='button'
-                                variant='outline'
-                                size='sm'
-                                className='h-7 px-2.5 text-xs'
-                                disabled={busy}
-                                onClick={async () => {
-                                  const ok = await executeBulkAction(
-                                    {
-                                      action: 'bulkSetActivitiesMyLink',
-                                      activityIds: [actId],
-                                      myLinkId: activeMyLinkId
-                                    },
-                                    `MyLink berhasil dipasang ke Activity "${String(act.title ?? actId)}".`,
-                                    ['activities', 'myLinks']
-                                  );
-                                  if (ok) {
-                                    setSelectedCandidateActivityIds((prev) =>
-                                      prev.filter((id) => id !== actId)
+                              <div className='flex shrink-0 flex-wrap items-center gap-1.5 pl-6 sm:pl-0'>
+                                <Button
+                                  type='button'
+                                  variant='outline'
+                                  size='sm'
+                                  className='h-7 px-2 text-xs'
+                                  disabled={busy}
+                                  onClick={() => {
+                                    const fullActivity =
+                                      (tables.activities ?? []).find(
+                                        (a) => String(a.id ?? '') === actId
+                                      ) ?? act;
+                                    setManagingMyLinkId(null);
+                                    setCurrentTable('activities');
+                                    setActiveView('activities');
+                                    openEditSheet(actId, fullActivity);
+                                  }}
+                                >
+                                  <Icons.edit className='size-3' />
+                                  Edit
+                                </Button>
+                                <Button
+                                  type='button'
+                                  variant='secondary'
+                                  size='sm'
+                                  className='h-7 px-2 text-xs'
+                                  disabled={busy}
+                                  onClick={async () => {
+                                    const ok = await executeBulkAction(
+                                      {
+                                        action: 'bulkSetActivitiesMyLink',
+                                        activityIds: [actId],
+                                        myLinkId: null
+                                      },
+                                      'MyLink berhasil dilepas dari Activity.',
+                                      ['activities', 'myLinks']
                                     );
-                                  }
-                                }}
-                              >
-                                <Icons.add className='size-3.5' />
-                                Pasang
-                              </Button>
+                                    if (ok) {
+                                      setSelectedLinkedActivityIds((prev) =>
+                                        prev.filter((id) => id !== actId)
+                                      );
+                                    }
+                                  }}
+                                >
+                                  <Icons.close className='size-3' />
+                                  Lepas Link
+                                </Button>
+                                <Button
+                                  type='button'
+                                  variant='destructive'
+                                  size='sm'
+                                  className='h-7 px-2 text-xs'
+                                  disabled={busy}
+                                  title='Hapus Activity ini secara permanen'
+                                  onClick={async () => {
+                                    const ok = await executeBulkAction(
+                                      {
+                                        action: 'bulkDelete',
+                                        table: 'activities',
+                                        ids: [actId]
+                                      },
+                                      'Activity berhasil dihapus.',
+                                      ['activities', 'myLinks']
+                                    );
+                                    if (ok) {
+                                      setSelectedLinkedActivityIds((prev) =>
+                                        prev.filter((id) => id !== actId)
+                                      );
+                                    }
+                                  }}
+                                >
+                                  <Icons.trash className='size-3' />
+                                </Button>
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </>
-          );
-        })()}
-      </SheetContent>
-    </Sheet>
-  </SidebarProvider >
-);
+                          );
+                        })
+                      )}
+                    </div>
+                  </TabsContent>
+
+                  {/* TAB 2: ADD / ATTACH TO ACTIVITIES (SINGLE OR BULK) */}
+                  <TabsContent
+                    value='add'
+                    className='mt-3 flex min-h-0 flex-1 flex-col space-y-3 overflow-hidden'
+                  >
+                    <div className='grid shrink-0 grid-cols-1 gap-2 sm:grid-cols-2'>
+                      <Input
+                        placeholder='Cari activity, lokasi, hari, atau user...'
+                        value={addActivitySearch}
+                        onChange={(e) => setAddActivitySearch(e.target.value)}
+                        className='h-8 text-xs'
+                      />
+                      <Select
+                        items={itineraryFilterOptions}
+                        value={addActivityItineraryFilter}
+                        onValueChange={(val) => {
+                          if (val) setAddActivityItineraryFilter(val);
+                        }}
+                      >
+                        <SelectTrigger className='h-8 w-full text-xs'>
+                          <SelectValue placeholder='Filter Itinerary...' />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {itineraryFilterOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className='bg-muted/30 flex shrink-0 flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs'>
+                      <div className='flex flex-wrap items-center gap-4'>
+                        <label className='flex cursor-pointer items-center gap-2 font-medium'>
+                          <Checkbox
+                            checked={
+                              candidateActivities.length > 0 &&
+                              candidateActivities.every((a) =>
+                                selectedCandidateActivityIds.includes(String(a.id ?? ''))
+                              )
+                            }
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedCandidateActivityIds(
+                                  candidateActivities
+                                    .map((a) => String(a.id ?? ''))
+                                    .filter(Boolean)
+                                );
+                              } else {
+                                setSelectedCandidateActivityIds([]);
+                              }
+                            }}
+                          />
+                          <span>
+                            Pilih Semua ({selectedCandidateActivityIds.length}/
+                            {candidateActivities.length})
+                          </span>
+                        </label>
+
+                        <label className='text-muted-foreground flex cursor-pointer items-center gap-2'>
+                          <Checkbox
+                            checked={addActivityOnlyUnlinked}
+                            onCheckedChange={(checked) =>
+                              setAddActivityOnlyUnlinked(Boolean(checked))
+                            }
+                          />
+                          <span>Hanya yang belum punya MyLink</span>
+                        </label>
+                      </div>
+
+                      {selectedCandidateActivityIds.length > 0 && (
+                        <Button
+                          type='button'
+                          size='sm'
+                          className='h-7 text-xs'
+                          disabled={busy}
+                          onClick={async () => {
+                            const ok = await executeBulkAction(
+                              {
+                                action: 'bulkSetActivitiesMyLink',
+                                activityIds: selectedCandidateActivityIds,
+                                myLinkId: activeMyLinkId
+                              },
+                              `MyLink berhasil dipasang ke ${selectedCandidateActivityIds.length} Activity terpilih.`,
+                              ['activities', 'myLinks']
+                            );
+                            if (ok) {
+                              setSelectedCandidateActivityIds([]);
+                              setUsageTab('linked');
+                            }
+                          }}
+                        >
+                          <Icons.add className='size-3.5' />
+                          Pasang ke {selectedCandidateActivityIds.length} Activity Terpilih
+                        </Button>
+                      )}
+                    </div>
+
+                    <div className='-mr-2 min-h-0 flex-1 space-y-2 overflow-y-auto pr-2 pb-4'>
+                      {candidateActivities.length === 0 ? (
+                        <div className='text-muted-foreground flex flex-col items-center justify-center rounded-lg border border-dashed py-10 text-center text-xs'>
+                          <p>Tidak ada Activity kandidat yang cocok dengan filter.</p>
+                        </div>
+                      ) : (
+                        candidateActivities.slice(0, 100).map((act) => {
+                          const actId = String(act.id ?? '');
+                          const isChecked = selectedCandidateActivityIds.includes(actId);
+                          const ctx = resolveActivityContext(act);
+                          const existingMlId = act.myLinkId ? String(act.myLinkId) : null;
+                          const existingMl = existingMlId ? myLinkByIdMap.get(existingMlId) : null;
+
+                          return (
+                            <div
+                              key={actId}
+                              className={cn(
+                                'flex flex-col justify-between gap-2.5 rounded-lg border p-3 transition-colors sm:flex-row sm:items-center',
+                                isChecked && 'border-primary/50 bg-primary/5'
+                              )}
+                            >
+                              <div className='flex items-start gap-2.5'>
+                                <Checkbox
+                                  checked={isChecked}
+                                  onCheckedChange={(checked) => {
+                                    setSelectedCandidateActivityIds((prev) =>
+                                      checked
+                                        ? [...prev, actId]
+                                        : prev.filter((item) => item !== actId)
+                                    );
+                                  }}
+                                  className='mt-0.5'
+                                />
+                                <div className='space-y-1'>
+                                  <div className='flex flex-wrap items-center gap-1.5'>
+                                    {Boolean(act.time) && (
+                                      <Badge variant='outline' className='font-mono text-[10px]'>
+                                        {String(act.time)}
+                                      </Badge>
+                                    )}
+                                    <span className='text-sm font-medium'>
+                                      {String(act.title ?? actId)}
+                                    </span>
+                                    {existingMlId && (
+                                      <Badge variant='outline' className='text-[10px]'>
+                                        Saat ini: {String(existingMl?.label ?? existingMlId)}
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <div className='text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs'>
+                                    {Boolean(act.locationName) && (
+                                      <span>📍 {String(act.locationName)}</span>
+                                    )}
+                                    <span>· {ctx.dayTitle}</span>
+                                    <span>
+                                      · Itinerary: <b className='text-foreground'>{ctx.itineraryTitle}</b>
+                                    </span>
+                                    <span>· User: {ctx.authorLabel}</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className='flex shrink-0 items-center gap-1.5 pl-6 sm:pl-0'>
+                                <Button
+                                  type='button'
+                                  variant='outline'
+                                  size='sm'
+                                  className='h-7 px-2.5 text-xs'
+                                  disabled={busy}
+                                  onClick={async () => {
+                                    const ok = await executeBulkAction(
+                                      {
+                                        action: 'bulkSetActivitiesMyLink',
+                                        activityIds: [actId],
+                                        myLinkId: activeMyLinkId
+                                      },
+                                      `MyLink berhasil dipasang ke Activity "${String(act.title ?? actId)}".`,
+                                      ['activities', 'myLinks']
+                                    );
+                                    if (ok) {
+                                      setSelectedCandidateActivityIds((prev) =>
+                                        prev.filter((id) => id !== actId)
+                                      );
+                                    }
+                                  }}
+                                >
+                                  <Icons.add className='size-3.5' />
+                                  Pasang
+                                </Button>
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </>
+            );
+          })()}
+        </SheetContent>
+      </Sheet>
+    </SidebarProvider >
+  );
 }
