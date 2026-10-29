@@ -1,16 +1,16 @@
-# Graph Report - jalanin  (2026-10-28)
+# Graph Report - jalanin  (2026-10-29)
 
 ## Corpus Check
-- 774 files · ~429,012 words
+- 776 files · ~442,711 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 4974 nodes · 7910 edges · 545 communities (307 shown, 238 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 64 edges (avg confidence: 0.71)
+- 5025 nodes · 8049 edges · 551 communities (317 shown, 234 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 65 edges (avg confidence: 0.71)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e6b5932a`
+- Built from commit: `c68c5cb8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -239,6 +239,7 @@
 - Step-by-Step Guide: Adding a New Theme
 - plugins
 - index.tsx
+- Panduan Menambahkan Menu & Tabel Baru di Admin Console — Jalanin
 - Class-string rewrites (layer 2)
 - display-misc.md
 - avatar
@@ -534,21 +535,26 @@
 - cmdk
 - next
 - pg
+- advanced-form-patterns.tsx
 - react-dom
+- share-itinerary-button.tsx
 - tw-animate-css
 - @vercel/blob
+- toggle-group.tsx
+- product-form.tsx
+- Cache Management
 
 ## God Nodes (most connected - your core abstractions)
 1. `cn()` - 330 edges
 2. `react` - 164 edges
 3. `cn()` - 147 edges
 4. `Icons` - 80 edges
-5. `getCurrentUser()` - 55 edges
+5. `getCurrentUser()` - 57 edges
 6. `Button()` - 43 edges
 7. `prisma` - 34 edges
-8. `isAdminUser()` - 28 edges
-9. `Card()` - 23 edges
-10. `CardHeader()` - 23 edges
+8. `isAdminUser()` - 30 edges
+9. `listAdminRecords()` - 24 edges
+10. `getAdminSnapshot()` - 23 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Home()` --implements--> `App-first Design Principle`  [INFERRED]
@@ -557,8 +563,8 @@
   app/page.tsx → script.js
 - `selectItinerary()` --implements--> `Simpan Rute (Save Itinerary)`  [INFERRED]
   script.js → jalanin_mvp.md
-- `SavedPage()` --calls--> `getCurrentUser()`  [EXTRACTED]
-  app/saved/page.tsx → lib/auth.ts
+- `AdminConsole()` --indirect_call--> `row()`  [INFERRED]
+  components/admin-console.tsx → next-shadcn/scripts/postinstall.js
 - `BreadcrumbEllipsis()` --calls--> `cn()`  [EXTRACTED]
   components/ui/breadcrumb.tsx → lib/utils.ts
 
@@ -574,27 +580,27 @@
 - **MyLink Validation System** — lib_mylink_validator_validatemylinkurl, lib_mylink_validator_matchdomain, lib_mylink_validator_gethostname, lib_mylink_validator_detectprovider [EXTRACTED 1.00]
 - **Explore Feed UI/UX Redesign Tasks** — tasks_task_1_grid_layout_grid_layout_task, tasks_task_2_hover_overlays_hover_overlays_task, tasks_task_3_search_filter_search_filter_task, tasks_task_4_card_click_card_click_task, tasks_task_5_mobile_nav_mobile_nav_task [EXTRACTED 1.00]
 
-## Communities (545 total, 238 thin omitted)
+## Communities (551 total, 234 thin omitted)
 
 ### Community 0 - "Interactive UI Components"
-Cohesion: 0.07
-Nodes (48): ActivityDraft, createBlankActivity(), createBlankDay(), createDrafts(), createLocationQueryMap(), DayDraft, defaultMapCenter, draftKey() (+40 more)
+Cohesion: 0.14
+Nodes (22): ActivityDraft, createBlankActivity(), createBlankDay(), createDrafts(), createLocationQueryMap(), DayDraft, defaultMapCenter, draftKey() (+14 more)
 
 ### Community 1 - "API Routes & User Sessions"
 Cohesion: 0.13
-Nodes (32): POST(), DELETE(), PATCH(), PUT(), POST(), CreatePage(), generateMetadata(), ItineraryDetailPage() (+24 more)
+Nodes (28): POST(), PUT(), POST(), POST(), generateMetadata(), Home(), tableConfigs, DEFAULT_ACTIVITY_TYPE (+20 more)
 
 ### Community 2 - "Admin Panel & Console Operations"
-Cohesion: 0.11
-Nodes (37): AdminPage(), DELETE(), isAdminTable(), PATCH(), GET(), isAdminTable(), POST(), AdminRecord (+29 more)
+Cohesion: 0.13
+Nodes (41): AdminPage(), AdminRecord, AdminValidationError, bulkUpdateAdminRecords(), createAdminRecord(), fetchAccountClaims(), fetchActivities(), fetchDays() (+33 more)
 
 ### Community 3 - "Project Configurations"
 Cohesion: 0.09
 Nodes (23): autoprefixer, devDependencies, autoprefixer, prisma, tailwindcss, @tailwindcss/postcss, tsx, @types/node (+15 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.09
-Nodes (32): ProfilePage(), SavedPage(), BudgetField(), Props, CloneItineraryButton(), Icon(), IconSprite(), ItineraryInteractiveView() (+24 more)
+Cohesion: 0.15
+Nodes (23): ItineraryDetailPage(), Icon(), IconSprite(), ItineraryInteractiveView(), SerializedActivity, SerializedDay, SerializedItinerary, buildPopupHtml() (+15 more)
 
 ### Community 5 - "Client-Side Prototype Logic"
 Cohesion: 0.14
@@ -609,8 +615,8 @@ Cohesion: 0.06
 Nodes (33): ES2022, next-shadcn, node, compilerOptions, allowJs, baseUrl, esModuleInterop, forceConsistentCasingInFileNames (+25 more)
 
 ### Community 8 - "Google Maps URL Parser"
-Cohesion: 0.27
-Nodes (13): POST(), buildGeocodeCandidates(), extractCoordsFromGoogleMapsUrl(), extractGoogleMapsUrl(), extractPlacePinCoords(), extractPlaceQueryFromGoogleMapsUrl(), geocodePlaceQuery(), geocodeWithGeoapify() (+5 more)
+Cohesion: 0.29
+Nodes (12): POST(), buildGeocodeCandidates(), extractCoordsFromGoogleMapsUrl(), extractGoogleMapsUrl(), extractPlacePinCoords(), extractPlaceQueryFromGoogleMapsUrl(), geocodePlaceQuery(), geocodeWithGeoapify() (+4 more)
 
 ### Community 9 - "Time Inputs & Calculations"
 Cohesion: 0.08
@@ -625,8 +631,8 @@ Cohesion: 0.50
 Nodes (3): Answer, Q: Why does getCurrentUser() connect API Routes & User Sessions to Interactive UI Components, Admin Panel & Console Operations, Itinerary Creation & Forms, Budget Fields?, Source Nodes
 
 ### Community 12 - "Budget Fields"
-Cohesion: 0.06
-Nodes (37): envStatus(), GET(), DELETE(), POST(), DELETE(), POST(), DELETE(), GET() (+29 more)
+Cohesion: 0.07
+Nodes (34): envStatus(), GET(), DELETE(), POST(), DELETE(), POST(), DELETE(), GET() (+26 more)
 
 ### Community 13 - "OSM Mapping Alternatives"
 Cohesion: 0.40
@@ -653,64 +659,64 @@ Cohesion: 0.12
 Nodes (15): API Routes, Auth Flow, Current Gaps, Database, Development, Environment, Initial Seed Data, Install (+7 more)
 
 ### Community 41 - "email.ts"
-Cohesion: 0.38
-Nodes (11): hashToken(), POST(), POST(), getBaseUrl(), getDefaultFrom(), getTransporter(), renderEmailTemplate(), sendClaimApprovedEmail() (+3 more)
+Cohesion: 0.24
+Nodes (16): POST(), hashToken(), POST(), POST(), approveAccountClaim(), rejectAccountClaim(), requireAdminUser(), requireCurrentUser() (+8 more)
 
 ### Community 43 - "Jalanin — AGENTS.md"
 Cohesion: 0.33
 Nodes (5): Architecture, Env truth, Gotchas, Jalanin — AGENTS.md, Verify changes (no lint/test scripts exist)
 
 ### Community 44 - "Icon"
-Cohesion: 0.12
-Nodes (27): POST(), GET(), POST(), POST(), POST(), GET(), POST(), POST() (+19 more)
+Cohesion: 0.11
+Nodes (22): POST(), GET(), POST(), POST(), GET(), POST(), DELETE(), PATCH() (+14 more)
 
 ### Community 45 - "cn"
 Cohesion: 0.03
-Nodes (92): defaultData, InfoSidebar(), AccordionContent(), AccordionItem(), AccordionTrigger(), AlertDialogAction(), AlertDialogCancel(), AlertDialogContent() (+84 more)
+Nodes (91): defaultData, InfoSidebar(), AccordionContent(), AccordionItem(), AccordionTrigger(), AspectRatio(), ContextMenuCheckboxItem(), ContextMenuContent() (+83 more)
 
 ### Community 46 - "icons.tsx"
-Cohesion: 0.07
-Nodes (39): Badge(), badgeVariants, Card(), CardAction(), CardContent(), CardDescription(), CardFooter(), CardHeader() (+31 more)
+Cohesion: 0.14
+Nodes (12): Card(), CardAction(), CardContent(), CardDescription(), CardFooter(), CardHeader(), CardTitle(), Skeleton() (+4 more)
 
 ### Community 47 - "tanstack-form.tsx"
 Cohesion: 0.05
-Nodes (70): CheckboxField(), CheckboxFieldProps, FormCheckboxField, FileUploadField(), FileUploadFieldProps, FormFileUploadField, FormRadioGroupField, Option (+62 more)
+Nodes (68): metadata, CheckboxField(), CheckboxFieldProps, FormCheckboxField, FileUploadField(), FileUploadFieldProps, FormFileUploadField, FormRadioGroupField (+60 more)
 
 ### Community 48 - "react"
-Cohesion: 0.05
-Nodes (53): ComboboxField(), countryOptions, demoFormSchema, DemoFormValues, frameworkOptions, genderOptions, interestOptions, Command() (+45 more)
+Cohesion: 0.06
+Nodes (50): ComboboxField(), countryOptions, demoFormSchema, DemoFormValues, frameworkOptions, genderOptions, interestOptions, ButtonGroup() (+42 more)
 
 ### Community 50 - "kanban.tsx"
 Cohesion: 0.06
 Nodes (49): metadata, animateLayoutChanges(), coordinateGetter(), directions, dropAnimation, GetItemValue, Kanban(), KanbanBoard() (+41 more)
 
 ### Community 51 - "infobar.tsx"
-Cohesion: 0.09
-Nodes (12): productInfoContent, metadata, metadata, metadata, Heading(), HeadingProps, InfoButton(), InfoButtonProps (+4 more)
+Cohesion: 0.10
+Nodes (11): productInfoContent, metadata, metadata, Heading(), HeadingProps, InfoButtonProps, InfobarContent, billingInfoContent (+3 more)
 
 ### Community 52 - "admin-console.tsx"
-Cohesion: 0.07
-Nodes (40): ACTIVE_DOMAIN_FILTER_OPTIONS, ACTIVITY_CATEGORY_OPTIONS, AdminConsole(), CLAIM_STATUS_FILTER_OPTIONS, CLAIM_USER_FILTER_OPTIONS, formatCell(), formatLabel(), getSubscriptionOption() (+32 more)
+Cohesion: 0.05
+Nodes (51): ACCOUNT_CLAIM_COLUMN_LABELS, ACTIVE_DOMAIN_FILTER_OPTIONS, ACTIVITY_CATEGORY_OPTIONS, AdminConsole(), CLAIM_STATUS_FILTER_OPTIONS, CLAIM_USER_FILTER_OPTIONS, DEFAULT_HIDDEN_COLUMNS, formatCell() (+43 more)
 
 ### Community 53 - "dropdown-menu (Radix `DropdownMenu` → Base UI `Menu`)"
 Cohesion: 0.04
 Nodes (48): Arrow / Item / Group / Label / CheckboxItem / RadioGroup / RadioItem / ItemIndicator / Separator / Sub / SubTrigger / SubContent, Arrow → Menu.Arrow, Base UI only, data attributes, CSS variables, Base UI only props worth knowing (Menu), Base UI only props worth knowing (NavigationMenu), CheckboxItem → Menu.CheckboxItem, Content → ContextMenu.Portal > Positioner > Popup, Content → Menu.Portal > Menu.Positioner > Menu.Popup (+40 more)
 
 ### Community 54 - "utils.ts"
-Cohesion: 0.09
-Nodes (33): Avatar(), AvatarFallback(), AvatarImage(), FilePreview(), FilePreviewProps, getFileExtension(), getFileIcon(), getFormattedFileType() (+25 more)
+Cohesion: 0.10
+Nodes (27): metadata, FilePreview(), FilePreviewProps, getFileExtension(), getFileIcon(), getFormattedFileType(), UploadedFile, ChatArea() (+19 more)
 
 ### Community 55 - "cn"
 Cohesion: 0.08
-Nodes (41): Avatar(), AvatarFallback(), AvatarImage(), Separator(), Sheet(), SheetContent(), SheetDescription(), SheetFooter() (+33 more)
+Nodes (42): Avatar(), AvatarFallback(), AvatarImage(), Input(), Separator(), Sheet(), SheetContent(), SheetDescription() (+34 more)
 
 ### Community 56 - "sheet-form-demo.tsx"
-Cohesion: 0.08
-Nodes (35): DemoForm(), Dialog(), DialogClose(), DialogContent(), DialogDescription(), DialogFooter(), DialogHeader(), DialogOverlay() (+27 more)
+Cohesion: 0.07
+Nodes (39): DemoForm(), Dialog(), DialogClose(), DialogContent(), DialogDescription(), DialogFooter(), DialogHeader(), DialogOverlay() (+31 more)
 
 ### Community 57 - "data-table-faceted-filter.tsx"
-Cohesion: 0.10
-Nodes (28): Icon, Icons, Badge(), badgeVariants, Checkbox(), Command(), CommandEmpty(), CommandGroup() (+20 more)
+Cohesion: 0.11
+Nodes (28): Icon, Icons, Badge(), badgeVariants, Button(), buttonVariants, Checkbox(), Command() (+20 more)
 
 ### Community 58 - "devDependencies"
 Cohesion: 0.04
@@ -725,8 +731,8 @@ Cohesion: 0.04
 Nodes (44): Base UI only props worth knowing (checkbox), Base UI only props worth knowing (radio-group), Base UI only props worth knowing (select), Base UI only props worth knowing (slider), Base UI only props worth knowing (switch), checkbox, Checkbox.Indicator → Checkbox.Indicator, Checkbox.Root → Checkbox.Root (+36 more)
 
 ### Community 61 - "button.tsx"
-Cohesion: 0.08
-Nodes (24): metadata, Page(), pageProps, Button(), buttonVariants, Calendar(), HoverCardContent(), Pagination() (+16 more)
+Cohesion: 0.05
+Nodes (36): metadata, Page(), pageProps, fetchGitHubRepo(), formatCount(), GitHubIcon(), GitHubRepo, GitHubStarsButton() (+28 more)
 
 ### Community 62 - "Audit Playbook"
 Cohesion: 0.05
@@ -749,16 +755,16 @@ Cohesion: 0.11
 Nodes (21): metadata, ActiveThemeProvider(), setThemeCookie(), ThemeContext, ThemeContextType, useThemeConfig(), THEMES, ThemeProvider() (+13 more)
 
 ### Community 67 - "sidebar.tsx"
-Cohesion: 0.13
-Nodes (25): Icon, NavProjects(), NavUser(), OrgSwitcher(), DropdownMenuSeparator(), Sidebar(), SidebarContent(), SidebarContext (+17 more)
+Cohesion: 0.10
+Nodes (46): AppSidebar(), Icon, AppSidebar(), AlertModal(), NavProjects(), NavUser(), OrgSwitcher(), Collapsible() (+38 more)
 
 ### Community 68 - "dropdown-menu.tsx"
-Cohesion: 0.12
-Nodes (22): AlertModal(), AlertModalProps, DropdownMenu(), DropdownMenuCheckboxItem(), DropdownMenuContent(), DropdownMenuGroup(), DropdownMenuItem(), DropdownMenuLabel() (+14 more)
+Cohesion: 0.29
+Nodes (6): DataTableColumnHeader(), Product, CellAction(), CellActionProps, columns, CATEGORY_OPTIONS
 
 ### Community 69 - "mutations.ts"
-Cohesion: 0.15
-Nodes (20): metadata, Page(), PageProps, createProductMutation, deleteProductMutation, updateProductMutation, productByIdOptions(), productKeys (+12 more)
+Cohesion: 0.24
+Nodes (11): createProductMutation, deleteProductMutation, updateProductMutation, productKeys, createProduct(), deleteProduct(), updateProduct(), ProductByIdResponse (+3 more)
 
 ### Community 70 - "compilerOptions"
 Cohesion: 0.07
@@ -773,20 +779,20 @@ Cohesion: 0.07
 Nodes (27): Analyzing Benchmark Results, Categories for Suggestions, Guidelines, Guidelines, Inputs, Inputs, Output Format, Post-hoc Analyzer Agent (+19 more)
 
 ### Community 73 - "multi-step-product-form.tsx"
-Cohesion: 0.12
-Nodes (18): FileCard(), FileCardProps, FileUploader(), FileUploaderProps, isFileWithPreview(), Progress(), categoryOptions, MultiStepProductForm() (+10 more)
+Cohesion: 0.13
+Nodes (17): Badge(), badgeVariants, ChartConfig, ChartContainer(), ChartContext, ChartContextProps, ChartLegendContent(), ChartTooltipContent() (+9 more)
 
 ### Community 74 - "cell-action.tsx"
-Cohesion: 0.12
-Nodes (16): Params, fakeUsers, User, createUserMutation, deleteUserMutation, updateUserMutation, userKeys, createUser() (+8 more)
+Cohesion: 0.13
+Nodes (13): Params, fakeUsers, createUserMutation, deleteUserMutation, updateUserMutation, userKeys, createUser(), deleteUser() (+5 more)
 
 ### Community 75 - "Per-component notes"
 Cohesion: 0.08
 Nodes (24): accordion, asChild -> render, breadcrumb / marker (Slot users), Coverage matrix, CSS custom properties, Data attributes / class hooks, dialog / alert-dialog / sheet, Doc-validation TODOs (before specs are final) (+16 more)
 
 ### Community 76 - "utils.ts"
-Cohesion: 0.14
-Nodes (13): AlertModal(), AlertModalProps, Button(), buttonVariants, Input(), Modal(), Spinner(), DataTableFacetedFilter() (+5 more)
+Cohesion: 0.16
+Nodes (11): AlertModal(), AlertModalProps, Dialog(), DialogContent(), DialogDescription(), DialogFooter(), DialogHeader(), DialogOverlay() (+3 more)
 
 ### Community 77 - "generate_review.py"
 Cohesion: 0.15
@@ -825,28 +831,28 @@ Cohesion: 0.09
 Nodes (23): Adding New Themes, Best Practices, Change Default Theme Constant, Color Format Reference, Colors Not Applying, Dark Mode Not Working, Example: Complete Theme, Example: Minimal Theme (+15 more)
 
 ### Community 86 - "notifications-page.tsx"
-Cohesion: 0.13
-Nodes (19): ActionStyle, ActionType, formatDate(), getActionIcon(), NotificationAction, NotificationCard(), NotificationCardProps, NotificationStatus (+11 more)
+Cohesion: 0.12
+Nodes (19): metadata, ActionStyle, ActionType, formatDate(), getActionIcon(), NotificationAction, NotificationCard(), NotificationCardProps (+11 more)
 
 ### Community 87 - "Charts & Analytics Guide"
 Cohesion: 0.09
 Nodes (21): 1. Create the chart component, 2. Create matching skeleton, 3. Create parallel route slot, 4. Add slot to layout, Adding a New Chart Section, Area Chart Example, Available Recharts Components, Bar Chart Pattern (+13 more)
 
 ### Community 88 - "app-sidebar.tsx"
-Cohesion: 0.25
-Nodes (13): AppSidebar(), AppSidebar(), Collapsible(), CollapsibleContent(), CollapsibleTrigger(), SidebarGroupContent(), SidebarGroupLabel(), SidebarMenuSub() (+5 more)
+Cohesion: 0.14
+Nodes (19): ActivityDraft, createBlankActivity(), createBlankDay(), createLocationQueryMap(), DayDraft, defaultMapCenter, draftKey(), filters (+11 more)
 
 ### Community 89 - "Simplified Navigation RBAC System"
 Cohesion: 0.10
 Nodes (21): Adding New Access Types, Adding New Items, After (Simplified), All Checks Are Synchronous, Architecture, Before (Overcomplicated), Best Practices, Comparison: Before vs After (+13 more)
 
 ### Community 90 - "mock-api.ts"
-Cohesion: 0.14
-Nodes (8): Params, AreaStats(), BarStats(), Stats(), Sales(), delay(), fakeProducts, RecentSales()
+Cohesion: 0.13
+Nodes (9): Params, AreaStats(), BarStats(), Stats(), Sales(), delay(), fakeProducts, RecentSales() (+1 more)
 
 ### Community 91 - "trackEvent"
-Cohesion: 0.18
-Nodes (13): Props, RegisterFormClient(), ProfileAnalytics(), TrackedLink(), TrackedLinkProps, platformStyles, UserSocialLinks(), UserSocialLinksProps (+5 more)
+Cohesion: 0.16
+Nodes (14): Props, RegisterFormClient(), CloneItineraryButton(), ProfileAnalytics(), TrackedLink(), TrackedLinkProps, platformStyles, UserSocialLinks() (+6 more)
 
 ### Community 92 - "data-table.tsx"
 Cohesion: 0.18
@@ -861,16 +867,16 @@ Cohesion: 0.10
 Nodes (20): Automatic Request Deduplication, Best Practices, Cache Debugging, Cache Deduplication, Cache Invalidation, Cache Management Strategies, Cache Persistence, Cache Preloading (+12 more)
 
 ### Community 95 - "TanStack Query Patterns"
-Cohesion: 0.10
-Nodes (20): Additional Resources, API Service Pattern, Basic Mutation, Cache Management, Centralized API Service, Error Handling, Invalidation, Manual Updates (+12 more)
+Cohesion: 0.11
+Nodes (19): Additional Resources, API Service Pattern, Basic Mutation, Centralized API Service, Error Handling, Key Factories, Key Structure, Mutations (+11 more)
 
 ### Community 96 - "Next.js Best Practices"
 Cohesion: 0.10
 Nodes (20): Async Patterns, Bundling, Data Patterns, Debug Tricks, Directives, Error Handling, File Conventions, Font Optimization (+12 more)
 
 ### Community 97 - "data-table.ts"
-Cohesion: 0.14
-Nodes (18): DataTableFacetedFilterProps, DataTableConfig, UseDataTableProps, getCommonPinningStyles(), getDefaultFilterOperator(), getFilterOperators(), FilterItemSchema, getFiltersStateParser() (+10 more)
+Cohesion: 0.15
+Nodes (17): DataTableFacetedFilterProps, DataTableConfig, UseDataTableProps, getDefaultFilterOperator(), getFilterOperators(), FilterItemSchema, getFiltersStateParser(), sortingItemSchema (+9 more)
 
 ### Community 98 - "dropdown-menu.tsx"
 Cohesion: 0.13
@@ -901,8 +907,8 @@ Cohesion: 0.11
 Nodes (18): rules, import/no-anonymous-default-export, import/no-unassigned-import, jsx-a11y/aria-props, jsx-a11y/aria-proptypes, jsx-a11y/aria-unsupported-elements, jsx-a11y/prefer-tag-over-role, jsx-a11y/role-has-required-aria-props (+10 more)
 
 ### Community 105 - "theme-selector.tsx"
-Cohesion: 0.07
-Nodes (33): StatsErrorProps, StatsErrorProps, Breadcrumbs(), Icons, SearchInput(), useThemeConfig(), ThemeModeToggle(), ThemeSelector() (+25 more)
+Cohesion: 0.08
+Nodes (30): metadata, Icons, KBar(), KBarComponent(), RenderResults(), ResultItem, useThemeSwitching(), Header() (+22 more)
 
 ### Community 106 - "Commands"
 Cohesion: 0.12
@@ -929,8 +935,8 @@ Cohesion: 0.12
 Nodes (16): 1.1 Avoid Boolean Prop Proliferation, 1.2 Use Compound Components, 1. Component Architecture, 2.1 Decouple State Management from UI, 2.2 Define Generic Context Interfaces for Dependency Injection, 2.3 Lift State into Provider Components, 2. State Management, 3.1 Create Explicit Component Variants (+8 more)
 
 ### Community 112 - "youtube-ai.ts"
-Cohesion: 0.21
-Nodes (12): POST(), AiYoutubeImporter(), AiYoutubeImporterProps, CreateItineraryForm(), CreateItineraryFormProps, AiItineraryResult, callGeminiApi(), ExtractedActivity (+4 more)
+Cohesion: 0.23
+Nodes (11): AiYoutubeImporter(), AiYoutubeImporterProps, CreateItineraryForm(), CreateItineraryFormProps, AiItineraryResult, callGeminiApi(), ExtractedActivity, ExtractedDay (+3 more)
 
 ### Community 113 - "Data Patterns"
 Cohesion: 0.12
@@ -969,12 +975,12 @@ Cohesion: 0.12
 Nodes (15): Cleanup Script: Start Minimal in 60 Seconds, Clerk setup, Deploy, Docker, Environment variables, FAQ, Features, Folder Structure (+7 more)
 
 ### Community 122 - "data-table.tsx"
-Cohesion: 0.20
-Nodes (14): ScrollArea(), ScrollBar(), DataTableProps, DataTablePagination(), DataTableSkeleton(), DataTableSkeletonProps, Table(), TableBody() (+6 more)
+Cohesion: 0.13
+Nodes (21): FileCard(), FileCardProps, FileUploader(), FileUploaderProps, isFileWithPreview(), Progress(), ScrollArea(), ScrollBar() (+13 more)
 
 ### Community 123 - "data-table.ts"
-Cohesion: 0.20
-Nodes (11): DataTableConfig, getDefaultFilterOperator(), getFilterOperators(), ColumnMeta, DataTableRowAction, ExtendedColumnFilter, ExtendedColumnSort, FilterOperator (+3 more)
+Cohesion: 0.17
+Nodes (13): DataTableFacetedFilterProps, DataTableConfig, getDefaultFilterOperator(), getFilterOperators(), ColumnMeta, DataTableRowAction, ExtendedColumnFilter, ExtendedColumnSort (+5 more)
 
 ### Community 124 - "Bundling"
 Cohesion: 0.13
@@ -1005,8 +1011,8 @@ Cohesion: 0.21
 Nodes (9): metadata, PageProps, usersQueryOptions(), UserFormSheetTrigger(), UserListingPage(), usersInfoContent, searchParams, searchParamsCache (+1 more)
 
 ### Community 131 - "font.config.ts"
-Cohesion: 0.08
-Nodes (23): META_THEME_COLORS, metadata, RootLayout(), viewport, Providers(), fontArchitectsDaughter, fontDMSans, fontFiraCode (+15 more)
+Cohesion: 0.07
+Nodes (27): META_THEME_COLORS, metadata, RootLayout(), viewport, Providers(), ActiveThemeProvider(), setThemeCookie(), ThemeContext (+19 more)
 
 ### Community 132 - "Find Skills"
 Cohesion: 0.14
@@ -1069,8 +1075,8 @@ Cohesion: 0.23
 Nodes (12): aggregate_results(), calculate_stats(), generate_benchmark(), generate_markdown(), load_run_results(), main(), Path, Aggregate run results into summary statistics.      Returns run_summary with sta (+4 more)
 
 ### Community 148 - "page.tsx"
-Cohesion: 0.15
-Nodes (14): metadata, ReactQueryPage(), QueryProvider(), ActiveThemeProvider(), setThemeCookie(), ThemeContext, ThemeContextType, Pokemon (+6 more)
+Cohesion: 0.27
+Nodes (8): metadata, ReactQueryPage(), Pokemon, pokemonOptions(), POKEMON_IDS, PokemonInfo(), PokemonSkeleton(), reactQueryInfoContent
 
 ### Community 149 - "alert-dialog"
 Cohesion: 0.17
@@ -1105,8 +1111,8 @@ Cohesion: 0.17
 Nodes (12): 6.10 Use React DOM Resource Hints, 6.11 Use useTransition Over Manual Loading States, 6.1 Animate SVG Wrapper Instead of SVG Element, 6.2 CSS content-visibility for Long Lists, 6.3 Hoist Static JSX Elements, 6.4 Optimize SVG Precision, 6.5 Prevent Hydration Mismatch Without Flickering, 6.6 Suppress Expected Hydration Mismatches (+4 more)
 
 ### Community 157 - "index.tsx"
-Cohesion: 0.27
-Nodes (10): DataTable(), productsQueryOptions(), ProductListingPage(), columnIds, ProductTable(), columns, columnIds, UsersTable() (+2 more)
+Cohesion: 0.23
+Nodes (12): DataTable(), DataTableToolbar(), productsQueryOptions(), getProducts(), ProductListingPage(), columnIds, ProductTable(), columnIds (+4 more)
 
 ### Community 158 - "scripts"
 Cohesion: 0.17
@@ -1161,8 +1167,8 @@ Cohesion: 0.18
 Nodes (11): Checkbox group (multi-select array), Date picker field (Calendar popover), Dependent dropdowns (country → state), Dynamic array rows, Form in a Sheet or Dialog, Form Recipes, Multi-step wizard, Nested object fields (+3 more)
 
 ### Community 171 - "index.ts"
-Cohesion: 0.23
-Nodes (8): FooterItem, MainNavItem, NavGroup, NavItem, NavItemWithChildren, NavItemWithOptionalChildren, PermissionCheck, SidebarNavItem
+Cohesion: 0.24
+Nodes (7): FooterItem, MainNavItem, NavItem, NavItemWithChildren, NavItemWithOptionalChildren, PermissionCheck, SidebarNavItem
 
 ### Community 173 - "AGENTS.md - AI Coding Agent Reference"
 Cohesion: 0.20
@@ -1337,8 +1343,8 @@ Cohesion: 0.28
 Nodes (8): c, cleanupPath, fs, msg, pad(), path, row(), strip()
 
 ### Community 216 - "github-stars-button.tsx"
-Cohesion: 0.31
-Nodes (8): fetchGitHubRepo(), formatCount(), GitHubIcon(), GitHubRepo, GitHubStarsButton(), GitHubStarsButtonProps, githubStarsButtonVariants, IconStyle
+Cohesion: 0.20
+Nodes (6): StatsErrorProps, StatsErrorProps, Alert(), AlertDescription(), AlertTitle(), alertVariants
 
 ### Community 217 - "use-controllable-state.tsx"
 Cohesion: 0.39
@@ -1377,8 +1383,12 @@ Cohesion: 0.25
 Nodes (8): plugins, eslint, import, jsx-a11y, nextjs, oxc, typescript, unicorn
 
 ### Community 227 - "index.tsx"
-Cohesion: 0.13
-Nodes (12): metadata, KBar(), KBarComponent(), RenderResults(), ResultItem, useThemeSwitching(), Header(), InfobarProvider() (+4 more)
+Cohesion: 0.22
+Nodes (15): isAdminTable(), POST(), DELETE(), isAdminTable(), PATCH(), GET(), isAdminTable(), POST() (+7 more)
+
+### Community 228 - "Panduan Menambahkan Menu & Tabel Baru di Admin Console — Jalanin"
+Cohesion: 0.12
+Nodes (16): 3.1. Tambahkan key tabel ke `adminTables`, 3.2. Buat fungsi `fetch<NamaTabel>()`, 3.3. Masukkan ke `getAdminSnapshot()`, 3.4. Tambahkan `case` pada `createAdminRecord` & `updateAdminRecord`, 3.5. Tambahkan `case` pada `deleteAdminRecord`, 4.1. Tambahkan konfigurasi di `tableConfigs`, 4.2. Masukkan ke `SIDEBAR_GROUPS`, 4.3. Atur visibilitas kolom awal di `DEFAULT_HIDDEN_COLUMNS` (+8 more)
 
 ### Community 229 - "Class-string rewrites (layer 2)"
 Cohesion: 0.29
@@ -1608,6 +1618,10 @@ Nodes (5): categories, correctness, suspicious, overrides, $schema
 Cohesion: 0.33
 Nodes (6): ignorePatterns, build/**, .next/**, next-env.d.ts, out/**, scripts/**
 
+### Community 287 - "layout.tsx"
+Cohesion: 0.19
+Nodes (11): metadata, Page(), PageProps, QueryProvider(), productByIdOptions(), getProductById(), EditProductView(), ProductViewPage() (+3 more)
+
 ### Community 288 - "Common Development Tasks"
 Cohesion: 0.40
 Nodes (5): Adding a New API Route, Adding a New Feature (End-to-End), Adding a New Theme, Adding a shadcn Component, Common Development Tasks
@@ -1655,6 +1669,14 @@ Nodes (5): Example: Notebook Theme, Font Loading Process, Important Notes, Using
 ### Community 299 - "components"
 Cohesion: 0.40
 Nodes (5): Image, Link, components, settings, jsx-a11y
+
+### Community 300 - "page.tsx"
+Cohesion: 0.31
+Nodes (10): POST(), POST(), usernameFromEmail(), hashToken(), POST(), POST(), createSession(), hashPassword() (+2 more)
+
+### Community 301 - "page.tsx"
+Cohesion: 0.23
+Nodes (11): Breadcrumbs(), Breadcrumb(), BreadcrumbEllipsis(), BreadcrumbItem(), BreadcrumbLink(), BreadcrumbList(), BreadcrumbPage(), BreadcrumbSeparator() (+3 more)
 
 ### Community 304 - "Navigation & RBAC System"
 Cohesion: 0.50
@@ -1709,28 +1731,52 @@ Cohesion: 0.67
 Nodes (3): Get Query Data, Manual Cache Updates, Set Query Data
 
 ### Community 320 - "Query Keys"
-Cohesion: 0.67
-Nodes (3): Key Factories, Key Structure, Query Keys
+Cohesion: 0.40
+Nodes (8): HOURS, MINUTES, Props, TimeInput(), clampHour(), clampMinute(), formatActivityTime(), parseActivityTime()
+
+### Community 328 - "page.tsx"
+Cohesion: 0.06
+Nodes (26): metadata, AlertModalProps, Avatar(), AvatarFallback(), AvatarImage(), Button(), InputGroup(), InputGroupAddon() (+18 more)
+
+### Community 329 - "page.tsx"
+Cohesion: 0.39
+Nodes (6): BudgetField(), Props, PriceInput(), Props, formatPriceInput(), parsePriceInput()
+
+### Community 539 - "advanced-form-patterns.tsx"
+Cohesion: 0.25
+Nodes (5): metadata, AdvancedFormValues, advancedSchema, countryOptions, countryStateMap
+
+### Community 548 - "toggle-group.tsx"
+Cohesion: 0.43
+Nodes (5): ToggleGroup(), ToggleGroupContext, ToggleGroupItem(), Toggle(), toggleVariants
+
+### Community 549 - "product-form.tsx"
+Cohesion: 0.43
+Nodes (4): categoryOptions, ACCEPTED_IMAGE_TYPES, ProductFormValues, productSchema
+
+### Community 550 - "Cache Management"
+Cohesion: 0.50
+Nodes (4): Cache Management, Invalidation, Manual Updates, Prefetching
 
 ## Knowledge Gaps
-- **2447 isolated node(s):** `Prisma-Remote`, `metadata`, `GeoapifyFeature`, `Props`, `metadata` (+2442 more)
+- **2464 isolated node(s):** `Prisma-Remote`, `metadata`, `GeoapifyFeature`, `Props`, `metadata` (+2459 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **238 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **234 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `react` connect `react` to `Interactive UI Components`, `Community 4`, `Supabase Storage Integration`, `Budget Fields`, `page.tsx`, `index.tsx`, `cn`, `icons.tsx`, `tanstack-form.tsx`, `kanban.tsx`, `infobar.tsx`, `admin-console.tsx`, `utils.ts`, `cn`, `sheet-form-demo.tsx`, `data-table-faceted-filter.tsx`, `button.tsx`, `theme-selector.tsx`, `sidebar.tsx`, `dropdown-menu.tsx`, `multi-step-product-form.tsx`, `utils.ts`, `layout.tsx`, `notifications-page.tsx`, `app-sidebar.tsx`, `github-stars-button.tsx`, `use-controllable-state.tsx`, `trackEvent`, `data-table.tsx`, `dropdown-menu.tsx`, `plugins`, `index.tsx`, `theme-selector.tsx`, `youtube-ai.ts`, `page-container.tsx`, `data-table.tsx`?**
-  _High betweenness centrality (0.111) - this node is a cross-community bridge._
-- **Why does `cn()` connect `cn` to `font.config.ts`, `dropdown-menu.tsx`, `sidebar.tsx`, `index.tsx`, `multi-step-product-form.tsx`, `theme-selector.tsx`, `icons.tsx`, `tanstack-form.tsx`, `react`, `kanban.tsx`, `infobar.tsx`, `utils.ts`, `notifications-page.tsx`, `sheet-form-demo.tsx`, `data-table.tsx`, `app-sidebar.tsx`, `button.tsx`, `github-stars-button.tsx`?**
-  _High betweenness centrality (0.024) - this node is a cross-community bridge._
-- **Why does `dependencies` connect `Time Inputs & Calculations` to `breadcrumbs.tsx`, `@tabler/icons-react`, `package.json`, `class-variance-authority`, `cmdk`, `next`, `pg`, `react-dom`, `tw-animate-css`, `@vercel/blob`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
+- **Why does `react` connect `page.tsx` to `Interactive UI Components`, `font.config.ts`, `Community 4`, `Supabase Storage Integration`, `Budget Fields`, `page.tsx`, `advanced-form-patterns.tsx`, `share-itinerary-button.tsx`, `layout.tsx`, `toggle-group.tsx`, `page.tsx`, `icons.tsx`, `cn`, `react`, `tanstack-form.tsx`, `kanban.tsx`, `infobar.tsx`, `admin-console.tsx`, `utils.ts`, `cn`, `sheet-form-demo.tsx`, `data-table-faceted-filter.tsx`, `button.tsx`, `theme-selector.tsx`, `sidebar.tsx`, `page.tsx`, `multi-step-product-form.tsx`, `utils.ts`, `layout.tsx`, `notifications-page.tsx`, `app-sidebar.tsx`, `github-stars-button.tsx`, `use-controllable-state.tsx`, `trackEvent`, `data-table.tsx`, `data-table.ts`, `dropdown-menu.tsx`, `plugins`, `theme-selector.tsx`, `youtube-ai.ts`, `page-container.tsx`, `data-table.tsx`?**
+  _High betweenness centrality (0.112) - this node is a cross-community bridge._
+- **Why does `cn()` connect `cn` to `font.config.ts`, `index.tsx`, `toggle-group.tsx`, `page.tsx`, `icons.tsx`, `tanstack-form.tsx`, `react`, `kanban.tsx`, `infobar.tsx`, `utils.ts`, `sheet-form-demo.tsx`, `button.tsx`, `sidebar.tsx`, `dropdown-menu.tsx`, `page.tsx`, `multi-step-product-form.tsx`, `notifications-page.tsx`, `github-stars-button.tsx`, `theme-selector.tsx`, `data-table.tsx`?**
+  _High betweenness centrality (0.026) - this node is a cross-community bridge._
+- **Why does `extractItineraryFromYouTube()` connect `youtube-ai.ts` to `API Routes & User Sessions`, `Icon`, `Time Inputs & Calculations`?**
+  _High betweenness centrality (0.018) - this node is a cross-community bridge._
 - **What connects `Prisma-Remote`, `metadata`, `GeoapifyFeature` to the rest of the system?**
-  _2447 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _2464 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Interactive UI Components` be split into smaller, more focused modules?**
-  _Cohesion score 0.07127882599580712 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.14130434782608695 - nodes in this community are weakly interconnected._
 - **Should `API Routes & User Sessions` be split into smaller, more focused modules?**
-  _Cohesion score 0.13048780487804879 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.13229018492176386 - nodes in this community are weakly interconnected._
 - **Should `Admin Panel & Console Operations` be split into smaller, more focused modules?**
-  _Cohesion score 0.10975609756097561 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.13107822410147993 - nodes in this community are weakly interconnected._

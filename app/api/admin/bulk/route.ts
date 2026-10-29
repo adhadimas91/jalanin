@@ -6,6 +6,7 @@ import {
   bulkSetActivitiesMyLink,
   bulkUnlinkMyLinksFromActivities,
   bulkUpdateAdminRecords,
+  formatAdminError,
   type AdminTable,
 } from "@/lib/admin";
 import { getCurrentUser, isAdminUser } from "@/lib/auth";
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
       ids?: string[];
       items?: Record<string, unknown>[];
       patch?: Record<string, unknown>;
+      data?: Record<string, unknown>;
       activityIds?: string[];
       myLinkId?: string | null;
       myLinkIds?: string[];
@@ -57,10 +59,11 @@ export async function POST(request: Request) {
 
     if (action === "bulkUpdate") {
       if (!body.table || !isAdminTable(body.table)) {
-        return new NextResponse("Unknown admin table.", { status: 400 });
+        return NextResponse.json({ error: "Unknown admin table." }, { status: 400 });
       }
       const ids = Array.isArray(body.ids) ? body.ids.map(String).filter(Boolean) : [];
-      const patch = body.patch && typeof body.patch === "object" ? body.patch : {};
+      const rawPatch = body.patch ?? body.data;
+      const patch = rawPatch && typeof rawPatch === "object" ? rawPatch : {};
       const result = await bulkUpdateAdminRecords(body.table, ids, patch);
       return NextResponse.json({ ok: true, count: result.count });
     }
@@ -85,10 +88,8 @@ export async function POST(request: Request) {
     return new NextResponse("Invalid bulk action.", { status: 400 });
   } catch (error) {
     console.error("Admin bulk action error:", error);
-    return new NextResponse(
-      error instanceof Error ? error.message : "Failed to process bulk action.",
-      { status: 500 },
-    );
+    const { message, status } = formatAdminError(error);
+    return NextResponse.json({ error: message }, { status });
   }
 }
 

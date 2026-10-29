@@ -1,5 +1,7 @@
 import type { getPublishedItineraries } from "./itineraries";
 
+const UNCLAIMED_EMAIL_DOMAIN = "@kurasi.jalanin.local";
+
 export function serializeUser(user: {
   id: string;
   name: string | null;
@@ -12,11 +14,15 @@ export function serializeUser(user: {
   isPro?: boolean | null;
   isClaimed?: boolean | null;
 }) {
+  const isPlaceholderEmail =
+    typeof user.email === "string" &&
+    user.email.toLowerCase().endsWith(UNCLAIMED_EMAIL_DOMAIN);
+
   return {
     id: user.id,
     name: user.name,
     username: user.username,
-    email: user.email,
+    email: isPlaceholderEmail ? "" : user.email,
     avatarUrl: user.avatarUrl,
     bio: user.bio,
     city: user.city,
@@ -60,9 +66,9 @@ export function serializeItinerary(itinerary: Awaited<ReturnType<typeof getPubli
         myLinkId: activity.myLinkId,
         myLink: (activity as any).myLink
           ? {
-              actualUrl: (activity as any).myLink.actualUrl,
-              provider: (activity as any).myLink.provider,
-            }
+            actualUrl: (activity as any).myLink.actualUrl,
+            provider: (activity as any).myLink.provider,
+          }
           : null,
       })),
     })),
@@ -71,14 +77,14 @@ export function serializeItinerary(itinerary: Awaited<ReturnType<typeof getPubli
     copiesCount: itinerary.copies.length,
     originalItinerary: (itinerary as any).originalItinerary
       ? {
-          id: (itinerary as any).originalItinerary.id,
-          title: (itinerary as any).originalItinerary.title,
-          author: {
-            id: (itinerary as any).originalItinerary.author.id,
-            name: (itinerary as any).originalItinerary.author.name,
-            username: (itinerary as any).originalItinerary.author.username,
-          },
-        }
+        id: (itinerary as any).originalItinerary.id,
+        title: (itinerary as any).originalItinerary.title,
+        author: {
+          id: (itinerary as any).originalItinerary.author.id,
+          name: (itinerary as any).originalItinerary.author.name,
+          username: (itinerary as any).originalItinerary.author.username,
+        },
+      }
       : null,
   };
 }

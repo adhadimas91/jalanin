@@ -115,6 +115,24 @@ function stripMeta(input: Record<string, unknown>) {
   );
 }
 
+export const UNCLAIMED_EMAIL_DOMAIN = "@kurasi.jalanin.local";
+
+export function isUnclaimedPlaceholderEmail(value: unknown): boolean {
+  return (
+    typeof value === "string" &&
+    value.trim().toLowerCase().endsWith(UNCLAIMED_EMAIL_DOMAIN)
+  );
+}
+
+function buildUnclaimedPlaceholderEmail(username?: string | null): string {
+  const slug = (username ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]/g, "")
+    .slice(0, 32);
+  const suffix = randomBytes(4).toString("hex");
+  return `unclaimed+${slug ? `${slug}-` : ""}${suffix}${UNCLAIMED_EMAIL_DOMAIN}`;
+}
+
 function readRequiredString(value: unknown, fieldLabel: string) {
   const str = typeof value === "string" ? value.trim() : "";
   if (!str) {
@@ -656,7 +674,21 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
 
   switch (table) {
     case "users": {
-      const email = readRequiredString(data.email, "email");
+      const isClaimed = readBoolean(data.isClaimed, false);
+      const rawEmail = typeof data.email === "string" ? data.email.trim() : "";
+
+      let email = rawEmail;
+      if (isClaimed) {
+        if (!email || isUnclaimedPlaceholderEmail(email)) {
+          throw new AdminValidationError('Field "Email" wajib diisi untuk akun aktif (isClaimed aktif).');
+        }
+      } else {
+        // Akun kurasi: email opsional. Jika kosong atau sudah format placeholder kurasi, buatkan placeholder unik.
+        if (!email || isUnclaimedPlaceholderEmail(email)) {
+          email = buildUnclaimedPlaceholderEmail(readOptionalString(data.username));
+        }
+      }
+
       let passwordHash = readString(data.passwordHash);
       if (passwordHash && !passwordHash.includes(":")) {
         passwordHash = await hashPassword(passwordHash);
@@ -677,7 +709,7 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           role: readUserRole(data.role),
           isPro: readBoolean(data.isPro, false),
           proExpiresAt: readOptionalDate(data.proExpiresAt),
-          isClaimed: readBoolean(data.isClaimed, true),
+          isClaimed,
           maxPrivate: readInt(data.maxPrivate, 2),
           maxPublic: readInt(data.maxPublic, 5),
           maxSaved: readInt(data.maxSaved, 5),
@@ -824,10 +856,49 @@ export async function updateAdminRecord(
       if (passwordHash && !passwordHash.includes(":")) {
         passwordHash = await hashPassword(passwordHash);
       }
+
+      // Check current user if email or isClaimed is involved
+      let emailUpdate: string | undefined = undefined;
+      if ("email" in data || "isClaimed" in data) {
+        const currentUser = await prisma.user.findUnique({
+          where: { id },
+          select: { email: true, isClaimed: true, username: true },
+        });
+
+        const nextIsClaimed = "isClaimed" in data
+          ? readBoolean(data.isClaimed, currentUser?.isClaimed ?? true)
+          : (currentUser?.isClaimed ?? true);
+
+        const rawEmail = "email" in data
+          ? (typeof data.email === "string" ? data.email.trim() : "")
+          : currentUser?.email ?? "";
+
+        if (nextIsClaimed) {
+          if (!rawEmail || isUnclaimedPlaceholderEmail(rawEmail)) {
+            throw new AdminValidationError('Field "Email" wajib diisi untuk akun aktif (isClaimed aktif).');
+          }
+          emailUpdate = rawEmail;
+        } else {
+          // Akun kurasi: jika kosong atau merupakan placeholder, pertahankan existing atau generate baru
+          if (!rawEmail || isUnclaimedPlaceholderEmail(rawEmail)) {
+            if (currentUser?.email && isUnclaimedPlaceholderEmail(currentUser.email)) {
+              emailUpdate = currentUser.email;
+            } else {
+              const username = "username" in data
+                ? readOptionalString(data.username)
+                : currentUser?.username;
+              emailUpdate = buildUnclaimedPlaceholderEmail(username);
+            }
+          } else {
+            emailUpdate = rawEmail;
+          }
+        }
+      }
+
       return prisma.user.update({
         where: { id },
         data: {
-          ...("email" in data ? { email: readRequiredString(data.email, "email") } : {}),
+          ...(emailUpdate !== undefined ? { email: emailUpdate } : {}),
           ...("username" in data ? { username: readOptionalString(data.username) ?? null } : {}),
           ...(passwordHash ? { passwordHash } : {}),
           ...("name" in data ? { name: readOptionalString(data.name) ?? null } : {}),
