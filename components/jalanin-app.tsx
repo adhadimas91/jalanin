@@ -40,7 +40,14 @@ export type JalaninActivity = {
   category: string;
   orderIndex: number;
   myLinkId: string | null;
-  myLink?: { actualUrl: string; provider: string } | null;
+  myLink?: { actualUrl: string; provider: string; label?: string } | null;
+  myLinks?: Array<{
+    id?: string;
+    label?: string;
+    actualUrl: string;
+    provider: string;
+  }>;
+  myLinkIds?: string[];
 };
 
 export type JalaninDay = {
@@ -99,6 +106,7 @@ type ActivityDraft = {
   category: string;
   estimatedCost: number;
   myLinkId: string | null;
+  myLinkIds: string[];
 };
 
 type DayDraft = {
@@ -132,6 +140,7 @@ function createBlankActivity(index: number): ActivityDraft {
     category: DEFAULT_ACTIVITY_TYPE,
     estimatedCost: 0,
     myLinkId: null,
+    myLinkIds: [],
   };
 }
 
@@ -143,6 +152,15 @@ function createBlankDay(index: number): DayDraft {
 }
 
 function fromActivity(activity: JalaninActivity): ActivityDraft {
+  const linkIds =
+    activity.myLinkIds && activity.myLinkIds.length > 0
+      ? activity.myLinkIds
+      : activity.myLinks && activity.myLinks.length > 0
+        ? (activity.myLinks.map((l) => l.id).filter(Boolean) as string[])
+        : activity.myLinkId
+          ? [activity.myLinkId]
+          : [];
+
   return {
     time: activity.time,
     title: activity.title,
@@ -155,7 +173,8 @@ function fromActivity(activity: JalaninActivity): ActivityDraft {
     customLocation: activity.customLocation,
     category: activity.category,
     estimatedCost: activity.estimatedCost,
-    myLinkId: activity.myLinkId || null,
+    myLinkId: linkIds[0] || null,
+    myLinkIds: linkIds,
   };
 }
 
@@ -466,6 +485,30 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
           : day,
       ),
     );
+  }
+
+  function addLinkToDraftActivity(dayIndex: number, activityIndex: number, linkId: string) {
+    if (!linkId) return;
+    const currentActivity = dayDrafts[dayIndex]?.activities[activityIndex];
+    if (!currentActivity) return;
+    const existing = currentActivity.myLinkIds || (currentActivity.myLinkId ? [currentActivity.myLinkId] : []);
+    if (existing.includes(linkId)) return;
+    const updated = [...existing, linkId];
+    updateActivity(dayIndex, activityIndex, {
+      myLinkIds: updated,
+      myLinkId: updated[0] || null,
+    });
+  }
+
+  function removeLinkFromDraftActivity(dayIndex: number, activityIndex: number, linkId: string) {
+    const currentActivity = dayDrafts[dayIndex]?.activities[activityIndex];
+    if (!currentActivity) return;
+    const existing = currentActivity.myLinkIds || (currentActivity.myLinkId ? [currentActivity.myLinkId] : []);
+    const updated = existing.filter((id) => id !== linkId);
+    updateActivity(dayIndex, activityIndex, {
+      myLinkIds: updated,
+      myLinkId: updated[0] || null,
+    });
   }
 
   function addDay() {
@@ -982,40 +1025,70 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                               {activity.category}
                               {activity.locationName ? ` · ${activity.locationName}` : ""}
                             </span>
-                            {activity.myLink && (
-                              <div className="activity-mylink-section" style={{ marginTop: "12px" }}>
-                                <a
-                                  href={activity.myLink.actualUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer nofollow"
+                            {(() => {
+                              const links =
+                                activity.myLinks && activity.myLinks.length > 0
+                                  ? activity.myLinks
+                                  : activity.myLink
+                                    ? [activity.myLink]
+                                    : [];
+                              if (!links.length) return null;
+                              return (
+                                <div
+                                  className="activity-mylink-section"
                                   style={{
-                                    display: "inline-flex",
-                                    alignItems: "center",
+                                    marginTop: "12px",
+                                    display: "flex",
+                                    flexWrap: "wrap",
                                     gap: "8px",
-                                    padding: "8px 16px",
-                                    borderRadius: "999px",
-                                    fontSize: "12px",
-                                    fontWeight: 800,
-                                    color: "white",
-                                    background: activity.myLink.provider === "Klook"
-                                      ? "var(--orange)"
-                                      : activity.myLink.provider === "Agoda"
-                                        ? "var(--blue)"
-                                        : activity.myLink.provider === "Traveloka"
-                                          ? "var(--sky)"
-                                          : activity.myLink.provider === "Tiket.com"
-                                            ? "var(--yellow)"
-                                            : "var(--indigo)",
-                                    textDecoration: "none",
-                                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                                   }}
-                                  className="mylink-cta"
                                 >
-                                  <Icon name="route" />
-                                  <span>Pesan via {activity.myLink.provider}</span>
-                                </a>
-                              </div>
-                            )}
+                                  {links.map((link, linkIdx) => {
+                                    const providerColor =
+                                      link.provider === "Klook"
+                                        ? "var(--orange)"
+                                        : link.provider === "Agoda"
+                                          ? "var(--blue)"
+                                          : link.provider === "Traveloka"
+                                            ? "var(--sky)"
+                                            : link.provider === "Tiket.com"
+                                              ? "var(--yellow)"
+                                              : "var(--indigo)";
+                                    const labelText = link.label
+                                      ? link.label.toLowerCase().includes((link.provider || "").toLowerCase())
+                                        ? link.label
+                                        : `${link.label} (${link.provider})`
+                                      : `Pesan via ${link.provider}`;
+                                    return (
+                                      <a
+                                        key={(link as any).id || linkIdx}
+                                        href={link.actualUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer nofollow"
+                                        style={{
+                                          display: "inline-flex",
+                                          alignItems: "center",
+                                          gap: "8px",
+                                          padding: "8px 16px",
+                                          borderRadius: "999px",
+                                          fontSize: "12px",
+                                          fontWeight: 800,
+                                          color: "white",
+                                          background: providerColor,
+                                          textDecoration: "none",
+                                          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                                        }}
+                                        className="mylink-cta"
+                                        title={link.label || `Pesan via ${link.provider}`}
+                                      >
+                                        <Icon name="route" />
+                                        <span>{labelText}</span>
+                                      </a>
+                                    );
+                                  })}
+                                </div>
+                              );
+                            })()}
                           </div>
                           <div className="activity-cost">{activity.estimatedCost ? formatRupiah(activity.estimatedCost) : "Gratis"}</div>
                         </article>
@@ -1483,31 +1556,103 @@ export function JalaninApp({ itineraries, currentUser, savedIds, likedIds }: Pro
                         {pickerKey === key ? (
                           <PointPicker value={{ latitude: activity.latitude, longitude: activity.longitude }} onPick={(point) => pickManualPoint(activeDraftDayIndex, index, point)} />
                         ) : null}
-                        <label style={{ marginTop: "12px", display: "block" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                            <span>Sematkan Link MyLink</span>
+                        <div style={{ marginTop: "12px", display: "grid", gap: "6px" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span style={{ fontSize: "12px", fontWeight: 700 }}>Tautan MyLink (Bisa lebih dari 1)</span>
                             <a href="/settings/mylink" target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", color: "var(--blue)", fontWeight: 700 }}>
                               Kelola Link &rarr;
                             </a>
                           </div>
-                          <select
-                            value={activity.myLinkId || ""}
-                            onChange={(event) => updateActivity(activeDraftDayIndex, index, { myLinkId: event.target.value || null })}
-                            style={{ width: "100%", padding: "8px 10px", borderRadius: "8px", border: "1px solid var(--line)", background: "var(--surface)" }}
-                          >
-                            <option value="">-- Tidak Ada --</option>
-                            {userMyLinks.map((link) => (
-                              <option key={link.id} value={link.id}>
-                                [{link.provider}] {link.label}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        {activity.myLinkId && (
-                          <div style={{ fontSize: "11px", color: "var(--muted)", marginTop: "4px", wordBreak: "break-all" }}>
-                            Tautan terpilih: <strong>{userMyLinks.find(l => l.id === activity.myLinkId)?.label || "Memuat..."}</strong>
-                          </div>
-                        )}
+                          {(() => {
+                            const currentLinkIds = activity.myLinkIds || (activity.myLinkId ? [activity.myLinkId] : []);
+                            const selectedLinks = currentLinkIds
+                              .map((id) => userMyLinks.find((l) => l.id === id))
+                              .filter(Boolean) as typeof userMyLinks;
+                            const availableLinks = userMyLinks.filter((l) => !currentLinkIds.includes(l.id));
+
+                            return (
+                              <>
+                                {selectedLinks.length > 0 && (
+                                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "4px" }}>
+                                    {selectedLinks.map((link) => (
+                                      <span
+                                        key={link.id}
+                                        style={{
+                                          display: "inline-flex",
+                                          alignItems: "center",
+                                          gap: "6px",
+                                          padding: "4px 10px",
+                                          borderRadius: "999px",
+                                          fontSize: "11px",
+                                          fontWeight: 700,
+                                          background: "var(--surface)",
+                                          border: "1px solid var(--line-strong)",
+                                          color: "var(--text)",
+                                        }}
+                                      >
+                                        <span
+                                          style={{
+                                            color:
+                                              link.provider === "Klook"
+                                                ? "#ff5e00"
+                                                : link.provider === "Agoda"
+                                                  ? "#0096ff"
+                                                  : link.provider === "Traveloka"
+                                                    ? "#2f86ff"
+                                                    : link.provider === "Tiket.com"
+                                                      ? "#e11d48"
+                                                      : "#6366f1",
+                                            fontSize: "12px",
+                                          }}
+                                        >
+                                          ●
+                                        </span>
+                                        <span>[{link.provider}] {link.label}</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => removeLinkFromDraftActivity(activeDraftDayIndex, index, link.id)}
+                                          style={{
+                                            background: "transparent",
+                                            border: "none",
+                                            cursor: "pointer",
+                                            padding: "0 2px",
+                                            fontSize: "13px",
+                                            lineHeight: 1,
+                                            color: "var(--muted)",
+                                          }}
+                                          title="Hapus tautan ini"
+                                        >
+                                          ✕
+                                        </button>
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                                <select
+                                  value=""
+                                  onChange={(event) => {
+                                    if (event.target.value) {
+                                      addLinkToDraftActivity(activeDraftDayIndex, index, event.target.value);
+                                    }
+                                  }}
+                                  style={{ width: "100%", padding: "8px 10px", borderRadius: "8px", border: "1px solid var(--line)", background: "var(--surface)", fontSize: "12px" }}
+                                >
+                                  <option value="">+ Tambah Tautan MyLink ke aktivitas ini...</option>
+                                  {availableLinks.map((link) => (
+                                    <option key={link.id} value={link.id}>
+                                      [{link.provider}] {link.label}
+                                    </option>
+                                  ))}
+                                </select>
+                                {userMyLinks.length === 0 && (
+                                  <span style={{ fontSize: "11px", color: "var(--muted)" }}>
+                                    Belum ada tautan di pustaka MyLink. Silakan buka &quot;Kelola Link&quot; untuk menambahkan.
+                                  </span>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </div>
                       </article>
                     );
                   })}

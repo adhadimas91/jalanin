@@ -124,7 +124,34 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
             dayNumber: day.dayNumber,
             title: day.title,
             activities: {
-              create: day.activities.length ? day.activities : [defaultActivity()],
+              create: (day.activities.length ? day.activities : [defaultActivity()]).map((activity) => {
+                const linkIds = activity.myLinkIds?.length
+                  ? activity.myLinkIds
+                  : activity.myLinkId
+                    ? [activity.myLinkId]
+                    : [];
+                return {
+                  time: activity.time,
+                  title: activity.title,
+                  locationName: activity.locationName,
+                  formattedAddress: activity.formattedAddress,
+                  latitude: activity.latitude,
+                  longitude: activity.longitude,
+                  mapProvider: activity.mapProvider,
+                  mapPlaceId: activity.mapPlaceId,
+                  customLocation: activity.customLocation,
+                  estimatedCost: activity.estimatedCost,
+                  category: activity.category,
+                  orderIndex: activity.orderIndex,
+                  myLinkId: linkIds[0] || null,
+                  activityMyLinks: {
+                    create: linkIds.map((linkId, idx) => ({
+                      myLinkId: linkId,
+                      orderIndex: idx,
+                    })),
+                  },
+                };
+              }),
             },
           })),
         },

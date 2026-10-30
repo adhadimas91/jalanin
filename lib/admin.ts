@@ -359,6 +359,22 @@ async function fetchActivities() {
           userId: true,
         },
       },
+      activityMyLinks: {
+        include: {
+          myLink: {
+            select: {
+              id: true,
+              label: true,
+              provider: true,
+              actualUrl: true,
+              userId: true,
+            },
+          },
+        },
+        orderBy: {
+          orderIndex: "asc",
+        },
+      },
     },
     take: 500,
   });
@@ -413,9 +429,49 @@ async function fetchMyLinks() {
           },
         },
       },
+      activityMyLinks: {
+        select: {
+          activity: {
+            select: {
+              id: true,
+              title: true,
+              time: true,
+              locationName: true,
+              category: true,
+              estimatedCost: true,
+              itineraryDayId: true,
+              day: {
+                select: {
+                  id: true,
+                  dayNumber: true,
+                  title: true,
+                  itineraryId: true,
+                  itinerary: {
+                    select: {
+                      id: true,
+                      title: true,
+                      destination: true,
+                      authorId: true,
+                      author: {
+                        select: {
+                          id: true,
+                          email: true,
+                          username: true,
+                          name: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
       _count: {
         select: {
           activities: true,
+          activityMyLinks: true,
         },
       },
     },
@@ -535,28 +591,61 @@ function serializeDays(days: Awaited<ReturnType<typeof fetchDays>>) {
 }
 
 function serializeActivities(activities: Awaited<ReturnType<typeof fetchActivities>>) {
-  return activities.map(({ day, myLink, ...record }) =>
-    serializeRecord({
+  return activities.map(({ day, myLink, activityMyLinks, ...record }) => {
+    const myLinksList: Array<{
+      id: string;
+      label: string;
+      provider: string;
+      actualUrl: string;
+    }> = [];
+
+    if (Array.isArray(activityMyLinks) && activityMyLinks.length > 0) {
+      for (const aml of activityMyLinks) {
+        if (aml.myLink) {
+          myLinksList.push(aml.myLink);
+        }
+      }
+    } else if (myLink) {
+      myLinksList.push(myLink);
+    }
+
+    return serializeRecord({
       ...record,
+      myLinkIds: myLinksList.map((l) => l.id),
       _related: {
         day,
         myLink,
+        activityMyLinks,
+        myLinks: myLinksList,
       },
-    }),
-  );
+    });
+  });
 }
 
 function serializeMyLinks(myLinks: Awaited<ReturnType<typeof fetchMyLinks>>) {
-  return myLinks.map(({ user, activities: linkedActivities, _count, ...record }) =>
-    serializeRecord({
+  return myLinks.map(({ user, activities: linkedActivities, activityMyLinks, _count, ...record }) => {
+    const actMap = new Map<string, any>();
+    for (const act of linkedActivities) {
+      actMap.set(act.id, act);
+    }
+    for (const aml of activityMyLinks || []) {
+      if (aml.activity && !actMap.has(aml.activity.id)) {
+        actMap.set(aml.activity.id, aml.activity);
+      }
+    }
+    const mergedActs = Array.from(actMap.values());
+    return serializeRecord({
       ...record,
       _related: {
         user,
-        activities: linkedActivities,
-        counts: _count,
+        activities: mergedActs,
+        counts: {
+          ..._count,
+          activities: mergedActs.length,
+        },
       },
-    }),
-  );
+    });
+  });
 }
 
 function serializeSaves(saves: Awaited<ReturnType<typeof fetchSaves>>) {
@@ -758,7 +847,15 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           title: readRequiredString(data.title, "title"),
         },
       });
-    case "activities":
+    case "activities": {
+      const rawLinkIds = Array.isArray(data.myLinkIds)
+        ? (data.myLinkIds as unknown[]).map(String).map((s) => s.trim()).filter(Boolean)
+        : data.myLinkId
+          ? [String(data.myLinkId).trim()].filter(Boolean)
+          : [];
+      const myLinkIds = Array.from(new Set(rawLinkIds));
+      const myLinkId = myLinkIds[0] ?? readOptionalString(data.myLinkId);
+
       return prisma.activity.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
@@ -775,10 +872,21 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           description: readString(data.description),
           estimatedCost: readInt(data.estimatedCost, 0),
           category: readString(data.category, "Activity"),
-          myLinkId: readOptionalString(data.myLinkId),
+          myLinkId,
           orderIndex: readInt(data.orderIndex, 0),
+          ...(myLinkIds.length > 0
+            ? {
+                activityMyLinks: {
+                  create: myLinkIds.map((linkId, idx) => ({
+                    myLinkId: linkId,
+                    orderIndex: idx,
+                  })),
+                },
+              }
+            : {}),
         },
       });
+    }
     case "myLinks": {
       const actualUrl = readRequiredString(data.actualUrl, "actualUrl");
       const provider = readString(data.provider) || detectProvider(actualUrl);
@@ -978,8 +1086,21 @@ export async function updateAdminRecord(
           ...("title" in data ? { title: readRequiredString(data.title, "title") } : {}),
         },
       });
-    case "activities":
-      return prisma.activity.update({
+    case "activities": {
+      const hasMyLinkIds = "myLinkIds" in data;
+      const hasMyLinkId = "myLinkId" in data;
+
+      let linkIdsToSync: string[] | null = null;
+      if (hasMyLinkIds && Array.isArray(data.myLinkIds)) {
+        linkIdsToSync = Array.from(
+          new Set((data.myLinkIds as unknown[]).map(String).map((s) => s.trim()).filter(Boolean))
+        );
+      } else if (hasMyLinkId) {
+        const single = readOptionalString(data.myLinkId);
+        linkIdsToSync = single ? [single] : [];
+      }
+
+      const updated = await prisma.activity.update({
         where: { id },
         data: {
           ...("itineraryDayId" in data
@@ -1001,10 +1122,32 @@ export async function updateAdminRecord(
           ...("description" in data ? { description: readString(data.description) } : {}),
           ...("estimatedCost" in data ? { estimatedCost: readInt(data.estimatedCost, 0) } : {}),
           ...("category" in data ? { category: readString(data.category, "Activity") } : {}),
-          ...("myLinkId" in data ? { myLinkId: readOptionalString(data.myLinkId) } : {}),
+          ...(linkIdsToSync !== null
+            ? { myLinkId: linkIdsToSync[0] ?? null }
+            : hasMyLinkId
+              ? { myLinkId: readOptionalString(data.myLinkId) }
+              : {}),
           ...("orderIndex" in data ? { orderIndex: readInt(data.orderIndex, 0) } : {}),
         },
       });
+
+      if (linkIdsToSync !== null) {
+        await prisma.activityMyLink.deleteMany({ where: { activityId: id } });
+        if (linkIdsToSync.length > 0) {
+          for (let idx = 0; idx < linkIdsToSync.length; idx++) {
+            await prisma.activityMyLink.create({
+              data: {
+                activityId: id,
+                myLinkId: linkIdsToSync[idx],
+                orderIndex: idx,
+              },
+            });
+          }
+        }
+      }
+
+      return updated;
+    }
     case "myLinks": {
       const actualUrl =
         "actualUrl" in data ? readRequiredString(data.actualUrl, "actualUrl") : undefined;
@@ -1207,14 +1350,94 @@ export async function bulkSetActivitiesMyLink(
   myLinkId: string | null,
 ) {
   if (!activityIds.length) return { count: 0 };
-  return prisma.activity.updateMany({
+  const res = await prisma.activity.updateMany({
     where: { id: { in: activityIds } },
     data: { myLinkId: myLinkId || null },
   });
+
+  if (myLinkId) {
+    for (const actId of activityIds) {
+      await prisma.activityMyLink.deleteMany({ where: { activityId: actId } });
+      await prisma.activityMyLink.create({
+        data: { activityId: actId, myLinkId, orderIndex: 0 },
+      });
+    }
+  } else {
+    await prisma.activityMyLink.deleteMany({
+      where: { activityId: { in: activityIds } },
+    });
+  }
+
+  return res;
+}
+
+export async function bulkAddMyLinkToActivities(activityIds: string[], myLinkId: string) {
+  if (!activityIds.length || !myLinkId) return { count: 0 };
+  let count = 0;
+  for (const actId of activityIds) {
+    const existing = await prisma.activityMyLink.findUnique({
+      where: {
+        activityId_myLinkId: {
+          activityId: actId,
+          myLinkId,
+        },
+      },
+    });
+    if (!existing) {
+      const highestOrder = await prisma.activityMyLink.findFirst({
+        where: { activityId: actId },
+        orderBy: { orderIndex: "desc" },
+        select: { orderIndex: true },
+      });
+      await prisma.activityMyLink.create({
+        data: {
+          activityId: actId,
+          myLinkId,
+          orderIndex: (highestOrder?.orderIndex ?? -1) + 1,
+        },
+      });
+      count += 1;
+    }
+    const act = await prisma.activity.findUnique({
+      where: { id: actId },
+      select: { myLinkId: true },
+    });
+    if (!act?.myLinkId) {
+      await prisma.activity.update({
+        where: { id: actId },
+        data: { myLinkId },
+      });
+    }
+  }
+  return { count };
+}
+
+export async function bulkRemoveMyLinkFromActivities(activityIds: string[], myLinkId: string) {
+  if (!activityIds.length || !myLinkId) return { count: 0 };
+  await prisma.activityMyLink.deleteMany({
+    where: {
+      activityId: { in: activityIds },
+      myLinkId,
+    },
+  });
+  for (const actId of activityIds) {
+    const remaining = await prisma.activityMyLink.findFirst({
+      where: { activityId: actId },
+      orderBy: { orderIndex: "asc" },
+    });
+    await prisma.activity.update({
+      where: { id: actId },
+      data: { myLinkId: remaining ? remaining.myLinkId : null },
+    });
+  }
+  return { count: activityIds.length };
 }
 
 export async function bulkUnlinkMyLinksFromActivities(myLinkIds: string[]) {
   if (!myLinkIds.length) return { count: 0 };
+  await prisma.activityMyLink.deleteMany({
+    where: { myLinkId: { in: myLinkIds } },
+  });
   return prisma.activity.updateMany({
     where: { myLinkId: { in: myLinkIds } },
     data: { myLinkId: null },

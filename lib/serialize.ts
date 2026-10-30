@@ -49,28 +49,62 @@ export function serializeItinerary(itinerary: Awaited<ReturnType<typeof getPubli
       id: day.id,
       dayNumber: day.dayNumber,
       title: day.title,
-      activities: day.activities.map((activity) => ({
-        id: activity.id,
-        time: activity.time,
-        title: activity.title,
-        locationName: activity.locationName,
-        formattedAddress: activity.formattedAddress,
-        latitude: activity.latitude,
-        longitude: activity.longitude,
-        mapProvider: activity.mapProvider,
-        mapPlaceId: activity.mapPlaceId,
-        customLocation: activity.customLocation,
-        estimatedCost: activity.estimatedCost,
-        category: activity.category,
-        orderIndex: activity.orderIndex,
-        myLinkId: activity.myLinkId,
-        myLink: (activity as any).myLink
-          ? {
-            actualUrl: (activity as any).myLink.actualUrl,
-            provider: (activity as any).myLink.provider,
+      activities: day.activities.map((activity) => {
+        const myLinksList: Array<{
+          id: string;
+          label: string;
+          provider: string;
+          actualUrl: string;
+        }> = [];
+
+        if (Array.isArray((activity as any).activityMyLinks) && (activity as any).activityMyLinks.length > 0) {
+          for (const aml of (activity as any).activityMyLinks) {
+            if (aml.myLink) {
+              myLinksList.push({
+                id: aml.myLink.id,
+                label: aml.myLink.label || "",
+                provider: aml.myLink.provider || "Partner",
+                actualUrl: aml.myLink.actualUrl,
+              });
+            }
           }
-          : null,
-      })),
+        } else if ((activity as any).myLink) {
+          myLinksList.push({
+            id: (activity as any).myLink.id || activity.myLinkId || "",
+            label: (activity as any).myLink.label || "",
+            provider: (activity as any).myLink.provider || "Partner",
+            actualUrl: (activity as any).myLink.actualUrl,
+          });
+        }
+
+        const firstLink = myLinksList[0] || null;
+
+        return {
+          id: activity.id,
+          time: activity.time,
+          title: activity.title,
+          locationName: activity.locationName,
+          formattedAddress: activity.formattedAddress,
+          latitude: activity.latitude,
+          longitude: activity.longitude,
+          mapProvider: activity.mapProvider,
+          mapPlaceId: activity.mapPlaceId,
+          customLocation: activity.customLocation,
+          estimatedCost: activity.estimatedCost,
+          category: activity.category,
+          orderIndex: activity.orderIndex,
+          myLinkId: firstLink?.id || activity.myLinkId || null,
+          myLink: firstLink
+            ? {
+                actualUrl: firstLink.actualUrl,
+                provider: firstLink.provider,
+                label: firstLink.label,
+              }
+            : null,
+          myLinks: myLinksList,
+          myLinkIds: myLinksList.map((l) => l.id),
+        };
+      }),
     })),
     savesCount: itinerary.saves.length,
     likesCount: itinerary.likes.length,

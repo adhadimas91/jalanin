@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import {
   adminTables,
+  bulkAddMyLinkToActivities,
   bulkCreateAdminRecords,
   bulkDeleteAdminRecords,
+  bulkRemoveMyLinkFromActivities,
   bulkSetActivitiesMyLink,
   bulkUnlinkMyLinksFromActivities,
   bulkUpdateAdminRecords,
@@ -74,6 +76,24 @@ export async function POST(request: Request) {
         : [];
       const myLinkId = body.myLinkId ? String(body.myLinkId) : null;
       const result = await bulkSetActivitiesMyLink(activityIds, myLinkId);
+      return NextResponse.json({ ok: true, count: result.count });
+    }
+
+    if (action === "bulkAddMyLinkToActivities") {
+      const activityIds = Array.isArray(body.activityIds)
+        ? body.activityIds.map(String).filter(Boolean)
+        : [];
+      const myLinkId = body.myLinkId ? String(body.myLinkId) : "";
+      const result = await bulkAddMyLinkToActivities(activityIds, myLinkId);
+      return NextResponse.json({ ok: true, count: result.count });
+    }
+
+    if (action === "bulkRemoveMyLinkFromActivities") {
+      const activityIds = Array.isArray(body.activityIds)
+        ? body.activityIds.map(String).filter(Boolean)
+        : [];
+      const myLinkId = body.myLinkId ? String(body.myLinkId) : "";
+      const result = await bulkRemoveMyLinkFromActivities(activityIds, myLinkId);
       return NextResponse.json({ ok: true, count: result.count });
     }
 

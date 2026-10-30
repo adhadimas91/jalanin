@@ -113,7 +113,34 @@ export async function POST(request: Request) {
           dayNumber: day.dayNumber,
           title: day.title,
           activities: {
-            create: day.activities,
+            create: day.activities.map((activity) => {
+              const linkIds = activity.myLinkIds?.length
+                ? activity.myLinkIds
+                : activity.myLinkId
+                  ? [activity.myLinkId]
+                  : [];
+              return {
+                time: activity.time,
+                title: activity.title,
+                locationName: activity.locationName,
+                formattedAddress: activity.formattedAddress,
+                latitude: activity.latitude,
+                longitude: activity.longitude,
+                mapProvider: activity.mapProvider,
+                mapPlaceId: activity.mapPlaceId,
+                customLocation: activity.customLocation,
+                estimatedCost: activity.estimatedCost,
+                category: activity.category,
+                orderIndex: activity.orderIndex,
+                myLinkId: linkIds[0] || null,
+                activityMyLinks: {
+                  create: linkIds.map((id, idx) => ({
+                    myLinkId: id,
+                    orderIndex: idx,
+                  })),
+                },
+              };
+            }),
           },
         })),
       },

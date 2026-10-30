@@ -25,6 +25,7 @@ type ActivityDraft = {
   category: string;
   estimatedCost: number;
   myLinkId: string | null;
+  myLinkIds: string[];
 };
 
 type DayDraft = {
@@ -62,6 +63,7 @@ function createBlankActivity(index: number): ActivityDraft {
     category: DEFAULT_ACTIVITY_TYPE,
     estimatedCost: 0,
     myLinkId: null,
+    myLinkIds: [],
   };
 }
 
@@ -77,20 +79,31 @@ function createDrafts(itinerary: JalaninItinerary): DayDraft[] {
     ? itinerary.days.map((day) => ({
         title: day.title || `Hari ${day.dayNumber}`,
         activities: day.activities.length
-          ? day.activities.map((activity) => ({
-              time: activity.time,
-              title: activity.title,
-              locationName: activity.locationName,
-              formattedAddress: activity.formattedAddress,
-              latitude: activity.latitude,
-              longitude: activity.longitude,
-              mapProvider: activity.mapProvider,
-              mapPlaceId: activity.mapPlaceId,
-              customLocation: activity.customLocation,
-              category: activity.category,
-              estimatedCost: activity.estimatedCost,
-              myLinkId: activity.myLinkId || null,
-            }))
+          ? day.activities.map((activity) => {
+              const linkIds =
+                activity.myLinkIds && activity.myLinkIds.length > 0
+                  ? activity.myLinkIds
+                  : (activity as any).myLinks && (activity as any).myLinks.length > 0
+                    ? (activity as any).myLinks.map((l: any) => l.id).filter(Boolean)
+                    : activity.myLinkId
+                      ? [activity.myLinkId]
+                      : [];
+              return {
+                time: activity.time,
+                title: activity.title,
+                locationName: activity.locationName,
+                formattedAddress: activity.formattedAddress,
+                latitude: activity.latitude,
+                longitude: activity.longitude,
+                mapProvider: activity.mapProvider,
+                mapPlaceId: activity.mapPlaceId,
+                customLocation: activity.customLocation,
+                category: activity.category,
+                estimatedCost: activity.estimatedCost,
+                myLinkId: linkIds[0] || null,
+                myLinkIds: linkIds,
+              };
+            })
           : [createBlankActivity(0)],
       }))
     : [createBlankDay(0)];
@@ -269,6 +282,30 @@ export function ItineraryDetailActions({ itinerary }: Props) {
       setLocationResults({});
       setPickerKey(null);
       return next;
+    });
+  }
+
+  function addLinkToActivity(dayIndex: number, activityIndex: number, linkId: string) {
+    if (!linkId) return;
+    const currentActivity = dayDrafts[dayIndex]?.activities[activityIndex];
+    if (!currentActivity) return;
+    const existing = currentActivity.myLinkIds || (currentActivity.myLinkId ? [currentActivity.myLinkId] : []);
+    if (existing.includes(linkId)) return;
+    const updated = [...existing, linkId];
+    updateActivity(dayIndex, activityIndex, {
+      myLinkIds: updated,
+      myLinkId: updated[0] || null,
+    });
+  }
+
+  function removeLinkFromActivity(dayIndex: number, activityIndex: number, linkId: string) {
+    const currentActivity = dayDrafts[dayIndex]?.activities[activityIndex];
+    if (!currentActivity) return;
+    const existing = currentActivity.myLinkIds || (currentActivity.myLinkId ? [currentActivity.myLinkId] : []);
+    const updated = existing.filter((id) => id !== linkId);
+    updateActivity(dayIndex, activityIndex, {
+      myLinkIds: updated,
+      myLinkId: updated[0] || null,
     });
   }
 
@@ -757,34 +794,112 @@ export function ItineraryDetailActions({ itinerary }: Props) {
                           />
                         </label>
                       </div>
-                      <label style={{ display: "grid", gap: "6px", marginTop: "10px" }}>
+                      <div style={{ display: "grid", gap: "6px", marginTop: "10px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <span>Sematkan Link MyLink</span>
+                          <span style={{ fontSize: "12px", fontWeight: 700 }}>Tautan MyLink (Bisa lebih dari 1)</span>
                           <a href="/settings/mylink" target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", color: "var(--blue)", fontWeight: 700 }}>
-                            Kelola
+                            Kelola Link &rarr;
                           </a>
                         </div>
-                        <select
-                          value={activity.myLinkId || ""}
-                          onChange={(event) => updateActivity(dayIndex, activityIndex, { myLinkId: event.target.value || null })}
-                          style={{
-                            width: "100%",
-                            padding: "10px",
-                            color: "var(--text)",
-                            background: "var(--surface-soft)",
-                            border: "1px solid var(--line-strong)",
-                            borderRadius: "var(--radius)",
-                            outline: 0
-                          }}
-                        >
-                          <option value="">-- Tanpa Link MyLink --</option>
-                          {userMyLinks.map((link) => (
-                            <option key={link.id} value={link.id}>
-                              {link.label} ({link.provider})
-                            </option>
-                          ))}
-                        </select>
-                      </label>
+                        {(() => {
+                          const currentLinkIds = activity.myLinkIds || (activity.myLinkId ? [activity.myLinkId] : []);
+                          const selectedLinks = currentLinkIds
+                            .map((id) => userMyLinks.find((l) => l.id === id))
+                            .filter(Boolean) as typeof userMyLinks;
+                          const availableLinks = userMyLinks.filter((l) => !currentLinkIds.includes(l.id));
+
+                          return (
+                            <>
+                              {selectedLinks.length > 0 && (
+                                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "4px" }}>
+                                  {selectedLinks.map((link) => (
+                                    <span
+                                      key={link.id}
+                                      style={{
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "6px",
+                                        padding: "4px 10px",
+                                        borderRadius: "999px",
+                                        fontSize: "11px",
+                                        fontWeight: 700,
+                                        background: "var(--surface)",
+                                        border: "1px solid var(--line-strong)",
+                                        color: "var(--text)",
+                                      }}
+                                    >
+                                      <span
+                                        style={{
+                                          color:
+                                            link.provider === "Klook"
+                                              ? "#ff5e00"
+                                              : link.provider === "Agoda"
+                                                ? "#0096ff"
+                                                : link.provider === "Traveloka"
+                                                  ? "#2f86ff"
+                                                  : link.provider === "Tiket.com"
+                                                    ? "#e11d48"
+                                                    : "#6366f1",
+                                          fontSize: "12px",
+                                        }}
+                                      >
+                                        ●
+                                      </span>
+                                      <span>[{link.provider}] {link.label}</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => removeLinkFromActivity(dayIndex, activityIndex, link.id)}
+                                        style={{
+                                          background: "transparent",
+                                          border: "none",
+                                          cursor: "pointer",
+                                          padding: "0 2px",
+                                          fontSize: "13px",
+                                          lineHeight: 1,
+                                          color: "var(--muted)",
+                                        }}
+                                        title="Hapus tautan ini"
+                                      >
+                                        ✕
+                                      </button>
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                              <select
+                                value=""
+                                onChange={(event) => {
+                                  if (event.target.value) {
+                                    addLinkToActivity(dayIndex, activityIndex, event.target.value);
+                                  }
+                                }}
+                                style={{
+                                  width: "100%",
+                                  padding: "9px 10px",
+                                  color: "var(--text)",
+                                  background: "var(--surface-soft)",
+                                  border: "1px solid var(--line-strong)",
+                                  borderRadius: "var(--radius)",
+                                  outline: 0,
+                                  fontSize: "12px",
+                                }}
+                              >
+                                <option value="">+ Tambah Tautan MyLink ke aktivitas ini...</option>
+                                {availableLinks.map((link) => (
+                                  <option key={link.id} value={link.id}>
+                                    [{link.provider}] {link.label}
+                                  </option>
+                                ))}
+                              </select>
+                              {userMyLinks.length === 0 && (
+                                <span style={{ fontSize: "11px", color: "var(--muted)" }}>
+                                  Belum ada tautan di pustaka MyLink. Silakan buka &quot;Kelola Link&quot; untuk menambahkan.
+                                </span>
+                              )}
+                            </>
+                          );
+                        })()}
+                      </div>
                       <div className="detail-activity-tools">
                         {day.activities.length > 1 ? (
                           <button className="tool-button" type="button" onClick={() => removeActivity(dayIndex, activityIndex)} aria-label="Hapus aktivitas">

@@ -38,13 +38,58 @@ export async function GET() {
             },
           },
         },
+        activityMyLinks: {
+          where: {
+            activity: {
+              day: {
+                itinerary: {
+                  authorId: user.id,
+                },
+              },
+            },
+          },
+          include: {
+            activity: {
+              include: {
+                day: {
+                  include: {
+                    itinerary: {
+                      select: {
+                        id: true,
+                        title: true,
+                        destination: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    return NextResponse.json(links);
+    const serialized = links.map((link) => {
+      const actMap = new Map<string, any>();
+      for (const act of link.activities) {
+        actMap.set(act.id, act);
+      }
+      for (const aml of (link as any).activityMyLinks || []) {
+        if (aml.activity && !actMap.has(aml.activity.id)) {
+          actMap.set(aml.activity.id, aml.activity);
+        }
+      }
+      const { activityMyLinks, ...rest } = link as any;
+      return {
+        ...rest,
+        activities: Array.from(actMap.values()),
+      };
+    });
+
+    return NextResponse.json(serialized);
   } catch (error) {
     console.error("Gagal mengambil daftar mylinks:", error);
     return new NextResponse("Server Error", { status: 500 });

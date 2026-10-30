@@ -19,7 +19,13 @@ export type RouteActivityItem = {
   myLink?: {
     actualUrl: string;
     provider: string;
+    label?: string;
   } | null;
+  myLinks?: Array<{
+    actualUrl: string;
+    provider: string;
+    label?: string;
+  }>;
 };
 
 interface ItineraryRouteBoardProps {
@@ -50,23 +56,41 @@ function buildPopupHtml(activity: RouteActivityItem, stepNumber: number): string
       : "Gratis";
 
   let myLinkHtml = "";
-  if (activity.myLink && activity.myLink.actualUrl) {
-    const provider = escapeHtml(activity.myLink.provider || "Partner");
-    const bg =
-      activity.myLink.provider === "Klook"
-        ? "#ee6b5e"
-        : activity.myLink.provider === "Agoda"
-        ? "#2563eb"
-        : activity.myLink.provider === "Traveloka"
-        ? "#0284c7"
-        : activity.myLink.provider === "Tiket.com"
-        ? "#f59e0b"
-        : "#6366f1";
-    myLinkHtml = `
-      <a href="${escapeHtml(activity.myLink.actualUrl)}" target="_blank" rel="noopener noreferrer nofollow" class="map-popup-btn-booking" style="background: ${bg};">
-        Pesan via ${provider}
-      </a>
-    `;
+  const allLinks =
+    activity.myLinks && activity.myLinks.length > 0
+      ? activity.myLinks
+      : activity.myLink && activity.myLink.actualUrl
+        ? [activity.myLink]
+        : [];
+
+  if (allLinks.length > 0) {
+    myLinkHtml = allLinks
+      .map((link) => {
+        const provider = escapeHtml(link.provider || "Partner");
+        const bg =
+          link.provider === "Klook"
+            ? "#ee6b5e"
+            : link.provider === "Agoda"
+            ? "#2563eb"
+            : link.provider === "Traveloka"
+            ? "#0284c7"
+            : link.provider === "Tiket.com"
+            ? "#f59e0b"
+            : "#6366f1";
+        const labelText = link.label
+          ? escapeHtml(
+              link.label.toLowerCase().includes((link.provider || "").toLowerCase())
+                ? link.label
+                : `${link.label} (${provider})`,
+            )
+          : `Pesan via ${provider}`;
+        return `
+          <a href="${escapeHtml(link.actualUrl)}" target="_blank" rel="noopener noreferrer nofollow" class="map-popup-btn-booking" style="background: ${bg};" title="${escapeHtml(link.label || link.provider || "")}">
+            ${labelText}
+          </a>
+        `;
+      })
+      .join("");
   }
 
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${activity.latitude},${activity.longitude}`;

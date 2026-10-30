@@ -24,6 +24,14 @@ export async function getPublishedItineraries(userId?: string) {
             },
             include: {
               myLink: true,
+              activityMyLinks: {
+                include: {
+                  myLink: true,
+                },
+                orderBy: {
+                  orderIndex: "asc",
+                },
+              },
             },
           },
         },
@@ -62,6 +70,14 @@ export async function getItineraryById(id: string) {
             },
             include: {
               myLink: true,
+              activityMyLinks: {
+                include: {
+                  myLink: true,
+                },
+                orderBy: {
+                  orderIndex: "asc",
+                },
+              },
             },
           },
         },

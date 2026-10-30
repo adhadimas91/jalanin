@@ -271,6 +271,7 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       estimatedCost: 0,
       category: DEFAULT_ACTIVITY_TYPE,
       myLinkId: null,
+      myLinkIds: [],
       orderIndex: 0
     }
   },
@@ -546,7 +547,9 @@ function isUnclaimedPlaceholderEmail(value: unknown): boolean {
 function stripMeta(record: Record<string, unknown>) {
   return Object.fromEntries(
     Object.entries(record).filter(
-      ([key, value]) => !key.startsWith('_') && (value === null || typeof value !== 'object')
+      ([key, value]) =>
+        !key.startsWith('_') &&
+        (value === null || typeof value !== 'object' || (Array.isArray(value) && value.every((v) => typeof v !== 'object')))
     )
   );
 }
@@ -678,8 +681,8 @@ function formatColumnLabel(table: AdminTable, key: string) {
   if (key === 'itineraryDayId' && table === 'activities') {
     return 'Hari Itinerary';
   }
-  if (key === 'myLinkId' && table === 'activities') {
-    return 'My Link Id';
+  if ((key === 'myLinkId' || key === 'myLinkIds') && table === 'activities') {
+    return 'Tautan MyLink';
   }
   if (key === 'usageCount' && table === 'myLinks') {
     return 'Digunakan di Activity';
@@ -838,10 +841,20 @@ export function AdminConsole({ initialData, adminEmail }: Props) {
     if (currentTable === 'users' && isUnclaimedPlaceholderEmail(cleaned.email)) {
       cleaned.email = '';
     }
+    if (currentTable === 'activities') {
+      const rel = record._related && typeof record._related === 'object' ? (record._related as Record<string, unknown>) : undefined;
+      const linkIds: string[] = Array.isArray(record.myLinkIds) && (record.myLinkIds as any[]).length > 0
+        ? (record.myLinkIds as string[])
+        : Array.isArray(rel?.myLinks) && (rel.myLinks as any[]).length > 0
+          ? (rel.myLinks as any[]).map((l: any) => String(l.id))
+          : record.myLinkId ? [String(record.myLinkId)] : [];
+      cleaned.myLinkIds = linkIds;
+      cleaned.myLinkId = linkIds[0] ?? null;
+    }
     setDraft(JSON.stringify(cleaned, null, 2));
     setEditorTab('form');
     setSheetOpen(true);
-}, [currentTable]);
+  }, [currentTable]);
 
 function updateDraftField(key: string, value: unknown) {
   try {
@@ -1330,7 +1343,13 @@ const getActivitiesForMyLink = useCallback(
       const actId = String(act.id ?? '');
       if (!actId) continue;
       knownActivityIdsInTable.add(actId);
-      if (String(act.myLinkId ?? '') === myLinkId) {
+      const rel = act._related && typeof act._related === 'object' ? (act._related as Record<string, unknown>) : undefined;
+      const actLinkIds: string[] = Array.isArray(act.myLinkIds)
+        ? (act.myLinkIds as string[])
+        : Array.isArray(rel?.myLinks)
+          ? (rel.myLinks as any[]).map((l: any) => String(l.id))
+          : act.myLinkId ? [String(act.myLinkId)] : [];
+      if (actLinkIds.includes(myLinkId) || String(act.myLinkId ?? '') === myLinkId) {
         resultMap.set(actId, act);
       }
     }
@@ -1772,20 +1791,30 @@ const columns = useMemo<ColumnDef<Record<string, unknown>>[]>(() => {
     }
 
     for (const rec of records) {
-      const mlId = String(rec.myLinkId ?? '').trim();
-      if (!mlId) continue;
       const rel =
         rec._related && typeof rec._related === 'object'
           ? (rec._related as Record<string, unknown>)
           : undefined;
-      const relMl =
-        rel?.myLink && typeof rel.myLink === 'object'
-          ? (rel.myLink as Record<string, unknown>)
-          : myLinkByIdMap.get(mlId);
-      const upperKey = registerMyLink(relMl, mlId);
-      if (upperKey) {
-        const existing = mlMap.get(upperKey);
-        if (existing) existing.count += 1;
+      const mlIds: string[] = Array.isArray(rec.myLinkIds)
+        ? (rec.myLinkIds as string[])
+        : Array.isArray(rel?.myLinks)
+          ? (rel.myLinks as any[]).map((l: any) => String(l.id))
+          : rec.myLinkId ? [String(rec.myLinkId)] : [];
+
+      for (const rawMlId of mlIds) {
+        const mlId = String(rawMlId ?? '').trim();
+        if (!mlId) continue;
+        const relMl =
+          Array.isArray(rel?.myLinks)
+            ? (rel.myLinks as any[]).find((l: any) => String(l.id) === mlId)
+            : rel?.myLink && typeof rel.myLink === 'object' && String((rel.myLink as any).id) === mlId
+              ? (rel.myLink as Record<string, unknown>)
+              : myLinkByIdMap.get(mlId);
+        const upperKey = registerMyLink(relMl, mlId);
+        if (upperKey) {
+          const existing = mlMap.get(upperKey);
+          if (existing) existing.count += 1;
+        }
       }
     }
 
@@ -2170,69 +2199,79 @@ const columns = useMemo<ColumnDef<Record<string, unknown>>[]>(() => {
           }
 
           if (colName === 'myLinkId' && currentTable === 'activities') {
-            if (!val) {
-              return <span className='text-muted-foreground text-xs'>—</span>;
-            }
-            const mlIdStr = String(val);
-            const mlObj =
-              rel?.myLink && typeof rel.myLink === 'object'
-                ? (rel.myLink as Record<string, unknown>)
-                : myLinkByIdMap.get(mlIdStr);
-            if (mlObj) {
-              return (
-                <div className='flex flex-col gap-0.5'>
-                  <div className='flex items-center gap-1.5'>
-                    {Boolean(mlObj.provider) && (
-                      <Badge variant='outline' className='h-4 px-1 text-[10px] font-normal'>
-                        {String(mlObj.provider)}
-                      </Badge>
-                    )}
-                    <button
-                      type='button'
-                      className='hover:text-primary max-w-[180px] truncate text-left font-medium hover:underline'
-                      title='Cek semua Activity yang menggunakan MyLink ini'
-                      onClick={() => openMyLinkUsageManager(mlIdStr, 'linked')}
-                    >
-                      {String(mlObj.label ?? mlIdStr)}
-                    </button>
-                  </div>
-                  <div className='flex items-center gap-1'>
-                    <code className='text-muted-foreground font-mono text-[11px]'>
-                      {mlIdStr}
-                    </code>
-                    <button
-                      type='button'
-                      className='text-muted-foreground hover:text-foreground inline-flex items-center'
-                      title='Salin My Link Id'
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigator.clipboard.writeText(mlIdStr).catch(() => { });
-                        toast.success('My Link Id berhasil disalin!');
-                      }}
-                    >
-                      <Icons.copy className='size-3' />
-                    </button>
-                  </div>
-                </div>
+            const linksList: Array<{ id: string; label?: string; provider?: string }> = [];
+
+            if (Array.isArray(rel?.myLinks) && (rel.myLinks as any[]).length > 0) {
+              for (const item of (rel.myLinks as any[])) {
+                if (item && item.id) linksList.push(item);
+              }
+            } else if (Array.isArray(record.myLinkIds) && (record.myLinkIds as any[]).length > 0) {
+              for (const id of (record.myLinkIds as string[])) {
+                const ml = myLinkByIdMap.get(id);
+                linksList.push(
+                  ml
+                    ? { id, label: String(ml.label ?? id), provider: String(ml.provider ?? '') }
+                    : { id }
+                );
+              }
+            } else if (val) {
+              const mlIdStr = String(val);
+              const mlObj =
+                rel?.myLink && typeof rel.myLink === 'object'
+                  ? (rel.myLink as Record<string, unknown>)
+                  : myLinkByIdMap.get(mlIdStr);
+              linksList.push(
+                mlObj
+                  ? { id: mlIdStr, label: String(mlObj.label ?? mlIdStr), provider: String(mlObj.provider ?? '') }
+                  : { id: mlIdStr }
               );
             }
+
+            if (linksList.length === 0) {
+              return <span className='text-muted-foreground text-xs'>—</span>;
+            }
+
             return (
-              <div className='flex items-center gap-1'>
-                <code className='bg-muted text-muted-foreground rounded px-1.5 py-0.5 font-mono text-xs'>
-                  {mlIdStr}
-                </code>
-                <button
-                  type='button'
-                  className='text-muted-foreground hover:text-foreground inline-flex items-center'
-                  title='Salin My Link Id'
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigator.clipboard.writeText(mlIdStr).catch(() => { });
-                    toast.success('My Link Id berhasil disalin!');
-                  }}
-                >
-                  <Icons.copy className='size-3' />
-                </button>
+              <div className='flex flex-col gap-1.5'>
+                {linksList.map((mlObj, idx) => {
+                  const mlIdStr = mlObj.id;
+                  return (
+                    <div key={`${mlIdStr}-${idx}`} className='flex flex-col gap-0.5'>
+                      <div className='flex items-center gap-1.5'>
+                        {Boolean(mlObj.provider) && (
+                          <Badge variant='outline' className='h-4 px-1 text-[10px] font-normal'>
+                            {String(mlObj.provider)}
+                          </Badge>
+                        )}
+                        <button
+                          type='button'
+                          className='hover:text-primary max-w-[180px] truncate text-left font-medium hover:underline text-xs'
+                          title='Cek semua Activity yang menggunakan MyLink ini'
+                          onClick={() => openMyLinkUsageManager(mlIdStr, 'linked')}
+                        >
+                          {String(mlObj.label ?? mlIdStr)}
+                        </button>
+                      </div>
+                      <div className='flex items-center gap-1'>
+                        <code className='text-muted-foreground font-mono text-[10px]'>
+                          {mlIdStr}
+                        </code>
+                        <button
+                          type='button'
+                          className='text-muted-foreground hover:text-foreground inline-flex items-center'
+                          title='Salin My Link Id'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigator.clipboard.writeText(mlIdStr).catch(() => { });
+                            toast.success('My Link Id berhasil disalin!');
+                          }}
+                        >
+                          <Icons.copy className='size-2.5' />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             );
           }
@@ -2459,15 +2498,16 @@ const columns = useMemo<ColumnDef<Record<string, unknown>>[]>(() => {
                   </DropdownMenuItem>
                 </>
               )}
-              {currentTable === 'activities' && Boolean(record.myLinkId) && (
+              {currentTable === 'activities' && (Boolean(record.myLinkId) || (Array.isArray(record.myLinkIds) && (record.myLinkIds as any[]).length > 0)) && (
                 <>
                   <DropdownMenuItem
-                    onClick={() =>
-                      openMyLinkUsageManager(String(record.myLinkId ?? ''), 'linked')
-                    }
+                    onClick={() => {
+                      const firstId = String(record.myLinkId || (record.myLinkIds as any[])?.[0] || '');
+                      if (firstId) openMyLinkUsageManager(firstId, 'linked');
+                    }}
                   >
                     <Icons.kanban className='mr-2 h-4 w-4' />
-                    Cek Penggunaan MyLink Ini
+                    Cek Penggunaan MyLink
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     disabled={busy}
@@ -2484,16 +2524,18 @@ const columns = useMemo<ColumnDef<Record<string, unknown>>[]>(() => {
                     }
                   >
                     <Icons.close className='mr-2 h-4 w-4' />
-                    Lepas MyLink
+                    Lepas Semua MyLink
                   </DropdownMenuItem>
                 </>
               )}
               {(currentTable === 'myLinks' ||
-                (currentTable === 'activities' && Boolean(record.myLinkId))) && (
+                (currentTable === 'activities' && (Boolean(record.myLinkId) || (Array.isArray(record.myLinkIds) && (record.myLinkIds as any[]).length > 0)))) && (
                   <DropdownMenuItem
                     onClick={() => {
                       const targetMyLinkId =
-                        currentTable === 'myLinks' ? id : String(record.myLinkId ?? '');
+                        currentTable === 'myLinks'
+                          ? id
+                          : String(record.myLinkId || (record.myLinkIds as any[])?.[0] || '');
                       if (!targetMyLinkId) return;
                       navigator.clipboard.writeText(targetMyLinkId).catch(() => { });
                       toast.success('My Link Id berhasil disalin!');
@@ -3543,14 +3585,45 @@ return (
                           const value = parsedDraft[key];
                           const labelText = formatLabel(key);
 
+                          if (currentTable === 'activities' && key === 'myLinkIds') {
+                            return null;
+                          }
+
                           if (currentTable === 'activities' && key === 'myLinkId') {
-                            const currentMyLinkId =
-                              value !== null && value !== undefined && String(value) !== ''
-                                ? String(value)
-                                : '__none__';
+                            const rawLinkIds: string[] = Array.isArray(parsedDraft.myLinkIds) && (parsedDraft.myLinkIds as any[]).length > 0
+                              ? (parsedDraft.myLinkIds as string[])
+                              : value !== null && value !== undefined && String(value).trim() !== ''
+                                ? [String(value).trim()]
+                                : [];
+                            const currentLinkIds = Array.from(new Set(rawLinkIds.map(String).map((s) => s.trim()).filter(Boolean)));
+
+                            const setActivityLinks = (newIds: string[]) => {
+                              const unique = Array.from(new Set(newIds));
+                              try {
+                                const parsed = JSON.parse(draft) as Record<string, unknown>;
+                                parsed.myLinkIds = unique;
+                                parsed.myLinkId = unique[0] ?? null;
+                                setDraft(JSON.stringify(parsed, null, 2));
+                              } catch { }
+                            };
+
+                            const handleAddLink = (idToAdd: string) => {
+                              const trimmed = idToAdd.trim();
+                              if (!trimmed || currentLinkIds.includes(trimmed)) return;
+                              setActivityLinks([...currentLinkIds, trimmed]);
+                            };
+
+                            const handleRemoveLink = (idToRemove: string) => {
+                              setActivityLinks(currentLinkIds.filter((id) => id !== idToRemove));
+                            };
+
+                            const availableMyLinks = (tables.myLinks ?? []).filter(
+                              (ml) => !currentLinkIds.includes(String(ml.id ?? ''))
+                            );
+
                             const myLinkSelectItems = [
-                              { value: '__none__', label: '-- Tanpa MyLink (Kosong) --' },
-                              ...(tables.myLinks ?? []).map((ml) => {
+                              { value: '__placeholder__', label: '+ Tambah dari daftar MyLink...' },
+                              ...availableMyLinks.map((ml) => {
                                 const mlId = String(ml.id ?? '');
                                 const mlLabel = String(ml.label ?? mlId);
                                 const mlProvider = ml.provider ? `[${String(ml.provider)}] ` : '';
@@ -3568,48 +3641,121 @@ return (
                             ];
 
                             return (
-                              <div key={key} className='space-y-2'>
-                                <Label htmlFor={`form-field-${key}`}>My Link Id</Label>
-                                <Select
-                                  items={myLinkSelectItems}
-                                  value={
-                                    myLinkSelectItems.some((item) => item.value === currentMyLinkId)
-                                      ? currentMyLinkId
-                                      : '__none__'
-                                  }
-                                  onValueChange={(val) => {
-                                    updateDraftField(
-                                      key,
-                                      !val || val === '__none__' ? null : val
-                                    );
-                                  }}
-                                >
-                                  <SelectTrigger id={`form-field-${key}-select`} className='w-full'>
-                                    <SelectValue placeholder='Pilih dari daftar MyLink...' />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {myLinkSelectItems.map((opt) => (
-                                      <SelectItem key={opt.value} value={opt.value}>
-                                        {opt.label}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <Input
-                                  id={`form-field-${key}`}
-                                  type='text'
-                                  placeholder='Atau masukkan My Link Id secara langsung (kosongkan jika tanpa link)'
-                                  className='font-mono text-xs'
-                                  value={
-                                    value !== null && value !== undefined ? String(value) : ''
-                                  }
-                                  onChange={(e) =>
-                                    updateDraftField(
-                                      key,
-                                      e.target.value.trim() === '' ? null : e.target.value
-                                    )
-                                  }
-                                />
+                              <div key={key} className='space-y-3 rounded-lg border p-3 bg-muted/20'>
+                                <div className='flex items-center justify-between'>
+                                  <div className='flex items-center gap-2'>
+                                    <Label htmlFor={`form-field-${key}`} className='font-semibold'>
+                                      Tautan MyLink ({currentLinkIds.length} Terpasang)
+                                    </Label>
+                                    <Badge variant='outline' className='text-[10px]'>
+                                      Multi-link
+                                    </Badge>
+                                  </div>
+                                  {currentLinkIds.length > 0 && (
+                                    <Button
+                                      type='button'
+                                      variant='ghost'
+                                      size='sm'
+                                      className='h-6 text-xs text-muted-foreground hover:text-destructive px-2'
+                                      onClick={() => setActivityLinks([])}
+                                    >
+                                      Lepas Semua
+                                    </Button>
+                                  )}
+                                </div>
+
+                                {currentLinkIds.length > 0 && (
+                                  <div className='flex flex-wrap gap-1.5'>
+                                    {currentLinkIds.map((linkId, idx) => {
+                                      const ml = myLinkByIdMap.get(linkId);
+                                      const provider = ml?.provider ? String(ml.provider) : 'Link';
+                                      const label = ml?.label ? String(ml.label) : linkId;
+                                      return (
+                                        <Badge
+                                          key={`${linkId}-${idx}`}
+                                          variant='secondary'
+                                          className='flex items-center gap-1.5 py-1 px-2.5 text-xs font-normal border shadow-sm'
+                                        >
+                                          <span className='font-semibold text-primary'>
+                                            [{provider}]
+                                          </span>
+                                          <span className='max-w-[150px] truncate' title={label}>
+                                            {label}
+                                          </span>
+                                          <code className='text-[10px] text-muted-foreground font-mono'>
+                                            ({linkId.slice(0, 8)}...)
+                                          </code>
+                                          <button
+                                            type='button'
+                                            onClick={() => handleRemoveLink(linkId)}
+                                            className='text-muted-foreground hover:text-destructive ml-1 inline-flex items-center'
+                                            title='Hapus tautan ini dari aktivitas'
+                                          >
+                                            <Icons.close className='size-3' />
+                                          </button>
+                                        </Badge>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+
+                                <div className='space-y-1.5'>
+                                  <Select
+                                    items={myLinkSelectItems}
+                                    value='__placeholder__'
+                                    onValueChange={(val) => {
+                                      if (val && val !== '__placeholder__') {
+                                        handleAddLink(val);
+                                      }
+                                    }}
+                                  >
+                                    <SelectTrigger id={`form-field-${key}-select`} className='w-full'>
+                                      <SelectValue placeholder='+ Tambah dari daftar MyLink...' />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {myLinkSelectItems.map((opt) => (
+                                        <SelectItem key={opt.value} value={opt.value}>
+                                          {opt.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <div className='flex items-center gap-2'>
+                                    <Input
+                                      id={`form-field-${key}`}
+                                      type='text'
+                                      placeholder='Atau ketik ID MyLink langsung lalu tekan Enter / Tambah'
+                                      className='font-mono text-xs flex-1'
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                          e.preventDefault();
+                                          const inputEl = e.currentTarget;
+                                          if (inputEl.value.trim()) {
+                                            handleAddLink(inputEl.value.trim());
+                                            inputEl.value = '';
+                                          }
+                                        }
+                                      }}
+                                    />
+                                    <Button
+                                      type='button'
+                                      variant='outline'
+                                      size='sm'
+                                      className='h-9 text-xs'
+                                      onClick={(e) => {
+                                        const inputEl = (e.currentTarget.previousElementSibling as HTMLInputElement);
+                                        if (inputEl && inputEl.value.trim()) {
+                                          handleAddLink(inputEl.value.trim());
+                                          inputEl.value = '';
+                                        }
+                                      }}
+                                    >
+                                      <Icons.add className='size-3.5 mr-1' />
+                                      Tambah
+                                    </Button>
+                                  </div>
+                                </div>
                               </div>
                             );
                           }
@@ -4577,12 +4723,12 @@ return (
                 bulkSelectedMyLinkId === '__none__' ? null : bulkSelectedMyLinkId;
               const ok = await executeBulkAction(
                 {
-                  action: 'bulkSetActivitiesMyLink',
+                  action: targetMyLink ? 'bulkAddMyLinkToActivities' : 'bulkSetActivitiesMyLink',
                   activityIds: selectedIds,
                   myLinkId: targetMyLink
                 },
                 targetMyLink
-                  ? `MyLink berhasil dipasang ke ${selectedIds.length} Activity.`
+                  ? `MyLink berhasil dipasang/ditambahkan ke ${selectedIds.length} Activity.`
                   : `MyLink berhasil dilepas dari ${selectedIds.length} Activity.`,
                 ['activities', 'myLinks']
               );
@@ -4815,8 +4961,15 @@ return (
           const candidateActivities = (tables.activities ?? []).filter((act) => {
             const actId = String(act.id ?? '');
             if (!actId) return false;
-            if (String(act.myLinkId ?? '') === activeMyLinkId) return false;
-            if (addActivityOnlyUnlinked && Boolean(act.myLinkId)) return false;
+            const rel = act._related && typeof act._related === 'object' ? (act._related as Record<string, unknown>) : undefined;
+            const actLinkIds: string[] = Array.isArray(act.myLinkIds)
+              ? (act.myLinkIds as string[])
+              : Array.isArray(rel?.myLinks)
+                ? (rel.myLinks as any[]).map((l: any) => String(l.id))
+                : act.myLinkId ? [String(act.myLinkId)] : [];
+
+            if (actLinkIds.includes(activeMyLinkId) || String(act.myLinkId ?? '') === activeMyLinkId) return false;
+            if (addActivityOnlyUnlinked && actLinkIds.length > 0) return false;
 
             const ctx = resolveActivityContext(act);
             if (
@@ -4979,9 +5132,9 @@ return (
                             .filter(Boolean);
                           const ok = await executeBulkAction(
                             {
-                              action: 'bulkSetActivitiesMyLink',
+                              action: 'bulkRemoveMyLinkFromActivities',
                               activityIds: allIds,
-                              myLinkId: null
+                              myLinkId: activeMyLinkId
                             },
                             `MyLink berhasil dilepas dari semua (${allIds.length}) Activity.`,
                             ['activities', 'myLinks']
@@ -5034,9 +5187,9 @@ return (
                             onClick={async () => {
                               const ok = await executeBulkAction(
                                 {
-                                  action: 'bulkSetActivitiesMyLink',
+                                  action: 'bulkRemoveMyLinkFromActivities',
                                   activityIds: selectedLinkedActivityIds,
-                                  myLinkId: null
+                                  myLinkId: activeMyLinkId
                                 },
                                 `MyLink dilepas dari ${selectedLinkedActivityIds.length} Activity terpilih.`,
                                 ['activities', 'myLinks']
@@ -5235,9 +5388,9 @@ return (
                                 onClick={async () => {
                                   const ok = await executeBulkAction(
                                     {
-                                      action: 'bulkSetActivitiesMyLink',
+                                      action: 'bulkRemoveMyLinkFromActivities',
                                       activityIds: [actId],
-                                      myLinkId: null
+                                      myLinkId: activeMyLinkId
                                     },
                                     'MyLink berhasil dilepas dari Activity.',
                                     ['activities', 'myLinks']
@@ -5366,11 +5519,11 @@ return (
                         onClick={async () => {
                           const ok = await executeBulkAction(
                             {
-                              action: 'bulkSetActivitiesMyLink',
+                              action: 'bulkAddMyLinkToActivities',
                               activityIds: selectedCandidateActivityIds,
                               myLinkId: activeMyLinkId
                             },
-                            `MyLink berhasil dipasang ke ${selectedCandidateActivityIds.length} Activity terpilih.`,
+                            `MyLink berhasil ditambahkan ke ${selectedCandidateActivityIds.length} Activity terpilih.`,
                             ['activities', 'myLinks']
                           );
                           if (ok) {
@@ -5380,7 +5533,7 @@ return (
                         }}
                       >
                         <Icons.add className='size-3.5' />
-                        Pasang ke {selectedCandidateActivityIds.length} Activity Terpilih
+                        Tambah ke {selectedCandidateActivityIds.length} Activity Terpilih
                       </Button>
                     )}
                   </div>
@@ -5395,8 +5548,12 @@ return (
                         const actId = String(act.id ?? '');
                         const isChecked = selectedCandidateActivityIds.includes(actId);
                         const ctx = resolveActivityContext(act);
-                        const existingMlId = act.myLinkId ? String(act.myLinkId) : null;
-                        const existingMl = existingMlId ? myLinkByIdMap.get(existingMlId) : null;
+                        const rel = act._related && typeof act._related === 'object' ? (act._related as Record<string, unknown>) : undefined;
+                        const existingLinkIds: string[] = Array.isArray(act.myLinkIds)
+                          ? (act.myLinkIds as string[])
+                          : Array.isArray(rel?.myLinks)
+                            ? (rel.myLinks as any[]).map((l: any) => String(l.id))
+                            : act.myLinkId ? [String(act.myLinkId)] : [];
 
                         return (
                           <div
@@ -5428,9 +5585,9 @@ return (
                                   <span className='text-sm font-medium'>
                                     {String(act.title ?? actId)}
                                   </span>
-                                  {existingMlId && (
+                                  {existingLinkIds.length > 0 && (
                                     <Badge variant='outline' className='text-[10px]'>
-                                      Saat ini: {String(existingMl?.label ?? existingMlId)}
+                                      Saat ini: {existingLinkIds.length} tautan ({existingLinkIds.map((id) => myLinkByIdMap.get(id)?.label || id).join(', ')})
                                     </Badge>
                                   )}
                                 </div>
@@ -5457,11 +5614,11 @@ return (
                                 onClick={async () => {
                                   const ok = await executeBulkAction(
                                     {
-                                      action: 'bulkSetActivitiesMyLink',
+                                      action: 'bulkAddMyLinkToActivities',
                                       activityIds: [actId],
                                       myLinkId: activeMyLinkId
                                     },
-                                    `MyLink berhasil dipasang ke Activity "${String(act.title ?? actId)}".`,
+                                    `MyLink berhasil ditambahkan ke Activity "${String(act.title ?? actId)}".`,
                                     ['activities', 'myLinks']
                                   );
                                   if (ok) {
@@ -5472,7 +5629,7 @@ return (
                                 }}
                               >
                                 <Icons.add className='size-3.5' />
-                                Pasang
+                                {existingLinkIds.length > 0 ? '+ Tambah' : 'Pasang'}
                               </Button>
                             </div>
                           </div>

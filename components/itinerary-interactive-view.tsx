@@ -24,7 +24,14 @@ type SerializedActivity = {
   myLink: {
     actualUrl: string;
     provider: string;
+    label?: string;
   } | null;
+  myLinks?: Array<{
+    id?: string;
+    actualUrl: string;
+    provider: string;
+    label?: string;
+  }>;
 };
 
 type SerializedDay = {
@@ -107,40 +114,70 @@ export function ItineraryInteractiveView({ itinerary }: { itinerary: SerializedI
                       {activity.category}
                       {activity.locationName ? ` · ${activity.locationName}` : ""}
                     </span>
-                    {activity.myLink && (
-                      <div className="activity-mylink-section" style={{ marginTop: "12px" }}>
-                        <a
-                          href={activity.myLink.actualUrl}
-                          target="_blank"
-                          rel="noopener noreferrer nofollow"
+                    {(() => {
+                      const links =
+                        activity.myLinks && activity.myLinks.length > 0
+                          ? activity.myLinks
+                          : activity.myLink
+                            ? [activity.myLink]
+                            : [];
+                      if (!links.length) return null;
+                      return (
+                        <div
+                          className="activity-mylink-section"
                           style={{
-                            display: "inline-flex",
-                            alignItems: "center",
+                            marginTop: "12px",
+                            display: "flex",
+                            flexWrap: "wrap",
                             gap: "8px",
-                            padding: "8px 16px",
-                            borderRadius: "999px",
-                            fontSize: "12px",
-                            fontWeight: 800,
-                            color: "white",
-                            background: activity.myLink.provider === "Klook" 
-                              ? "var(--orange)" 
-                              : activity.myLink.provider === "Agoda"
-                              ? "var(--blue)"
-                              : activity.myLink.provider === "Traveloka"
-                              ? "var(--sky)"
-                              : activity.myLink.provider === "Tiket.com"
-                              ? "var(--yellow)"
-                              : "var(--indigo)",
-                            textDecoration: "none",
-                            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
                           }}
-                          className="mylink-cta"
                         >
-                          <Icon name="route" />
-                          <span>Pesan via {activity.myLink.provider}</span>
-                        </a>
-                      </div>
-                    )}
+                          {links.map((link, linkIdx) => {
+                            const providerColor =
+                              link.provider === "Klook"
+                                ? "var(--orange)"
+                                : link.provider === "Agoda"
+                                  ? "var(--blue)"
+                                  : link.provider === "Traveloka"
+                                    ? "var(--sky)"
+                                    : link.provider === "Tiket.com"
+                                      ? "var(--yellow)"
+                                      : "var(--indigo)";
+                            const labelText = link.label
+                              ? link.label.toLowerCase().includes((link.provider || "").toLowerCase())
+                                ? link.label
+                                : `${link.label} (${link.provider})`
+                              : `Pesan via ${link.provider}`;
+                            return (
+                              <a
+                                key={(link as any).id || linkIdx}
+                                href={link.actualUrl}
+                                target="_blank"
+                                rel="noopener noreferrer nofollow"
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "8px",
+                                  padding: "8px 16px",
+                                  borderRadius: "999px",
+                                  fontSize: "12px",
+                                  fontWeight: 800,
+                                  color: "white",
+                                  background: providerColor,
+                                  textDecoration: "none",
+                                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+                                }}
+                                className="mylink-cta"
+                                title={link.label || `Pesan via ${link.provider}`}
+                              >
+                                <Icon name="route" />
+                                <span>{labelText}</span>
+                              </a>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
                   </div>
                   <div className="activity-cost">
                     {activity.estimatedCost ? formatRupiah(activity.estimatedCost) : "Gratis"}

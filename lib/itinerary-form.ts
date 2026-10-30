@@ -13,6 +13,7 @@ export type ActivityFormInput = {
   estimatedCost?: unknown;
   category?: unknown;
   myLinkId?: unknown;
+  myLinkIds?: unknown;
 };
 
 type DayFormInput = {
@@ -33,6 +34,7 @@ export type ParsedActivityForm = {
   estimatedCost: number;
   category: string;
   myLinkId?: string | null;
+  myLinkIds: string[];
   orderIndex: number;
 };
 
@@ -67,6 +69,13 @@ export function parseActivityArray(value: unknown): ParsedActivityForm[] {
       const title = String(activity.title ?? "").trim();
       if (!title) return null;
 
+      const rawLinkIds: string[] = Array.isArray(activity.myLinkIds)
+        ? (activity.myLinkIds as unknown[]).map(String).map((s) => s.trim()).filter(Boolean)
+        : activity.myLinkId
+          ? [String(activity.myLinkId).trim()].filter(Boolean)
+          : [];
+      const myLinkIds = Array.from(new Set(rawLinkIds));
+
       return {
         time: String(activity.time ?? "").trim() || `${9 + index}.00`,
         title,
@@ -79,7 +88,8 @@ export function parseActivityArray(value: unknown): ParsedActivityForm[] {
         customLocation: Boolean(activity.customLocation),
         estimatedCost: Number(activity.estimatedCost ?? 0) || 0,
         category: String(activity.category ?? DEFAULT_ACTIVITY_TYPE).trim() || DEFAULT_ACTIVITY_TYPE,
-        myLinkId: activity.myLinkId ? String(activity.myLinkId).trim() : null,
+        myLinkId: myLinkIds[0] || (activity.myLinkId ? String(activity.myLinkId).trim() : null),
+        myLinkIds,
         orderIndex: index,
       };
     })
@@ -142,6 +152,7 @@ export function parseActivitiesText(value: FormDataEntryValue | null): ParsedAct
         category: index % 2 === 0 ? "Transport" : "Makan",
         orderIndex: index,
         myLinkId: null,
+        myLinkIds: [],
       };
     }) as ParsedActivityForm[]);
 }
@@ -156,13 +167,21 @@ export function fallbackDay(activities: ParsedActivityForm[]): ParsedDayForm[] {
   ];
 }
 
-export function defaultActivity() {
+export function defaultActivity(): ParsedActivityForm {
   return {
     time: "09.00",
     title: "Tiba di destinasi",
     locationName: "",
+    formattedAddress: "",
+    latitude: null,
+    longitude: null,
+    mapProvider: "",
+    mapPlaceId: "",
+    customLocation: false,
+    estimatedCost: 0,
     category: "Transport",
     orderIndex: 0,
     myLinkId: null,
+    myLinkIds: [],
   };
 }

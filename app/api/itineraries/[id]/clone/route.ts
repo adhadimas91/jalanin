@@ -32,22 +32,33 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
           dayNumber: day.dayNumber,
           title: day.title,
           activities: {
-            create: day.activities.map((activity) => ({
-              time: activity.time,
-              title: activity.title,
-              locationName: activity.locationName,
-              formattedAddress: activity.formattedAddress,
-              latitude: activity.latitude,
-              longitude: activity.longitude,
-              mapProvider: activity.mapProvider,
-              mapPlaceId: activity.mapPlaceId,
-              customLocation: activity.customLocation,
-              description: activity.description,
-              estimatedCost: activity.estimatedCost,
-              category: activity.category,
-              orderIndex: activity.orderIndex,
-              myLinkId: activity.myLinkId,
-            })),
+            create: day.activities.map((activity) => {
+              const linkIds = ((activity as any).activityMyLinks?.length
+                ? (activity as any).activityMyLinks.map((aml: any) => aml.myLinkId)
+                : activity.myLinkId ? [activity.myLinkId] : []) as string[];
+              return {
+                time: activity.time,
+                title: activity.title,
+                locationName: activity.locationName,
+                formattedAddress: activity.formattedAddress,
+                latitude: activity.latitude,
+                longitude: activity.longitude,
+                mapProvider: activity.mapProvider,
+                mapPlaceId: activity.mapPlaceId,
+                customLocation: activity.customLocation,
+                description: activity.description,
+                estimatedCost: activity.estimatedCost,
+                category: activity.category,
+                orderIndex: activity.orderIndex,
+                myLinkId: linkIds[0] || null,
+                activityMyLinks: {
+                  create: linkIds.map((linkId: string, idx: number) => ({
+                    myLinkId: linkId,
+                    orderIndex: idx,
+                  })),
+                },
+              };
+            }),
           },
         })),
       },

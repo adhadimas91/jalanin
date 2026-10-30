@@ -103,7 +103,8 @@ model Activity {
   day            ItineraryDay @relation(fields: [itineraryDayId], references: [id], onDelete: Cascade)
   
   myLinkId String?
-  myLink   MyLink? @relation(fields: [myLinkId], references: [id], onDelete: SetNull)
+  myLink   MyLink? @relation("ActivityLegacyMyLink", fields: [myLinkId], references: [id], onDelete: SetNull)
+  activityMyLinks ActivityMyLink[]
 
   @@index([itineraryDayId, orderIndex])
 }
@@ -150,11 +151,26 @@ model MyLink {
   label     String
   provider  String     // e.g. "Klook", "Agoda", "Traveloka", "Custom"
   actualUrl String
-  activities Activity[]
+  activities Activity[] @relation("ActivityLegacyMyLink")
+  activityMyLinks ActivityMyLink[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now()) @updatedAt
 
   @@index([userId])
+}
+
+model ActivityMyLink {
+  id         String   @id @default(cuid())
+  activityId String
+  myLinkId   String
+  orderIndex Int      @default(0)
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  myLink     MyLink   @relation(fields: [myLinkId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([activityId, myLinkId])
+  @@index([activityId])
+  @@index([myLinkId])
 }
 
 model MyLinkWhitelistDomain {
