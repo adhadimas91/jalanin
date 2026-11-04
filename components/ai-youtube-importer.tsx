@@ -23,14 +23,17 @@ export function AiYoutubeImporter({ onExtracted, curatedUserId }: AiYoutubeImpor
     setLoading(true);
     setError(null);
     setPreviewData(null);
-    setStepText("1/3 Menghubungi YouTube & mengambil transkrip video...");
+    setStepText("1/3 Mengakses video & transkrip perjalanan...");
+
+    let timer1: NodeJS.Timeout | null = null;
+    let timer2: NodeJS.Timeout | null = null;
 
     try {
-      setTimeout(() => {
-        setStepText("2/3 AI Gemini menganalisis transkrip perjalanan...");
+      timer1 = setTimeout(() => {
+        setStepText("2/3 AI Gemini menganalisis rute, tempat & aktivitas...");
       }, 3000);
 
-      setTimeout(() => {
+      timer2 = setTimeout(() => {
         setStepText("3/3 Mencocokkan titik koordinat lokasi di peta...");
       }, 7000);
 
@@ -56,6 +59,8 @@ export function AiYoutubeImporter({ onExtracted, curatedUserId }: AiYoutubeImpor
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
     } finally {
+      if (timer1) clearTimeout(timer1);
+      if (timer2) clearTimeout(timer2);
       setLoading(false);
     }
   };
