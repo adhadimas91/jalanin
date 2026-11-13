@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "../styles.css";
 import "./next-overrides.css";
@@ -47,6 +48,7 @@ export default function RootLayout({
       <body>
         <ImpersonationBanner />
         {children}
+        <Analytics />
         {/* Google tag (gtag.js) */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-DVV6GX51JE"
