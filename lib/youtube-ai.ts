@@ -105,6 +105,12 @@ export function extractYouTubeVideoId(inputUrl: string): string | null {
   }
 }
 
+export function normalizeYouTubeUrl(inputUrl: string): string | null {
+  const videoId = extractYouTubeVideoId(inputUrl);
+  if (!videoId) return null;
+  return `https://www.youtube.com/watch?v=${videoId}`;
+}
+
 /**
  * Ekstrak JSON inline dari HTML YouTube (misal ytInitialPlayerResponse)
  */

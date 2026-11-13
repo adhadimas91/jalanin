@@ -4,6 +4,8 @@ import { hashPassword } from "@/lib/password";
 import { sendClaimApprovedEmail, sendClaimRejectedEmail, getBaseUrl } from "@/lib/email";
 import { detectProvider } from "@/lib/mylink-validator";
 import { findDuplicateUserConflicts } from "@/lib/social";
+import { findItineraryByYouTubeUrl } from "@/lib/itineraries";
+import { normalizeYouTubeUrl } from "@/lib/youtube-ai";
 
 export const adminTables = [
   "users",
@@ -840,7 +842,20 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           tokenExpiresAt: readOptionalDate(data.tokenExpiresAt),
         },
       });
-    case "itineraries":
+    case "itineraries": {
+      const rawYoutubeUrl = readOptionalString(data.youtubeUrl);
+      const youtubeUrl = rawYoutubeUrl
+        ? normalizeYouTubeUrl(rawYoutubeUrl) ?? rawYoutubeUrl
+        : null;
+      if (youtubeUrl) {
+        const existingYoutube = await findItineraryByYouTubeUrl(youtubeUrl);
+        if (existingYoutube) {
+          throw new AdminValidationError(
+            `URL YouTube ini sudah digunakan pada itinerary "${existingYoutube.title}".`
+          );
+        }
+      }
+
       return prisma.itinerary.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
@@ -851,12 +866,14 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           estimatedBudget: readInt(data.estimatedBudget, 0),
           travelStyle: readString(data.travelStyle, "Budget trip"),
           coverImageUrl: readString(data.coverImageUrl, "/uploads/default-cover.svg"),
+          youtubeUrl,
           notes: readString(data.notes),
           isPublished: readBoolean(data.isPublished, true),
           originalItineraryId: readOptionalString(data.originalItineraryId) ?? undefined,
           authorId: readRequiredString(data.authorId, "authorId"),
         },
       });
+    }
     case "days":
       return prisma.itineraryDay.create({
         data: {
@@ -895,13 +912,13 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
           orderIndex: readInt(data.orderIndex, 0),
           ...(myLinkIds.length > 0
             ? {
-                activityMyLinks: {
-                  create: myLinkIds.map((linkId, idx) => ({
-                    myLinkId: linkId,
-                    orderIndex: idx,
-                  })),
-                },
-              }
+              activityMyLinks: {
+                create: myLinkIds.map((linkId, idx) => ({
+                  myLinkId: linkId,
+                  orderIndex: idx,
+                })),
+              },
+            }
             : {}),
         },
       });
@@ -1085,7 +1102,24 @@ export async function updateAdminRecord(
             : {}),
         },
       });
-    case "itineraries":
+    case "itineraries": {
+      let youtubeUrlPatch: { youtubeUrl?: string | null } = {};
+      if ("youtubeUrl" in data) {
+        const rawYoutubeUrl = readOptionalString(data.youtubeUrl);
+        const youtubeUrl = rawYoutubeUrl
+          ? normalizeYouTubeUrl(rawYoutubeUrl) ?? rawYoutubeUrl
+          : null;
+        if (youtubeUrl) {
+          const existingYoutube = await findItineraryByYouTubeUrl(youtubeUrl, id);
+          if (existingYoutube) {
+            throw new AdminValidationError(
+              `URL YouTube ini sudah digunakan pada itinerary "${existingYoutube.title}".`
+            );
+          }
+        }
+        youtubeUrlPatch = { youtubeUrl };
+      }
+
       return prisma.itinerary.update({
         where: { id },
         data: {
@@ -1104,6 +1138,7 @@ export async function updateAdminRecord(
           ...("coverImageUrl" in data
             ? { coverImageUrl: readString(data.coverImageUrl, "/uploads/default-cover.svg") }
             : {}),
+          ...youtubeUrlPatch,
           ...("notes" in data ? { notes: readString(data.notes) } : {}),
           ...("isPublished" in data ? { isPublished: readBoolean(data.isPublished, true) } : {}),
           ...("originalItineraryId" in data
@@ -1112,6 +1147,7 @@ export async function updateAdminRecord(
           ...("authorId" in data ? { authorId: readRequiredString(data.authorId, "authorId") } : {}),
         },
       });
+    }
     case "days":
       return prisma.itineraryDay.update({
         where: { id },

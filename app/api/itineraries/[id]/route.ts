@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, getImpersonatorUser, isAdminUser } from "@/lib/auth";
 import { defaultActivity, fallbackDay, parseActivitiesJson, parseActivitiesText, parseDaysJson } from "@/lib/itinerary-form";
-import { getItineraryById } from "@/lib/itineraries";
+import { findItineraryByYouTubeUrl, getItineraryById } from "@/lib/itineraries";
 import { prisma } from "@/lib/prisma";
 import { serializeItinerary } from "@/lib/serialize";
 import { uploadImageToBlobStorage } from "@/lib/blob-storage";
+import { normalizeYouTubeUrl } from "@/lib/youtube-ai";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
@@ -101,6 +102,20 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
   }
 
+  const hasYoutubeUrlField = formData.has("youtubeUrl");
+  const rawYoutubeUrl = hasYoutubeUrlField ? String(formData.get("youtubeUrl") ?? "").trim() : "";
+  const youtubeUrl = rawYoutubeUrl ? normalizeYouTubeUrl(rawYoutubeUrl) ?? rawYoutubeUrl : null;
+
+  if (hasYoutubeUrlField && youtubeUrl) {
+    const existingYoutube = await findItineraryByYouTubeUrl(youtubeUrl, id);
+    if (existingYoutube) {
+      return new NextResponse(
+        `URL YouTube ini sudah digunakan pada itinerary "${existingYoutube.title}".`,
+        { status: 409 }
+      );
+    }
+  }
+
   await prisma.$transaction([
     prisma.itineraryDay.deleteMany({
       where: {
@@ -117,6 +132,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         estimatedBudget: Number(formData.get("estimatedBudget") ?? 0),
         travelStyle: String(formData.get("travelStyle") ?? "Budget trip"),
         coverImageUrl,
+        ...(hasYoutubeUrlField ? { youtubeUrl } : {}),
         notes: String(formData.get("notes") ?? ""),
         isPublished,
         days: {

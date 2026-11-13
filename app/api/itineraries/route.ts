@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, getImpersonatorUser, isAdminUser } from "@/lib/auth";
-import { getItineraryById } from "@/lib/itineraries";
+import { findItineraryByYouTubeUrl, getItineraryById } from "@/lib/itineraries";
 import { prisma } from "@/lib/prisma";
 import { serializeItinerary } from "@/lib/serialize";
 import { uploadImageToBlobStorage } from "@/lib/blob-storage";
 import { defaultActivity, fallbackDay, parseActivitiesJson, parseActivitiesText, parseDaysJson } from "@/lib/itinerary-form";
+import { normalizeYouTubeUrl } from "@/lib/youtube-ai";
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
@@ -86,6 +87,18 @@ export async function POST(request: Request) {
   }
 
   const originalItineraryId = formData.get("originalItineraryId") ? String(formData.get("originalItineraryId")) : null;
+  const rawYoutubeUrl = String(formData.get("youtubeUrl") ?? "").trim();
+  const youtubeUrl = rawYoutubeUrl ? normalizeYouTubeUrl(rawYoutubeUrl) ?? rawYoutubeUrl : null;
+
+  if (youtubeUrl) {
+    const existingYoutube = await findItineraryByYouTubeUrl(youtubeUrl);
+    if (existingYoutube) {
+      return new NextResponse(
+        `URL YouTube ini sudah pernah diimport pada itinerary "${existingYoutube.title}".`,
+        { status: 409 }
+      );
+    }
+  }
 
   const daysToCreate = days.length
     ? days
@@ -104,6 +117,7 @@ export async function POST(request: Request) {
       estimatedBudget: Number(formData.get("estimatedBudget") ?? 0),
       travelStyle: String(formData.get("travelStyle") ?? "Budget trip"),
       coverImageUrl,
+      youtubeUrl,
       notes: String(formData.get("notes") ?? ""),
       isPublished,
       originalItineraryId,

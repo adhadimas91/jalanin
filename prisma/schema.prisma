@@ -54,6 +54,7 @@ model Itinerary {
   estimatedBudget     Int              @default(0)
   travelStyle         String           @default("Budget trip")
   coverImageUrl       String           @default("/uploads/default-cover.svg")
+  youtubeUrl          String?          @unique
   notes               String           @default("")
   isPublished         Boolean          @default(true)
   originalItineraryId String?

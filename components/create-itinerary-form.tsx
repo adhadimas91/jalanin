@@ -19,6 +19,7 @@ export function CreateItineraryForm({ isAdmin, curatedUserId }: CreateItineraryF
   const [description, setDescription] = useState("");
   const [notes, setNotes] = useState("");
   const [coverImageUrl, setCoverImageUrl] = useState("/uploads/default-cover.svg");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
   const [daysJson, setDaysJson] = useState<string>("");
   const [aiExtractedInfo, setAiExtractedInfo] = useState<{
     daysCount: number;
@@ -35,6 +36,7 @@ export function CreateItineraryForm({ isAdmin, curatedUserId }: CreateItineraryF
     setTravelStyle(data.travelStyle || "Budget trip");
     setDescription(data.description);
     setNotes(data.notes || (data.originalVideoUrl ? `Sumber video: ${data.originalVideoUrl}` : ""));
+    setYoutubeUrl(data.originalVideoUrl || "");
     if (data.coverImageUrl) {
       setCoverImageUrl(data.coverImageUrl);
     }
@@ -89,6 +91,7 @@ export function CreateItineraryForm({ isAdmin, curatedUserId }: CreateItineraryF
             onClick={() => {
               setAiExtractedInfo(null);
               setDaysJson("");
+              setYoutubeUrl("");
             }}
             style={{
               background: "transparent",
@@ -108,6 +111,7 @@ export function CreateItineraryForm({ isAdmin, curatedUserId }: CreateItineraryF
       <form className="stack-form" action="/api/itineraries" method="post" encType="multipart/form-data">
         <input type="hidden" name="daysJson" value={daysJson} />
         <input type="hidden" name="coverImageUrl" value={coverImageUrl} />
+        <input type="hidden" name="youtubeUrl" value={youtubeUrl} />
         <input type="hidden" name="isPublished" value="false" />
 
         <label>

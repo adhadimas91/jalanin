@@ -1,13 +1,33 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, getImpersonatorUser, isAdminUser } from "@/lib/auth";
+import { findItineraryByYouTubeUrl } from "@/lib/itineraries";
 import {
   analyzeYouTubeStep2,
   enrichYouTubeStep3,
   extractItineraryFromYouTube,
+  extractYouTubeVideoId,
   fetchYouTubeStep1,
   type YoutubeStep1Data,
   type YoutubeStep2Data,
 } from "@/lib/youtube-ai";
+
+async function checkDuplicateYouTubeUrl(url: string) {
+  const existing = await findItineraryByYouTubeUrl(url);
+  if (!existing) return null;
+
+  const authorLabel = existing.author.name || existing.author.username || "user";
+  return NextResponse.json(
+    {
+      success: false,
+      error: `URL YouTube ini sudah pernah diimport pada itinerary "${existing.title}" (oleh ${authorLabel}). Silakan gunakan URL video lain.`,
+      existingItinerary: {
+        id: existing.id,
+        title: existing.title,
+      },
+    },
+    { status: 409 }
+  );
+}
 
 export async function POST(request: Request) {
   try {
@@ -35,6 +55,15 @@ export async function POST(request: Request) {
       if (!videoUrl) {
         return NextResponse.json({ error: "URL video YouTube wajib diisi." }, { status: 400 });
       }
+      if (!extractYouTubeVideoId(videoUrl)) {
+        return NextResponse.json(
+          { error: "Format URL YouTube tidak valid. Mohon masukkan link YouTube yang benar." },
+          { status: 400 }
+        );
+      }
+      const duplicateResp = await checkDuplicateYouTubeUrl(videoUrl);
+      if (duplicateResp) return duplicateResp;
+
       const data = await fetchYouTubeStep1(videoUrl);
       return NextResponse.json({ success: true, step: 1, data });
     }
@@ -44,6 +73,9 @@ export async function POST(request: Request) {
       if (!step1Data || !step1Data.videoId || !step1Data.cleanUrl) {
         return NextResponse.json({ error: "Data Step 1 tidak lengkap untuk analisis AI." }, { status: 400 });
       }
+      const duplicateResp = await checkDuplicateYouTubeUrl(step1Data.cleanUrl);
+      if (duplicateResp) return duplicateResp;
+
       const data = await analyzeYouTubeStep2(step1Data);
       return NextResponse.json({ success: true, step: 2, data });
     }
@@ -63,6 +95,14 @@ export async function POST(request: Request) {
     if (!videoUrl) {
       return NextResponse.json({ error: "URL video YouTube wajib diisi." }, { status: 400 });
     }
+    if (!extractYouTubeVideoId(videoUrl)) {
+      return NextResponse.json(
+        { error: "Format URL YouTube tidak valid. Mohon masukkan link YouTube yang benar." },
+        { status: 400 }
+      );
+    }
+    const duplicateResp = await checkDuplicateYouTubeUrl(videoUrl);
+    if (duplicateResp) return duplicateResp;
 
     const result = await extractItineraryFromYouTube(videoUrl, targetUserId);
 

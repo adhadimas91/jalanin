@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import { extractYouTubeVideoId } from "./youtube-ai";
 
 export async function getPublishedItineraries(userId?: string) {
   return prisma.itinerary.findMany({
@@ -129,4 +130,42 @@ export async function getUserState(userId?: string) {
     savedIds: saves.map((save) => save.itineraryId),
     likedIds: likes.map((like) => like.itineraryId),
   };
+}
+
+export async function findItineraryByYouTubeUrl(
+  inputUrl: string,
+  excludeItineraryId?: string
+) {
+  const trimmed = inputUrl.trim();
+  if (!trimmed) return null;
+
+  const videoId = extractYouTubeVideoId(trimmed);
+  const orConditions = videoId
+    ? [
+        { youtubeUrl: `https://www.youtube.com/watch?v=${videoId}` },
+        { youtubeUrl: { contains: videoId } },
+        { notes: { contains: `v=${videoId}` } },
+        { notes: { contains: `youtu.be/${videoId}` } },
+        { notes: { contains: `shorts/${videoId}` } },
+      ]
+    : [{ youtubeUrl: trimmed }];
+
+  return prisma.itinerary.findFirst({
+    where: {
+      ...(excludeItineraryId ? { NOT: { id: excludeItineraryId } } : {}),
+      OR: orConditions,
+    },
+    select: {
+      id: true,
+      title: true,
+      youtubeUrl: true,
+      author: {
+        select: {
+          id: true,
+          name: true,
+          username: true,
+        },
+      },
+    },
+  });
 }

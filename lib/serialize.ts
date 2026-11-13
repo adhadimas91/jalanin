@@ -42,6 +42,7 @@ export function serializeItinerary(itinerary: Awaited<ReturnType<typeof getPubli
     estimatedBudget: itinerary.estimatedBudget,
     travelStyle: itinerary.travelStyle,
     coverImageUrl: itinerary.coverImageUrl,
+    youtubeUrl: itinerary.youtubeUrl ?? null,
     notes: itinerary.notes,
     isPublished: itinerary.isPublished,
     author: serializeUser(itinerary.author),
