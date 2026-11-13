@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { sendClaimApprovedEmail, sendClaimRejectedEmail, getBaseUrl } from "@/lib/email";
 import { detectProvider } from "@/lib/mylink-validator";
+import { findDuplicateUserConflicts } from "@/lib/social";
 
 export const adminTables = [
   "users",
@@ -786,17 +787,31 @@ export async function createAdminRecord(table: AdminTable, rawData: Record<strin
       if (passwordHash && !passwordHash.includes(":")) {
         passwordHash = await hashPassword(passwordHash);
       }
+
+      const username = readOptionalString(data.username) ?? null;
+      const youtube = readOptionalString(data.youtube) ?? null;
+      const existingUsers = await prisma.user.findMany({
+        select: { id: true, email: true, username: true, youtube: true, name: true },
+      });
+      const duplicateConflicts = findDuplicateUserConflicts(
+        { email, username, youtube },
+        existingUsers
+      );
+      if (duplicateConflicts.length > 0) {
+        throw new AdminValidationError(duplicateConflicts.join(" "));
+      }
+
       return prisma.user.create({
         data: {
           id: readOptionalString(data.id) ?? undefined,
           email,
-          username: readOptionalString(data.username) ?? null,
+          username,
           passwordHash,
           name: readOptionalString(data.name) ?? null,
           avatarUrl: readOptionalString(data.avatarUrl) ?? null,
           bio: readOptionalString(data.bio) ?? null,
           city: readOptionalString(data.city) ?? null,
-          youtube: readOptionalString(data.youtube) ?? null,
+          youtube,
           instagram: readOptionalString(data.instagram) ?? null,
           tiktok: readOptionalString(data.tiktok) ?? null,
           role: readUserRole(data.role),
@@ -1005,6 +1020,24 @@ export async function updateAdminRecord(
             emailUpdate = rawEmail;
           }
         }
+      }
+
+      const existingUsers = await prisma.user.findMany({
+        select: { id: true, email: true, username: true, youtube: true, name: true },
+      });
+      const existingSelf = existingUsers.find((u) => u.id === id);
+      const nextEmail = emailUpdate ?? existingSelf?.email ?? null;
+      const nextUsername =
+        "username" in data ? (readOptionalString(data.username) ?? null) : (existingSelf?.username ?? null);
+      const nextYoutube =
+        "youtube" in data ? (readOptionalString(data.youtube) ?? null) : (existingSelf?.youtube ?? null);
+      const duplicateConflicts = findDuplicateUserConflicts(
+        { email: nextEmail, username: nextUsername, youtube: nextYoutube },
+        existingUsers,
+        id
+      );
+      if (duplicateConflicts.length > 0) {
+        throw new AdminValidationError(duplicateConflicts.join(" "));
       }
 
       return prisma.user.update({

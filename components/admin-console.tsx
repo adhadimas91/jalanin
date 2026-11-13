@@ -20,6 +20,11 @@ import {
   type RowSelectionState
 } from '@tanstack/react-table';
 import { DEFAULT_ACTIVITY_TYPE } from '@/lib/activity-types';
+import {
+  extractYoutubeHandleFromUrl,
+  findDuplicateUserConflicts,
+  type UserIdentityRecord
+} from '@/lib/social';
 import { toast } from 'sonner';
 
 import { Icons, type Icon as IconType } from '@/components/icons';
@@ -137,6 +142,7 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       'createdAt'
     ],
     template: {
+      youtube: '',
       email: '',
       username: 'kreator_baru',
       passwordHash: '',
@@ -144,7 +150,6 @@ const tableConfigs: Record<AdminTable, TableConfig> = {
       avatarUrl: '',
       bio: '',
       city: 'Jakarta',
-      youtube: '',
       instagram: '',
       tiktok: '',
       role: 'USER',
@@ -860,6 +865,20 @@ function updateDraftField(key: string, value: unknown) {
   try {
     const parsed = JSON.parse(draft) as Record<string, unknown>;
     parsed[key] = value;
+
+    if (
+      currentTable === 'users' &&
+      editorMode === 'create' &&
+      key === 'youtube' &&
+      typeof value === 'string'
+    ) {
+      const youtubeHandle = extractYoutubeHandleFromUrl(value);
+      if (youtubeHandle) {
+        parsed.username = youtubeHandle;
+        parsed.name = youtubeHandle;
+      }
+    }
+
     setDraft(JSON.stringify(parsed, null, 2));
   } catch {
     // ignore invalid JSON while editing
@@ -917,6 +936,17 @@ async function handleSave() {
 
     const payload = stripMeta(parsedUnknown as Record<string, unknown>);
     validateRecordPayload(tableToSave, mode, payload);
+
+    if (tableToSave === 'users') {
+      const duplicateConflicts = findDuplicateUserConflicts(
+        payload as UserIdentityRecord,
+        tables.users as UserIdentityRecord[],
+        mode === 'edit' ? targetId : null
+      );
+      if (duplicateConflicts.length > 0) {
+        throw new Error(duplicateConflicts.join(' '));
+      }
+    }
 
     const targetUrl =
       mode === 'create'
@@ -3526,7 +3556,19 @@ return (
               } catch (err) {
                 parseError = err instanceof Error ? err.message : 'Invalid JSON';
               }
-              const formFields = Object.keys(parsedDraft).filter((key) => !key.startsWith('_'));
+              const rawFormFields = Object.keys(parsedDraft).filter((key) => !key.startsWith('_'));
+              const formFields =
+                currentTable === 'users' && rawFormFields.includes('youtube')
+                  ? ['youtube', ...rawFormFields.filter((key) => key !== 'youtube')]
+                  : rawFormFields;
+              const duplicateUserConflicts =
+                currentTable === 'users' && !parseError
+                  ? findDuplicateUserConflicts(
+                      parsedDraft as UserIdentityRecord,
+                      tables.users as UserIdentityRecord[],
+                      editorMode === 'edit' ? editingId : null
+                    )
+                  : [];
 
               return (
                 <>
@@ -3541,6 +3583,19 @@ return (
                       </Alert>
                     ) : (
                       <div className='grid grid-cols-1 gap-4'>
+                        {duplicateUserConflicts.length > 0 && (
+                          <Alert variant='destructive'>
+                            <Icons.alertCircle />
+                            <AlertTitle>Data User Ganda Terdeteksi</AlertTitle>
+                            <AlertDescription>
+                              <ul className='list-disc pl-4'>
+                                {duplicateUserConflicts.map((conflict) => (
+                                  <li key={conflict}>{conflict}</li>
+                                ))}
+                              </ul>
+                            </AlertDescription>
+                          </Alert>
+                        )}
                         {currentTable === 'myLinks' && editorMode === 'edit' && editingId && (
                           <div className='space-y-2 rounded-lg border p-3'>
                             <div className='flex items-center justify-between gap-2'>

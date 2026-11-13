@@ -103,6 +103,91 @@ export function formatSocialLink(
   }
 }
 
+export function extractYoutubeHandleFromUrl(rawInput?: string | null): string | null {
+  if (!rawInput) return null;
+  const trimmed = rawInput.trim();
+  if (!trimmed) return null;
+
+  const match = trimmed.match(
+    /^(?:https?:\/\/)?(?:www\.|m\.)?youtube\.com\/@([^/?#\s]+)/i
+  );
+  return match?.[1] ?? null;
+}
+
+export function normalizeYoutubeIdentifier(rawInput?: string | null): string | null {
+  if (!rawInput) return null;
+  const trimmed = rawInput.trim();
+  if (!trimmed) return null;
+
+  const handle = extractYoutubeHandleFromUrl(trimmed);
+  if (handle) {
+    return `@${handle.toLowerCase()}`;
+  }
+
+  if (!trimmed.includes("/") && !trimmed.includes("://")) {
+    return `@${trimmed.replace(/^@/, "").toLowerCase()}`;
+  }
+
+  return trimmed.toLowerCase().replace(/\/+$/, "");
+}
+
+export interface UserIdentityRecord {
+  id?: string | null;
+  email?: string | null;
+  username?: string | null;
+  youtube?: string | null;
+  name?: string | null;
+}
+
+export function findDuplicateUserConflicts(
+  candidate: UserIdentityRecord,
+  existingUsers: UserIdentityRecord[],
+  excludeUserId?: string | null
+): string[] {
+  const conflicts: string[] = [];
+  const candidateEmail = candidate.email?.trim().toLowerCase() || null;
+  const candidateUsername = candidate.username?.trim().toLowerCase() || null;
+  const candidateYoutube = normalizeYoutubeIdentifier(candidate.youtube);
+  const isPlaceholderEmail = (email: string) => email.endsWith("@kurasi.jalanin.local");
+
+  for (const existing of existingUsers) {
+    if (excludeUserId && existing.id === excludeUserId) {
+      continue;
+    }
+
+    const existingLabel =
+      existing.name || existing.username || existing.email || existing.id || "user lain";
+
+    const existingEmail = existing.email?.trim().toLowerCase() || null;
+    if (
+      candidateEmail &&
+      !isPlaceholderEmail(candidateEmail) &&
+      existingEmail &&
+      candidateEmail === existingEmail
+    ) {
+      conflicts.push(
+        `Email "${candidate.email?.trim()}" sudah terdaftar pada user "${existingLabel}".`
+      );
+    }
+
+    const existingUsername = existing.username?.trim().toLowerCase() || null;
+    if (candidateUsername && existingUsername && candidateUsername === existingUsername) {
+      conflicts.push(
+        `Username "${candidate.username?.trim()}" sudah terdaftar pada user "${existingLabel}".`
+      );
+    }
+
+    const existingYoutube = normalizeYoutubeIdentifier(existing.youtube);
+    if (candidateYoutube && existingYoutube && candidateYoutube === existingYoutube) {
+      conflicts.push(
+        `YouTube "${candidate.youtube?.trim()}" sudah terdaftar pada user "${existingLabel}".`
+      );
+    }
+  }
+
+  return Array.from(new Set(conflicts));
+}
+
 export function getUserSocialLinks(user: {
   youtube?: string | null;
   instagram?: string | null;
