@@ -522,16 +522,15 @@ async function callGeminiApi(
     throw new Error("GEMINI_API_KEY belum dikonfigurasi di file .env server.");
   }
 
-  // Model prioritas fallback
+  // Model prioritas fallback (hanya model aktif di v1beta)
   const models = [
-    "gemini-flash-lite-latest",
     "gemini-3.8-flash",
-    "gemini-2.5-flash",
-    "gemini-2.0-flash",
     "gemini-flash-latest",
-    "gemini-1.5-flash",
+    "gemini-flash-lite-latest",
+    "gemini-3.5-flash",
+    "gemini-3.1-flash-lite",
   ];
-  let lastError: Error | null = null;
+  const errors: string[] = [];
 
   for (const model of models) {
     try {
@@ -558,6 +557,7 @@ async function callGeminiApi(
             temperature: 0.2,
           },
         }),
+        signal: AbortSignal.timeout(45000),
       });
 
       const resJson = await response.json();
@@ -566,15 +566,21 @@ async function callGeminiApi(
       }
 
       if (resJson.error) {
-        lastError = new Error(`Gemini [${model}]: ${resJson.error.message}`);
+        const msg = `Gemini [${model}]: ${resJson.error.message}`;
+        console.warn("[AI YouTube]", msg);
+        errors.push(msg);
         continue;
       }
+
+      errors.push(`Gemini [${model}]: HTTP ${response.status} tanpa kandidat jawaban.`);
     } catch (err) {
-      lastError = err instanceof Error ? err : new Error(String(err));
+      const msg = `Gemini [${model}]: ${err instanceof Error ? err.message : String(err)}`;
+      console.warn("[AI YouTube]", msg);
+      errors.push(msg);
     }
   }
 
-  throw lastError || new Error("Gagal mendapatkan respons dari Gemini AI.");
+  throw new Error(errors[0] || "Gagal mendapatkan respons dari Gemini AI.");
 }
 
 async function quickGeocode(query: string): Promise<{ lat: number; lng: number; name: string } | null> {
