@@ -25,6 +25,7 @@
     "@prisma/client": "latest",
     "@tabler/icons-react": "^3.50.0",
     "@tanstack/react-table": "^8.21.3",
+    "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.6.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
