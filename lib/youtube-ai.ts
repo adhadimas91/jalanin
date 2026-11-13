@@ -36,6 +36,28 @@ export interface AiItineraryResult {
   days: ExtractedDay[];
 }
 
+export interface YoutubeStep1Data {
+  videoId: string;
+  cleanUrl: string;
+  title: string;
+  authorName: string;
+  thumbnailUrl: string;
+  description: string;
+  formattedTranscript: string | null;
+  transcriptCount: number;
+}
+
+export interface YoutubeStep2Data {
+  title: string;
+  destination: string;
+  durationDays: number;
+  travelStyle: string;
+  estimatedBudget: number;
+  description: string;
+  notes: string;
+  days: ExtractedDay[];
+}
+
 export interface YouTubeCaptionTrack {
   baseUrl: string;
   languageCode: string;
@@ -683,10 +705,10 @@ WAJIB output HANYA JSON murni (valid JSON) sesuai struktur berikut tanpa format 
 `;
 }
 
-export async function extractItineraryFromYouTube(
-  url: string,
-  userId?: string
-): Promise<AiItineraryResult> {
+/**
+ * Step 1: Ambil metadata video & transkrip YouTube (0 token AI).
+ */
+export async function fetchYouTubeStep1(url: string): Promise<YoutubeStep1Data> {
   const videoId = extractYouTubeVideoId(url);
   if (!videoId) {
     throw new Error("Format URL YouTube tidak valid. Mohon masukkan link YouTube yang benar.");
@@ -694,37 +716,51 @@ export async function extractItineraryFromYouTube(
 
   const cleanUrl = `https://www.youtube.com/watch?v=${videoId}`;
   const videoDetails = await fetchYouTubeVideoDetails(videoId);
-
-  // 1. Ambil transkrip YouTube dengan pipeline multi-fallback
   const transcriptSnippets = await fetchTranscriptWithFallbacks(videoId, videoDetails.captionTracks);
 
+  const formattedTranscript =
+    transcriptSnippets.length > 0
+      ? transcriptSnippets
+          .map((item) => {
+            const totalSeconds = Math.floor(item.offset / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            const timeStr = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+            return `[${timeStr}] ${item.text}`;
+          })
+          .join("\n")
+      : null;
+
+  return {
+    videoId,
+    cleanUrl,
+    title: videoDetails.title,
+    authorName: videoDetails.authorName,
+    thumbnailUrl: videoDetails.thumbnailUrl,
+    description: videoDetails.description,
+    formattedTranscript,
+    transcriptCount: transcriptSnippets.length,
+  };
+}
+
+/**
+ * Step 2: Analisis video/transkrip dengan Gemini AI dan parse JSON itinerary.
+ */
+export async function analyzeYouTubeStep2(step1: YoutubeStep1Data): Promise<YoutubeStep2Data> {
   let geminiRaw = "";
 
-  if (transcriptSnippets.length > 0) {
-    // Jalur Utama: Analisis transkrip teks lengkap
-    const formattedTranscript = transcriptSnippets
-      .map((item) => {
-        const totalSeconds = Math.floor(item.offset / 1000);
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
-        const timeStr = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-        return `[${timeStr}] ${item.text}`;
-      })
-      .join("\n");
-
+  if (step1.formattedTranscript) {
     const prompt = buildItineraryPrompt({
-      title: videoDetails.title,
-      authorName: videoDetails.authorName,
-      cleanUrl,
-      description: videoDetails.description,
-      transcript: formattedTranscript,
+      title: step1.title,
+      authorName: step1.authorName,
+      cleanUrl: step1.cleanUrl,
+      description: step1.description,
+      transcript: step1.formattedTranscript,
       mode: "transcript",
     });
-
     geminiRaw = await callGeminiApi(prompt);
   } else {
-    // Jalur Cadangan: Transkrip tidak tersedia langsung dari timedtext
-    console.warn(`[AI YouTube] Transkrip otomatis tidak ditemukan untuk video ${videoId}. Menjalankan fallback multimodal / deskripsi.`);
+    console.warn(`[AI YouTube] Transkrip otomatis tidak ditemukan untuk video ${step1.videoId}. Menjalankan fallback multimodal / deskripsi.`);
 
     let fallbackCompleted = false;
     let lastFallbackErr: Error | null = null;
@@ -732,14 +768,13 @@ export async function extractItineraryFromYouTube(
     // Cadangan A: Multimodal Gemini langsung ke video YouTube
     try {
       const multimodalPrompt = buildItineraryPrompt({
-        title: videoDetails.title,
-        authorName: videoDetails.authorName,
-        cleanUrl,
-        description: videoDetails.description,
+        title: step1.title,
+        authorName: step1.authorName,
+        cleanUrl: step1.cleanUrl,
+        description: step1.description,
         mode: "multimodal",
       });
-
-      geminiRaw = await callGeminiApi(multimodalPrompt, { videoUrl: cleanUrl });
+      geminiRaw = await callGeminiApi(multimodalPrompt, { videoUrl: step1.cleanUrl });
       fallbackCompleted = true;
     } catch (err) {
       lastFallbackErr = err instanceof Error ? err : new Error(String(err));
@@ -748,7 +783,7 @@ export async function extractItineraryFromYouTube(
 
     // Cadangan B: Analisis judul dan deskripsi lengkap video
     if (!fallbackCompleted) {
-      if (!videoDetails.title && !videoDetails.description) {
+      if (!step1.title && !step1.description) {
         throw new Error(
           "Video ini tidak memiliki transkrip/caption otomatis yang dapat diakses oleh AI. Pastikan video bersifat publik dan memiliki subtitle atau pembicaraan yang jelas."
         );
@@ -756,16 +791,14 @@ export async function extractItineraryFromYouTube(
 
       try {
         const descriptionPrompt = buildItineraryPrompt({
-          title: videoDetails.title,
-          authorName: videoDetails.authorName,
-          cleanUrl,
-          description: videoDetails.description,
+          title: step1.title,
+          authorName: step1.authorName,
+          cleanUrl: step1.cleanUrl,
+          description: step1.description,
           mode: "description",
         });
-
         geminiRaw = await callGeminiApi(descriptionPrompt);
-        fallbackCompleted = true;
-      } catch (err) {
+      } catch {
         throw (
           lastFallbackErr ||
           new Error("Gagal menganalisis video YouTube ini. Pastikan video bersifat publik dan memiliki transkrip atau deskripsi yang memadai.")
@@ -774,7 +807,7 @@ export async function extractItineraryFromYouTube(
     }
   }
 
-  // 2. Parsing JSON keluaran Gemini
+  // Parsing JSON keluaran Gemini
   let parsed: any;
   try {
     const cleanedJson = geminiRaw!
@@ -799,33 +832,76 @@ export async function extractItineraryFromYouTube(
     }
   }
 
-  // 3. Auto-Geocoding untuk setiap lokasi aktivitas
   const destination = String(parsed.destination || "Indonesia").trim();
   const rawDays = Array.isArray(parsed.days) ? parsed.days : [];
 
+  const days: ExtractedDay[] = rawDays.map((day: any, dayIdx: number) => {
+    const rawActivities = Array.isArray(day.activities) ? day.activities : [];
+    const activities: ExtractedActivity[] = rawActivities.map((act: any, actIdx: number) => {
+      const locationName = String(act.locationName || "").trim();
+      const lat = typeof act.latitude === "number" && !isNaN(act.latitude) ? act.latitude : null;
+      const lng = typeof act.longitude === "number" && !isNaN(act.longitude) ? act.longitude : null;
+
+      return {
+        time: String(act.time || `${8 + actIdx}:00`).trim(),
+        title: String(act.title || locationName || "Kunjungan").trim(),
+        locationName,
+        formattedAddress: locationName,
+        latitude: lat,
+        longitude: lng,
+        mapProvider: lat !== null && lng !== null ? "ai-gemini" : "",
+        customLocation: lat === null || lng === null,
+        category: String(act.category || "Wisata").trim(),
+        estimatedCost: Math.max(0, Number(act.estimatedCost) || 0),
+        description: String(act.description || "").trim(),
+      };
+    });
+
+    return {
+      dayNumber: Number(day.dayNumber) || dayIdx + 1,
+      title: String(day.title || `Hari ${dayIdx + 1}`).trim(),
+      activities,
+    };
+  });
+
+  return {
+    title: String(parsed.title || step1.title || "Itinerary Perjalanan").trim(),
+    destination,
+    durationDays: Math.min(Math.max(Number(parsed.durationDays) || days.length || 1, 1), 25),
+    travelStyle: String(parsed.travelStyle || "Budget trip").trim(),
+    estimatedBudget: Math.max(0, Number(parsed.estimatedBudget) || 0),
+    description: String(parsed.description || "").trim(),
+    notes: String(parsed.notes || (step1.authorName ? `Diadaptasi dari vlog perjalanan oleh ${step1.authorName}` : "")).trim(),
+    days,
+  };
+}
+
+/**
+ * Step 3: Auto-geocoding lokasi peta & upload cover thumbnail (0 token AI).
+ */
+export async function enrichYouTubeStep3(
+  step1: YoutubeStep1Data,
+  step2: YoutubeStep2Data,
+  userId?: string
+): Promise<AiItineraryResult> {
   const enrichedDays: ExtractedDay[] = await Promise.all(
-    rawDays.map(async (day: any, dayIdx: number) => {
-      const rawActivities = Array.isArray(day.activities) ? day.activities : [];
-
+    step2.days.map(async (day) => {
       const activities: ExtractedActivity[] = await Promise.all(
-        rawActivities.map(async (act: any, actIdx: number) => {
-          const locationName = String(act.locationName || "").trim();
+        day.activities.map(async (act) => {
+          let lat = act.latitude ?? null;
+          let lng = act.longitude ?? null;
+          let formattedAddress = act.formattedAddress || act.locationName;
+          let mapProvider = act.mapProvider || (lat !== null && lng !== null ? "ai-gemini" : "");
+          let customLocation = act.customLocation ?? (lat === null || lng === null);
 
-          // Inisialisasi koordinat dari Gemini AI
-          let lat: number | null = typeof act.latitude === "number" && !isNaN(act.latitude) ? act.latitude : null;
-          let lng: number | null = typeof act.longitude === "number" && !isNaN(act.longitude) ? act.longitude : null;
-          let formattedAddress = locationName;
-          let mapProvider = lat !== null && lng !== null ? "ai-gemini" : "";
-          let customLocation = lat === null || lng === null;
-
-          if (locationName) {
+          if (act.locationName) {
             try {
-              const query = `${locationName}, ${destination}`;
+              const query = `${act.locationName}, ${step2.destination}`;
               const geo = await quickGeocode(query);
               if (geo) {
                 lat = geo.lat;
                 lng = geo.lng;
-                formattedAddress = geo.name || locationName;
+                formattedAddress = geo.name || act.locationName;
                 mapProvider = process.env.GEOAPIFY_API_KEY ? "geoapify" : "nominatim";
                 customLocation = false;
               }
@@ -835,34 +911,26 @@ export async function extractItineraryFromYouTube(
           }
 
           return {
-            time: String(act.time || `${8 + actIdx}:00`).trim(),
-            title: String(act.title || locationName || "Kunjungan").trim(),
-            locationName,
+            ...act,
             formattedAddress,
             latitude: lat,
             longitude: lng,
             mapProvider,
             customLocation,
-            category: String(act.category || "Wisata").trim(),
-            estimatedCost: Math.max(0, Number(act.estimatedCost) || 0),
-            description: String(act.description || "").trim(),
           };
         })
       );
 
       return {
-        dayNumber: Number(day.dayNumber) || dayIdx + 1,
-        title: String(day.title || `Hari ${dayIdx + 1}`).trim(),
+        ...day,
         activities,
       };
     })
   );
 
-  // 4. Handle cover image thumbnail
-  let coverImageUrl = videoDetails.thumbnailUrl || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-
-  // Jika thumbnail resolusi tinggi tersedia di YouTube, prioritaskan maxresdefault
-  const maxResUrl = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+  // Handle cover image thumbnail
+  let coverImageUrl = step1.thumbnailUrl || `https://i.ytimg.com/vi/${step1.videoId}/hqdefault.jpg`;
+  const maxResUrl = `https://i.ytimg.com/vi/${step1.videoId}/maxresdefault.jpg`;
   try {
     const checkMax = await fetch(maxResUrl, { method: "HEAD", signal: AbortSignal.timeout(3000) });
     if (checkMax.ok) {
@@ -872,13 +940,12 @@ export async function extractItineraryFromYouTube(
     // fallback tetap pakai coverImageUrl
   }
 
-  // Jika userId tersedia dan Vercel Blob dikonfigurasi, simpan gambar ke storage lokal/blob
   if (userId && process.env.BLOB_READ_WRITE_TOKEN) {
     try {
       const imgRes = await fetch(coverImageUrl, { signal: AbortSignal.timeout(6000) });
       if (imgRes.ok) {
         const buffer = await imgRes.arrayBuffer();
-        const file = new File([buffer], `yt-cover-${videoId}.jpg`, { type: "image/jpeg" });
+        const file = new File([buffer], `yt-cover-${step1.videoId}.jpg`, { type: "image/jpeg" });
         const uploaded = await uploadImageToBlobStorage({ file, userId });
         if (uploaded) {
           coverImageUrl = uploaded;
@@ -890,16 +957,25 @@ export async function extractItineraryFromYouTube(
   }
 
   return {
-    title: String(parsed.title || videoDetails.title || "Itinerary Perjalanan").trim(),
-    destination,
-    durationDays: Math.min(Math.max(Number(parsed.durationDays) || enrichedDays.length || 1, 1), 25),
-    travelStyle: String(parsed.travelStyle || "Budget trip").trim(),
-    estimatedBudget: Math.max(0, Number(parsed.estimatedBudget) || 0),
-    description: String(parsed.description || "").trim(),
-    notes: String(parsed.notes || (videoDetails.authorName ? `Diadaptasi dari vlog perjalanan oleh ${videoDetails.authorName}` : "")).trim(),
+    title: step2.title,
+    destination: step2.destination,
+    durationDays: step2.durationDays,
+    travelStyle: step2.travelStyle,
+    estimatedBudget: step2.estimatedBudget,
+    description: step2.description,
+    notes: step2.notes,
     coverImageUrl,
-    originalVideoUrl: cleanUrl,
-    authorName: videoDetails.authorName,
+    originalVideoUrl: step1.cleanUrl,
+    authorName: step1.authorName,
     days: enrichedDays,
   };
+}
+
+export async function extractItineraryFromYouTube(
+  url: string,
+  userId?: string
+): Promise<AiItineraryResult> {
+  const step1 = await fetchYouTubeStep1(url);
+  const step2 = await analyzeYouTubeStep2(step1);
+  return enrichYouTubeStep3(step1, step2, userId);
 }
