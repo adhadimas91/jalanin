@@ -196,6 +196,32 @@ export function ItineraryDetailActions({ itinerary }: Props) {
   const [userMyLinks, setUserMyLinks] = useState<{ id: string; label: string; provider: string; actualUrl: string }[]>([]);
 
   useEffect(() => {
+    setDayDrafts(initialDrafts);
+    setEstimatedBudget(itinerary.estimatedBudget);
+    setLocationQueries(createLocationQueryMap(initialDrafts));
+  }, [initialDrafts, itinerary.estimatedBudget]);
+
+  const knownLinksMap = useMemo(() => {
+    const map = new Map<string, { id: string; label: string; provider: string; actualUrl: string }>();
+    for (const day of itinerary.days) {
+      for (const act of day.activities) {
+        if (Array.isArray(act.myLinks)) {
+          for (const l of act.myLinks) {
+            if (l.id) map.set(l.id, { id: l.id, label: l.label || "", provider: l.provider || "Partner", actualUrl: l.actualUrl });
+          }
+        }
+        if (act.myLink && act.myLinkId) {
+          map.set(act.myLinkId, { id: act.myLinkId, label: act.myLink.label || "", provider: act.myLink.provider || "Partner", actualUrl: act.myLink.actualUrl });
+        }
+      }
+    }
+    for (const l of userMyLinks) {
+      map.set(l.id, l);
+    }
+    return map;
+  }, [itinerary, userMyLinks]);
+
+  useEffect(() => {
     fetch("/api/mylink/links")
       .then((res) => {
         if (!res.ok) return [];
@@ -467,6 +493,7 @@ export function ItineraryDetailActions({ itinerary }: Props) {
 
     trackEvent("edit_itinerary_success", { itinerary_id: itinerary.id });
     setIsEditing(false);
+    resetEditor();
     router.refresh();
   }
 
@@ -804,8 +831,7 @@ export function ItineraryDetailActions({ itinerary }: Props) {
                         {(() => {
                           const currentLinkIds = activity.myLinkIds || (activity.myLinkId ? [activity.myLinkId] : []);
                           const selectedLinks = currentLinkIds
-                            .map((id) => userMyLinks.find((l) => l.id === id))
-                            .filter(Boolean) as typeof userMyLinks;
+                            .map((id) => knownLinksMap.get(id) || { id, label: id, provider: "Link", actualUrl: "" });
                           const availableLinks = userMyLinks.filter((l) => !currentLinkIds.includes(l.id));
 
                           return (

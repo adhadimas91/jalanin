@@ -110,7 +110,11 @@ function stripMeta(input: Record<string, unknown>) {
 
   return Object.fromEntries(
     Object.entries(input).filter(
-      ([key, value]) => !key.startsWith("_") && (value === null || typeof value !== "object"),
+      ([key, value]) =>
+        !key.startsWith("_") &&
+        (value === null ||
+          typeof value !== "object" ||
+          (Array.isArray(value) && value.every((v) => v === null || typeof v !== "object"))),
     ),
   );
 }
